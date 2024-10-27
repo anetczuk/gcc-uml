@@ -33,6 +33,16 @@ for source_file in "$SCRIPT_DIR"/*.c*; do
 done
 
 
-"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR"/source2.c.003l.raw \
-									--outtypefields "$SCRIPT_DIR"/fields.json \
-									--outhtmldir "$BUILD_DIR"/html 
+cd "$SCRIPT_DIR/../../src/"
+
+
+if [[ $* == *--profile* ]]; then
+	"$SRC_DIR"/../tools/profiler.sh --cprofile \
+	"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR"/source2.c.003l.raw \
+										--outtypefields "$SCRIPT_DIR"/fields.json \
+										--outhtmldir "$BUILD_DIR"/html 
+else
+	"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR"/source2.c.003l.raw \
+										--outtypefields "$SCRIPT_DIR"/fields.json \
+										--outhtmldir "$BUILD_DIR"/html 
+fi

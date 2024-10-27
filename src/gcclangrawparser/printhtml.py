@@ -10,15 +10,17 @@ import os
 import io
 from typing import Dict, Any, List
 
+# import subprocess
+
 import multiprocessing
 from multiprocessing import Pool
-
 # from multiprocessing.pool import ThreadPool as Pool
+# from gcclangrawparser.multiprocessingmock import DummyPool as Pool
 
 from showgraph.graphviz import Graph, set_node_style
 
 from gcclangrawparser.langparser import LangContent, Entry, get_entry_name
-from gcclangrawparser.io import write_file
+from gcclangrawparser.io import write_file, read_file
 
 
 def print_html(content: LangContent, out_dir):
@@ -42,7 +44,6 @@ def print_html(content: LangContent, out_dir):
 
     proc_num = multiprocessing.cpu_count()
     with Pool(proc_num) as process_pool:
-        # with Pool(processes=1) as process_pool:
         result_queue = []
 
         entries_list = list(content.content_objs.values())
@@ -130,8 +131,13 @@ def generate_entry_page(entry, depends_dict, out_dir):
         edge = graph.addEdge(from_node_id, entry.get_id())
         edge.set_label(dep_field)  # pylint: disable=E1101
 
-    # TODO: operation takes very long - optimize it
-    img_content = get_graph_as_format(graph, "svg")
+    # img_content = get_graph_as_svg(graph)
+    out_svg_file = f"{entry.get_id()}.svg"
+    out_svg_path = os.path.join(out_dir, out_svg_file)
+    img_content = write_graph_as_svg(graph, out_svg_path)
+    # img_content = f"""<img src="{out_svg_file}">"""
+
+    entry_content = ""
 
     content = f"""\
 <!DOCTYPE HTML>
@@ -169,6 +175,9 @@ Project is distributed under the BSD 3-Clause license.
     <div class="graphsection section">
 {img_content}
     </div>
+    <div class="section">
+{entry_content}
+    </div>
 </body>
 </html>
 """
@@ -189,10 +198,33 @@ def get_entry_label(entry):
     return None
 
 
-# png, svg, cmapx
-def get_graph_as_format(graph: Graph, data_format):
+def write_graph_as_svg(graph: Graph, out_svg_path):
+    out_dot_path = f"{out_svg_path}.dot"
+    svg_dot_content = read_file(out_dot_path)
+    curr_dot = graph.toString()
+    if svg_dot_content == curr_dot:
+        return read_file(out_svg_path)
+    graph.write(out_svg_path, file_format="svg")
+    write_file(out_dot_path, curr_dot)
+    return read_file(out_svg_path)
+
+
+def get_graph_as_svg(graph: Graph):
     with io.BytesIO() as buffer:
-        graph.write(buffer, file_format=data_format)
-        contents = buffer.getvalue()
-        contents_str = contents.decode("utf-8")
-        return contents_str
+        # graph.write(buffer, file_format="raw")
+        # dot_contents = buffer.getvalue()
+        # dot_contents_str = dot_contents.decode("utf-8")
+        # return convert_dot(dot_contents_str)
+
+        # TODO: operation takes very long - optimize it
+        graph.write(buffer, file_format="svg")
+        dot_contents = buffer.getvalue()
+        return dot_contents.decode("utf-8")
+
+
+# def convert_dot(content: str):
+#     # convert to svg
+#     svg = subprocess.run(
+#         "dot -Tsvg", shell=True, stdout=subprocess.PIPE, input=content.encode()
+#     ).stdout.decode()
+#     return svg
