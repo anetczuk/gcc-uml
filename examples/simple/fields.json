@@ -1,0 +1,534 @@
+{
+    "array_type": {
+        "algn": [
+            "64"
+        ],
+        "domn": [
+            "<entry-id>"
+        ],
+        "elts": [
+            "<entry-id>"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "unql": [
+            "<entry-id>"
+        ]
+    },
+    "bind_expr": {
+        "body": [
+            "<entry-id>"
+        ],
+        "type": [
+            "<entry-id>"
+        ],
+        "vars": [
+            "<entry-id>"
+        ]
+    },
+    "boolean_type": {
+        "algn": [
+            "8"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "size": [
+            "<entry-id>"
+        ]
+    },
+    "complex_type": {
+        "algn": [
+            "128",
+            "16",
+            "32",
+            "64"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "size": [
+            "<entry-id>"
+        ]
+    },
+    "decl_expr": {
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "enumeral_type": {
+        "algn": [
+            "64"
+        ],
+        "max": [
+            "<entry-id>"
+        ],
+        "min": [
+            "<entry-id>"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "prec": [
+            "64"
+        ],
+        "sign": [
+            "unsigned"
+        ],
+        "size": [
+            "<entry-id>"
+        ]
+    },
+    "field_decl": {
+        "accs": [
+            "pub"
+        ],
+        "algn": [
+            "32",
+            "64"
+        ],
+        "bpos": [
+            "<entry-id>"
+        ],
+        "chain": [
+            "<entry-id>"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "scpe": [
+            "<entry-id>"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "srcp": [
+            "<built-in>:0"
+        ],
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "function_decl": {
+        "args": [
+            "<entry-id>"
+        ],
+        "body": [
+            "<entry-id>",
+            "undefined"
+        ],
+        "chain": [
+            "<entry-id>"
+        ],
+        "lang": [
+            "C"
+        ],
+        "link": [
+            "extern"
+        ],
+        "mngl": [
+            "<entry-id>"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "note": [
+            "artificial",
+            "operator"
+        ],
+        "scpe": [
+            "<entry-id>"
+        ],
+        "srcp": [
+            "<built-in>:0",
+            "source2.c:10",
+            "source2.c:14",
+            "source2.c:3"
+        ],
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "function_type": {
+        "algn": [
+            "8"
+        ],
+        "prms": [
+            "<entry-id>"
+        ],
+        "retn": [
+            "<entry-id>"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "unql": [
+            "<entry-id>"
+        ]
+    },
+    "identifier_node": {
+        "lngt": [
+            "<unsigned number>"
+        ],
+        "note": [
+            "operator"
+        ],
+        "strg": [
+            "<string>"
+        ]
+    },
+    "init_expr": {
+        "op 0": [
+            "<entry-id>"
+        ],
+        "op 1": [
+            "<entry-id>"
+        ],
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "integer_cst": {
+        "int": [
+            "<number>"
+        ],
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "integer_type": {
+        "algn": [
+            "128",
+            "16",
+            "32",
+            "64",
+            "8"
+        ],
+        "max": [
+            "<entry-id>"
+        ],
+        "min": [
+            "<entry-id>"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "prec": [
+            "128",
+            "16",
+            "32",
+            "64",
+            "8"
+        ],
+        "qual": [
+            "c"
+        ],
+        "sign": [
+            "signed",
+            "unsigned"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "unql": [
+            "<entry-id>"
+        ]
+    },
+    "lang_type": {
+        "algn": [
+            "1"
+        ],
+        "name": [
+            "<entry-id>"
+        ]
+    },
+    "mult_expr": {
+        "op 0": [
+            "<entry-id>"
+        ],
+        "op 1": [
+            "<entry-id>"
+        ],
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "namespace_decl": {
+        "chain": [
+            "<entry-id>"
+        ],
+        "dcls": [
+            "<entry-id>"
+        ],
+        "lang": [
+            "C"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "scpe": [
+            "<entry-id>"
+        ],
+        "srcp": [
+            "<built-in>:0",
+            "source2.c:9"
+        ],
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "nop_expr": {
+        "op 0": [
+            "<entry-id>"
+        ],
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "parm_decl": {
+        "algn": [
+            "32"
+        ],
+        "argt": [
+            "<entry-id>"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "scpe": [
+            "<entry-id>"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "srcp": [
+            "source2.c:10",
+            "source2.c:14",
+            "source2.c:3"
+        ],
+        "type": [
+            "<entry-id>"
+        ],
+        "used": [
+            "1"
+        ]
+    },
+    "pointer_type": {
+        "algn": [
+            "64"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "ptd": [
+            "<entry-id>"
+        ],
+        "qual": [
+            "c"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "unql": [
+            "<entry-id>"
+        ]
+    },
+    "real_type": {
+        "algn": [
+            "128",
+            "16",
+            "32",
+            "64"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "prec": [
+            "128",
+            "16",
+            "32",
+            "64",
+            "80"
+        ],
+        "qual": [
+            "c"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "unql": [
+            "<entry-id>"
+        ]
+    },
+    "record_type": {
+        "algn": [
+            "64"
+        ],
+        "flds": [
+            "<entry-id>"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "tag": [
+            "struct"
+        ]
+    },
+    "reference_type": {
+        "algn": [
+            "64"
+        ],
+        "refd": [
+            "<entry-id>"
+        ],
+        "size": [
+            "<entry-id>"
+        ]
+    },
+    "result_decl": {
+        "algn": [
+            "32"
+        ],
+        "note": [
+            "artificial"
+        ],
+        "scpe": [
+            "<entry-id>"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "srcp": [
+            "source2.c:10",
+            "source2.c:14",
+            "source2.c:3"
+        ],
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "return_expr": {
+        "expr": [
+            "<entry-id>"
+        ],
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "statement_list": {
+        "0": [
+            "<entry-id>"
+        ],
+        "1": [
+            "<entry-id>"
+        ]
+    },
+    "template_type_parm": {
+        "algn": [
+            "8"
+        ],
+        "name": [
+            "<entry-id>"
+        ]
+    },
+    "translation_unit_decl": {
+        "name": [
+            "<entry-id>"
+        ]
+    },
+    "tree_list": {
+        "chan": [
+            "<entry-id>"
+        ],
+        "valu": [
+            "<entry-id>"
+        ]
+    },
+    "type_decl": {
+        "chain": [
+            "<entry-id>"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "note": [
+            "artificial"
+        ],
+        "scpe": [
+            "<entry-id>"
+        ],
+        "srcp": [
+            "<built-in>:0"
+        ],
+        "type": [
+            "<entry-id>"
+        ]
+    },
+    "var_decl": {
+        "algn": [
+            "32"
+        ],
+        "init": [
+            "<entry-id>"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "scpe": [
+            "<entry-id>"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "srcp": [
+            "source2.c:11",
+            "source2.c:15",
+            "source2.c:4"
+        ],
+        "type": [
+            "<entry-id>"
+        ],
+        "used": [
+            "1"
+        ]
+    },
+    "vector_type": {
+        "algn": [
+            "128",
+            "256",
+            "64"
+        ],
+        "qual": [
+            "c"
+        ],
+        "size": [
+            "<entry-id>"
+        ],
+        "unql": [
+            "<entry-id>"
+        ]
+    },
+    "void_type": {
+        "algn": [
+            "8"
+        ],
+        "name": [
+            "<entry-id>"
+        ],
+        "qual": [
+            "c",
+            "cv",
+            "v"
+        ],
+        "unql": [
+            "<entry-id>"
+        ]
+    }
+}

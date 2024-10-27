@@ -1,6 +1,6 @@
 # gcc-lang-raw-parser
 
-Parse g++/gcc raw internal tree data.
+Parse gcc/g++ raw internal tree data.
 
 
 ## Running
@@ -11,6 +11,9 @@ To run application simply execute followoing command:
 ```
 python3 -m gcclangrawparser.main --help
 ```
+
+Other interesting gcc option is `-fcallgraph-info`. Using `graph-easy` from `libgraph-easy-perl` output can be converted 
+to dot diagram.
 
 
 ## Installation

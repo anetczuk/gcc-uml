@@ -20,8 +20,12 @@ except ImportError:
 import sys
 import argparse
 import logging
+import json
 
 from gcclangrawparser import logger
+from gcclangrawparser.langparser import parse_raw
+from gcclangrawparser.io import write_file
+from gcclangrawparser.printhtml import print_html
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -30,8 +34,16 @@ _LOGGER = logging.getLogger(__name__)
 # =======================================================================
 
 
-def process_parse(_args):
-    pass
+def process_parse(args):
+    content = parse_raw(args.rawfile)
+
+    out_types_fields = args.outtypefields
+    if out_types_fields:
+        types_str = json.dumps(content.types_fields, indent=4)
+        write_file(out_types_fields, types_str)
+
+    if args.outhtmldir:
+        print_html(content, args.outhtmldir)
 
 
 # =======================================================================
@@ -40,12 +52,16 @@ def process_parse(_args):
 def main():
     parser = argparse.ArgumentParser(
         prog="python3 -m gcclangrawparser.main",
-        description="parse g++/gcc raw internal tree data",
+        description="parse gcc/g++ raw internal tree data",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("-la", "--logall", action="store_true", help="Log all messages")
     parser.set_defaults(func=process_parse)
-    # parser.add_argument("--outdir", action="store", required=True, default="", help="Output directory")
+    parser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
+    parser.add_argument("--outtypefields", action="store", required=False, default="", help="Output types and fields")
+    parser.add_argument(
+        "--outhtmldir", action="store", required=False, default="", help="Output directory for HTML representation"
+    )
 
     ## =================================================
 

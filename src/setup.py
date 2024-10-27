@@ -38,7 +38,7 @@ install_reqs = read_list(requirements_path)
 setup(
     name="gcclangrawparser",
     version="1.0.1",
-    description="parse g++/gcc raw internal tree data",
+    description="parse gcc/g++ raw internal tree data",
     url="https://github.com/anetczuk/gcc-lang-raw-parser",
     author="Arkadiusz Netczuk",
     license="BSD 3-Clause",

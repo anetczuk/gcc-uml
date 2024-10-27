@@ -1,10 +1,17 @@
 ## <a name="main_help"></a> python3 -m gcclangrawparser.main --help
 ```
-usage: python3 -m gcclangrawparser.main [-h] [-la]
+usage: python3 -m gcclangrawparser.main [-h] [-la] --rawfile RAWFILE
+                                        [--outtypefields OUTTYPEFIELDS]
+                                        [--outhtmldir OUTHTMLDIR]
 
-parse g++/gcc raw internal tree data
+parse gcc/g++ raw internal tree data
 
 options:
-  -h, --help     show this help message and exit
-  -la, --logall  Log all messages (default: False)
+  -h, --help            show this help message and exit
+  -la, --logall         Log all messages (default: False)
+  --rawfile RAWFILE     Path to raw file to analyze (default: )
+  --outtypefields OUTTYPEFIELDS
+                        Output types and fields (default: )
+  --outhtmldir OUTHTMLDIR
+                        Output directory for HTML representation (default: )
 ```
