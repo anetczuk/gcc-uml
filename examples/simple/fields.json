@@ -1,534 +1,972 @@
 {
     "array_type": {
-        "algn": [
-            "64"
-        ],
-        "domn": [
-            "<entry-id>"
-        ],
-        "elts": [
-            "<entry-id>"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "unql": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "domn": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "elts": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "bind_expr": {
-        "body": [
-            "<entry-id>"
-        ],
-        "type": [
-            "<entry-id>"
-        ],
-        "vars": [
-            "<entry-id>"
-        ]
+        "body": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "vars": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "boolean_type": {
-        "algn": [
-            "8"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "size": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "complex_type": {
-        "algn": [
-            "128",
-            "16",
-            "32",
-            "64"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "size": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "decl_expr": {
-        "type": [
-            "<entry-id>"
-        ]
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "enumeral_type": {
-        "algn": [
-            "64"
-        ],
-        "max": [
-            "<entry-id>"
-        ],
-        "min": [
-            "<entry-id>"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "prec": [
-            "64"
-        ],
-        "sign": [
-            "unsigned"
-        ],
-        "size": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "max": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "min": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "prec": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "sign": {
+            "mandatory": true,
+            "values": [
+                "unsigned"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "field_decl": {
-        "accs": [
-            "pub"
-        ],
-        "algn": [
-            "32",
-            "64"
-        ],
-        "bpos": [
-            "<entry-id>"
-        ],
-        "chain": [
-            "<entry-id>"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "scpe": [
-            "<entry-id>"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "srcp": [
-            "<built-in>:0"
-        ],
-        "type": [
-            "<entry-id>"
-        ]
+        "accs": {
+            "mandatory": true,
+            "values": [
+                "pub"
+            ]
+        },
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "32",
+                "64"
+            ]
+        },
+        "bpos": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "function_decl": {
-        "args": [
-            "<entry-id>"
-        ],
-        "body": [
-            "<entry-id>",
-            "undefined"
-        ],
-        "chain": [
-            "<entry-id>"
-        ],
-        "lang": [
-            "C"
-        ],
-        "link": [
-            "extern"
-        ],
-        "mngl": [
-            "<entry-id>"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "note": [
-            "artificial",
-            "operator"
-        ],
-        "scpe": [
-            "<entry-id>"
-        ],
-        "srcp": [
-            "<built-in>:0",
-            "source2.c:10",
-            "source2.c:14",
-            "source2.c:3"
-        ],
-        "type": [
-            "<entry-id>"
-        ]
+        "args": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "body": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>",
+                "undefined"
+            ]
+        },
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "lang": {
+            "mandatory": false,
+            "values": [
+                "C"
+            ]
+        },
+        "link": {
+            "mandatory": true,
+            "values": [
+                "extern"
+            ]
+        },
+        "mngl": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "artificial",
+                "operator"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0",
+                "source2.c:10",
+                "source2.c:14",
+                "source2.c:3"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "function_type": {
-        "algn": [
-            "8"
-        ],
-        "prms": [
-            "<entry-id>"
-        ],
-        "retn": [
-            "<entry-id>"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "unql": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "prms": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "retn": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "identifier_node": {
-        "lngt": [
-            "<unsigned number>"
-        ],
-        "note": [
-            "operator"
-        ],
-        "strg": [
-            "<string>"
-        ]
+        "lngt": {
+            "mandatory": true,
+            "values": [
+                "<unsigned number>"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "operator"
+            ]
+        },
+        "strg": {
+            "mandatory": true,
+            "values": [
+                "<string>"
+            ]
+        }
     },
     "init_expr": {
-        "op 0": [
-            "<entry-id>"
-        ],
-        "op 1": [
-            "<entry-id>"
-        ],
-        "type": [
-            "<entry-id>"
-        ]
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "op 1": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "integer_cst": {
-        "int": [
-            "<number>"
-        ],
-        "type": [
-            "<entry-id>"
-        ]
+        "int": {
+            "mandatory": true,
+            "values": [
+                "<number>"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "integer_type": {
-        "algn": [
-            "128",
-            "16",
-            "32",
-            "64",
-            "8"
-        ],
-        "max": [
-            "<entry-id>"
-        ],
-        "min": [
-            "<entry-id>"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "prec": [
-            "128",
-            "16",
-            "32",
-            "64",
-            "8"
-        ],
-        "qual": [
-            "c"
-        ],
-        "sign": [
-            "signed",
-            "unsigned"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "unql": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64",
+                "8"
+            ]
+        },
+        "max": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "min": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "prec": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64",
+                "8"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "sign": {
+            "mandatory": true,
+            "values": [
+                "signed",
+                "unsigned"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "lang_type": {
-        "algn": [
-            "1"
-        ],
-        "name": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "1"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "mult_expr": {
-        "op 0": [
-            "<entry-id>"
-        ],
-        "op 1": [
-            "<entry-id>"
-        ],
-        "type": [
-            "<entry-id>"
-        ]
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "op 1": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "namespace_decl": {
-        "chain": [
-            "<entry-id>"
-        ],
-        "dcls": [
-            "<entry-id>"
-        ],
-        "lang": [
-            "C"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "scpe": [
-            "<entry-id>"
-        ],
-        "srcp": [
-            "<built-in>:0",
-            "source2.c:9"
-        ],
-        "type": [
-            "<entry-id>"
-        ]
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "dcls": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "lang": {
+            "mandatory": false,
+            "values": [
+                "C"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0",
+                "source2.c:9"
+            ]
+        },
+        "type": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "nop_expr": {
-        "op 0": [
-            "<entry-id>"
-        ],
-        "type": [
-            "<entry-id>"
-        ]
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "parm_decl": {
-        "algn": [
-            "32"
-        ],
-        "argt": [
-            "<entry-id>"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "scpe": [
-            "<entry-id>"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "srcp": [
-            "source2.c:10",
-            "source2.c:14",
-            "source2.c:3"
-        ],
-        "type": [
-            "<entry-id>"
-        ],
-        "used": [
-            "1"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "32"
+            ]
+        },
+        "argt": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "source2.c:10",
+                "source2.c:14",
+                "source2.c:3"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "used": {
+            "mandatory": true,
+            "values": [
+                "1"
+            ]
+        }
     },
     "pointer_type": {
-        "algn": [
-            "64"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "ptd": [
-            "<entry-id>"
-        ],
-        "qual": [
-            "c"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "unql": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "ptd": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "real_type": {
-        "algn": [
-            "128",
-            "16",
-            "32",
-            "64"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "prec": [
-            "128",
-            "16",
-            "32",
-            "64",
-            "80"
-        ],
-        "qual": [
-            "c"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "unql": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "prec": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64",
+                "80"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "record_type": {
-        "algn": [
-            "64"
-        ],
-        "flds": [
-            "<entry-id>"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "tag": [
-            "struct"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "flds": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "tag": {
+            "mandatory": true,
+            "values": [
+                "struct"
+            ]
+        }
     },
     "reference_type": {
-        "algn": [
-            "64"
-        ],
-        "refd": [
-            "<entry-id>"
-        ],
-        "size": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "refd": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "result_decl": {
-        "algn": [
-            "32"
-        ],
-        "note": [
-            "artificial"
-        ],
-        "scpe": [
-            "<entry-id>"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "srcp": [
-            "source2.c:10",
-            "source2.c:14",
-            "source2.c:3"
-        ],
-        "type": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "32"
+            ]
+        },
+        "note": {
+            "mandatory": true,
+            "values": [
+                "artificial"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "source2.c:10",
+                "source2.c:14",
+                "source2.c:3"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "return_expr": {
-        "expr": [
-            "<entry-id>"
-        ],
-        "type": [
-            "<entry-id>"
-        ]
+        "expr": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "statement_list": {
-        "0": [
-            "<entry-id>"
-        ],
-        "1": [
-            "<entry-id>"
-        ]
+        "0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "1": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "template_type_parm": {
-        "algn": [
-            "8"
-        ],
-        "name": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "translation_unit_decl": {
-        "name": [
-            "<entry-id>"
-        ]
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "tree_list": {
-        "chan": [
-            "<entry-id>"
-        ],
-        "valu": [
-            "<entry-id>"
-        ]
+        "chan": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "valu": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "type_decl": {
-        "chain": [
-            "<entry-id>"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "note": [
-            "artificial"
-        ],
-        "scpe": [
-            "<entry-id>"
-        ],
-        "srcp": [
-            "<built-in>:0"
-        ],
-        "type": [
-            "<entry-id>"
-        ]
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "artificial"
+            ]
+        },
+        "scpe": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "srcp": {
+            "mandatory": false,
+            "values": [
+                "<built-in>:0"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "var_decl": {
-        "algn": [
-            "32"
-        ],
-        "init": [
-            "<entry-id>"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "scpe": [
-            "<entry-id>"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "srcp": [
-            "source2.c:11",
-            "source2.c:15",
-            "source2.c:4"
-        ],
-        "type": [
-            "<entry-id>"
-        ],
-        "used": [
-            "1"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "32"
+            ]
+        },
+        "init": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "source2.c:11",
+                "source2.c:15",
+                "source2.c:4"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "used": {
+            "mandatory": true,
+            "values": [
+                "1"
+            ]
+        }
     },
     "vector_type": {
-        "algn": [
-            "128",
-            "256",
-            "64"
-        ],
-        "qual": [
-            "c"
-        ],
-        "size": [
-            "<entry-id>"
-        ],
-        "unql": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "256",
+                "64"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     },
     "void_type": {
-        "algn": [
-            "8"
-        ],
-        "name": [
-            "<entry-id>"
-        ],
-        "qual": [
-            "c",
-            "cv",
-            "v"
-        ],
-        "unql": [
-            "<entry-id>"
-        ]
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c",
+                "cv",
+                "v"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ]
+        }
     }
 }

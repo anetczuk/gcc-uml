@@ -11,8 +11,8 @@ namespace xxx {
 		const int bbb1 = param * 3;
 		return bbb1;
 	}
-	int func_bbb2(int param) {
-		const int bbb2 = param * 4;
+	int func_bbb2(int paramA, const int paramB) {
+		const int bbb2 = paramA * paramB;
 		return bbb2;
 	}
 }

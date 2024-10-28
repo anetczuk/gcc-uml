@@ -73,32 +73,47 @@ class LangContent:
             entry_data = entry[2]
 
             type_props = ret_types_dict.get(entry_type, {})
+
+            optional_props = set()
+            curr_props = set(type_props.keys())
+            if curr_props:
+                new_props = set(entry_data.keys())
+                optional_props.update( curr_props.difference(new_props) ) 
+                optional_props.update( new_props.difference(curr_props) )
+
             for prop_key, prop_val in entry_data.items():
                 if entry_type == "identifier_node":
                     if prop_key == "strg":
-                        type_props[prop_key] = ["<string>"]
+                        type_props[prop_key] = {"mandatory": True, "values": ["<string>"]}
                         continue
                     if prop_key == "lngt":
-                        type_props[prop_key] = ["<unsigned number>"]
+                        type_props[prop_key] = {"mandatory": True, "values": ["<unsigned number>"]}
                         continue
                 if entry_type == "integer_cst":
                     if prop_key == "int":
-                        type_props[prop_key] = ["<number>"]
+                        type_props[prop_key] = {"mandatory": True, "values": ["<number>"]}
                         continue
 
-                prop_values = type_props.get(prop_key, [])
+                props_data = type_props.get(prop_key, {"mandatory": True, "values": []})
+                prop_values = props_data["values"]
                 prop_values = set(prop_values)
                 if prop_val.startswith("@"):
                     # identifier
                     prop_values.add("<entry-id>")
                 else:
                     prop_values.add(prop_val)
-                type_props[prop_key] = sorted(prop_values)
+                props_data["values"] = sorted(prop_values)
+                type_props[prop_key] = props_data
+
+            if curr_props:
+                for op_key in optional_props:
+                    props_data = type_props[op_key]
+                    props_data["mandatory"] = False
 
             type_props = dict(sorted(type_props.items()))
             ret_types_dict[entry_type] = type_props
-
         ret_types_dict = dict(sorted(ret_types_dict.items()))
+
         return ret_types_dict
 
     def _objectify(self):
