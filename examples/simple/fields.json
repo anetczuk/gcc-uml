@@ -1,4 +1,24 @@
 {
+    "addr_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "pointer_type"
+            ]
+        }
+    },
     "array_type": {
         "algn": {
             "mandatory": true,
@@ -10,30 +30,45 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         },
         "elts": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
             ]
         },
         "name": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
             ]
         },
         "size": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "unql": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "array_type"
             ]
         }
     },
@@ -42,18 +77,27 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "statement_list"
             ]
         },
         "type": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
             ]
         },
         "vars": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "var_decl"
             ]
         }
     },
@@ -68,12 +112,67 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
             ]
         },
         "size": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "call_expr": {
+        "0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "nop_expr"
+            ]
+        },
+        "fn": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "addr_expr"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
+            ]
+        }
+    },
+    "cleanup_point_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "expr_stmt"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
             ]
         }
     },
@@ -91,12 +190,38 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
             ]
         },
         "size": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "convert_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "init_expr"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
             ]
         }
     },
@@ -105,6 +230,9 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
             ]
         }
     },
@@ -119,18 +247,27 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "min": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "name": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
             ]
         },
         "prec": {
@@ -149,6 +286,35 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "expr_stmt": {
+        "expr": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "convert_expr"
+            ]
+        },
+        "line": {
+            "mandatory": true,
+            "values": [
+                "19"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
             ]
         }
     },
@@ -170,30 +336,45 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "chain": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "field_decl"
             ]
         },
         "name": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
             ]
         },
         "scpe": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
             ]
         },
         "size": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "srcp": {
@@ -206,6 +387,10 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "pointer_type"
             ]
         }
     },
@@ -214,6 +399,9 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "parm_decl"
             ]
         },
         "body": {
@@ -221,12 +409,19 @@
             "values": [
                 "<entry-id>",
                 "undefined"
+            ],
+            "allowedtypes": [
+                "bind_expr"
             ]
         },
         "chain": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl",
+                "type_decl"
             ]
         },
         "lang": {
@@ -245,12 +440,18 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
             ]
         },
         "name": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
             ]
         },
         "note": {
@@ -264,6 +465,10 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "namespace_decl",
+                "translation_unit_decl"
             ]
         },
         "srcp": {
@@ -272,6 +477,7 @@
                 "<built-in>:0",
                 "source2.c:10",
                 "source2.c:14",
+                "source2.c:18",
                 "source2.c:3"
             ]
         },
@@ -279,6 +485,9 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_type"
             ]
         }
     },
@@ -293,24 +502,43 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "tree_list"
             ]
         },
         "retn": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "boolean_type",
+                "complex_type",
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "template_type_parm",
+                "vector_type",
+                "void_type"
             ]
         },
         "size": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "unql": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_type"
             ]
         }
     },
@@ -339,18 +567,29 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "result_decl",
+                "var_decl"
             ]
         },
         "op 1": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "mult_expr",
+                "nop_expr"
             ]
         },
         "type": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         }
     },
@@ -365,6 +604,9 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         }
     },
@@ -383,18 +625,28 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "min": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "name": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node",
+                "type_decl"
             ]
         },
         "prec": {
@@ -424,12 +676,18 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "unql": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         }
     },
@@ -444,6 +702,9 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
             ]
         }
     },
@@ -452,18 +713,30 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "call_expr",
+                "nop_expr",
+                "parm_decl"
             ]
         },
         "op 1": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst",
+                "nop_expr"
             ]
         },
         "type": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         }
     },
@@ -472,12 +745,21 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl",
+                "type_decl"
             ]
         },
         "dcls": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl",
+                "namespace_decl",
+                "type_decl"
             ]
         },
         "lang": {
@@ -490,12 +772,18 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
             ]
         },
         "scpe": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "translation_unit_decl"
             ]
         },
         "srcp": {
@@ -509,6 +797,9 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
             ]
         }
     },
@@ -517,12 +808,19 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "parm_decl",
+                "var_decl"
             ]
         },
         "type": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         }
     },
@@ -537,30 +835,45 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         },
         "chain": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "parm_decl"
             ]
         },
         "name": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
             ]
         },
         "scpe": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl"
             ]
         },
         "size": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "srcp": {
@@ -568,6 +881,7 @@
             "values": [
                 "source2.c:10",
                 "source2.c:14",
+                "source2.c:18",
                 "source2.c:3"
             ]
         },
@@ -575,12 +889,44 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         },
         "used": {
             "mandatory": true,
             "values": [
                 "1"
+            ]
+        }
+    },
+    "plus_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "nop_expr"
+            ]
+        },
+        "op 1": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         }
     },
@@ -595,12 +941,24 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
             ]
         },
         "ptd": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_type",
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "record_type",
+                "vector_type",
+                "void_type"
             ]
         },
         "qual": {
@@ -613,12 +971,18 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "unql": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "pointer_type"
             ]
         }
     },
@@ -636,6 +1000,9 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
             ]
         },
         "prec": {
@@ -658,12 +1025,18 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "unql": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "real_type"
             ]
         }
     },
@@ -678,18 +1051,27 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "field_decl"
             ]
         },
         "name": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
             ]
         },
         "size": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "tag": {
@@ -710,12 +1092,18 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "pointer_type"
             ]
         },
         "size": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         }
     },
@@ -736,12 +1124,18 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl"
             ]
         },
         "size": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "srcp": {
@@ -749,6 +1143,7 @@
             "values": [
                 "source2.c:10",
                 "source2.c:14",
+                "source2.c:18",
                 "source2.c:3"
             ]
         },
@@ -756,6 +1151,9 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         }
     },
@@ -764,12 +1162,18 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "init_expr"
             ]
         },
         "type": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
             ]
         }
     },
@@ -778,12 +1182,37 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "decl_expr"
             ]
         },
         "1": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "cleanup_point_expr",
+                "return_expr"
+            ]
+        },
+        "2": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "decl_expr"
+            ]
+        },
+        "3": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "return_expr"
             ]
         }
     },
@@ -798,6 +1227,9 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
             ]
         }
     },
@@ -806,6 +1238,9 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
             ]
         }
     },
@@ -814,12 +1249,26 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "tree_list"
             ]
         },
         "valu": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "boolean_type",
+                "complex_type",
+                "enumeral_type",
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "reference_type",
+                "vector_type",
+                "void_type"
             ]
         }
     },
@@ -828,12 +1277,20 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl",
+                "namespace_decl",
+                "type_decl"
             ]
         },
         "name": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
             ]
         },
         "note": {
@@ -846,6 +1303,10 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "namespace_decl",
+                "translation_unit_decl"
             ]
         },
         "srcp": {
@@ -858,6 +1319,19 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "array_type",
+                "boolean_type",
+                "complex_type",
+                "enumeral_type",
+                "integer_type",
+                "lang_type",
+                "pointer_type",
+                "real_type",
+                "record_type",
+                "template_type_parm",
+                "void_type"
             ]
         }
     },
@@ -868,28 +1342,50 @@
                 "32"
             ]
         },
-        "init": {
-            "mandatory": true,
+        "chain": {
+            "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "var_decl"
+            ]
+        },
+        "init": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "mult_expr",
+                "plus_expr"
             ]
         },
         "name": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
             ]
         },
         "scpe": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl"
             ]
         },
         "size": {
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "srcp": {
@@ -897,6 +1393,8 @@
             "values": [
                 "source2.c:11",
                 "source2.c:15",
+                "source2.c:19",
+                "source2.c:20",
                 "source2.c:4"
             ]
         },
@@ -904,6 +1402,9 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
             ]
         },
         "used": {
@@ -932,12 +1433,18 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
             ]
         },
         "unql": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "vector_type"
             ]
         }
     },
@@ -952,6 +1459,9 @@
             "mandatory": true,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
             ]
         },
         "qual": {
@@ -966,6 +1476,9 @@
             "mandatory": false,
             "values": [
                 "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
             ]
         }
     }

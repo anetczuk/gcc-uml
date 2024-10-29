@@ -100,6 +100,12 @@ class LangContent:
                 if prop_val.startswith("@"):
                     # identifier
                     prop_values.add("<entry-id>")
+                    prop_value_types = props_data.get("allowedtypes", [])
+                    prop_value_types = set(prop_value_types)
+                    linked_element = self.content_lines[prop_val]
+                    linked_type = linked_element[1]
+                    prop_value_types.update([linked_type])
+                    props_data["allowedtypes"] = sorted(prop_value_types)
                 else:
                     prop_values.add(prop_val)
                 props_data["values"] = sorted(prop_values)
