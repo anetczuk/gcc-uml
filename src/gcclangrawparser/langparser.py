@@ -8,6 +8,8 @@
 
 import os
 import re
+from collections import deque
+from collections import namedtuple
 import pprint
 
 from munch import Munch
@@ -78,8 +80,8 @@ class LangContent:
             curr_props = set(type_props.keys())
             if curr_props:
                 new_props = set(entry_data.keys())
-                optional_props.update( curr_props.difference(new_props) ) 
-                optional_props.update( new_props.difference(curr_props) )
+                optional_props.update(curr_props.difference(new_props))
+                optional_props.update(new_props.difference(curr_props))
 
             for prop_key, prop_val in entry_data.items():
                 if entry_type == "identifier_node":
@@ -211,6 +213,137 @@ class LangContent:
     #         raise
 
 
+# ============================================
+
+
+# traverse Entry graph
+class EntryTraversal:
+    def __init__(self):
+        self.visit_list = None
+
+    def visit_tree(self, entry: Entry, visitor):
+        self.visit_list = deque([([entry], 0, None)])
+        visited = set()
+        while self.visit_list:
+            entries_list, depth, prop = self.visit_list.popleft()
+            curr_item = entries_list[-1]
+            if not isinstance(curr_item, Entry):
+                visitor(entries_list, depth, prop)
+                continue
+            item_id = curr_item.get_id()
+            if item_id in visited:
+                visitor(entries_list, depth, prop)
+                continue
+            visited.add(item_id)
+            if visitor(entries_list, depth, prop):
+                subentries = get_sub_entries(curr_item, depth + 1, entries_list)
+                self._add_items(subentries)
+
+    def _add_items(self, subentries):
+        raise RuntimeError("not implemented")
+
+
+class EntryDepthFirstTraversal(EntryTraversal):
+    def _add_items(self, subentries):
+        rev_list = reversed(subentries)
+        self.visit_list.extendleft(rev_list)
+
+
+class EntryBreadthFirstTraversal(EntryTraversal):
+    def _add_items(self, subentries):
+        self.visit_list.extend(subentries)
+
+
+def get_sub_entries(entry: Entry, depth, parents_list):
+    ret_list = []
+    for prop, subentry in sorted(entry.items()):
+        if prop not in ("_id", "_type"):
+            ret_list.append((parents_list + [subentry], depth, prop))
+    return ret_list
+
+
+# =========================================
+
+
+DumpTreeNode = namedtuple("DumpTreeNode", ["entry", "depth", "property", "items"])
+
+
+# convert Entries graph to Node tree
+class DumpTreeConverter:
+
+    def __init__(self):
+        self.entry_node_dict = {}
+
+    def dump_tree(self, entry: Entry, traversal) -> DumpTreeNode:
+        root_node = DumpTreeNode(None, -1, None, [])
+        self.entry_node_dict[""] = root_node
+        traversal.visit_tree(entry, self.visit_item)
+
+        root_list = root_node.items
+        if len(root_list) != 1:
+            raise RuntimeError("error while dumping entry tree")
+        return root_list[0]
+
+    def visit_item(self, entries_list, depth, prop: str):
+        parents_list = entries_list[:-1]
+        parent_node_id = self._get_entries_path(parents_list)
+        parent_node = self.entry_node_dict[parent_node_id]
+
+        entry = entries_list[-1]
+        new_node = DumpTreeNode(entry, depth, prop, [])
+        parent_node.items.append(new_node)
+
+        if isinstance(entry, Entry):
+            entry_node_id = self._get_entries_path(entries_list)
+            self.entry_node_dict[entry_node_id] = new_node
+
+            if entry.get_type() == "function_decl":
+                entry_name = get_entry_name(entry)
+                if entry_name.startswith("__"):
+                    # internal function - do not go deeper
+                    return False
+        return True
+
+    def _get_entries_path(self, entries_list):
+        return "".join([entry.get_id() for entry in entries_list])
+
+
+def dump_tree_depth_first(entry: Entry) -> DumpTreeNode:
+    traversal = EntryDepthFirstTraversal()
+    dumper = DumpTreeConverter()
+    return dumper.dump_tree(entry, traversal)
+
+
+def dump_tree_breadth_first(entry: Entry) -> DumpTreeNode:
+    traversal = EntryBreadthFirstTraversal()
+    dumper = DumpTreeConverter()
+    return dumper.dump_tree(entry, traversal)
+
+
+def visit_dump_tree_depth_first(node: DumpTreeNode, visitor, args_data=None):
+    visit_list = deque([node])
+    while visit_list:
+        curr_item = visit_list.popleft()
+        if visitor(curr_item, args_data):
+            sub_nodes = curr_item.items
+            rev_list = reversed(sub_nodes)
+            visit_list.extendleft(rev_list)
+
+
+def print_dump_tree(dump_tree: DumpTreeNode):
+    visit_list = deque([(dump_tree, 0)])
+    while visit_list:
+        curr_item, level = visit_list.popleft()
+
+        indent = " " * level
+        print(f"{indent}{curr_item.property}: {curr_item.entry} items: {len(curr_item.items)} depth: {curr_item.depth}")
+
+        next_level = level + 1
+        extend_list = [(item, next_level) for item in curr_item.items]
+        rev_list = reversed(extend_list)
+        visit_list.extendleft(rev_list)
+
+
 # =========================================
 
 
@@ -220,8 +353,27 @@ def get_entry_name(entry):
 
     entry_type = entry.get_type()
 
-    if entry_type == "namespace_decl":
-        entry_value = entry["name"]
+    if entry_type == "integer_type":
+        label = ""
+        entry_value = entry.get("name")
+        if entry_value is not None:
+            label = get_entry_name(entry_value)
+
+        entry_qual = entry.get("qual")
+        qual_label = get_entry_name(entry_qual)
+        if qual_label is not None:
+            if qual_label == "c":
+                label = "const " + label
+            else:
+                raise RuntimeError(f"unhandled case for {entry.get_id()}")
+        return label
+
+    entry_value = entry.get("name")
+    if entry_value is not None:
+        return get_entry_name(entry_value)
+
+    if entry_type == "type_decl":
+        entry_value = entry["type"]
         return get_entry_name(entry_value)
 
     if entry_type == "identifier_node":
@@ -232,34 +384,30 @@ def get_entry_name(entry):
             print(f"invalid props - {entry}")
             raise
 
-    if entry_type == "translation_unit_decl":
-        entry_value = entry["name"]
-        return get_entry_name(entry_value)
-
-    if entry_type == "function_decl":
-        entry_value = entry["name"]
-        return get_entry_name(entry_value)
-
-    if entry_type == "void_type":
-        entry_value = entry["name"]
-        return get_entry_name(entry_value)
-
-    if entry_type == "type_decl":
-        entry_value = entry["name"]
+    if entry_type == "pointer_type":
+        entry_value = entry["ptd"]
         return get_entry_name(entry_value)
 
     if entry_type == "function_type":
-        entry_value = entry["name"]
+        entry_value = entry["retn"]
         return get_entry_name(entry_value)
 
-    raise RuntimeError(f"unhandled entry type: {entry.get_id()} {entry_type}")
+    if entry_type == "integer_cst":
+        entry_value = entry["int"]
+        return get_entry_name(entry_value)
+
+    if entry_type == "complex_type":
+        return "[unknown]"
+
+    return f"[unhandled entry type: {entry.get_id()} {entry_type}]"
 
 
 def convert_lines_to_dict(content_lines):
     content_dict = {}
     converter = ProprertiesConverter()
     for line in content_lines:
-        found = re.search(r"^(\S+)\s+(\S+)\s+(.*)$", line)
+        # there can be item with no parameters
+        found = re.search(r"^(\S+)\s+(\S+)(\s+.*)?$", line)
         if not found:
             raise RuntimeError(f"unable to parse line: '{line}'")
         # print(f"{line} -> >{found.group(1)}< >{found.group(2)}< >{found.group(3)}<")

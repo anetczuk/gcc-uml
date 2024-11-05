@@ -36,6 +36,8 @@ _LOGGER = logging.getLogger(__name__)
 
 def process_parse(args):
     content = parse_raw(args.rawfile)
+    if content is None:
+        raise RuntimeError(f"unable to parse {args.rawfile}")
 
     out_types_fields = args.outtypefields
     if out_types_fields:
