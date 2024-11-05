@@ -1,0 +1,934 @@
+{
+    "array_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "domn": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
+            ]
+        },
+        "elts": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "array_type"
+            ]
+        }
+    },
+    "boolean_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "complex_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "enumeral_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "max": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "min": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "prec": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "sign": {
+            "mandatory": true,
+            "values": [
+                "unsigned"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "field_decl": {
+        "accs": {
+            "mandatory": true,
+            "values": [
+                "pub"
+            ]
+        },
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "32",
+                "64"
+            ]
+        },
+        "bpos": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "field_decl"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "pointer_type"
+            ]
+        }
+    },
+    "function_decl": {
+        "body": {
+            "mandatory": true,
+            "values": [
+                "undefined"
+            ]
+        },
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl",
+                "type_decl"
+            ]
+        },
+        "lang": {
+            "mandatory": false,
+            "values": [
+                "C"
+            ]
+        },
+        "link": {
+            "mandatory": true,
+            "values": [
+                "extern"
+            ]
+        },
+        "mngl": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "note": {
+            "mandatory": true,
+            "values": [
+                "artificial",
+                "operator"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "namespace_decl",
+                "translation_unit_decl"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_type"
+            ]
+        }
+    },
+    "function_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "prms": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "tree_list"
+            ]
+        },
+        "retn": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "boolean_type",
+                "complex_type",
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "template_type_parm",
+                "vector_type",
+                "void_type"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_type"
+            ]
+        }
+    },
+    "identifier_node": {
+        "lngt": {
+            "mandatory": true,
+            "values": [
+                "<unsigned number>"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "operator"
+            ]
+        },
+        "strg": {
+            "mandatory": true,
+            "values": [
+                "<string>"
+            ]
+        }
+    },
+    "integer_cst": {
+        "int": {
+            "mandatory": true,
+            "values": [
+                "<number>"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
+            ]
+        }
+    },
+    "integer_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64",
+                "8"
+            ]
+        },
+        "max": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "min": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node",
+                "type_decl"
+            ]
+        },
+        "prec": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64",
+                "8"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "sign": {
+            "mandatory": true,
+            "values": [
+                "signed",
+                "unsigned"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
+            ]
+        }
+    },
+    "lang_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "1"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        }
+    },
+    "namespace_decl": {
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl",
+                "type_decl"
+            ]
+        },
+        "dcls": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "namespace_decl",
+                "type_decl"
+            ]
+        },
+        "lang": {
+            "mandatory": false,
+            "values": [
+                "C"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "translation_unit_decl"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0",
+                "emptyns.cpp:3"
+            ]
+        },
+        "type": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        }
+    },
+    "pointer_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "ptd": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_type",
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "record_type",
+                "vector_type",
+                "void_type"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "pointer_type"
+            ]
+        }
+    },
+    "real_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "prec": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64",
+                "80"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "real_type"
+            ]
+        }
+    },
+    "record_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "flds": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "field_decl"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "tag": {
+            "mandatory": true,
+            "values": [
+                "struct"
+            ]
+        }
+    },
+    "reference_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "refd": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "pointer_type"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "template_type_parm": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        }
+    },
+    "translation_unit_decl": {
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        }
+    },
+    "tree_list": {
+        "chan": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "tree_list"
+            ]
+        },
+        "valu": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "boolean_type",
+                "complex_type",
+                "enumeral_type",
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "reference_type",
+                "vector_type",
+                "void_type"
+            ]
+        }
+    },
+    "type_decl": {
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl",
+                "namespace_decl",
+                "type_decl"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "artificial"
+            ]
+        },
+        "scpe": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "namespace_decl",
+                "translation_unit_decl"
+            ]
+        },
+        "srcp": {
+            "mandatory": false,
+            "values": [
+                "<built-in>:0"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "array_type",
+                "boolean_type",
+                "complex_type",
+                "enumeral_type",
+                "integer_type",
+                "lang_type",
+                "pointer_type",
+                "real_type",
+                "record_type",
+                "template_type_parm",
+                "void_type"
+            ]
+        }
+    },
+    "vector_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "256",
+                "64"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "vector_type"
+            ]
+        }
+    },
+    "void_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c",
+                "cv",
+                "v"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        }
+    }
+}

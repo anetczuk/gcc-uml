@@ -1,0 +1,1730 @@
+{
+    "addr_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "component_ref",
+                "function_decl",
+                "var_decl"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "pointer_type"
+            ]
+        }
+    },
+    "array_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "domn": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
+            ]
+        },
+        "elts": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "array_type"
+            ]
+        }
+    },
+    "bind_expr": {
+        "body": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "cleanup_point_expr",
+                "statement_list"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        },
+        "vars": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "var_decl"
+            ]
+        }
+    },
+    "binfo": {
+        "accs": {
+            "mandatory": false,
+            "values": [
+                "pub"
+            ]
+        },
+        "bases": {
+            "mandatory": true,
+            "values": [
+                "0",
+                "1"
+            ]
+        },
+        "binf": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "binfo"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        }
+    },
+    "boolean_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "call_expr": {
+        "0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "addr_expr"
+            ]
+        },
+        "1": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "2": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "real_cst"
+            ]
+        },
+        "fn": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "addr_expr"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "void_type"
+            ]
+        }
+    },
+    "cleanup_point_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "expr_stmt"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        }
+    },
+    "complex_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "component_ref": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "indirect_ref",
+                "var_decl"
+            ]
+        },
+        "op 1": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "field_decl"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "real_type",
+                "record_type"
+            ]
+        }
+    },
+    "constructor": {
+        "lngt": {
+            "mandatory": true,
+            "values": [
+                "0"
+            ]
+        }
+    },
+    "convert_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "call_expr",
+                "init_expr"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        }
+    },
+    "decl_expr": {
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        }
+    },
+    "enumeral_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "max": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "min": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "prec": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "sign": {
+            "mandatory": true,
+            "values": [
+                "unsigned"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "expr_stmt": {
+        "expr": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "call_expr",
+                "convert_expr",
+                "modify_expr"
+            ]
+        },
+        "line": {
+            "mandatory": false,
+            "values": [
+                "20",
+                "27",
+                "28",
+                "9"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        }
+    },
+    "field_decl": {
+        "accs": {
+            "mandatory": true,
+            "values": [
+                "pub"
+            ]
+        },
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "32",
+                "64"
+            ]
+        },
+        "bpos": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "field_decl",
+                "function_decl"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "artificial"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0",
+                "source1.cpp:18",
+                "source1.cpp:6",
+                "source1.cpp:7"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "record_type"
+            ]
+        }
+    },
+    "function_decl": {
+        "accs": {
+            "mandatory": false,
+            "values": [
+                "pub"
+            ]
+        },
+        "args": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "parm_decl"
+            ]
+        },
+        "body": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>",
+                "undefined"
+            ],
+            "allowedtypes": [
+                "return_expr",
+                "statement_list"
+            ]
+        },
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "field_decl",
+                "function_decl",
+                "namespace_decl",
+                "type_decl"
+            ]
+        },
+        "lang": {
+            "mandatory": false,
+            "values": [
+                "C"
+            ]
+        },
+        "link": {
+            "mandatory": true,
+            "values": [
+                "extern"
+            ]
+        },
+        "mngl": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "artificial",
+                "constructor",
+                "destructor",
+                "member",
+                "operator"
+            ]
+        },
+        "orig": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "namespace_decl",
+                "record_type",
+                "translation_unit_decl"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0",
+                "source1.cpp:12",
+                "source1.cpp:18",
+                "source1.cpp:20",
+                "source1.cpp:26",
+                "source1.cpp:4",
+                "source1.cpp:9"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_type",
+                "method_type"
+            ]
+        }
+    },
+    "function_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "prms": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "tree_list"
+            ]
+        },
+        "retn": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "boolean_type",
+                "complex_type",
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "template_type_parm",
+                "vector_type",
+                "void_type"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_type"
+            ]
+        }
+    },
+    "identifier_node": {
+        "lngt": {
+            "mandatory": true,
+            "values": [
+                "<unsigned number>"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "operator"
+            ]
+        },
+        "strg": {
+            "mandatory": true,
+            "values": [
+                "<string>"
+            ]
+        }
+    },
+    "indirect_ref": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "nop_expr"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        }
+    },
+    "init_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "component_ref",
+                "result_decl"
+            ]
+        },
+        "op 1": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst",
+                "nop_expr",
+                "parm_decl"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "real_type"
+            ]
+        }
+    },
+    "integer_cst": {
+        "int": {
+            "mandatory": true,
+            "values": [
+                "<number>"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
+            ]
+        }
+    },
+    "integer_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64",
+                "8"
+            ]
+        },
+        "max": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "min": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node",
+                "type_decl"
+            ]
+        },
+        "prec": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64",
+                "8"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "sign": {
+            "mandatory": true,
+            "values": [
+                "signed",
+                "unsigned"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
+            ]
+        }
+    },
+    "lang_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "1"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        }
+    },
+    "method_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "clas": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        },
+        "prms": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "tree_list"
+            ]
+        },
+        "retn": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "void_type"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "method_type"
+            ]
+        }
+    },
+    "modify_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "indirect_ref"
+            ]
+        },
+        "op 1": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "constructor"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        }
+    },
+    "namespace_decl": {
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl",
+                "type_decl"
+            ]
+        },
+        "dcls": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl",
+                "type_decl"
+            ]
+        },
+        "lang": {
+            "mandatory": false,
+            "values": [
+                "C"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "translation_unit_decl"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0",
+                "source1.cpp:3"
+            ]
+        },
+        "type": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        }
+    },
+    "nop_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "component_ref",
+                "parm_decl"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "pointer_type"
+            ]
+        }
+    },
+    "parm_decl": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "32",
+                "64"
+            ]
+        },
+        "argt": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "reference_type"
+            ]
+        },
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "parm_decl"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "artificial"
+            ]
+        },
+        "orig": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "parm_decl"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "source1.cpp:12",
+                "source1.cpp:20",
+                "source1.cpp:27",
+                "source1.cpp:9"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "reference_type"
+            ]
+        },
+        "used": {
+            "mandatory": true,
+            "values": [
+                "0",
+                "1"
+            ]
+        }
+    },
+    "pointer_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "ptd": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_type",
+                "integer_type",
+                "method_type",
+                "pointer_type",
+                "real_type",
+                "record_type",
+                "vector_type",
+                "void_type"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "pointer_type"
+            ]
+        }
+    },
+    "real_cst": {
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "real_type"
+            ]
+        },
+        "valu": {
+            "mandatory": true,
+            "values": [
+                "3.0e+0"
+            ]
+        }
+    },
+    "real_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "prec": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "16",
+                "32",
+                "64",
+                "80"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "real_type"
+            ]
+        }
+    },
+    "record_type": {
+        "accs": {
+            "mandatory": false,
+            "values": [
+                "priv"
+            ]
+        },
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "base": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        },
+        "binf": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "binfo"
+            ]
+        },
+        "flds": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "field_decl",
+                "function_decl"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "tag": {
+            "mandatory": true,
+            "values": [
+                "struct"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        }
+    },
+    "reference_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "refd": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "pointer_type",
+                "record_type"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "result_decl": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "32"
+            ]
+        },
+        "note": {
+            "mandatory": true,
+            "values": [
+                "artificial"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "source1.cpp:12",
+                "source1.cpp:26"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
+            ]
+        }
+    },
+    "return_expr": {
+        "expr": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "init_expr"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        }
+    },
+    "statement_list": {
+        "0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "bind_expr",
+                "cleanup_point_expr",
+                "decl_expr"
+            ]
+        },
+        "1": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "bind_expr",
+                "cleanup_point_expr",
+                "return_expr"
+            ]
+        },
+        "2": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "cleanup_point_expr"
+            ]
+        },
+        "3": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "return_expr"
+            ]
+        }
+    },
+    "template_type_parm": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        }
+    },
+    "translation_unit_decl": {
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        }
+    },
+    "tree_list": {
+        "chan": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "tree_list"
+            ]
+        },
+        "valu": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "boolean_type",
+                "complex_type",
+                "enumeral_type",
+                "integer_type",
+                "pointer_type",
+                "real_type",
+                "reference_type",
+                "vector_type",
+                "void_type"
+            ]
+        }
+    },
+    "type_decl": {
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl",
+                "namespace_decl",
+                "type_decl"
+            ]
+        },
+        "name": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "artificial"
+            ]
+        },
+        "scpe": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "namespace_decl",
+                "record_type",
+                "translation_unit_decl"
+            ]
+        },
+        "srcp": {
+            "mandatory": false,
+            "values": [
+                "<built-in>:0",
+                "source1.cpp:18",
+                "source1.cpp:4"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "array_type",
+                "boolean_type",
+                "complex_type",
+                "enumeral_type",
+                "integer_type",
+                "lang_type",
+                "pointer_type",
+                "real_type",
+                "record_type",
+                "template_type_parm",
+                "void_type"
+            ]
+        }
+    },
+    "var_decl": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "source1.cpp:27"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        },
+        "used": {
+            "mandatory": true,
+            "values": [
+                "1"
+            ]
+        }
+    },
+    "vector_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "256",
+                "64"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "vector_type"
+            ]
+        }
+    },
+    "void_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        },
+        "qual": {
+            "mandatory": false,
+            "values": [
+                "c",
+                "cv",
+                "v"
+            ]
+        },
+        "unql": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        }
+    }
+}
