@@ -21,13 +21,13 @@ import html
 
 from showgraph.graphviz import Graph, set_node_style
 
-from gcclangrawparser.langparser import (
+from gcclangrawparser.langcontent import (
     LangContent,
     Entry,
     get_entry_name,
-    visit_dump_tree_depth_first,
     DumpTreeNode,
-    dump_tree_breadth_first,
+    get_dump_tree,
+    DumpTreeDepthFirstTraversal,
 )
 from gcclangrawparser.io import write_file, read_file
 
@@ -51,16 +51,48 @@ def print_html(content: LangContent, out_dir):
             dep_list.append((entry_field, entry))
             depends_dict[dep_id] = dep_list
 
-    entries_list = list(content.content_objs.values())
-    first_entry = entries_list[0]
-    node_tree: DumpTreeNode = dump_tree_breadth_first(first_entry)
+    node_tree: DumpTreeNode = get_dump_tree(content)
 
     # print_dump_tree(node_tree)
 
     node_page_gen = NodePageGenerator()
-    visit_dump_tree_depth_first(node_tree, node_page_gen.generate_node_page, [depends_dict, out_dir])
+    DumpTreeDepthFirstTraversal.traverse(node_tree, node_page_gen.generate_node_page, [depends_dict, out_dir])
 
     print("writing completed")
+
+
+def generate_big_graph(content: LangContent, out_path):
+    node_tree: DumpTreeNode = get_dump_tree(content)
+    # print_dump_tree(node_tree)
+    nodes_list = DumpTreeDepthFirstTraversal.to_list(node_tree)
+
+    graph: Graph = Graph()
+    base_graph = graph.base_graph
+    base_graph.set_name("use_graph")
+    base_graph.set_type("digraph")
+    base_graph.set_rankdir("LR")
+
+    for item in nodes_list:
+        node = item[0]
+        entry = node.entry
+        main_node_label = ""
+        if not isinstance(entry, Entry):
+            continue
+
+        main_node_label = f"{entry.get_id()} {entry.get_type()}"
+        entry_label = get_entry_label(entry)
+        if entry_label:
+            main_node_label += f"\n{entry_label}"
+        entry_node = graph.addNode(entry.get_id(), shape="box", label=main_node_label)
+        if entry_node is None:
+            continue
+
+        entry_node.set("tooltip", main_node_label)
+        # entry_node.set("href", f"{entry.get_id()}.html")
+        # style = {"style": "filled", "fillcolor": "red"}
+        # set_node_style(entry_node, style)
+
+    graph.write(out_path, file_format="png")
 
 
 class NodePageGenerator:
@@ -68,8 +100,9 @@ class NodePageGenerator:
     def __init__(self):
         self.visited_entries = set()
 
-    def generate_node_page(self, node: DumpTreeNode, args_data):
-        depends_dict, out_dir = args_data
+    def generate_node_page(self, family_list, _node_data, gen_context=None):
+        node = family_list[-1]
+        depends_dict, out_dir = gen_context
         entry = node.entry
         if not isinstance(entry, Entry):
             return True
@@ -239,13 +272,13 @@ function toggle_element(element_id) {{
 
 def print_node(node: DumpTreeNode):
     printer = EntryPrinter()
-    visit_dump_tree_depth_first(node, print_single_node, [printer, node])
+    DumpTreeDepthFirstTraversal.traverse(node, print_single_node, [printer, node])
     return printer.content
 
 
-def print_single_node(node: DumpTreeNode, args_data=None):
-    printer = args_data[0]
-    root_node = args_data[1]
+def print_single_node(family_list: DumpTreeNode, _node_data=None, visitor_context=None):
+    node = family_list[-1]
+    printer, root_node = visitor_context
     prop = node.property
     if root_node == node:
         prop = None
@@ -292,8 +325,10 @@ def print_head(entry, prefix_content="", postfix_content="", print_label=False):
     label_content = ""
     if print_label:
         label_content = " " + get_entry_label(entry)
-    return f"""<div class="entryhead">{prefix_content}{entry.get_type()} {get_entry_id_href(entry)}" \
-        "{label_content}{postfix_content}</div>\n"""
+    return (
+        f"""<div class="entryhead">{prefix_content}{entry.get_type()} {get_entry_id_href(entry)}"""
+        f"""{label_content}{postfix_content}</div>\n"""
+    )
 
 
 def get_entry_id_href(entry: Entry):
