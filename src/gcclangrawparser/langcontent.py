@@ -363,11 +363,18 @@ class DumpTreeDepthFirstTraversal(TreeAbstractTraversal):
         return get_nodes_from_tree(node, traversal)
 
 
-def print_dump_tree(dump_tree: DumpTreeNode):
+def print_dump_tree(dump_tree: DumpTreeNode, indent=2) -> str:
+    ret_content = ""
     nodes_list = DumpTreeDepthFirstTraversal.to_list(dump_tree)
     for curr_item, level, _node_data in nodes_list:
-        indent = " " * level
-        print(f"{indent}{curr_item.property}: {curr_item.entry} items: {len(curr_item.items)} depth: {curr_item.depth}")
+        spaces = " " * level * indent
+        prop = ""
+        if curr_item.property is not None:
+            prop = f"{curr_item.property}: "
+        ret_content += (
+            f"{spaces}{prop}entry: {curr_item.entry} items num: {len(curr_item.items)} depth: {curr_item.depth}\n"
+        )
+    return ret_content
 
 
 ## ==================================================
@@ -377,7 +384,7 @@ def print_dump_tree(dump_tree: DumpTreeNode):
 class DumpTreeConverter:
 
     def __init__(self, include_internals=False):
-        self.include_internals=include_internals
+        self.include_internals = include_internals
         self.entry_node_dict = {}
 
     def dump_tree(self, entry: Entry, traversal: GraphAbstractTraversal) -> DumpTreeNode:

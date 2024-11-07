@@ -22,6 +22,12 @@ fi
 
 # ===================================
 
+SRC_DIR="$SCRIPT_DIR/../../src"
+
+BUILD_DIR="$SCRIPT_DIR/build"
+
+mkdir -p "$BUILD_DIR"
+
 
 prepare_sample() {
 	local SAMPLE_FILE="$1"
@@ -38,22 +44,19 @@ prepare_sample() {
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
 		"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 											--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
+											--reducepaths "$SCRIPT_DIR/" \
+											--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt" \
 											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE"
 	else
 		"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 											--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
+											--reducepaths "$SCRIPT_DIR/" \
+											--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt" \
 											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE"
 	fi
 }
-
-
-SRC_DIR="$SCRIPT_DIR/../../src"
-
-BUILD_DIR="$SCRIPT_DIR/build"
-
-mkdir -p "$BUILD_DIR"
 
 
 if [[ $* == *--emptymain* ]]; then

@@ -8,6 +8,7 @@
 
 import os
 import re
+from typing import Dict
 
 from gcclangrawparser.langcontent import LangContent
 
@@ -15,22 +16,23 @@ from gcclangrawparser.langcontent import LangContent
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def parse_raw(input_path) -> LangContent:
+def parse_raw(input_path, reducepaths) -> LangContent:
     if not os.path.isfile(input_path):
         return None
     content_lines = read_raw_file(input_path)
-    return parse_raw_content(content_lines)
+    return parse_raw_content(content_lines, reducepaths)
 
 
-def parse_raw_content(content_lines) -> LangContent:
-    content_dict = convert_lines_to_dict(content_lines)
+def parse_raw_content(content_lines, reducepaths) -> LangContent:
+    content_dict = convert_lines_to_dict(content_lines, reducepaths)
     return LangContent(content_dict)
 
 
 # =========================================
 
 
-def convert_lines_to_dict(content_lines):
+def convert_lines_to_dict(content_lines, reducepaths):
+    reduce_len = len(reducepaths)
     content_dict = {}
     converter = ProprertiesConverter()
     for line in content_lines:
@@ -42,6 +44,10 @@ def convert_lines_to_dict(content_lines):
         line_id = found.group(1)
         line_type = found.group(2)
         line_props = converter.convert(found.group(3))
+        if reducepaths:
+            for prop_key, prop_val in list(line_props.items()):
+                if prop_val.startswith(reducepaths):
+                    line_props[prop_key] = prop_val[reduce_len:]
         content_dict[line_id] = (line_id, line_type, line_props)
     return content_dict
 
@@ -51,7 +57,7 @@ class ProprertiesConverter:
     def __init__(self):
         self.raw_properties = ""
 
-    def convert(self, properties_str):
+    def convert(self, properties_str) -> Dict[str, str]:
         self.raw_properties = properties_str
         ret_dict = {}
         while self.raw_properties:

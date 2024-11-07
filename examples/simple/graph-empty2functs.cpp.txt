@@ -1,0 +1,61 @@
+entry: {'_id': '@1', '_type': 'namespace_decl', 'name': <Entry @2>, 'scpe': <Entry @3>, 'srcp': '<built-in>:0', 'dcls': <Entry @4>} items num: 4 depth: 1
+  dcls: entry: {'_id': '@4', '_type': 'function_decl', 'name': <Entry @6>, 'type': <Entry @7>, 'scpe': <Entry @3>, 'srcp': 'empty2functs.cpp:7', 'chain': <Entry @8>, 'link': 'extern', 'body': <Entry @9>} items num: 7 depth: 2
+    body: entry: {'_id': '@9', '_type': 'statement_list'} items num: 0 depth: 3
+    chain: entry: {'_id': '@8', '_type': 'function_decl', 'name': <Entry @13>, 'mngl': <Entry @14>, 'type': <Entry @7>, 'scpe': <Entry @3>, 'srcp': 'empty2functs.cpp:4', 'chain': <Entry @15>, 'link': 'extern', 'body': <Entry @16>} items num: 8 depth: 3
+      body: entry: {'_id': '@16', '_type': 'statement_list'} items num: 0 depth: 4
+      chain: entry: {'_id': '@15', '_type': 'function_decl', 'name': <Entry @19>, 'type': <Entry @20>, 'scpe': <Entry @3>, 'srcp': '<built-in>:0', 'note': 'artificial', 'chain': <Entry @21>, 'lang': 'C', 'body': 'undefined', 'link': 'extern'} items num: 0 depth: 4
+      link: entry: extern items num: 0 depth: 4
+      mngl: entry: {'_id': '@14', '_type': 'identifier_node', 'strg': '_Z7funct_av', 'lngt': '11'} items num: 2 depth: 4
+        lngt: entry: 11 items num: 0 depth: 5
+        strg: entry: _Z7funct_av items num: 0 depth: 5
+      name: entry: {'_id': '@13', '_type': 'identifier_node', 'strg': 'funct_a', 'lngt': '7'} items num: 2 depth: 4
+        lngt: entry: 7 items num: 0 depth: 5
+        strg: entry: funct_a items num: 0 depth: 5
+      scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', 'name': <Entry @5>} items num: 0 depth: 4
+      srcp: entry: empty2functs.cpp:4 items num: 0 depth: 4
+      type: entry: {'_id': '@7', '_type': 'function_type', 'size': <Entry @10>, 'algn': '8', 'retn': <Entry @11>, 'prms': <Entry @12>} items num: 0 depth: 4
+    link: entry: extern items num: 0 depth: 3
+    name: entry: {'_id': '@6', '_type': 'identifier_node', 'strg': 'funct_b', 'lngt': '7'} items num: 2 depth: 3
+      lngt: entry: 7 items num: 0 depth: 4
+      strg: entry: funct_b items num: 0 depth: 4
+    scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', 'name': <Entry @5>} items num: 0 depth: 3
+    srcp: entry: empty2functs.cpp:7 items num: 0 depth: 3
+    type: entry: {'_id': '@7', '_type': 'function_type', 'size': <Entry @10>, 'algn': '8', 'retn': <Entry @11>, 'prms': <Entry @12>} items num: 4 depth: 3
+      algn: entry: 8 items num: 0 depth: 4
+      prms: entry: {'_id': '@12', '_type': 'tree_list', 'valu': <Entry @11>} items num: 1 depth: 4
+        valu: entry: {'_id': '@11', '_type': 'void_type', 'name': <Entry @18>, 'algn': '8'} items num: 0 depth: 5
+      retn: entry: {'_id': '@11', '_type': 'void_type', 'name': <Entry @18>, 'algn': '8'} items num: 2 depth: 4
+        algn: entry: 8 items num: 0 depth: 5
+        name: entry: {'_id': '@18', '_type': 'type_decl', 'name': <Entry @26>, 'type': <Entry @11>, 'srcp': '<built-in>:0', 'note': 'artificial'} items num: 4 depth: 5
+          name: entry: {'_id': '@26', '_type': 'identifier_node', 'strg': 'void', 'lngt': '4'} items num: 2 depth: 6
+            lngt: entry: 4 items num: 0 depth: 7
+            strg: entry: void items num: 0 depth: 7
+          note: entry: artificial items num: 0 depth: 6
+          srcp: entry: <built-in>:0 items num: 0 depth: 6
+          type: entry: {'_id': '@11', '_type': 'void_type', 'name': <Entry @18>, 'algn': '8'} items num: 0 depth: 6
+      size: entry: {'_id': '@10', '_type': 'integer_cst', 'type': <Entry @17>, 'int': '8'} items num: 2 depth: 4
+        int: entry: 8 items num: 0 depth: 5
+        type: entry: {'_id': '@17', '_type': 'integer_type', 'name': <Entry @22>, 'size': <Entry @23>, 'algn': '128', 'prec': '128', 'sign': 'unsigned', 'min': <Entry @24>, 'max': <Entry @25>} items num: 7 depth: 5
+          algn: entry: 128 items num: 0 depth: 6
+          max: entry: {'_id': '@25', '_type': 'integer_cst', 'type': <Entry @17>, 'int': '-1'} items num: 2 depth: 6
+            int: entry: -1 items num: 0 depth: 7
+            type: entry: {'_id': '@17', '_type': 'integer_type', 'name': <Entry @22>, 'size': <Entry @23>, 'algn': '128', 'prec': '128', 'sign': 'unsigned', 'min': <Entry @24>, 'max': <Entry @25>} items num: 0 depth: 7
+          min: entry: {'_id': '@24', '_type': 'integer_cst', 'type': <Entry @17>, 'int': '0'} items num: 2 depth: 6
+            int: entry: 0 items num: 0 depth: 7
+            type: entry: {'_id': '@17', '_type': 'integer_type', 'name': <Entry @22>, 'size': <Entry @23>, 'algn': '128', 'prec': '128', 'sign': 'unsigned', 'min': <Entry @24>, 'max': <Entry @25>} items num: 0 depth: 7
+          name: entry: {'_id': '@22', '_type': 'identifier_node', 'strg': 'bitsizetype', 'lngt': '11'} items num: 2 depth: 6
+            lngt: entry: 11 items num: 0 depth: 7
+            strg: entry: bitsizetype items num: 0 depth: 7
+          prec: entry: 128 items num: 0 depth: 6
+          sign: entry: unsigned items num: 0 depth: 6
+          size: entry: {'_id': '@23', '_type': 'integer_cst', 'type': <Entry @17>, 'int': '128'} items num: 2 depth: 6
+            int: entry: 128 items num: 0 depth: 7
+            type: entry: {'_id': '@17', '_type': 'integer_type', 'name': <Entry @22>, 'size': <Entry @23>, 'algn': '128', 'prec': '128', 'sign': 'unsigned', 'min': <Entry @24>, 'max': <Entry @25>} items num: 0 depth: 7
+  name: entry: {'_id': '@2', '_type': 'identifier_node', 'strg': '::', 'lngt': '2'} items num: 2 depth: 2
+    lngt: entry: 2 items num: 0 depth: 3
+    strg: entry: :: items num: 0 depth: 3
+  scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', 'name': <Entry @5>} items num: 1 depth: 2
+    name: entry: {'_id': '@5', '_type': 'identifier_node', 'strg': 'src/empty2functs.cpp', 'lngt': '95'} items num: 2 depth: 3
+      lngt: entry: 95 items num: 0 depth: 4
+      strg: entry: src/empty2functs.cpp items num: 0 depth: 4
+  srcp: entry: <built-in>:0 items num: 0 depth: 2

@@ -27,7 +27,8 @@ from gcclangrawparser.langcontent import (
     get_entry_name,
     DumpTreeNode,
     get_dump_tree,
-    DumpTreeDepthFirstTraversal, print_dump_tree,
+    DumpTreeDepthFirstTraversal,
+    print_dump_tree,
 )
 from gcclangrawparser.io import write_file, read_file
 
@@ -36,7 +37,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def print_html(content: LangContent, out_dir):
-    print("writing HTML output to %s", out_dir)
+    print("writing HTML output to", out_dir)
     os.makedirs(out_dir, exist_ok=True)
 
     depends_dict: Dict[str, List[Any]] = {}
@@ -60,6 +61,12 @@ def print_html(content: LangContent, out_dir):
     DumpTreeDepthFirstTraversal.traverse(node_tree, node_page_gen.generate_node_page, [depends_dict, out_dir])
 
     print("writing completed")
+
+
+def print_node_tree(content: LangContent, out_path, indent=2):
+    node_tree: DumpTreeNode = get_dump_tree(content, include_internals=False)
+    tree_content = print_dump_tree(node_tree, indent)
+    write_file(out_path, tree_content)
 
 
 def generate_big_graph(content: LangContent, out_path):
@@ -193,7 +200,7 @@ class NodePageGenerator:
         entry_graph.get_base_graph().set_rankdir("LR")
 
         entry_graph.add_node(entry, "red")
-        
+
         # create forward edges
         for entry_field, entry_val in entry.items():
             if entry_field == "_id":
@@ -201,7 +208,7 @@ class NodePageGenerator:
             if entry_field == "_type":
                 continue
             entry_graph.add_edge_forward(entry, entry_val, entry_field)
-        
+
         # create backward edges
         dep_list = depends_dict.get(entry.get_id(), [])
         for dep_field, dep_entry in dep_list:
