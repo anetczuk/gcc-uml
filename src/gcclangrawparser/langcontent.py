@@ -127,6 +127,7 @@ class LangContent:
             entry_data = entry[2]
             obj_dict = {"_id": key, "_type": entry_type}
             obj_dict.update(entry_data)
+            obj_dict = dict(sorted(obj_dict.items()))  # sort by keys
             ret_objs_dict[key] = Entry(obj_dict)
         for _key, object_item in ret_objs_dict.items():
             for field, value in object_item.items():
