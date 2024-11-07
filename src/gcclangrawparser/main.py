@@ -26,7 +26,7 @@ from gcclangrawparser import logger
 from gcclangrawparser.langparser import parse_raw
 from gcclangrawparser.io import write_file
 from gcclangrawparser.langcontent import LangContent
-from gcclangrawparser.printhtml import print_html, generate_big_graph, print_node_tree
+from gcclangrawparser.printhtml import print_html, generate_big_graph, write_entry_tree
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ def process_parse(args):
 
     if args.outtreetxt:
         _LOGGER.info("dumping nodes text representation")
-        print_node_tree(content, args.outtreetxt)
+        write_entry_tree(content, args.outtreetxt)
 
     if args.outbiggraph:
         _LOGGER.info("dumping nodes dot representation")

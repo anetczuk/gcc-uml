@@ -25,10 +25,10 @@ from gcclangrawparser.langcontent import (
     LangContent,
     Entry,
     get_entry_name,
-    DumpTreeNode,
-    get_dump_tree,
-    DumpTreeDepthFirstTraversal,
-    print_dump_tree,
+    EntryTreeNode,
+    get_entry_tree,
+    EntryTreeDepthFirstTraversal,
+    print_entry_tree,
 )
 from gcclangrawparser.io import write_file, read_file
 
@@ -52,27 +52,27 @@ def print_html(content: LangContent, out_dir):
             dep_list.append((entry_field, entry))
             depends_dict[dep_id] = dep_list
 
-    node_tree: DumpTreeNode = get_dump_tree(content)
+    entry_tree: EntryTreeNode = get_entry_tree(content)
 
-    # print_dump_tree(node_tree)
+    # print_entry_tree(entry_tree)
 
     # generate pages
     node_page_gen = NodePageGenerator()
-    DumpTreeDepthFirstTraversal.traverse(node_tree, node_page_gen.generate_node_page, [depends_dict, out_dir])
+    EntryTreeDepthFirstTraversal.traverse(entry_tree, node_page_gen.generate_node_page, [depends_dict, out_dir])
 
     print("writing completed")
 
 
-def print_node_tree(content: LangContent, out_path, indent=2):
-    node_tree: DumpTreeNode = get_dump_tree(content, include_internals=False)
-    tree_content = print_dump_tree(node_tree, indent)
+def write_entry_tree(content: LangContent, out_path, indent=2):
+    entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=False)
+    tree_content = print_entry_tree(entry_tree, indent)
     write_file(out_path, tree_content)
 
 
 def generate_big_graph(content: LangContent, out_path):
-    node_tree: DumpTreeNode = get_dump_tree(content)
-    # print_dump_tree(node_tree)
-    nodes_list = DumpTreeDepthFirstTraversal.to_list(node_tree)
+    entry_tree: EntryTreeNode = get_entry_tree(content)
+    # print_entry_tree(entry_tree)
+    nodes_list = EntryTreeDepthFirstTraversal.to_list(entry_tree)
 
     entry_graph = EntryDotGraph()
 
@@ -309,13 +309,13 @@ function toggle_element(element_id) {{
         return True
 
 
-def print_node(node: DumpTreeNode):
+def print_node(node: EntryTreeNode):
     printer = EntryPrinter()
-    DumpTreeDepthFirstTraversal.traverse(node, print_single_node, [printer, node])
+    EntryTreeDepthFirstTraversal.traverse(node, print_single_node, [printer, node])
     return printer.content
 
 
-def print_single_node(family_list: DumpTreeNode, _node_data=None, visitor_context=None):
+def print_single_node(family_list: EntryTreeNode, _node_data=None, visitor_context=None):
     node = family_list[-1]
     printer, root_node = visitor_context
     prop = node.property

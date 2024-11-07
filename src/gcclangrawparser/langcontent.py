@@ -213,7 +213,7 @@ class LangContent:
     #         raise
 
 
-def print_entry_tree(entry: Entry):
+def print_entry_graph(entry: Entry):
     nodes_list = EntryDepthFirstTraversal.to_list(entry)
     for curr_item, level, node_data in nodes_list:
         indent = " " * level
@@ -331,18 +331,18 @@ def get_sub_entries(family_list):
 # =========================================
 
 
-DumpTreeNode = namedtuple("DumpTreeNode", ["entry", "depth", "property", "items"])
+EntryTreeNode = namedtuple("EntryTreeNode", ["entry", "depth", "property", "items"])
 
 
-def get_dump_tree(content: LangContent, include_internals=False) -> DumpTreeNode:
+def get_entry_tree(content: LangContent, include_internals=False) -> EntryTreeNode:
     first_entry = content.content_objs["@1"]
     # entries_list = list(content.content_objs.values())
     # first_entry = entries_list[0]
-    node_tree: DumpTreeNode = dump_tree_breadth_first(first_entry, include_internals=include_internals)
-    return node_tree
+    entry_tree: EntryTreeNode = create_entry_tree_breadth_first(first_entry, include_internals=include_internals)
+    return entry_tree
 
 
-class DumpTreeDepthFirstTraversal(TreeAbstractTraversal):
+class EntryTreeDepthFirstTraversal(TreeAbstractTraversal):
     def _add_subnodes(self, family_list):
         curr_node = family_list[-1]
         depth = len(family_list)
@@ -353,19 +353,19 @@ class DumpTreeDepthFirstTraversal(TreeAbstractTraversal):
         self.visit_list.extendleft(rev_list)
 
     @classmethod
-    def traverse(cls, node: DumpTreeNode, visitor, visitor_context=None):
+    def traverse(cls, node: EntryTreeNode, visitor, visitor_context=None):
         traversal = cls()
         traversal.visit_tree(node, visitor, visitor_context)
 
     @classmethod
-    def to_list(cls, node: DumpTreeNode):
+    def to_list(cls, node: EntryTreeNode):
         traversal = cls()
         return get_nodes_from_tree(node, traversal)
 
 
-def print_dump_tree(dump_tree: DumpTreeNode, indent=2) -> str:
+def print_entry_tree(entry_tree: EntryTreeNode, indent=2) -> str:
     ret_content = ""
-    nodes_list = DumpTreeDepthFirstTraversal.to_list(dump_tree)
+    nodes_list = EntryTreeDepthFirstTraversal.to_list(entry_tree)
     for curr_item, level, _node_data in nodes_list:
         spaces = " " * level * indent
         prop = ""
@@ -381,20 +381,20 @@ def print_dump_tree(dump_tree: DumpTreeNode, indent=2) -> str:
 
 
 # convert Entries graph to Node tree
-class DumpTreeConverter:
+class EntryTreeConverter:
 
     def __init__(self, include_internals=False):
         self.include_internals = include_internals
         self.entry_node_dict = {}
 
-    def dump_tree(self, entry: Entry, traversal: GraphAbstractTraversal) -> DumpTreeNode:
-        root_node = DumpTreeNode(None, -1, None, [])
+    def convert(self, entry: Entry, traversal: GraphAbstractTraversal) -> EntryTreeNode:
+        root_node = EntryTreeNode(None, -1, None, [])
         self.entry_node_dict[""] = root_node
         traversal.visit_graph(entry, self.visit_item)
 
         root_list = root_node.items
         if len(root_list) != 1:
-            raise RuntimeError("error while dumping entry tree")
+            raise RuntimeError("error while converting entry graph")
         return root_list[0]
 
     def visit_item(self, entries_list, prop: str, _context=None):
@@ -404,7 +404,7 @@ class DumpTreeConverter:
 
         entry = entries_list[-1]
         depth = len(entries_list)
-        new_node = DumpTreeNode(entry, depth, prop, [])
+        new_node = EntryTreeNode(entry, depth, prop, [])
         parent_node.items.append(new_node)
 
         if isinstance(entry, Entry):
@@ -419,16 +419,16 @@ class DumpTreeConverter:
         return "".join([entry.get_id() for entry in entries_list])
 
 
-def dump_tree_depth_first(entry: Entry) -> DumpTreeNode:
+def create_entry_tree_depth_first(entry: Entry, include_internals=False) -> EntryTreeNode:
     traversal = EntryDepthFirstTraversal()
-    dumper = DumpTreeConverter()
-    return dumper.dump_tree(entry, traversal)
+    converter = EntryTreeConverter(include_internals=include_internals)
+    return converter.convert(entry, traversal)
 
 
-def dump_tree_breadth_first(entry: Entry, include_internals=False) -> DumpTreeNode:
+def create_entry_tree_breadth_first(entry: Entry, include_internals=False) -> EntryTreeNode:
     traversal = EntryBreadthFirstTraversal()
-    dumper = DumpTreeConverter(include_internals=include_internals)
-    return dumper.dump_tree(entry, traversal)
+    converter = EntryTreeConverter(include_internals=include_internals)
+    return converter.convert(entry, traversal)
 
 
 def is_entry_language_internal(entry):
