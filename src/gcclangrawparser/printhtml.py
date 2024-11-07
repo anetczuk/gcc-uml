@@ -27,7 +27,7 @@ from gcclangrawparser.langcontent import (
     get_entry_name,
     DumpTreeNode,
     get_dump_tree,
-    DumpTreeDepthFirstTraversal,
+    DumpTreeDepthFirstTraversal, print_dump_tree,
 )
 from gcclangrawparser.io import write_file, read_file
 
@@ -55,6 +55,7 @@ def print_html(content: LangContent, out_dir):
 
     # print_dump_tree(node_tree)
 
+    # generate pages
     node_page_gen = NodePageGenerator()
     DumpTreeDepthFirstTraversal.traverse(node_tree, node_page_gen.generate_node_page, [depends_dict, out_dir])
 
@@ -66,33 +67,108 @@ def generate_big_graph(content: LangContent, out_path):
     # print_dump_tree(node_tree)
     nodes_list = DumpTreeDepthFirstTraversal.to_list(node_tree)
 
-    graph: Graph = Graph()
-    base_graph = graph.base_graph
-    base_graph.set_name("use_graph")
-    base_graph.set_type("digraph")
-    base_graph.set_rankdir("LR")
+    entry_graph = EntryDotGraph()
 
+    # add nodes
     for item in nodes_list:
         node = item[0]
         entry = node.entry
-        main_node_label = ""
-        if not isinstance(entry, Entry):
-            continue
+        if isinstance(entry, Entry):
+            entry_graph.add_node(entry)
 
-        main_node_label = f"{entry.get_id()} {entry.get_type()}"
+    # add edges
+    for item in nodes_list:
+        node = item[0]
+        entry = node.entry
+
+        for child_node in node.items:
+            child_entry = child_node.entry
+            prop = child_node.property
+            entry_graph.add_edge_forward(entry, child_entry, prop)
+
+    entry_graph.graph.write(out_path, file_format="png")
+
+
+class EntryDotGraph:
+
+    def __init__(self):
+        self.graph: Graph = Graph()
+        base_graph = self.graph.base_graph
+        base_graph.set_name("use_graph")
+        base_graph.set_type("digraph")
+        # base_graph.set_rankdir("LR")
+        self._value_entry_counter = 0
+
+    def get_base_graph(self):
+        return self.graph.base_graph
+
+    def add_node(self, entry: Entry, entry_color=None) -> str:
+        if not isinstance(entry, Entry):
+            return self.add_node_value(entry)
+
+        node_id = self._get_node_id(entry)
+        node_label = f"{entry.get_id()} {entry.get_type()}"
         entry_label = get_entry_label(entry)
         if entry_label:
-            main_node_label += f"\n{entry_label}"
-        entry_node = graph.addNode(entry.get_id(), shape="box", label=main_node_label)
+            node_label += f"\n{entry_label}"
+        # print("adding entry node:", node_id, entry.get_id())
+        entry_node = self.graph.addNode(node_id, shape="box", label=node_label)
         if entry_node is None:
-            continue
+            # node already added
+            return node_id
+            # raise RuntimeError(f"entry {entry.get_id()} already added")
+        entry_node.set("tooltip", node_label)
+        entry_node.set("href", f"{entry.get_id()}.html")
+        if entry_color:
+            style = {"style": "filled", "fillcolor": "red"}
+            set_node_style(entry_node, style)
+        return node_id
 
-        entry_node.set("tooltip", main_node_label)
-        # entry_node.set("href", f"{entry.get_id()}.html")
-        # style = {"style": "filled", "fillcolor": "red"}
-        # set_node_style(entry_node, style)
+    def add_node_value(self, entry) -> str:
+        node_id = self._value_entry_counter
+        self._value_entry_counter += 1
+        # print("adding value node:", node_id, entry)
+        entry_node = self.graph.addNode(node_id, shape="box", label=entry)
+        entry_node.set("tooltip", f"{entry}'")
+        style = {"style": "filled", "fillcolor": "#dddddd"}
+        set_node_style(entry_node, style)
+        return node_id
 
-    graph.write(out_path, file_format="png")
+    def add_edge_forward(self, from_entry, to_entry, prop):
+        from_node_id = self._get_node_id(from_entry)
+        to_node_id = None
+        if isinstance(to_entry, Entry):
+            to_node_id = self.add_node(to_entry)
+        else:
+            to_node_id = self.add_node_value(to_entry)
+        # print("adding edge:", from_node_id, "->", to_node_id, from_entry, to_entry)
+        self.connect_nodes(from_node_id, to_node_id, prop)
+
+    def add_edge_backward(self, from_entry, to_entry, prop):
+        from_node_id = None
+        if isinstance(from_entry, Entry):
+            from_node_id = self.add_node(from_entry)
+        else:
+            from_node_id = self.add_node_value(from_entry)
+        to_node_id = self._get_node_id(to_entry)
+        # print("adding edge:", from_node_id, "->", to_node_id, from_entry, to_entry)
+        self.connect_nodes(from_node_id, to_node_id, prop)
+
+    def connect_entries(self, from_entry, to_entry, prop):
+        from_node_id = self._get_node_id(from_entry)
+        to_node_id = self._get_node_id(to_entry)
+        self.connect_nodes(from_node_id, to_node_id, prop)
+
+    def connect_nodes(self, from_node_id, to_node_id, prop):
+        edge = self.graph.addEdge(from_node_id, to_node_id, create_nodes=True)
+        if edge is None:
+            raise RuntimeError("edge already exists")
+        edge.set_label(prop)  # pylint: disable=E1101
+
+    def _get_node_id(self, entry: Entry) -> str:
+        if isinstance(entry, Entry):
+            return str(id(entry))
+        return entry.replace(":", "_")
 
 
 class NodePageGenerator:
@@ -113,78 +189,34 @@ class NodePageGenerator:
             return True
         self.visited_entries.add(entry_id)
 
-        graph: Graph = Graph()
-        base_graph = graph.base_graph
-        base_graph.set_name("use_graph")
-        base_graph.set_type("digraph")
-        base_graph.set_rankdir("LR")
+        entry_graph = EntryDotGraph()
+        entry_graph.get_base_graph().set_rankdir("LR")
 
-        main_node_label = f"{entry.get_id()} {entry.get_type()}"
-        entry_label = get_entry_label(entry)
-        if entry_label:
-            main_node_label += f"\n{entry_label}"
-        entry_node = graph.addNode(entry.get_id(), shape="box", label=main_node_label)
-
-        entry_node.set("tooltip", main_node_label)
-        entry_node.set("href", f"{entry.get_id()}.html")
-        style = {"style": "filled", "fillcolor": "red"}
-        set_node_style(entry_node, style)
-
+        entry_graph.add_node(entry, "red")
+        
         # create forward edges
         for entry_field, entry_val in entry.items():
             if entry_field == "_id":
                 continue
             if entry_field == "_type":
                 continue
-
-            if isinstance(entry_val, Entry):
-                to_node_id = f"to_{entry_val.get_id()}"
-                node_label = f"{entry_val.get_id()} {entry_val.get_type()}"
-                entry_label = get_entry_label(entry_val)
-                if entry_label:
-                    node_label += f"\n{entry_label}"
-                next_node = graph.addNode(to_node_id, shape="box", label=node_label)
-                if next_node:
-                    next_node.set("tooltip", node_label)
-                    next_node.set("href", f"{entry_val.get_id()}.html")
-                    style = {"style": "filled", "fillcolor": "white"}
-                    set_node_style(next_node, style)
-                edge = graph.addEdge(entry.get_id(), to_node_id)
-            else:
-                to_node_id = entry_val.replace(":", "_")
-                # to_node_id = entry_val
-                next_node = graph.addNode(to_node_id, shape="box", label=entry_val)
-                if next_node:
-                    style = {"style": "filled", "fillcolor": "#dddddd"}
-                    set_node_style(next_node, style)
-                edge = graph.addEdge(entry.get_id(), to_node_id)
-
-            edge.set_label(entry_field)  # pylint: disable=E1101
-
+            entry_graph.add_edge_forward(entry, entry_val, entry_field)
+        
         # create backward edges
         dep_list = depends_dict.get(entry.get_id(), [])
         for dep_field, dep_entry in dep_list:
-            from_node_id = f"from_{dep_entry.get_id()}"
-            node_label = f"{dep_entry.get_id()} {dep_entry.get_type()}"
-            entry_label = get_entry_label(dep_entry)
-            if entry_label:
-                node_label += f"\n{entry_label}"
-            prev_node = graph.addNode(from_node_id, shape="box", label=node_label)
-            if prev_node:
-                prev_node.set("tooltip", node_label)
-                prev_node.set("href", f"{dep_entry.get_id()}.html")
-                style = {"style": "filled", "fillcolor": "white"}
-                set_node_style(prev_node, style)
-            edge = graph.addEdge(from_node_id, entry.get_id())
-            edge.set_label(dep_field)  # pylint: disable=E1101
+            entry_graph.add_edge_backward(dep_entry, entry, dep_field)
+        graph = entry_graph.graph
 
-        # img_content = get_graph_as_svg(graph)
-        out_svg_file = f"{entry.get_id()}.svg"
-        out_svg_path = os.path.join(out_dir, out_svg_file)
-        img_content = write_graph_as_svg(graph, out_svg_path)
-        # img_content = f"""<img src="{out_svg_file}">"""
+        img_content = get_graph_as_svg(graph)
+        # out_svg_file = f"{entry.get_id()}.svg"
+        # out_svg_path = os.path.join(out_dir, out_svg_file)
+        # img_content = write_graph_as_svg(graph, out_svg_path)
+        # # img_content = f"""<img src="{out_svg_file}">"""
 
         entry_content = print_node(node)
+
+        main_node_label = f"{entry.get_id()} {entry.get_type()}"
 
         content = f"""\
 <!DOCTYPE HTML>

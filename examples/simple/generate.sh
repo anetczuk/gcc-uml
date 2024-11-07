@@ -15,6 +15,11 @@ if [[ $* == *--venv* ]]; then
 fi
 
 
+USE_PROFILER=0
+if [[ $* == *--profile* ]]; then
+	USE_PROFILER=1
+fi
+
 # ===================================
 
 
@@ -29,14 +34,16 @@ prepare_sample() {
 
 	cd "$SCRIPT_DIR/../../src/"
 
-	if [[ $* == *--profile* ]]; then
+	if [ $USE_PROFILER -eq 1 ]; then
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
 		"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 											--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
+											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE"
 	else
 		"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 											--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
+											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE"
 	fi
 }

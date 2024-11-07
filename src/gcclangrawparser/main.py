@@ -25,7 +25,8 @@ import json
 from gcclangrawparser import logger
 from gcclangrawparser.langparser import parse_raw
 from gcclangrawparser.io import write_file
-from gcclangrawparser.printhtml import print_html
+from gcclangrawparser.langcontent import LangContent
+from gcclangrawparser.printhtml import print_html, generate_big_graph
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def process_parse(args):
-    content = parse_raw(args.rawfile)
+    content: LangContent = parse_raw(args.rawfile)
     if content is None:
         raise RuntimeError(f"unable to parse {args.rawfile}")
 
@@ -43,6 +44,10 @@ def process_parse(args):
     if out_types_fields:
         types_str = json.dumps(content.types_fields, indent=4)
         write_file(out_types_fields, types_str)
+
+    out_big_graph = args.outbiggraph
+    if out_big_graph:
+        generate_big_graph(content, out_big_graph)
 
     if args.outhtmldir:
         print_html(content, args.outhtmldir)
@@ -60,7 +65,10 @@ def main():
     parser.add_argument("-la", "--logall", action="store_true", help="Log all messages")
     parser.set_defaults(func=process_parse)
     parser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
-    parser.add_argument("--outtypefields", action="store", required=False, default="", help="Output types and fields")
+    parser.add_argument(
+        "--outtypefields", action="store", required=False, default="", help="Output path to types and fields "
+    )
+    parser.add_argument("--outbiggraph", action="store", required=False, default="", help="Output path to big graph")
     parser.add_argument(
         "--outhtmldir", action="store", required=False, default="", help="Output directory for HTML representation"
     )

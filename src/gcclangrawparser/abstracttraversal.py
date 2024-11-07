@@ -7,7 +7,6 @@
 #
 
 import os
-from typing import List, Any, Tuple
 from collections import deque
 
 
@@ -38,7 +37,7 @@ class GraphAbstractTraversal:
             if visitor(family_list, node_data, visitor_context):
                 self._add_subnodes(family_list)
 
-    def _add_subnodes(self, family_list) -> Tuple[List[Any], Any]:
+    def _add_subnodes(self, family_list):
         raise RuntimeError("not implemented")
 
     def _get_node_id(self, node) -> str:
@@ -78,7 +77,7 @@ class TreeAbstractTraversal:
             if visitor(family_list, node_data, visitor_context):
                 self._add_subnodes(family_list)
 
-    def _add_subnodes(self, family_list) -> Tuple[List[Any], Any]:
+    def _add_subnodes(self, family_list):
         raise RuntimeError("not implemented")
 
 

@@ -2,6 +2,7 @@
 ```
 usage: python3 -m gcclangrawparser.main [-h] [-la] --rawfile RAWFILE
                                         [--outtypefields OUTTYPEFIELDS]
+                                        [--outbiggraph OUTBIGGRAPH]
                                         [--outhtmldir OUTHTMLDIR]
 
 parse gcc/g++ raw internal tree data
@@ -11,7 +12,9 @@ options:
   -la, --logall         Log all messages (default: False)
   --rawfile RAWFILE     Path to raw file to analyze (default: )
   --outtypefields OUTTYPEFIELDS
-                        Output types and fields (default: )
+                        Output path to types and fields (default: )
+  --outbiggraph OUTBIGGRAPH
+                        Output path to big graph (default: )
   --outhtmldir OUTHTMLDIR
                         Output directory for HTML representation (default: )
 ```
