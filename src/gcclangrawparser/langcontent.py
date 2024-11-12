@@ -15,9 +15,10 @@ from munch import Munch
 
 from gcclangrawparser.abstracttraversal import (
     GraphAbstractTraversal,
-    TreeAbstractTraversal,
     get_nodes_from_tree,
     get_nodes_from_graph,
+    DepthFirstTreeTraversal,
+    BreadthFirstTreeTraversal,
 )
 
 
@@ -137,6 +138,9 @@ class LangContent:
                     object_item[field] = ret_objs_dict[value]
         return ret_objs_dict
 
+    def size(self):
+        return len(self.content_objs)
+
     def print_types_fields(self):
         pprint.pprint(self.types_fields, indent=4)
 
@@ -215,7 +219,7 @@ class LangContent:
 
 
 def print_entry_graph(entry: Entry):
-    nodes_list = EntryDepthFirstTraversal.to_list(entry)
+    nodes_list = EntryGraphDepthFirstTraversal.to_list(entry)
     for curr_item, level, node_data in nodes_list:
         indent = " " * level
         if isinstance(curr_item, Entry):
@@ -282,14 +286,14 @@ def get_entry_name(entry):
 # ============================================
 
 
-class EntryDepthFirstTraversal(GraphAbstractTraversal):
-    def _get_node_id(self, node) -> str:
-        if not isinstance(node, Entry):
+class EntryGraphDepthFirstTraversal(GraphAbstractTraversal):
+    def _get_node_id(self, item) -> str:
+        if not isinstance(item, Entry):
             return None
-        return node.get_id()
+        return item.get_id()
 
-    def _add_subnodes(self, family_list):
-        subentries = get_sub_entries(family_list)
+    def _add_subnodes(self, ancestors_list):
+        subentries = get_sub_entries(ancestors_list)
         rev_list = reversed(subentries)
         self.visit_list.extendleft(rev_list)
 
@@ -304,14 +308,14 @@ class EntryDepthFirstTraversal(GraphAbstractTraversal):
         return get_nodes_from_graph(entry, traversal)
 
 
-class EntryBreadthFirstTraversal(GraphAbstractTraversal):
-    def _get_node_id(self, node) -> str:
-        if not isinstance(node, Entry):
+class EntryGraphBreadthFirstTraversal(GraphAbstractTraversal):
+    def _get_node_id(self, item) -> str:
+        if not isinstance(item, Entry):
             return None
-        return node.get_id()
+        return item.get_id()
 
-    def _add_subnodes(self, family_list):
-        subentries = get_sub_entries(family_list)
+    def _add_subnodes(self, ancestors_list):
+        subentries = get_sub_entries(ancestors_list)
         self.visit_list.extend(subentries)
 
     @classmethod
@@ -320,19 +324,19 @@ class EntryBreadthFirstTraversal(GraphAbstractTraversal):
         traversal.visit_graph(entry, visitor)
 
 
-def get_sub_entries(family_list):
-    entry = family_list[-1]
+def get_sub_entries(ancestors_list):
+    entry = ancestors_list[-1]
     ret_list = []
     for prop, subentry in sorted(entry.items()):
         if prop not in ("_id", "_type"):
-            ret_list.append((family_list + [subentry], prop))
+            ret_list.append((ancestors_list + [subentry], prop))
     return ret_list
 
 
 # =========================================
 
 
-EntryTreeNode = namedtuple("EntryTreeNode", ["entry", "depth", "property", "items"])
+EntryTreeNode = namedtuple("EntryTreeNode", ["entry", "property", "items"])
 
 
 def get_entry_tree(content: LangContent, include_internals=False) -> EntryTreeNode:
@@ -343,15 +347,32 @@ def get_entry_tree(content: LangContent, include_internals=False) -> EntryTreeNo
     return entry_tree
 
 
-class EntryTreeDepthFirstTraversal(TreeAbstractTraversal):
-    def _add_subnodes(self, family_list):
-        curr_node = family_list[-1]
-        depth = len(family_list)
+class EntryTreeDepthFirstTraversal(DepthFirstTreeTraversal):
+    def _get_subnodes(self, ancestors_list):
+        curr_node = ancestors_list[-1]
         ret_list = []
         for subnode in curr_node.items:
-            ret_list.append((family_list + [subnode], depth))
-        rev_list = reversed(ret_list)
-        self.visit_list.extendleft(rev_list)
+            ret_list.append((ancestors_list + [subnode], None))
+        return ret_list
+
+    @classmethod
+    def traverse(cls, node: EntryTreeNode, visitor, visitor_context=None):
+        traversal = cls()
+        traversal.visit_tree(node, visitor, visitor_context)
+
+    @classmethod
+    def to_list(cls, node: EntryTreeNode):
+        traversal = cls()
+        return get_nodes_from_tree(node, traversal)
+
+
+class EntryTreeBreadthFirstTraversal(BreadthFirstTreeTraversal):
+    def _get_subnodes(self, ancestors_list):
+        curr_node = ancestors_list[-1]
+        ret_list = []
+        for subnode in curr_node.items:
+            ret_list.append((ancestors_list + [subnode], None))
+        return ret_list
 
     @classmethod
     def traverse(cls, node: EntryTreeNode, visitor, visitor_context=None):
@@ -367,21 +388,19 @@ class EntryTreeDepthFirstTraversal(TreeAbstractTraversal):
 def print_entry_tree(entry_tree: EntryTreeNode, indent=2) -> str:
     ret_content = ""
     nodes_list = EntryTreeDepthFirstTraversal.to_list(entry_tree)
-    for curr_item, level, _node_data in nodes_list:
+    for curr_item, level in nodes_list:
         spaces = " " * level * indent
         prop = ""
         if curr_item.property is not None:
             prop = f"{curr_item.property}: "
-        ret_content += (
-            f"{spaces}{prop}entry: {curr_item.entry} items num: {len(curr_item.items)} depth: {curr_item.depth}\n"
-        )
+        ret_content += f"{spaces}{prop}entry: {curr_item.entry} items num: {len(curr_item.items)}\n"
     return ret_content
 
 
 ## ==================================================
 
 
-# convert Entries graph to Node tree
+# convert Entries graph to Entry tree
 class EntryTreeConverter:
 
     def __init__(self, include_internals=False):
@@ -389,27 +408,31 @@ class EntryTreeConverter:
         self.entry_node_dict = {}
 
     def convert(self, entry: Entry, traversal: GraphAbstractTraversal) -> EntryTreeNode:
-        root_node = EntryTreeNode(None, -1, None, [])
-        self.entry_node_dict[""] = root_node
+        container_node = EntryTreeNode(None, None, [])
+        self.entry_node_dict[""] = container_node
         traversal.visit_graph(entry, self.visit_item)
 
-        root_list = root_node.items
+        root_list = container_node.items
         if len(root_list) != 1:
             raise RuntimeError("error while converting entry graph")
-        return root_list[0]
 
-    def visit_item(self, entries_list, prop: str, _context=None):
-        parents_list = entries_list[:-1]
+        root_node: EntryTreeNode = root_list[0]
+        # morph chain items
+        # tree_traversal = EntryTreeBreadthFirstTraversal()
+        # tree_traversal.visit_tree(root_node, self._morph_chains)
+        return root_node
+
+    def visit_item(self, ancestors_list, prop: str, _context=None):
+        parents_list = ancestors_list[:-1]
         parent_node_id = self._get_entries_path(parents_list)
         parent_node = self.entry_node_dict[parent_node_id]
 
-        entry = entries_list[-1]
-        depth = len(entries_list)
-        new_node = EntryTreeNode(entry, depth, prop, [])
+        entry = ancestors_list[-1]
+        new_node = EntryTreeNode(entry, prop, [])
         parent_node.items.append(new_node)
 
         if isinstance(entry, Entry):
-            entry_node_id = self._get_entries_path(entries_list)
+            entry_node_id = self._get_entries_path(ancestors_list)
             self.entry_node_dict[entry_node_id] = new_node
             if not self.include_internals:
                 if is_entry_language_internal(entry):
@@ -419,15 +442,52 @@ class EntryTreeConverter:
     def _get_entries_path(self, entries_list):
         return "".join([entry.get_id() for entry in entries_list])
 
+    def _morph_chains(self, ancestors_list, _node_data, _visitor_context):
+        parents_list = ancestors_list[:-1]
+        if len(parents_list) < 2:
+            return
+        tree_node: EntryTreeNode = ancestors_list[-1]
+        if tree_node.property != "chain":
+            return
+
+        pred_index = len(parents_list) - 1
+        predecessor_node = None
+        curr_node = None
+        while pred_index >= 0:
+            predecessor_node = ancestors_list[pred_index]
+            predecessor_entry = predecessor_node.entry
+            curr_node = ancestors_list[pred_index + 1]
+            chain_entry = predecessor_entry.get("chain")
+            if chain_entry is None:
+                # beginning of chain
+                break
+            curr_entry = curr_node.entry
+            if chain_entry is not curr_entry:
+                # beginning of chain
+                # it happens when parent entry is part of other chain, e.g. 'tree_node' is in
+                # inside namepsapce and the namespace is inside other namespace
+                break
+            # continue
+            pred_index -= 1
+
+        parent_node = parents_list[-1]
+        parent_node.items.remove(tree_node)
+        parent_prop = curr_node.property
+        new_node = EntryTreeNode(tree_node.entry, parent_prop, tree_node.items)
+        # new_node = tree_node
+        predecessor_node.items.append(new_node)
+        predecessor_node.items.sort(key=lambda node: node.property)
+        # print(f"chain detected, moving {parent_prop} {tree_node.entry.get_id()} to {predecessor_node.entry.get_id()}")
+
 
 def create_entry_tree_depth_first(entry: Entry, include_internals=False) -> EntryTreeNode:
-    traversal = EntryDepthFirstTraversal()
+    traversal = EntryGraphDepthFirstTraversal()
     converter = EntryTreeConverter(include_internals=include_internals)
     return converter.convert(entry, traversal)
 
 
 def create_entry_tree_breadth_first(entry: Entry, include_internals=False) -> EntryTreeNode:
-    traversal = EntryBreadthFirstTraversal()
+    traversal = EntryGraphBreadthFirstTraversal()
     converter = EntryTreeConverter(include_internals=include_internals)
     return converter.convert(entry, traversal)
 

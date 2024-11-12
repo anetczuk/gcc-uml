@@ -36,7 +36,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def process_parse(args):
-    _LOGGER.info("parsing input file")
+    _LOGGER.info("parsing input file %s", args.rawfile)
     content: LangContent = parse_raw(args.rawfile, args.reducepaths)
     if content is None:
         raise RuntimeError(f"unable to parse {args.rawfile}")

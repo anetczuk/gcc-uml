@@ -1,0 +1,76 @@
+@1      namespace_decl   name: @2       scpe: @3       srcp: <built-in>:0      
+                         dcls: @4      
+@2      identifier_node  strg: ::       lngt: 2       
+@3      translation_unit_decl name: @5      
+@4      function_decl    name: @6       type: @7       scpe: @3      
+                         srcp: empty2functs.cpp:7      chain: @8      
+                         link: extern   body: @9      
+@5      identifier_node  strg: src/empty2functs.cpp 
+                         lngt: 95      
+@6      identifier_node  strg: funct_b  lngt: 7       
+@7      function_type    size: @10      algn: 8        retn: @11     
+                         prms: @12     
+@8      function_decl    name: @13      mngl: @14      type: @7      
+                         scpe: @3       srcp: empty2functs.cpp:4      
+                         link: extern   body: @16     
+@9      statement_list   
+@10     integer_cst      type: @17     int: 8
+@11     void_type        name: @18      algn: 8       
+@12     tree_list        valu: @11     
+@13     identifier_node  strg: funct_a  lngt: 7       
+@14     identifier_node  strg: _Z7funct_av             lngt: 11      
+@16     statement_list   
+@17     integer_type     name: @22      size: @23      algn: 128     
+                         prec: 128      sign: unsigned min : @24     
+                         max : @25     
+@18     type_decl        name: @26      type: @11      srcp: <built-in>:0      
+                         note: artificial 
+@19     identifier_node  strg: __cxa_call_unexpected   lngt: 21      
+@20     function_type    size: @10      algn: 8        retn: @11     
+                         prms: @27     
+
+@22     identifier_node  strg: bitsizetype             lngt: 11      
+@23     integer_cst      type: @17     int: 128
+@24     integer_cst      type: @17     int: 0
+@25     integer_cst      type: @17     int: -1
+@26     identifier_node  strg: void     lngt: 4       
+@27     tree_list        valu: @31      chan: @12     
+@28     identifier_node  strg: __integer_pack          lngt: 14      
+@29     function_type    size: @10      algn: 8        retn: @32     
+                         prms: @33     
+
+@31     pointer_type     size: @37      algn: 64       ptd : @11     
+@32     integer_type     name: @38      size: @39      algn: 32      
+                         prec: 32       sign: signed   min : @40     
+                         max : @41     
+@33     tree_list        valu: @32      chan: @12     
+@34     identifier_node  note: operator 
+     
+@37     integer_cst      type: @17     int: 64
+@38     type_decl        name: @46      type: @32      srcp: <built-in>:0      
+                         note: artificial 
+@39     integer_cst      type: @17     int: 32
+@40     integer_cst      type: @32     int: -2147483648
+@41     integer_cst      type: @32     int: 2147483647
+
+@44     identifier_node  note: operator 
+
+@46     identifier_node  strg: int      lngt: 3       
+
+@50     integer_type     name: @55      size: @37      algn: 64      
+                         prec: 64       sign: unsigned min : @56     
+                         max : @57     
+
+@55     type_decl        name: @63      type: @50      srcp: <built-in>:0      
+                         note: artificial 
+@56     integer_cst      type: @50     int: 0
+@57     integer_cst      type: @50     int: -1
+
+@60     identifier_node  note: operator 
+
+@63     identifier_node  strg: long unsigned int       lngt: 17      
+ 
+   
+@67     identifier_node  note: operator 
+
+@69     identifier_node  strg: align_val_t             lngt: 11      

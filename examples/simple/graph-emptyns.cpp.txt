@@ -1,25 +1,25 @@
-entry: {'_id': '@1', '_type': 'namespace_decl', 'dcls': <Entry @4>, 'name': <Entry @2>, 'scpe': <Entry @3>, 'srcp': '<built-in>:0'} items num: 4 depth: 1
-  dcls: entry: {'_id': '@4', '_type': 'namespace_decl', 'chain': <Entry @8>, 'name': <Entry @6>, 'scpe': <Entry @3>, 'srcp': 'emptyns.cpp:3', 'type': <Entry @7>} items num: 5 depth: 2
-    chain: entry: {'_id': '@8', '_type': 'function_decl', 'body': 'undefined', 'chain': <Entry @12>, 'lang': 'C', 'link': 'extern', 'name': <Entry @10>, 'note': 'artificial', 'scpe': <Entry @3>, 'srcp': '<built-in>:0', 'type': <Entry @11>} items num: 0 depth: 3
-    name: entry: {'_id': '@6', '_type': 'identifier_node', 'lngt': '5', 'strg': 'items'} items num: 2 depth: 3
-      lngt: entry: 5 items num: 0 depth: 4
-      strg: entry: items items num: 0 depth: 4
-    scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', 'name': <Entry @5>} items num: 0 depth: 3
-    srcp: entry: emptyns.cpp:3 items num: 0 depth: 3
-    type: entry: {'_id': '@7', '_type': 'void_type', 'algn': '8', 'name': <Entry @9>} items num: 2 depth: 3
-      algn: entry: 8 items num: 0 depth: 4
-      name: entry: {'_id': '@9', '_type': 'type_decl', 'name': <Entry @13>, 'note': 'artificial', 'srcp': '<built-in>:0', 'type': <Entry @7>} items num: 4 depth: 4
-        name: entry: {'_id': '@13', '_type': 'identifier_node', 'lngt': '4', 'strg': 'void'} items num: 2 depth: 5
-          lngt: entry: 4 items num: 0 depth: 6
-          strg: entry: void items num: 0 depth: 6
-        note: entry: artificial items num: 0 depth: 5
-        srcp: entry: <built-in>:0 items num: 0 depth: 5
-        type: entry: {'_id': '@7', '_type': 'void_type', 'algn': '8', 'name': <Entry @9>} items num: 0 depth: 5
-  name: entry: {'_id': '@2', '_type': 'identifier_node', 'lngt': '2', 'strg': '::'} items num: 2 depth: 2
-    lngt: entry: 2 items num: 0 depth: 3
-    strg: entry: :: items num: 0 depth: 3
-  scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', 'name': <Entry @5>} items num: 1 depth: 2
-    name: entry: {'_id': '@5', '_type': 'identifier_node', 'lngt': '90', 'strg': 'src/emptyns.cpp'} items num: 2 depth: 3
-      lngt: entry: 90 items num: 0 depth: 4
-      strg: entry: src/emptyns.cpp items num: 0 depth: 4
-  srcp: entry: <built-in>:0 items num: 0 depth: 2
+entry: {'_id': '@1', '_type': 'namespace_decl', 'dcls': <Entry @4>, 'name': <Entry @2>, 'scpe': <Entry @3>, 'srcp': '<built-in>:0'} items num: 4
+  dcls: entry: {'_id': '@4', '_type': 'namespace_decl', 'chain': <Entry @8>, 'name': <Entry @6>, 'scpe': <Entry @3>, 'srcp': 'emptyns.cpp:3', 'type': <Entry @7>} items num: 5
+    chain: entry: {'_id': '@8', '_type': 'function_decl', 'body': 'undefined', 'chain': <Entry @12>, 'lang': 'C', 'link': 'extern', 'name': <Entry @10>, 'note': 'artificial', 'scpe': <Entry @3>, 'srcp': '<built-in>:0', 'type': <Entry @11>} items num: 0
+    name: entry: {'_id': '@6', '_type': 'identifier_node', 'lngt': '5', 'strg': 'items'} items num: 2
+      lngt: entry: 5 items num: 0
+      strg: entry: items items num: 0
+    scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', 'name': <Entry @5>} items num: 0
+    srcp: entry: emptyns.cpp:3 items num: 0
+    type: entry: {'_id': '@7', '_type': 'void_type', 'algn': '8', 'name': <Entry @9>} items num: 2
+      algn: entry: 8 items num: 0
+      name: entry: {'_id': '@9', '_type': 'type_decl', 'name': <Entry @13>, 'note': 'artificial', 'srcp': '<built-in>:0', 'type': <Entry @7>} items num: 4
+        name: entry: {'_id': '@13', '_type': 'identifier_node', 'lngt': '4', 'strg': 'void'} items num: 2
+          lngt: entry: 4 items num: 0
+          strg: entry: void items num: 0
+        note: entry: artificial items num: 0
+        srcp: entry: <built-in>:0 items num: 0
+        type: entry: {'_id': '@7', '_type': 'void_type', 'algn': '8', 'name': <Entry @9>} items num: 0
+  name: entry: {'_id': '@2', '_type': 'identifier_node', 'lngt': '2', 'strg': '::'} items num: 2
+    lngt: entry: 2 items num: 0
+    strg: entry: :: items num: 0
+  scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', 'name': <Entry @5>} items num: 1
+    name: entry: {'_id': '@5', '_type': 'identifier_node', 'lngt': '90', 'strg': 'src/emptyns.cpp'} items num: 2
+      lngt: entry: 90 items num: 0
+      strg: entry: src/emptyns.cpp items num: 0
+  srcp: entry: <built-in>:0 items num: 0

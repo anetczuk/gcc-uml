@@ -19,6 +19,9 @@ namespace items {
 	public:
 		Abc2(): Abc(2, 3.0) {
 		}
+
+		void callfunc() {
+		}
 	};
 }
 

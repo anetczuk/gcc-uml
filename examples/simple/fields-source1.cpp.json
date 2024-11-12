@@ -404,8 +404,8 @@
             "mandatory": false,
             "values": [
                 "20",
-                "27",
-                "28",
+                "30",
+                "31",
                 "9"
             ]
         },
@@ -613,7 +613,8 @@
                 "source1.cpp:12",
                 "source1.cpp:18",
                 "source1.cpp:20",
-                "source1.cpp:26",
+                "source1.cpp:23",
+                "source1.cpp:29",
                 "source1.cpp:4",
                 "source1.cpp:9"
             ]
@@ -1111,7 +1112,8 @@
             "values": [
                 "source1.cpp:12",
                 "source1.cpp:20",
-                "source1.cpp:27",
+                "source1.cpp:23",
+                "source1.cpp:30",
                 "source1.cpp:9"
             ]
         },
@@ -1406,7 +1408,7 @@
             "mandatory": true,
             "values": [
                 "source1.cpp:12",
-                "source1.cpp:26"
+                "source1.cpp:29"
             ]
         },
         "type": {
@@ -1441,7 +1443,7 @@
     },
     "statement_list": {
         "0": {
-            "mandatory": true,
+            "mandatory": false,
             "values": [
                 "<entry-id>"
             ],
@@ -1452,7 +1454,7 @@
             ]
         },
         "1": {
-            "mandatory": true,
+            "mandatory": false,
             "values": [
                 "<entry-id>"
             ],
@@ -1640,7 +1642,7 @@
         "srcp": {
             "mandatory": true,
             "values": [
-                "source1.cpp:27"
+                "source1.cpp:30"
             ]
         },
         "type": {

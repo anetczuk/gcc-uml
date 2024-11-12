@@ -11,7 +11,7 @@ import unittest
 from gcclangrawparser.langcontent import LangContent, get_entry_tree, EntryTreeDepthFirstTraversal
 
 
-class GetDumpTeeTest(unittest.TestCase):
+class GetEntryTeeTest(unittest.TestCase):
 
     def test_get_entry_tree_recursive(self):
         data_dict = {

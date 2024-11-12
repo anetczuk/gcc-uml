@@ -12,13 +12,6 @@ import logging
 from typing import Dict, Any, List
 import html
 
-# import subprocess
-
-# import multiprocessing
-# from multiprocessing import Pool
-# from multiprocessing.pool import ThreadPool as Pool
-# from gcclangrawparser.multiprocessingmock import DummyPool as Pool
-
 from showgraph.graphviz import Graph, set_node_style
 
 from gcclangrawparser.langcontent import (
@@ -29,6 +22,7 @@ from gcclangrawparser.langcontent import (
     get_entry_tree,
     EntryTreeDepthFirstTraversal,
     print_entry_tree,
+    is_entry_language_internal,
 )
 from gcclangrawparser.io import write_file, read_file
 
@@ -37,7 +31,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def print_html(content: LangContent, out_dir):
-    print("writing HTML output to", out_dir)
+    _LOGGER.info("writing HTML output to %s", out_dir)
     os.makedirs(out_dir, exist_ok=True)
 
     depends_dict: Dict[str, List[Any]] = {}
@@ -52,15 +46,20 @@ def print_html(content: LangContent, out_dir):
             dep_list.append((entry_field, entry))
             depends_dict[dep_id] = dep_list
 
-    entry_tree: EntryTreeNode = get_entry_tree(content)
+    _LOGGER.info("converting %s entries to tree", content.size())
+    entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=False)
 
     # print_entry_tree(entry_tree)
 
     # generate pages
-    node_page_gen = NodePageGenerator()
+
+    # traversal = EntryTreeDepthFirstTraversal()
+    # node_list = get_nodes_from_tree_ancestors(entry_tree, traversal)
+
+    node_page_gen = NodePageGenerator(include_internals=True)
     EntryTreeDepthFirstTraversal.traverse(entry_tree, node_page_gen.generate_node_page, [depends_dict, out_dir])
 
-    print("writing completed")
+    _LOGGER.info("writing completed")
 
 
 def write_entry_tree(content: LangContent, out_path, indent=2):
@@ -70,7 +69,7 @@ def write_entry_tree(content: LangContent, out_path, indent=2):
 
 
 def generate_big_graph(content: LangContent, out_path):
-    entry_tree: EntryTreeNode = get_entry_tree(content)
+    entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=False)
     # print_entry_tree(entry_tree)
     nodes_list = EntryTreeDepthFirstTraversal.to_list(entry_tree)
 
@@ -96,6 +95,36 @@ def generate_big_graph(content: LangContent, out_path):
     entry_graph.graph.write(out_path, file_format="png")
 
 
+def generate_entry_local_graph(entry, depends_dict, include_internals=True):
+    entry_graph = EntryDotGraph()
+    entry_graph.get_base_graph().set_rankdir("LR")
+    entry_graph.add_node(entry, "red")
+
+    # create forward edges
+    for entry_prop, entry_val in entry.items():
+        if entry_prop == "_id":
+            continue
+        if entry_prop == "_type":
+            continue
+        add_hyperlink = True
+        if not include_internals:
+            if is_entry_language_internal(entry_val):
+                add_hyperlink = False
+        entry_graph.add_edge_forward(entry, entry_val, entry_prop, with_hyperlink=add_hyperlink)
+
+    # create backward edges
+    dep_list = depends_dict.get(entry.get_id(), [])
+    for entry_prop, dep_entry in dep_list:
+        add_hyperlink = True
+        if not include_internals:
+            if is_entry_language_internal(dep_entry):
+                add_hyperlink = False
+        entry_graph.add_edge_backward(dep_entry, entry, entry_prop, with_hyperlink=add_hyperlink)
+    graph = entry_graph.graph
+
+    return graph
+
+
 class EntryDotGraph:
 
     def __init__(self):
@@ -109,7 +138,7 @@ class EntryDotGraph:
     def get_base_graph(self):
         return self.graph.base_graph
 
-    def add_node(self, entry: Entry, entry_color=None) -> str:
+    def add_node(self, entry: Entry, entry_color=False, with_hyperlink=True) -> str:
         if not isinstance(entry, Entry):
             return self.add_node_value(entry)
 
@@ -125,7 +154,8 @@ class EntryDotGraph:
             return node_id
             # raise RuntimeError(f"entry {entry.get_id()} already added")
         entry_node.set("tooltip", node_label)
-        entry_node.set("href", f"{entry.get_id()}.html")
+        if with_hyperlink:
+            entry_node.set("href", f"{entry.get_id()}.html")
         if entry_color:
             style = {"style": "filled", "fillcolor": "red"}
             set_node_style(entry_node, style)
@@ -141,20 +171,20 @@ class EntryDotGraph:
         set_node_style(entry_node, style)
         return node_id
 
-    def add_edge_forward(self, from_entry, to_entry, prop):
+    def add_edge_forward(self, from_entry, to_entry, prop, with_hyperlink=True):
         from_node_id = self._get_node_id(from_entry)
         to_node_id = None
         if isinstance(to_entry, Entry):
-            to_node_id = self.add_node(to_entry)
+            to_node_id = self.add_node(to_entry, with_hyperlink=with_hyperlink)
         else:
             to_node_id = self.add_node_value(to_entry)
         # print("adding edge:", from_node_id, "->", to_node_id, from_entry, to_entry)
         self.connect_nodes(from_node_id, to_node_id, prop)
 
-    def add_edge_backward(self, from_entry, to_entry, prop):
+    def add_edge_backward(self, from_entry, to_entry, prop, with_hyperlink=True):
         from_node_id = None
         if isinstance(from_entry, Entry):
-            from_node_id = self.add_node(from_entry)
+            from_node_id = self.add_node(from_entry, with_hyperlink=with_hyperlink)
         else:
             from_node_id = self.add_node_value(from_entry)
         to_node_id = self._get_node_id(to_entry)
@@ -180,12 +210,12 @@ class EntryDotGraph:
 
 class NodePageGenerator:
 
-    def __init__(self):
+    def __init__(self, include_internals=False):
+        self.include_internals = include_internals
         self.visited_entries = set()
 
-    def generate_node_page(self, family_list, _node_data, gen_context=None):
-        node = family_list[-1]
-        depends_dict, out_dir = gen_context
+    def generate_node_page(self, ancestors_list, _node_data, gen_context=None):
+        node = ancestors_list[-1]
         entry = node.entry
         if not isinstance(entry, Entry):
             return True
@@ -194,26 +224,11 @@ class NodePageGenerator:
         if entry_id in self.visited_entries:
             # already visited
             return True
+        # _LOGGER.info("generating page for %s", entry_id)
         self.visited_entries.add(entry_id)
 
-        entry_graph = EntryDotGraph()
-        entry_graph.get_base_graph().set_rankdir("LR")
-
-        entry_graph.add_node(entry, "red")
-
-        # create forward edges
-        for entry_field, entry_val in entry.items():
-            if entry_field == "_id":
-                continue
-            if entry_field == "_type":
-                continue
-            entry_graph.add_edge_forward(entry, entry_val, entry_field)
-
-        # create backward edges
-        dep_list = depends_dict.get(entry.get_id(), [])
-        for dep_field, dep_entry in dep_list:
-            entry_graph.add_edge_backward(dep_entry, entry, dep_field)
-        graph = entry_graph.graph
+        depends_dict, out_dir = gen_context
+        graph = generate_entry_local_graph(entry, depends_dict, include_internals=self.include_internals)
 
         img_content = get_graph_as_svg(graph)
         # out_svg_file = f"{entry.get_id()}.svg"
@@ -221,7 +236,7 @@ class NodePageGenerator:
         # img_content = write_graph_as_svg(graph, out_svg_path)
         # # img_content = f"""<img src="{out_svg_file}">"""
 
-        entry_content = print_node(node)
+        entry_content = print_node(node, include_internals=self.include_internals)
 
         main_node_label = f"{entry.get_id()} {entry.get_type()}"
 
@@ -309,35 +324,50 @@ function toggle_element(element_id) {{
         return True
 
 
-def print_node(node: EntryTreeNode):
-    printer = EntryPrinter()
+def print_node(node: EntryTreeNode, include_internals=False):
+    printer = EntryPrinter(include_internals=include_internals)
     EntryTreeDepthFirstTraversal.traverse(node, print_single_node, [printer, node])
+    printer.close_sections()
     return printer.content
 
 
-def print_single_node(family_list: EntryTreeNode, _node_data=None, visitor_context=None):
-    node = family_list[-1]
+def print_single_node(ancestors_list: EntryTreeNode, _node_data=None, visitor_context=None):
+    node = ancestors_list[-1]
+    if not _node_data:
+        _node_data = 0
     printer, root_node = visitor_context
     prop = node.property
     if root_node == node:
         prop = None
-    printer.print_item(node.entry, node.depth, None, prop)
+    parent = None
+    if len(ancestors_list) > 1:
+        parent = ancestors_list[-2]
+        parent = parent.entry
+    node_level = len(ancestors_list) - 1
+    printer.print_item(node.entry, node_level, parent, prop)
     return True
 
 
 class EntryPrinter:
-    def __init__(self):
+    def __init__(self, include_internals=False):
+        self.include_internals = include_internals
         self.content = ""
         self.recent_depth = -1
         self.elem_id_counter = 0
 
-    def print_item(self, entry, depth, _parent: Entry, prop: str):
-        for _ in range(depth, self.recent_depth + 1):
-            self.content += "</div>\n"
-        self.recent_depth = depth
+    def print_item(self, entry, level, _parent: Entry, prop: str):
+        if not self.include_internals:
+            if is_entry_language_internal(entry):
+                # internal function - do not go deeper
+                return False
+
+        self.close_sections(level)
 
         self.elem_id_counter += 1
         indent_id = f"""indent_{self.elem_id_counter}"""
+        # par_id = None
+        # if _parent:
+        #     par_id = _parent.get_id()
         prefix_content = f"""<span onclick='toggle_element("{indent_id}");'>{prop}:</span> """
         if prop is None:
             prefix_content = ""
@@ -345,16 +375,14 @@ class EntryPrinter:
         # if _parent:
         #     parent_id = _parent.get_id()
         # self.content += f"<!-- parent: {parent_id} -->\n"
-        self.content += print_head(entry, prefix_content=prefix_content)
+        self.content += print_head(entry, prefix_content=prefix_content, print_label=True)
         self.content += f"""<div id="{indent_id}" class="entryindent">\n"""
-
-        if isinstance(entry, Entry):
-            if entry.get_type() == "function_decl":
-                entry_name = get_entry_name(entry)
-                if entry_name.startswith("__"):
-                    # internal function - do not go deeper
-                    return False
         return True
+
+    def close_sections(self, level=0):
+        for _ in range(level, self.recent_depth + 1):
+            self.content += "</div>\n"
+        self.recent_depth = level
 
 
 def print_head(entry, prefix_content="", postfix_content="", print_label=False):
@@ -407,6 +435,8 @@ def write_graph_as_svg(graph: Graph, out_svg_path):
 
 
 def get_graph_as_svg(graph: Graph):
+    if graph is None:
+        return None
     with io.BytesIO() as buffer:
         # graph.write(buffer, file_format="raw")
         # dot_contents = buffer.getvalue()
