@@ -6,8 +6,8 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-import os
-from typing import Dict
+import logging
+from typing import Dict, List, Any
 from collections import namedtuple
 import pprint
 
@@ -22,26 +22,22 @@ from gcclangrawparser.abstracttraversal import (
 )
 
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class Entry(Munch):
     """Base project representing entry in lang raw file.
 
     Access to object data is possible through dict interface (array operator) or by dot operator.
-    Every object has two properties: _id and _type. They are available through getters.
     """
 
     def __init__(self, props_dict):
         self._id = None
         self._type = None
+        self._chains = {}
         super().__init__(props_dict)
-
-    def get_id(self):
-        return self._id
-
-    def get_type(self):
-        return self._type
 
     # prevents recursive error
     def __str__(self) -> str:
@@ -51,6 +47,32 @@ class Entry(Munch):
     # prevents recursive error
     def __repr__(self) -> str:
         return f"<Entry {self._id}>"
+
+    def get_id(self):
+        return self._id
+
+    def get_type(self):
+        return self._type
+
+    def get_chains(self):
+        return self._chains
+
+    def get_sub_entries(self):
+        entry = self
+        ret_list = []
+        for prop, subentry in entry.items():
+            if is_entry_prop_internal(prop):
+                continue
+            if prop == "chain":
+                continue
+            if is_entry_prop_chain(prop):
+                continue
+            ret_list.append((prop, subentry))
+        entry_chains = entry.get_chains()
+        for chain_prop, chain_list in entry_chains.items():
+            for chain_item in chain_list:
+                ret_list.append((chain_prop, chain_item))
+        return sorted(ret_list, key=lambda container: container[0])
 
 
 class LangContent:
@@ -132,7 +154,7 @@ class LangContent:
             ret_objs_dict[key] = Entry(obj_dict)
         for _key, object_item in ret_objs_dict.items():
             for field, value in object_item.items():
-                if field == "_id":
+                if is_entry_prop_internal(field):
                     continue
                 if value.startswith("@"):
                     object_item[field] = ret_objs_dict[value]
@@ -140,6 +162,33 @@ class LangContent:
 
     def size(self):
         return len(self.content_objs)
+
+    def convert_chains(self):
+        for entry in self.content_objs.values():
+            for prop, value in list(entry.items()):
+                if not is_entry_prop_chain(prop):
+                    continue
+                if not isinstance(value, Entry):
+                    continue
+                # chain first item found
+                chain_list = self._get_chain_entries(value)
+                entry_chains = entry.get_chains()
+                entry_chains[prop] = chain_list
+
+                # del entry[prop]
+                # for index, chain_entry in enumerate(chain_list):
+                #     prop_key = f"{prop}_{index:0>5}"
+                #     entry[prop_key] = chain_entry
+                #     if "chain" in chain_entry:
+                #         del chain_entry["chain"]
+
+    def _get_chain_entries(self, chain_start: Entry):
+        ret_list = []
+        chain_item = chain_start
+        while chain_item:
+            ret_list.append(chain_item)
+            chain_item = chain_item.get("chain")
+        return ret_list
 
     def print_types_fields(self):
         pprint.pprint(self.types_fields, indent=4)
@@ -218,6 +267,47 @@ class LangContent:
     #         raise
 
 
+def is_entry_prop_chain(prop: str):
+    return prop in ("args", "dcls", "flds")
+
+
+def is_entry_prop_internal(prop: str):
+    return prop.startswith("_")
+
+
+def is_entry_language_internal(entry: Entry):
+    if not isinstance(entry, Entry):
+        return False
+    if entry.get_type() == "field_decl":
+        entry_name = get_entry_name(entry)
+        if not entry_name:
+            # internal - do not go deeper
+            return True
+        return False
+    if entry.get_type() == "function_decl":
+        entry_body = entry.get("body")
+        if entry_body is None:
+            # no body - internal function
+            return True
+        if entry_body == "undefined":
+            # no body - internal function
+            return True
+        return False
+    if entry.get_type() == "namespace_decl":
+        entry_name = get_entry_name(entry)
+        if entry_name == "std" or entry_name.startswith("__"):
+            # internal - do not go deeper
+            return True
+        return False
+    if entry.get_type() == "type_decl":
+        entry_name = get_entry_name(entry)
+        if entry_name.startswith("__"):
+            # internal - do not go deeper
+            return True
+        return False
+    return False
+
+
 def print_entry_graph(entry: Entry):
     nodes_list = EntryGraphDepthFirstTraversal.to_list(entry)
     for curr_item, level, node_data in nodes_list:
@@ -228,7 +318,7 @@ def print_entry_graph(entry: Entry):
             print(f"{indent}{node_data}: {curr_item}")
 
 
-def get_entry_name(entry):
+def get_entry_name(entry: Entry):
     if not isinstance(entry, Entry):
         return entry
 
@@ -286,16 +376,17 @@ def get_entry_name(entry):
 # ============================================
 
 
-class EntryGraphDepthFirstTraversal(GraphAbstractTraversal):
-    def _get_node_id(self, item) -> str:
+class EntryGraphAbstractTraversal(GraphAbstractTraversal):
+    def visit_graph(self, node, visitor, visitor_context=None):
+        return self._visit_graph(([node], None), visitor, visitor_context)
+
+    def _get_node_id(self, item_data) -> Any:
+        ancestors_list = item_data[0]
+        item = ancestors_list[-1]
         if not isinstance(item, Entry):
             return None
-        return item.get_id()
-
-    def _add_subnodes(self, ancestors_list):
-        subentries = get_sub_entries(ancestors_list)
-        rev_list = reversed(subentries)
-        self.visit_list.extendleft(rev_list)
+        prop = item_data[1]
+        return (item.get_id(), prop)
 
     @classmethod
     def traverse(cls, entry: Entry, visitor):
@@ -308,28 +399,27 @@ class EntryGraphDepthFirstTraversal(GraphAbstractTraversal):
         return get_nodes_from_graph(entry, traversal)
 
 
-class EntryGraphBreadthFirstTraversal(GraphAbstractTraversal):
-    def _get_node_id(self, item) -> str:
-        if not isinstance(item, Entry):
-            return None
-        return item.get_id()
+class EntryGraphDepthFirstTraversal(EntryGraphAbstractTraversal):
+    def _add_subnodes(self, item_data):
+        ancestors_list = item_data[0]
+        subentries = get_sub_entries(ancestors_list)
+        rev_list = reversed(subentries)
+        self.visit_list.extendleft(rev_list)
 
-    def _add_subnodes(self, ancestors_list):
+
+class EntryGraphBreadthFirstTraversal(EntryGraphAbstractTraversal):
+    def _add_subnodes(self, item_data):
+        ancestors_list = item_data[0]
         subentries = get_sub_entries(ancestors_list)
         self.visit_list.extend(subentries)
 
-    @classmethod
-    def traverse(cls, entry: Entry, visitor):
-        traversal = cls()
-        traversal.visit_graph(entry, visitor)
 
-
-def get_sub_entries(ancestors_list):
-    entry = ancestors_list[-1]
+def get_sub_entries(ancestors_list: List[Entry]):
     ret_list = []
-    for prop, subentry in sorted(entry.items()):
-        if prop not in ("_id", "_type"):
-            ret_list.append((ancestors_list + [subentry], prop))
+    entry = ancestors_list[-1]
+    sub_entries = entry.get_sub_entries()
+    for prop, subentry in sub_entries:
+        ret_list.append((ancestors_list + [subentry], prop))
     return ret_list
 
 
@@ -340,11 +430,20 @@ EntryTreeNode = namedtuple("EntryTreeNode", ["entry", "property", "items"])
 
 
 def get_entry_tree(content: LangContent, include_internals=False) -> EntryTreeNode:
+    content.convert_chains()
+    # first_entry = content.content_objs["@584"]
     first_entry = content.content_objs["@1"]
-    # entries_list = list(content.content_objs.values())
-    # first_entry = entries_list[0]
     entry_tree: EntryTreeNode = create_entry_tree_breadth_first(first_entry, include_internals=include_internals)
     return entry_tree
+
+
+def get_node_entry_id(node: EntryTreeNode):
+    entry = node.entry
+    if entry is None:
+        return None
+    if not isinstance(entry, Entry):
+        return None
+    return entry.get_id()
 
 
 class EntryTreeDepthFirstTraversal(DepthFirstTreeTraversal):
@@ -410,19 +509,18 @@ class EntryTreeConverter:
     def convert(self, entry: Entry, traversal: GraphAbstractTraversal) -> EntryTreeNode:
         container_node = EntryTreeNode(None, None, [])
         self.entry_node_dict[""] = container_node
-        traversal.visit_graph(entry, self.visit_item)
+        traversal.visit_graph(entry, self.convert_item)
 
         root_list = container_node.items
         if len(root_list) != 1:
             raise RuntimeError("error while converting entry graph")
 
         root_node: EntryTreeNode = root_list[0]
-        # morph chain items
-        # tree_traversal = EntryTreeBreadthFirstTraversal()
-        # tree_traversal.visit_tree(root_node, self._morph_chains)
         return root_node
 
-    def visit_item(self, ancestors_list, prop: str, _context=None):
+    def convert_item(self, item_data, _context=None):
+        prop = item_data[1]
+        ancestors_list: List[Entry] = item_data[0]
         parents_list = ancestors_list[:-1]
         parent_node_id = self._get_entries_path(parents_list)
         parent_node = self.entry_node_dict[parent_node_id]
@@ -430,6 +528,7 @@ class EntryTreeConverter:
         entry = ancestors_list[-1]
         new_node = EntryTreeNode(entry, prop, [])
         parent_node.items.append(new_node)
+        parent_node.items.sort(key=lambda container: container[1])
 
         if isinstance(entry, Entry):
             entry_node_id = self._get_entries_path(ancestors_list)
@@ -442,43 +541,6 @@ class EntryTreeConverter:
     def _get_entries_path(self, entries_list):
         return "".join([entry.get_id() for entry in entries_list])
 
-    def _morph_chains(self, ancestors_list, _node_data, _visitor_context):
-        parents_list = ancestors_list[:-1]
-        if len(parents_list) < 2:
-            return
-        tree_node: EntryTreeNode = ancestors_list[-1]
-        if tree_node.property != "chain":
-            return
-
-        pred_index = len(parents_list) - 1
-        predecessor_node = None
-        curr_node = None
-        while pred_index >= 0:
-            predecessor_node = ancestors_list[pred_index]
-            predecessor_entry = predecessor_node.entry
-            curr_node = ancestors_list[pred_index + 1]
-            chain_entry = predecessor_entry.get("chain")
-            if chain_entry is None:
-                # beginning of chain
-                break
-            curr_entry = curr_node.entry
-            if chain_entry is not curr_entry:
-                # beginning of chain
-                # it happens when parent entry is part of other chain, e.g. 'tree_node' is in
-                # inside namepsapce and the namespace is inside other namespace
-                break
-            # continue
-            pred_index -= 1
-
-        parent_node = parents_list[-1]
-        parent_node.items.remove(tree_node)
-        parent_prop = curr_node.property
-        new_node = EntryTreeNode(tree_node.entry, parent_prop, tree_node.items)
-        # new_node = tree_node
-        predecessor_node.items.append(new_node)
-        predecessor_node.items.sort(key=lambda node: node.property)
-        # print(f"chain detected, moving {parent_prop} {tree_node.entry.get_id()} to {predecessor_node.entry.get_id()}")
-
 
 def create_entry_tree_depth_first(entry: Entry, include_internals=False) -> EntryTreeNode:
     traversal = EntryGraphDepthFirstTraversal()
@@ -490,15 +552,3 @@ def create_entry_tree_breadth_first(entry: Entry, include_internals=False) -> En
     traversal = EntryGraphBreadthFirstTraversal()
     converter = EntryTreeConverter(include_internals=include_internals)
     return converter.convert(entry, traversal)
-
-
-def is_entry_language_internal(entry):
-    if not isinstance(entry, Entry):
-        return False
-    if entry.get_type() != "function_decl":
-        return False
-    entry_name = get_entry_name(entry)
-    if entry_name.startswith("__"):
-        # internal function - do not go deeper
-        return True
-    return False

@@ -23,4 +23,4 @@ class GetEntryTeeTest(unittest.TestCase):
         entry_tree = get_entry_tree(content)
         nodes_list = EntryTreeDepthFirstTraversal.to_list(entry_tree)
 
-        self.assertEqual(9, len(nodes_list))
+        self.assertEqual(11, len(nodes_list))

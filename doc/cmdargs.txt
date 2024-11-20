@@ -1,5 +1,6 @@
 usage: python3 -m gcclangrawparser.main [-h] [-la] --rawfile RAWFILE
                                         [--reducepaths REDUCEPATHS]
+                                        [--noentrygraph]
                                         [--outtypefields OUTTYPEFIELDS]
                                         [--outtreetxt OUTTREETXT]
                                         [--outbiggraph OUTBIGGRAPH]
@@ -13,6 +14,7 @@ options:
   --rawfile RAWFILE     Path to raw file to analyze (default: )
   --reducepaths REDUCEPATHS
                         Prefix to remove from paths (default: )
+  --noentrygraph        Do not generate entry graph (default: False)
   --outtypefields OUTTYPEFIELDS
                         Output path to types and fields (default: )
   --outtreetxt OUTTREETXT

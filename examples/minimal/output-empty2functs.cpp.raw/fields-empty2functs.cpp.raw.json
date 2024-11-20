@@ -1,0 +1,351 @@
+{
+    "function_decl": {
+        "body": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "statement_list"
+            ]
+        },
+        "chain": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl"
+            ]
+        },
+        "link": {
+            "mandatory": true,
+            "values": [
+                "extern"
+            ]
+        },
+        "mngl": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "translation_unit_decl"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "empty2functs.cpp:4",
+                "empty2functs.cpp:7"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_type"
+            ]
+        }
+    },
+    "function_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "prms": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "tree_list"
+            ]
+        },
+        "retn": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "void_type"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "identifier_node": {
+        "lngt": {
+            "mandatory": true,
+            "values": [
+                "<unsigned number>"
+            ]
+        },
+        "note": {
+            "mandatory": false,
+            "values": [
+                "operator"
+            ]
+        },
+        "strg": {
+            "mandatory": true,
+            "values": [
+                "<string>"
+            ]
+        }
+    },
+    "integer_cst": {
+        "int": {
+            "mandatory": true,
+            "values": [
+                "<number>"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
+            ]
+        }
+    },
+    "integer_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "32",
+                "64"
+            ]
+        },
+        "max": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "min": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node",
+                "type_decl"
+            ]
+        },
+        "prec": {
+            "mandatory": true,
+            "values": [
+                "128",
+                "32",
+                "64"
+            ]
+        },
+        "sign": {
+            "mandatory": true,
+            "values": [
+                "signed",
+                "unsigned"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "namespace_decl": {
+        "dcls": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "function_decl"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "scpe": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "translation_unit_decl"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0"
+            ]
+        }
+    },
+    "pointer_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "64"
+            ]
+        },
+        "ptd": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "void_type"
+            ]
+        },
+        "size": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        }
+    },
+    "statement_list": {},
+    "translation_unit_decl": {
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        }
+    },
+    "tree_list": {
+        "chan": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "tree_list"
+            ]
+        },
+        "valu": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "pointer_type",
+                "void_type"
+            ]
+        }
+    },
+    "type_decl": {
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "identifier_node"
+            ]
+        },
+        "note": {
+            "mandatory": true,
+            "values": [
+                "artificial"
+            ]
+        },
+        "srcp": {
+            "mandatory": true,
+            "values": [
+                "<built-in>:0"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type",
+                "void_type"
+            ]
+        }
+    },
+    "void_type": {
+        "algn": {
+            "mandatory": true,
+            "values": [
+                "8"
+            ]
+        },
+        "name": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "type_decl"
+            ]
+        }
+    }
+}

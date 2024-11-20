@@ -8,7 +8,7 @@
 
 import os
 from collections import deque, namedtuple
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Set
 
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -17,31 +17,36 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 # traverse graph
 class GraphAbstractTraversal:
     def __init__(self):
-        self.visit_list = None
-        self.visited = set()
+        self.visit_list = None  # used in subclasses
 
-    def visit_graph(self, item, visitor, visitor_context=None):
-        self.visit_list = deque([([item], None)])
-        self.visited = set()
+    def visit_graph(self, node, visitor, visitor_context=None):
+        # return self._visit_graph(node, visitor, visitor_context)
+        raise NotImplementedError("not implemented")
+
+    def _visit_graph(self, item_data, visitor, visitor_context=None):
+        self.visit_list = deque([item_data])
+        visited = set()
         while self.visit_list:
-            # 'ancestors_list' - list of ancestors including current item
-            ancestors_list, item_data = self.visit_list.popleft()
-            curr_node = ancestors_list[-1]
-            node_id = self._get_node_id(curr_node)
-            if node_id is None:
-                visitor(ancestors_list, item_data, visitor_context)
-                continue
-            if node_id in self.visited:
-                visitor(ancestors_list, item_data, visitor_context)
-                continue
-            self.visited.add(node_id)
-            if visitor(ancestors_list, item_data, visitor_context):
-                self._add_subnodes(ancestors_list)
+            item_data = self.visit_list.popleft()
 
-    def _add_subnodes(self, ancestors_list):
+            node_id: Any = self._get_node_id(item_data)
+            if node_id is None:
+                visitor(item_data, visitor_context)
+                continue
+            if node_id in visited:
+                visitor(item_data, visitor_context)
+                continue
+            visited.add(node_id)
+
+            if visitor(item_data, visitor_context):
+                self._add_subnodes(item_data)
+
+    # 'item_data' -- data returned by visitor
+    def _get_node_id(self, item_data) -> Any:
         raise RuntimeError("not implemented")
 
-    def _get_node_id(self, item) -> str:
+    # 'item_data' -- data returned by visitor
+    def _add_subnodes(self, item_data):
         raise RuntimeError("not implemented")
 
 
@@ -49,7 +54,8 @@ class GraphNodeContainer:
     def __init__(self):
         self.container = []
 
-    def collect(self, ancestors_list, item_data, _context):
+    def collect(self, item_data, _context):
+        ancestors_list = item_data[0]
         node = ancestors_list[-1]
         level = len(ancestors_list) - 1
         self.container.append((node, level, item_data))
@@ -194,8 +200,96 @@ def get_nodes_from_tree_ancestors(item: Any, traversal: TreeAbstractTraversal, b
 TreeNode = namedtuple("TreeNode", ["data", "items"])
 
 
+class NodeTreeDepthFirstIterator:
+
+    def __init__(self, node: TreeNode, bottom_top=False):
+        self.first_step = True
+        self.visit_list = deque([[node]])
+        self.bottom_top = bottom_top
+        self.visited: Set[int] = set()
+        self.expanded: Set[int] = set()
+        if self.bottom_top:
+            self._expand()
+
+    def __bool__(self):
+        return bool(self.visit_list)
+
+    def current(self) -> TreeNode:
+        if not self.visit_list:
+            return None
+        ancestors_list = self.visit_list[0]
+        curr_node = ancestors_list[-1]
+        return curr_node
+
+    def skip(self):
+        self.visit_list.popleft()
+
+    def get_all(self):
+        ret_list = []
+        while True:
+            next_node = self.next()
+            if next_node is None:
+                break
+            ret_list.append(next_node)
+        return ret_list
+
+    def next(self) -> TreeNode:
+        if self.first_step:
+            node = self.current()
+            self.first_step = False
+            return node
+
+        if not self.bottom_top:
+            return self._next_top_bottom()
+        return self._next_bottom_top()
+
+    def _next_top_bottom(self) -> TreeNode:
+        while self.visit_list:
+            # 'ancestors_list' - list of ancestors including current item
+            ancestors_list = self.visit_list.popleft()
+            curr_node: TreeNode = ancestors_list[-1]
+            curr_id = id(curr_node)
+            if curr_id in self.visited:
+                continue
+            self.visited.add(curr_id)
+            self._extendleft(ancestors_list)
+            return self.current()
+        return None
+
+    def _next_bottom_top(self) -> TreeNode:
+        while self.visit_list:
+            # 'ancestors_list' - list of ancestors including current item
+            self.visit_list.popleft()
+            if not self.visit_list:
+                break
+            self._expand()
+            return self.current()
+        return None
+
+    def _expand(self):
+        while self.visit_list:
+            # 'ancestors_list' - list of ancestors including current item
+            ancestors_list = self.visit_list[0]
+            curr_node = ancestors_list[-1]
+            curr_id = id(curr_node)
+            if curr_id in self.expanded:
+                # leaf found
+                return
+            self._extendleft(ancestors_list)
+            self.expanded.add(curr_id)
+
+    def _extendleft(self, ancestors_list):
+        curr_node = ancestors_list[-1]
+        sub_items = []
+        for subitem in curr_node.items:
+            sub_items.append(ancestors_list + [subitem])
+        if sub_items:
+            rev_list = reversed(sub_items)
+            self.visit_list.extendleft(rev_list)
+
+
 class NodeTreeDepthFirstTraversal(DepthFirstTreeTraversal):
-    def _get_subnodes(self, ancestors_list):
+    def _get_subnodes(self, ancestors_list: List[TreeNode]):
         curr_node: TreeNode = ancestors_list[-1]
         ret_list = []
         for subnode in curr_node.items:
@@ -245,12 +339,18 @@ def print_node_tree(node_tree: TreeNode, indent=2) -> str:
 
 
 class DictGraphDepthFirstTraversal(GraphAbstractTraversal):
-    def _get_node_id(self, item) -> str:
+    def visit_graph(self, node, visitor, visitor_context=None):
+        return self._visit_graph(([node], None), visitor, visitor_context)
+
+    def _get_node_id(self, item_data) -> str:
+        ancestors_list = item_data[0]
+        item = ancestors_list[-1]
         if not isinstance(item, dict):
             return None
         return str(id(item))
 
-    def _add_subnodes(self, ancestors_list):
+    def _add_subnodes(self, item_data):
+        ancestors_list = item_data[0]
         data_dict = ancestors_list[-1]
         sub_items = []
         for key, subdict in sorted(data_dict.items()):
@@ -290,7 +390,9 @@ class DictToTreeConverter:
             top_item = top_item.items[0]
         return top_item
 
-    def visit_item(self, ancestors_list, dict_key, _context=None):
+    def visit_item(self, item_data, _context=None):
+        ancestors_list = item_data[0]
+        dict_key = item_data[1]
         parents_list = ancestors_list[:-1]
         parent_node_id = self._get_id_path(parents_list)
         parent_node = self.node_dict[parent_node_id]

@@ -48,16 +48,16 @@ def process_parse(args):
         write_file(out_types_fields, types_str)
 
     if args.outtreetxt:
-        _LOGGER.info("dumping nodes text representation")
+        _LOGGER.info("dumping nodes text representation to %s", args.outtreetxt)
         write_entry_tree(content, args.outtreetxt)
 
     if args.outbiggraph:
-        _LOGGER.info("dumping nodes dot representation")
+        _LOGGER.info("dumping nodes dot representation to %s", args.outbiggraph)
         generate_big_graph(content, args.outbiggraph)
 
     if args.outhtmldir:
-        _LOGGER.info("writing HTML representation")
-        print_html(content, args.outhtmldir)
+        generate_page_graph = not args.noentrygraph
+        print_html(content, args.outhtmldir, generate_page_graph)
 
 
 # =======================================================================
@@ -73,6 +73,7 @@ def main():
     parser.set_defaults(func=process_parse)
     parser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
     parser.add_argument("--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths")
+    parser.add_argument("--noentrygraph", action="store_true", default=False, help="Do not generate entry graph")
     parser.add_argument(
         "--outtypefields", action="store", required=False, default="", help="Output path to types and fields "
     )

@@ -15,6 +15,7 @@ from gcclangrawparser.abstracttraversal import (
     TreeNode,
     get_nodes_from_tree,
     get_nodes_from_tree_ancestors,
+    NodeTreeDepthFirstIterator,
 )
 
 
@@ -51,6 +52,27 @@ class AbstractTraversalTest(unittest.TestCase):
         self.assertEqual(3, subnode.data[0])
         self.assertDictEqual(data, subnode.data[1])  # check recursive
         self.assertEqual(0, len(subnode.items))  # do not expand already handled object
+
+
+class NodeTreeDepthFirstIteratorTest(unittest.TestCase):
+
+    def test_get_list_topbottom(self):
+        data = {1: {11: {111: 101, 112: 102}, 12: {121: 103}}}
+        tree = create_tree_from_dict(data)
+
+        iterator = NodeTreeDepthFirstIterator(tree, bottom_top=False)
+        nodes = iterator.get_all()
+        nodes_keys = [item.data[0] for item in nodes]
+        self.assertEqual([1, 11, 111, 112, 12, 121], nodes_keys)
+
+    def test_get_list_bottomtop(self):
+        data = {1: {11: {111: 101, 112: 102}, 12: {121: 103}}}
+        tree = create_tree_from_dict(data)
+
+        iterator = NodeTreeDepthFirstIterator(tree, bottom_top=True)
+        nodes = iterator.get_all()
+        nodes_keys = [item.data[0] for item in nodes]
+        self.assertEqual([111, 112, 11, 121, 12, 1], nodes_keys)
 
 
 class NodeTreeDepthFirstTraversalTest(unittest.TestCase):

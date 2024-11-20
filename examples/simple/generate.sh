@@ -40,22 +40,24 @@ prepare_sample() {
 
 	cd "$SCRIPT_DIR/../../src/"
 
-	if [ $USE_PROFILER -eq 1 ]; then
+	set -x
+	if [ $USE_PROFILER -ne 1 ]; then
+		"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+											--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
+											--reducepaths "$SCRIPT_DIR/" \
+											--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt" \
+											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE"
+# 											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
+	else
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
 		"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 											--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
 											--reducepaths "$SCRIPT_DIR/" \
 											--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt" \
-											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE"
-	else
-		"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-											--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
-											--reducepaths "$SCRIPT_DIR/" \
-											--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt" \
-											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
-											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE"
+#											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 	fi
+	set +x
 }
 
 

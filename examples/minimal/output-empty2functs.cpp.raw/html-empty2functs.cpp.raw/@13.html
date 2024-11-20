@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<!--
+File was automatically generated using 'gcc-lang-raw-parser' project.
+Project is distributed under the BSD 3-Clause license.
+-->
+<html>
+<head>
+    <title>node view @13 identifier_node</title>
+    <style>
+        body {
+                background-color: #bbbbbb;
+             }
+
+        pre {  background-color: rgb(226, 226, 226);
+               margin: 0px;
+               padding: 16px;
+            }
+
+        pre code {  margin: 0px;
+                    padding: 0px;
+                 }
+
+        .section {
+            margin-bottom: 12px;
+        }
+
+        .graphsection img {
+        }
+
+        .entryindent {
+            padding-left: 24px;
+        }
+
+        .missinghandler {
+            background-color: red;
+        }
+
+        .collapsed {
+            display: none;
+        }
+    </style>
+
+    <script>
+/* jshint esversion: 6 */
+
+
+function element_click(source) {
+    /// do nothing
+}
+
+function toggle_element(element) {
+    let next_elem = element.parentElement;
+    next_elem = next_elem.nextSibling;
+    while ( next_elem.tagName != "DIV" ) {
+        next_elem = next_elem.nextSibling;
+        if ( next_elem == null ) {
+            return ;
+        }
+    }
+
+    let elem_class = next_elem.className
+    if (elem_class.includes("entryindent") == false) {
+        /// console.error("unable to find element to collapse/expand");
+        return;
+    }
+
+    if (elem_class.includes("collapsed")) {
+        /// expand
+        elem_class = elem_class.replace(" collapsed", "");
+    } else {
+        /// collapse
+        elem_class += " collapsed";
+    }
+    next_elem.className = elem_class;
+}
+    </script>
+</head>
+<body>
+    <div class="section"><a href="@1.html">back to @1</a></div>
+    <div class="graphsection section">
+
+    </div>
+
+
+    <div class="section">
+<div class="entryhead">identifier_node <a href="@13.html">@13</a> funct_a</div>
+<div class="entryindent">
+<div class="entryhead"><span onclick='toggle_element(this);'>lngt:</span> 7</div>
+<div class="entryindent">
+</div>
+<div class="entryhead"><span onclick='toggle_element(this);'>strg:</span> funct_a</div>
+<div class="entryindent">
+</div>
+</div>
+
+    </div>
+</body>
+</html>

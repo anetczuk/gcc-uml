@@ -6,7 +6,7 @@ namespace items {
 		int field1;
 		double field2;
 
-		Abc(int field1, double field2): field1(field1), field2(field2) {
+		Abc(int field_1, double field_2): field1(field_1), field2(field_2) {
 		}
 
 		int getval() const {
