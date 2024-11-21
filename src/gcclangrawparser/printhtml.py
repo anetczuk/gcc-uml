@@ -12,6 +12,11 @@ import logging
 from typing import Dict, Any, List
 import html
 
+from multiprocessing import Pool as Pool1
+# from multiprocessing.pool import ThreadPool as Pool1
+
+# from gcclangrawparser.multiprocessingmock import DummyPool as Pool1
+
 from showgraph.graphviz import Graph, set_node_style
 
 from gcclangrawparser.langcontent import (
@@ -57,11 +62,7 @@ def print_html(content: LangContent, out_dir, generate_page_graph=True):
     # print("tree:", tree_content)
 
     # generate pages
-    node_page_gen = NodePageGenerator(include_internals=True, generate_page_graph=generate_page_graph)
-    node_page_gen.generate_content(entry_tree, depends_dict, out_dir)
-
-    # node_page_gen = NodePageGenerator(include_internals=True)
-    # EntryTreeDepthFirstTraversal.traverse(entry_tree, node_page_gen.generate_node_page, [depends_dict, out_dir])
+    generate_content_node(entry_tree, depends_dict, out_dir, generate_page_graph)
 
     _LOGGER.info("writing completed")
 
@@ -216,48 +217,98 @@ class EntryDotGraph:
         return entry.replace(":", "_")
 
 
+def generate_content_node(entry_tree, depends_dict, out_dir, generate_page_graph):
+    traversal = EntryTreeDepthFirstTraversal()
+    node_list = get_nodes_from_tree_ancestors(entry_tree, traversal, bottom_top=True)
+    node_list = filter_repeated_entries(node_list)
+
+    # tree_content = print_entry_tree(entry_tree)
+    # print("tree:", tree_content)
+
+    # generate_content_list(node_list, depends_dict, out_dir, generate_page_graph)
+
+    process_num = os.cpu_count()
+
+    with Pool1(process_num) as process_pool:
+        result_queue = []
+        node_list_size = len(node_list)
+        chunk_size = int(node_list_size / process_num) + 1
+        _LOGGER.info("nodes num: %s chunk size: %s", node_list_size, chunk_size)
+
+        chunks_list = list( chunks(node_list, chunk_size) )
+
+        for chunk_item in chunks_list:
+            async_result = process_pool.apply_async(
+                generate_content_list, [chunk_item, depends_dict, out_dir, generate_page_graph]
+            )
+            result_queue.append(async_result)
+
+        _LOGGER.info("waiting for processes to finish")
+
+        # wait for results
+        for async_result in result_queue:
+            async_result.get()
+
+
+def generate_content_list(node_list, depends_dict, out_dir, generate_page_graph):
+    node_page_gen = NodePageGenerator(include_internals=True, generate_page_graph=generate_page_graph)
+    node_page_gen.generate_from_list(node_list, depends_dict, out_dir)
+
+
+def chunks(data_list, chunk_size):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(data_list), chunk_size):
+        yield data_list[i:i + chunk_size]
+
+
+def filter_repeated_entries(node_list):
+    ret_list = []
+    visited_entries = set()
+    for ancestors_list in node_list:
+        node = ancestors_list[-1]
+        entry = node.entry
+        if not isinstance(entry, Entry):
+            continue
+        entry_id = entry.get_id()
+        if entry_id in visited_entries:
+            # already visited
+            if not node.items:
+                continue
+        visited_entries.add(entry_id)
+        ret_list.append(ancestors_list)
+    return ret_list
+
+
 class NodePageGenerator:
 
     def __init__(self, include_internals=False, generate_page_graph=True):
         self.include_internals = include_internals
         self.generate_page_graph = generate_page_graph
         self.node_printer = NodePrinter(include_internals)
-        self.visited_entries = set()
 
-    def generate_content(self, entry_tree, depends_dict, out_dir):
+    def generate_from_tree(self, entry_tree: EntryTreeNode, depends_dict, out_dir):
         traversal = EntryTreeDepthFirstTraversal()
         node_list = get_nodes_from_tree_ancestors(entry_tree, traversal, bottom_top=True)
+        self.generate_from_list(node_list, depends_dict, out_dir)
 
-        # tree_content = print_entry_tree(entry_tree)
-        # print("tree:", tree_content)
+    def generate_from_list(self, node_list, depends_dict, out_dir):
+        # list_size = len(node_list)
+        for ancestors_list in node_list:
+        # for index, ancestors_list in enumerate(node_list):
+            # node: EntryTreeNode = ancestors_list[-1]
+            # node_id = get_node_entry_id(node)
+            # if index % 100 == 0:
+            #     _LOGGER.info("generating page %s / %s for %s", index, list_size, node_id)
+            self.generate_node_page(ancestors_list, depends_dict, out_dir)
 
-        # for item in node_list:
-        #     node = item[-1]
-        #     print("xxxx", node.entry, len(node.items))
+    # def generate_list_content(self, node_list, depends_dict, out_dir):
+    #     gen_context = [depends_dict, out_dir]
+    #     for ancestors_list in node_list:
+    #         self.generate_node_page(ancestors_list, None, gen_context)
 
-        list_size = len(node_list)
-        gen_context = [depends_dict, out_dir]
-        for index, ancestors_list in enumerate(node_list):
-            node = ancestors_list[-1]
-            node_id = get_node_entry_id(node)
-            if index % 100 == 0:
-                _LOGGER.info("generating page %s / %s for %s", index, list_size, node_id)
-            self.generate_node_page(ancestors_list, None, gen_context)
-
-    def generate_node_page(self, ancestors_list, _node_data, gen_context=None):
+    def generate_node_page(self, ancestors_list, depends_dict, out_dir):
         node = ancestors_list[-1]
         entry = node.entry
-        if not isinstance(entry, Entry):
-            return True
-
-        entry_id = entry.get_id()
-        if entry_id in self.visited_entries:
-            # already visited
-            if not node.items:
-                return True
-        self.visited_entries.add(entry_id)
-
-        depends_dict, out_dir = gen_context
 
         img_content = ""
         if self.generate_page_graph:
