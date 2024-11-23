@@ -11,9 +11,11 @@ import io
 import logging
 from typing import Dict, Any, List
 import html
+import shutil
 
-from multiprocessing import Pool as Pool1
-# from multiprocessing.pool import ThreadPool as Pool1
+# from multiprocessing import Pool as Pool1
+
+from multiprocessing.pool import ThreadPool as Pool1
 
 # from gcclangrawparser.multiprocessingmock import DummyPool as Pool1
 
@@ -30,39 +32,22 @@ from gcclangrawparser.langcontent import (
     is_entry_language_internal,
     get_node_entry_id,
     is_entry_prop_internal,
+    EntryTreeBreadthFirstTraversal,
 )
 from gcclangrawparser.io import write_file, read_file
 from gcclangrawparser.abstracttraversal import get_nodes_from_tree_ancestors
+from gcclangrawparser.vizjs import DATA_DIR
 
 
 _LOGGER = logging.getLogger(__name__)
 
 
-def print_html(content: LangContent, out_dir, generate_page_graph=True):
+def print_html(content: LangContent, out_dir, generate_page_graph=True, use_vizjs=True):
     _LOGGER.info("writing HTML output to %s", out_dir)
     os.makedirs(out_dir, exist_ok=True)
 
-    depends_dict: Dict[str, List[Any]] = {}
-    for entry in content.content_objs.values():
-        for entry_field, entry_val in entry.items():
-            if is_entry_prop_internal(entry_field):
-                continue
-            if not isinstance(entry_val, Entry):
-                continue
-            dep_id = entry_val.get_id()
-            dep_list = depends_dict.get(dep_id, [])
-            dep_list.append((entry_field, entry))
-            depends_dict[dep_id] = dep_list
-
-    _LOGGER.info("converting %s entries to tree", content.size())
-    entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=False)
-    # entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=True)
-
-    # tree_content = print_entry_tree(entry_tree)
-    # print("tree:", tree_content)
-
     # generate pages
-    generate_content_node(entry_tree, depends_dict, out_dir, generate_page_graph)
+    generate_content_node(content, out_dir, generate_page_graph, use_vizjs, include_internals=False)
 
     _LOGGER.info("writing completed")
 
@@ -150,10 +135,7 @@ class EntryDotGraph:
         node_id = self._get_entry_id(entry)
         if name_prefix:
             node_id = name_prefix + node_id
-        node_label = f"{entry.get_id()} {entry.get_type()}"
-        entry_label = get_entry_label(entry)
-        if entry_label:
-            node_label += f"\n{entry_label}"
+        node_label = self._get_entry_label(entry)
         # print("adding entry node:", node_id, entry.get_id())
         entry_node = self.graph.addNode(node_id, shape="box", label=node_label)
         if entry_node is None:
@@ -184,7 +166,11 @@ class EntryDotGraph:
         from_node_id = self._get_entry_id(from_entry)
         to_node_id = None
         if isinstance(to_entry, Entry):
-            to_node_id = self.add_node(to_entry, with_hyperlink=with_hyperlink, name_prefix=to_node_prefix)
+            if with_hyperlink:
+                to_node_id = self.add_node(to_entry, with_hyperlink=with_hyperlink, name_prefix=to_node_prefix)
+            else:
+                node_label = self._get_entry_label(to_entry)
+                to_node_id = self.add_node_value(node_label, name_prefix=to_node_prefix)
         else:
             to_node_id = self.add_node_value(to_entry, name_prefix=to_node_prefix)
         # print("adding edge:", from_node_id, "->", to_node_id, from_entry, to_entry)
@@ -193,7 +179,11 @@ class EntryDotGraph:
     def add_edge_backward(self, from_entry, to_entry, prop, with_hyperlink=True, from_node_prefix=None):
         from_node_id = None
         if isinstance(from_entry, Entry):
-            from_node_id = self.add_node(from_entry, with_hyperlink=with_hyperlink, name_prefix=from_node_prefix)
+            if with_hyperlink:
+                from_node_id = self.add_node(from_entry, with_hyperlink=with_hyperlink, name_prefix=from_node_prefix)
+            else:
+                node_label = self._get_entry_label(from_entry)
+                from_node_id = self.add_node_value(node_label, name_prefix=from_node_prefix)
         else:
             from_node_id = self.add_node_value(from_entry, name_prefix=from_node_prefix)
         to_node_id = self._get_entry_id(to_entry)
@@ -211,21 +201,53 @@ class EntryDotGraph:
             raise RuntimeError("edge already exists")
         edge.set_label(prop)  # pylint: disable=E1101
 
+    def _get_entry_label(self, entry: Entry) -> str:
+        node_label = f"{entry.get_id()} {entry.get_type()}"
+        entry_label = get_entry_label(entry)
+        if entry_label:
+            node_label += f"\n{entry_label}"
+        return node_label
+
     def _get_entry_id(self, entry: Entry) -> str:
         if isinstance(entry, Entry):
             return str(id(entry))
         return entry.replace(":", "_")
 
 
-def generate_content_node(entry_tree, depends_dict, out_dir, generate_page_graph):
-    traversal = EntryTreeDepthFirstTraversal()
-    node_list = get_nodes_from_tree_ancestors(entry_tree, traversal, bottom_top=True)
-    node_list = filter_repeated_entries(node_list)
+def generate_content_node(content: LangContent, out_dir, generate_page_graph, use_vizjs, include_internals=False):
+    depends_dict: Dict[str, List[Any]] = {}
+    for entry in content.content_objs.values():
+        for entry_field, entry_val in entry.items():
+            if is_entry_prop_internal(entry_field):
+                continue
+            if not isinstance(entry_val, Entry):
+                continue
+            dep_id = entry_val.get_id()
+            dep_list = depends_dict.get(dep_id, [])
+            dep_list.append((entry_field, entry))
+            depends_dict[dep_id] = dep_list
+
+    _LOGGER.info("converting %s entries to tree", content.size())
+    entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=include_internals)
 
     # tree_content = print_entry_tree(entry_tree)
     # print("tree:", tree_content)
 
-    # generate_content_list(node_list, depends_dict, out_dir, generate_page_graph)
+    traversal = EntryTreeBreadthFirstTraversal()
+    tree_node_list = get_nodes_from_tree_ancestors(entry_tree, traversal)
+    node_list = filter_repeated_entries(tree_node_list)
+
+    # tree_content = print_entry_tree(entry_tree)
+    # print("tree:", tree_content)
+
+    if generate_page_graph and use_vizjs:
+        vizjs_path = os.path.join(DATA_DIR, "viz-standalone.js")
+        shutil.copy(vizjs_path, out_dir, follow_symlinks=True)
+
+    # node_list_size = len(node_list)
+    # _LOGGER.info("nodes num: %s", node_list_size)
+    # generate_content_list(node_list, depends_dict, out_dir, generate_page_graph, use_vizjs)
+    # return
 
     process_num = os.cpu_count()
 
@@ -235,11 +257,12 @@ def generate_content_node(entry_tree, depends_dict, out_dir, generate_page_graph
         chunk_size = int(node_list_size / process_num) + 1
         _LOGGER.info("nodes num: %s chunk size: %s", node_list_size, chunk_size)
 
-        chunks_list = list( chunks(node_list, chunk_size) )
+        chunks_list = list(chunks(node_list, chunk_size))
 
         for chunk_item in chunks_list:
             async_result = process_pool.apply_async(
-                generate_content_list, [chunk_item, depends_dict, out_dir, generate_page_graph]
+                generate_content_list,
+                [chunk_item, depends_dict, out_dir, generate_page_graph, use_vizjs, include_internals],
             )
             result_queue.append(async_result)
 
@@ -250,15 +273,17 @@ def generate_content_node(entry_tree, depends_dict, out_dir, generate_page_graph
             async_result.get()
 
 
-def generate_content_list(node_list, depends_dict, out_dir, generate_page_graph):
-    node_page_gen = NodePageGenerator(include_internals=True, generate_page_graph=generate_page_graph)
+def generate_content_list(node_list, depends_dict, out_dir, generate_page_graph, use_vizjs, include_internals=False):
+    node_page_gen = NodePageGenerator(
+        include_internals=include_internals, generate_page_graph=generate_page_graph, use_vizjs=use_vizjs
+    )
     node_page_gen.generate_from_list(node_list, depends_dict, out_dir)
 
 
 def chunks(data_list, chunk_size):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(data_list), chunk_size):
-        yield data_list[i:i + chunk_size]
+        yield data_list[i : i + chunk_size]
 
 
 def filter_repeated_entries(node_list):
@@ -272,8 +297,9 @@ def filter_repeated_entries(node_list):
         entry_id = entry.get_id()
         if entry_id in visited_entries:
             # already visited
-            if not node.items:
-                continue
+            continue
+            # if not node.items:
+            #     continue
         visited_entries.add(entry_id)
         ret_list.append(ancestors_list)
     return ret_list
@@ -281,9 +307,10 @@ def filter_repeated_entries(node_list):
 
 class NodePageGenerator:
 
-    def __init__(self, include_internals=False, generate_page_graph=True):
+    def __init__(self, include_internals=False, generate_page_graph=True, use_vizjs=True):
         self.include_internals = include_internals
         self.generate_page_graph = generate_page_graph
+        self.use_vizjs = use_vizjs
         self.node_printer = NodePrinter(include_internals)
 
     def generate_from_tree(self, entry_tree: EntryTreeNode, depends_dict, out_dir):
@@ -294,7 +321,7 @@ class NodePageGenerator:
     def generate_from_list(self, node_list, depends_dict, out_dir):
         # list_size = len(node_list)
         for ancestors_list in node_list:
-        # for index, ancestors_list in enumerate(node_list):
+            # for index, ancestors_list in enumerate(node_list):
             # node: EntryTreeNode = ancestors_list[-1]
             # node_id = get_node_entry_id(node)
             # if index % 100 == 0:
@@ -310,15 +337,33 @@ class NodePageGenerator:
         node = ancestors_list[-1]
         entry = node.entry
 
-        img_content = ""
+        graph_scripts = ""
+        graph_img_content = ""
+
         if self.generate_page_graph:
             graph = generate_entry_local_graph(entry, depends_dict, include_internals=self.include_internals)
 
-            img_content = get_graph_as_svg(graph)
-            # out_svg_file = f"{entry.get_id()}.svg"
-            # out_svg_path = os.path.join(out_dir, out_svg_file)
-            # img_content = write_graph_as_svg(graph, out_svg_path)
-            # # img_content = f"""<img src="{out_svg_file}">"""
+            if self.use_vizjs:
+                graph_text = graph.toString()
+
+                graph_scripts = f"""\
+    <script src="viz-standalone.js"></script>
+    <script>
+        const dot_content = `{graph_text}`;
+
+        Viz.instance().then(function(viz) {{
+            var svg = viz.renderSVGElement(dot_content);
+            document.getElementById("graph").appendChild(svg);
+        }});
+    </script>
+"""
+
+            else:
+                graph_img_content = get_graph_as_svg(graph)
+                # out_svg_file = f"{entry.get_id()}.svg"
+                # out_svg_path = os.path.join(out_dir, out_svg_file)
+                # img_content = write_graph_as_svg(graph, out_svg_path)
+                # # img_content = f"""<img src="{out_svg_file}">"""
 
         entry_content = self.node_printer.print_node(node)
 
@@ -401,13 +446,15 @@ function toggle_element(element) {{
     next_elem.className = elem_class;
 }}
     </script>
+
+{graph_scripts}
+
 </head>
 <body>
     <div class="section"><a href="@1.html">back to @1</a></div>
-    <div class="graphsection section">
-{img_content}
+    <div id="graph" class="graphsection section">
+{graph_img_content}
     </div>
-
 
     <div class="section">
 {entry_content}

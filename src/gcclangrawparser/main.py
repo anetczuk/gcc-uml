@@ -56,8 +56,9 @@ def process_parse(args):
         generate_big_graph(content, args.outbiggraph)
 
     if args.outhtmldir:
-        generate_page_graph = not args.noentrygraph
-        print_html(content, args.outhtmldir, generate_page_graph)
+        generate_page_graph = args.entrygraph
+        use_vizjs = args.usevizjs
+        print_html(content, args.outhtmldir, generate_page_graph, use_vizjs)
 
 
 # =======================================================================
@@ -73,7 +74,17 @@ def main():
     parser.set_defaults(func=process_parse)
     parser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
     parser.add_argument("--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths")
-    parser.add_argument("--noentrygraph", action="store_true", default=False, help="Do not generate entry graph")
+    parser.add_argument(
+        "--entrygraph", type=str2bool, nargs="?", const=True, default=True, help="Should generate graph for each entry?"
+    )
+    parser.add_argument(
+        "--usevizjs",
+        type=str2bool,
+        nargs="?",
+        const=True,
+        default=True,
+        help="Use viz.js standalone for graph rendering.",
+    )
     parser.add_argument(
         "--outtypefields", action="store", required=False, default="", help="Output path to types and fields "
     )
@@ -98,6 +109,16 @@ def main():
         return 1
 
     return args.func(args)
+
+
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ("yes", "true", "t", "y", "1"):
+        return True
+    if v.lower() in ("no", "false", "f", "n", "0"):
+        return False
+    raise argparse.ArgumentTypeError("Boolean value expected.")
 
 
 if __name__ == "__main__":

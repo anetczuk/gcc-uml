@@ -15,9 +15,13 @@ namespace items {
 	};
 
 
-	class Abc2: public Abc {
+	class Abc2 {
+	};
+
+
+	class Abc3: public Abc, private Abc2 {
 	public:
-		Abc2(): Abc(2, 3.0) {
+		Abc3(): Abc(2, 3.0) {
 		}
 
 		void callfunc() {
@@ -27,7 +31,7 @@ namespace items {
 
 
 int main() {
-	items::Abc2 obj;
+	items::Abc3 obj;
     obj.getval();
     return 0;
 }

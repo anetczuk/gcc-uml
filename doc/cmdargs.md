@@ -2,7 +2,8 @@
 ```
 usage: python3 -m gcclangrawparser.main [-h] [-la] --rawfile RAWFILE
                                         [--reducepaths REDUCEPATHS]
-                                        [--noentrygraph]
+                                        [--entrygraph [ENTRYGRAPH]]
+                                        [--usevizjs [USEVIZJS]]
                                         [--outtypefields OUTTYPEFIELDS]
                                         [--outtreetxt OUTTREETXT]
                                         [--outbiggraph OUTBIGGRAPH]
@@ -16,7 +17,11 @@ options:
   --rawfile RAWFILE     Path to raw file to analyze (default: )
   --reducepaths REDUCEPATHS
                         Prefix to remove from paths (default: )
-  --noentrygraph        Do not generate entry graph (default: False)
+  --entrygraph [ENTRYGRAPH]
+                        Should generate graph for each entry? (default: True)
+  --usevizjs [USEVIZJS]
+                        Use viz.js standalone for graph rendering. (default:
+                        True)
   --outtypefields OUTTYPEFIELDS
                         Output path to types and fields (default: )
   --outtreetxt OUTTREETXT

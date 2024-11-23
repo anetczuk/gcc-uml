@@ -108,14 +108,14 @@
         "accs": {
             "mandatory": false,
             "values": [
-                "pub"
+                "priv"
             ]
         },
         "bases": {
             "mandatory": true,
             "values": [
                 "0",
-                "1"
+                "2"
             ]
         },
         "binf": {
@@ -403,9 +403,9 @@
         "line": {
             "mandatory": false,
             "values": [
-                "20",
-                "30",
-                "31",
+                "24",
+                "34",
+                "35",
                 "9"
             ]
         },
@@ -423,6 +423,7 @@
         "accs": {
             "mandatory": true,
             "values": [
+                "priv",
                 "pub"
             ]
         },
@@ -430,7 +431,8 @@
             "mandatory": true,
             "values": [
                 "32",
-                "64"
+                "64",
+                "8"
             ]
         },
         "bpos": {
@@ -489,7 +491,7 @@
             "mandatory": true,
             "values": [
                 "<built-in>:0",
-                "source1.cpp:18",
+                "source1.cpp:22",
                 "source1.cpp:6",
                 "source1.cpp:7"
             ]
@@ -612,9 +614,10 @@
                 "<built-in>:0",
                 "source1.cpp:12",
                 "source1.cpp:18",
-                "source1.cpp:20",
-                "source1.cpp:23",
-                "source1.cpp:29",
+                "source1.cpp:22",
+                "source1.cpp:24",
+                "source1.cpp:27",
+                "source1.cpp:33",
                 "source1.cpp:4",
                 "source1.cpp:9"
             ]
@@ -1111,9 +1114,9 @@
             "mandatory": true,
             "values": [
                 "source1.cpp:12",
-                "source1.cpp:20",
-                "source1.cpp:23",
-                "source1.cpp:30",
+                "source1.cpp:24",
+                "source1.cpp:27",
+                "source1.cpp:34",
                 "source1.cpp:9"
             ]
         },
@@ -1269,13 +1272,14 @@
         "accs": {
             "mandatory": false,
             "values": [
-                "priv"
+                "pub"
             ]
         },
         "algn": {
             "mandatory": true,
             "values": [
-                "64"
+                "64",
+                "8"
             ]
         },
         "base": {
@@ -1408,7 +1412,7 @@
             "mandatory": true,
             "values": [
                 "source1.cpp:12",
-                "source1.cpp:29"
+                "source1.cpp:33"
             ]
         },
         "type": {
@@ -1582,6 +1586,7 @@
             "values": [
                 "<built-in>:0",
                 "source1.cpp:18",
+                "source1.cpp:22",
                 "source1.cpp:4"
             ]
         },
@@ -1642,7 +1647,7 @@
         "srcp": {
             "mandatory": true,
             "values": [
-                "source1.cpp:30"
+                "source1.cpp:34"
             ]
         },
         "type": {

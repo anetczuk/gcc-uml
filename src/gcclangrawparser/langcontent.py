@@ -37,6 +37,7 @@ class Entry(Munch):
         self._id = None
         self._type = None
         self._chains = {}
+        self._chained = False  # is chain converted?
         super().__init__(props_dict)
 
     # prevents recursive error
@@ -57,21 +58,26 @@ class Entry(Munch):
     def get_chains(self):
         return self._chains
 
+    def set_chained(self, value: bool):
+        self._chained = value
+
     def get_sub_entries(self):
-        entry = self
         ret_list = []
-        for prop, subentry in entry.items():
-            if is_entry_prop_internal(prop):
-                continue
-            if prop == "chain":
-                continue
-            if is_entry_prop_chain(prop):
-                continue
-            ret_list.append((prop, subentry))
-        entry_chains = entry.get_chains()
+        entry_chains = self.get_chains()
+        chain_props = set()
         for chain_prop, chain_list in entry_chains.items():
+            chain_props.add(chain_prop)
             for chain_item in chain_list:
                 ret_list.append((chain_prop, chain_item))
+        for prop, subentry in self.items():
+            if is_entry_prop_internal(prop):
+                continue
+            if self._chained and prop == "chain":
+                continue
+            if prop in chain_props:
+                ## already added
+                continue
+            ret_list.append((prop, subentry))
         return sorted(ret_list, key=lambda container: container[0])
 
 
@@ -174,6 +180,8 @@ class LangContent:
                 chain_list = self._get_chain_entries(value)
                 entry_chains = entry.get_chains()
                 entry_chains[prop] = chain_list
+                for chain_item in chain_list:
+                    chain_item.set_chained(True)
 
                 # del entry[prop]
                 # for index, chain_entry in enumerate(chain_list):
@@ -416,7 +424,7 @@ class EntryGraphBreadthFirstTraversal(EntryGraphAbstractTraversal):
 
 def get_sub_entries(ancestors_list: List[Entry]):
     ret_list = []
-    entry = ancestors_list[-1]
+    entry: Entry = ancestors_list[-1]
     sub_entries = entry.get_sub_entries()
     for prop, subentry in sub_entries:
         ret_list.append((ancestors_list + [subentry], prop))
@@ -431,7 +439,6 @@ EntryTreeNode = namedtuple("EntryTreeNode", ["entry", "property", "items"])
 
 def get_entry_tree(content: LangContent, include_internals=False) -> EntryTreeNode:
     content.convert_chains()
-    # first_entry = content.content_objs["@584"]
     first_entry = content.content_objs["@1"]
     entry_tree: EntryTreeNode = create_entry_tree_breadth_first(first_entry, include_internals=include_internals)
     return entry_tree
@@ -519,13 +526,18 @@ class EntryTreeConverter:
         return root_node
 
     def convert_item(self, item_data, _context=None):
-        prop = item_data[1]
         ancestors_list: List[Entry] = item_data[0]
+        entry = ancestors_list[-1]
+        if isinstance(entry, Entry):
+            if not self.include_internals:
+                if is_entry_language_internal(entry):
+                    return False
+
+        prop = item_data[1]
         parents_list = ancestors_list[:-1]
         parent_node_id = self._get_entries_path(parents_list)
         parent_node = self.entry_node_dict[parent_node_id]
 
-        entry = ancestors_list[-1]
         new_node = EntryTreeNode(entry, prop, [])
         parent_node.items.append(new_node)
         parent_node.items.sort(key=lambda container: container[1])
@@ -533,9 +545,9 @@ class EntryTreeConverter:
         if isinstance(entry, Entry):
             entry_node_id = self._get_entries_path(ancestors_list)
             self.entry_node_dict[entry_node_id] = new_node
-            if not self.include_internals:
-                if is_entry_language_internal(entry):
-                    return False
+            # if not self.include_internals:
+            #     if is_entry_language_internal(entry):
+            #         return False
         return True
 
     def _get_entries_path(self, entries_list):
