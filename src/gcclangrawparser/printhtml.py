@@ -13,10 +13,9 @@ from typing import Dict, Any, List
 import html
 import shutil
 
-# from multiprocessing import Pool as Pool1
+from multiprocessing import Pool as Pool1
 
-from multiprocessing.pool import ThreadPool as Pool1
-
+# from multiprocessing.pool import ThreadPool as Pool1
 # from gcclangrawparser.multiprocessingmock import DummyPool as Pool1
 
 from showgraph.graphviz import Graph, set_node_style
@@ -30,7 +29,6 @@ from gcclangrawparser.langcontent import (
     EntryTreeDepthFirstTraversal,
     print_entry_tree,
     is_entry_language_internal,
-    get_node_entry_id,
     is_entry_prop_internal,
     EntryTreeBreadthFirstTraversal,
 )
@@ -42,24 +40,26 @@ from gcclangrawparser.vizjs import DATA_DIR
 _LOGGER = logging.getLogger(__name__)
 
 
-def print_html(content: LangContent, out_dir, generate_page_graph=True, use_vizjs=True):
+def print_html(content: LangContent, out_dir, generate_page_graph=True, use_vizjs=True, jobs=None):
     _LOGGER.info("writing HTML output to %s", out_dir)
     os.makedirs(out_dir, exist_ok=True)
 
     # generate pages
-    generate_content_node(content, out_dir, generate_page_graph, use_vizjs, include_internals=False)
+    print_content_pages(content, out_dir, generate_page_graph, use_vizjs, include_internals=True, jobs=jobs)
 
     _LOGGER.info("writing completed")
 
 
 def write_entry_tree(content: LangContent, out_path, indent=2):
     entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=False)
+
     tree_content = print_entry_tree(entry_tree, indent)
     write_file(out_path, tree_content)
 
 
 def generate_big_graph(content: LangContent, out_path):
     entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=False)
+
     # print_entry_tree(entry_tree)
     nodes_list = EntryTreeDepthFirstTraversal.to_list(entry_tree)
 
@@ -214,7 +214,9 @@ class EntryDotGraph:
         return entry.replace(":", "_")
 
 
-def generate_content_node(content: LangContent, out_dir, generate_page_graph, use_vizjs, include_internals=False):
+def print_content_pages(
+    content: LangContent, out_dir, generate_page_graph, use_vizjs, include_internals=False, jobs=None
+):
     depends_dict: Dict[str, List[Any]] = {}
     for entry in content.content_objs.values():
         for entry_field, entry_val in entry.items():
@@ -233,9 +235,8 @@ def generate_content_node(content: LangContent, out_dir, generate_page_graph, us
     # tree_content = print_entry_tree(entry_tree)
     # print("tree:", tree_content)
 
-    traversal = EntryTreeBreadthFirstTraversal()
-    tree_node_list = get_nodes_from_tree_ancestors(entry_tree, traversal)
-    node_list = filter_repeated_entries(tree_node_list)
+    node_list = filter_repeated_entries(entry_tree)
+    # random.shuffle(node_list)
 
     # tree_content = print_entry_tree(entry_tree)
     # print("tree:", tree_content)
@@ -244,25 +245,29 @@ def generate_content_node(content: LangContent, out_dir, generate_page_graph, us
         vizjs_path = os.path.join(DATA_DIR, "viz-standalone.js")
         shutil.copy(vizjs_path, out_dir, follow_symlinks=True)
 
-    # node_list_size = len(node_list)
-    # _LOGGER.info("nodes num: %s", node_list_size)
-    # generate_content_list(node_list, depends_dict, out_dir, generate_page_graph, use_vizjs)
-    # return
+    if jobs is None:
+        jobs = os.cpu_count()
 
-    process_num = os.cpu_count()
+    elif jobs < 2:
+        node_list_size = len(node_list)
+        _LOGGER.info("nodes num: %s", node_list_size)
+        generate_content_list(node_list, depends_dict, out_dir, generate_page_graph, use_vizjs)
+        return
 
+    process_num = jobs
     with Pool1(process_num) as process_pool:
         result_queue = []
         node_list_size = len(node_list)
         chunk_size = int(node_list_size / process_num) + 1
         _LOGGER.info("nodes num: %s chunk size: %s", node_list_size, chunk_size)
 
-        chunks_list = list(chunks(node_list, chunk_size))
+        chunks_list = chunks_equal(node_list, process_num)
+        # chunks_list = list(chunks(node_list, chunk_size))
 
-        for chunk_item in chunks_list:
+        for proc_index, chunk_item in enumerate(chunks_list):
             async_result = process_pool.apply_async(
                 generate_content_list,
-                [chunk_item, depends_dict, out_dir, generate_page_graph, use_vizjs, include_internals],
+                [chunk_item, depends_dict, out_dir, generate_page_graph, use_vizjs, include_internals, proc_index],
             )
             result_queue.append(async_result)
 
@@ -273,11 +278,34 @@ def generate_content_node(content: LangContent, out_dir, generate_page_graph, us
             async_result.get()
 
 
-def generate_content_list(node_list, depends_dict, out_dir, generate_page_graph, use_vizjs, include_internals=False):
+def generate_content_list(
+    node_list, depends_dict, out_dir, generate_page_graph, use_vizjs, include_internals=False, _proc_index=0
+):
     node_page_gen = NodePageGenerator(
         include_internals=include_internals, generate_page_graph=generate_page_graph, use_vizjs=use_vizjs
     )
-    node_page_gen.generate_from_list(node_list, depends_dict, out_dir)
+    # node_page_gen.generate_from_list(node_list, depends_dict, out_dir)
+
+    for ancestors_list in node_list:
+        node_page_gen.generate_node_page(ancestors_list, depends_dict, out_dir)
+
+
+def chunks_equal(nodes_list, chunks_num):
+    count_list = []
+    for _ in range(0, chunks_num):
+        count_list.append([0, []])
+
+    for ancestors_list in nodes_list:
+        node = ancestors_list[-1]
+        tree_list = EntryTreeDepthFirstTraversal.to_list(node)
+        items_count = len(tree_list)
+        data_pair = count_list[0]
+        data_pair[0] += items_count
+        data_pair[1].append(ancestors_list)
+        count_list.sort(key=lambda data_pair: data_pair[0])  ## sort by count
+
+    _LOGGER.info("found chunks: %s", [len(item[1]) for item in count_list])
+    return [item[1] for item in count_list]
 
 
 def chunks(data_list, chunk_size):
@@ -286,22 +314,26 @@ def chunks(data_list, chunk_size):
         yield data_list[i : i + chunk_size]
 
 
-def filter_repeated_entries(node_list):
+def filter_repeated_entries(entry_tree: EntryTreeNode) -> List[List[EntryTreeNode]]:
+    ## to properly work, the traversal have to be the same as traversal
+    ## for creating the entry_tree
+    traversal = EntryTreeBreadthFirstTraversal()
+    node_list: List[List[EntryTreeNode]] = get_nodes_from_tree_ancestors(entry_tree, traversal)
+
+    # nodes_dict = {}
     ret_list = []
-    visited_entries = set()
+    visited = set()
     for ancestors_list in node_list:
         node = ancestors_list[-1]
         entry = node.entry
         if not isinstance(entry, Entry):
             continue
         entry_id = entry.get_id()
-        if entry_id in visited_entries:
-            # already visited
+        if entry_id in visited:
             continue
-            # if not node.items:
-            #     continue
-        visited_entries.add(entry_id)
+        visited.add(entry_id)
         ret_list.append(ancestors_list)
+
     return ret_list
 
 
@@ -313,10 +345,10 @@ class NodePageGenerator:
         self.use_vizjs = use_vizjs
         self.node_printer = NodePrinter(include_internals)
 
-    def generate_from_tree(self, entry_tree: EntryTreeNode, depends_dict, out_dir):
-        traversal = EntryTreeDepthFirstTraversal()
-        node_list = get_nodes_from_tree_ancestors(entry_tree, traversal, bottom_top=True)
-        self.generate_from_list(node_list, depends_dict, out_dir)
+    # def generate_from_tree(self, entry_tree: EntryTreeNode, depends_dict, out_dir):
+    #     traversal = EntryTreeDepthFirstTraversal()
+    #     node_list = get_nodes_from_tree_ancestors(entry_tree, traversal, bottom_top=True)
+    #     self.generate_from_list(node_list, depends_dict, out_dir)
 
     def generate_from_list(self, node_list, depends_dict, out_dir):
         # list_size = len(node_list)
@@ -353,10 +385,13 @@ class NodePageGenerator:
 
         Viz.instance().then(function(viz) {{
             var svg = viz.renderSVGElement(dot_content);
-            document.getElementById("graph").appendChild(svg);
+            var graph_tag = document.getElementById("graph");
+            graph_tag.innerHTML = '';    /// remove all children
+            graph_tag.appendChild(svg);
         }});
     </script>
 """
+                graph_img_content = "<span>Refresh page to load graph.</span>"
 
             else:
                 graph_img_content = get_graph_as_svg(graph)
@@ -471,81 +506,76 @@ function toggle_element(element) {{
 class NodePrinter:
     def __init__(self, include_internals=False):
         self.include_internals = include_internals
-        self.node_fields_content = {}
-        self.entry_printer = EntryPrinter(include_internals)
-
-    def generate_content(self, tree: List[EntryTreeNode]):
-        pass
+        # self.node_fields_content = {}
+        # self.entry_printer = EntryPrinter(include_internals)
 
     def print_node(self, node: EntryTreeNode):
         # return self.print_node_single(node)
         return self.print_node_old(node)
         # return self.print_node_recursive(node, None)
 
-    def print_node_single(self, node: EntryTreeNode):
-        node_id = get_node_entry_id(node)
-        node_content = self.node_fields_content.get(node_id)
-        if node_content is not None:
-            head = self.entry_printer.print_head(node.entry, None)
-            return head + node_content
+    # def print_node_single(self, node: EntryTreeNode):
+    #     node_id = get_node_entry_id(node)
+    #     node_content = self.node_fields_content.get(node_id)
+    #     if node_content is not None:
+    #         head = self.entry_printer.print_head(node.entry, None)
+    #         return head + node_content
+    #
+    #     content = ""
+    #     head = self.entry_printer.print_head(node.entry, None)
+    #     content += head
+    #
+    #     items_content = """<div class="entryindent">\n"""
+    #     for node_item in node.items:
+    #         items_content += self._print_node_sub(node_item, node_item.property)
+    #     items_content += """</div>\n"""
+    #
+    #     if node_id is not None and node.items:
+    #         self.node_fields_content[node_id] = items_content
+    #
+    #     return content + items_content
+    #
+    # def _print_node_sub(self, node: EntryTreeNode, prop):
+    #     node_entry = node.entry
+    #     if not isinstance(node_entry, Entry):
+    #         head = self.entry_printer.print_head(node_entry, prop)
+    #         return head
+    #
+    #     node_id = get_node_entry_id(node)
+    #     node_content = self.node_fields_content.get(node_id)
+    #     if node_content is None:
+    #         # entry_id = get_node_entry_id(node)
+    #         # raise RuntimeError(f"unable to get node content: {entry_id}")
+    #         head = self.entry_printer.print_head(node_entry, prop)
+    #         return head
+    #
+    #     head = self.entry_printer.print_head(node_entry, prop)
+    #     return head + node_content
 
-        content = ""
-        head = self.entry_printer.print_head(node.entry, None)
-        content += head
-
-        items_content = """<div class="entryindent">\n"""
-        for node_item in node.items:
-            items_content += self._print_node_sub(node_item, node_item.property)
-        items_content += """</div>\n"""
-
-        if node_id is not None and node.items:
-            self.node_fields_content[node_id] = items_content
-
-        return content + items_content
-
-    def _print_node_sub(self, node: EntryTreeNode, prop):
-        node_entry = node.entry
-        if not isinstance(node_entry, Entry):
-            head = self.entry_printer.print_head(node_entry, prop)
-            return head
-
-        node_id = get_node_entry_id(node)
-        node_content = self.node_fields_content.get(node_id)
-        if node_content is None:
-            # entry_id = self.get_id(node)
-            # raise RuntimeError(f"unable to get node content: {entry_id}")
-            head = self.entry_printer.print_head(node_entry, prop)
-            return head
-
-        head = self.entry_printer.print_head(node_entry, prop)
-        return head + node_content
-
-    def print_node_recursive(self, node: EntryTreeNode, prop):
-        content = ""
-        head = self.entry_printer.print_head(node.entry, prop)
-        content += head
-
-        items_content = None
-        entry_id = self.get_id(node)
-        if entry_id is not None:
-            items_content = self.node_fields_content.get(entry_id)
-
-        if items_content is None:
-            items_content = """<div class="entryindent">\n"""
-
-            for node_item in node.items:
-                items_content += self.print_node_recursive(node_item, node_item.property)
-
-            items_content += """</div>\n"""
-
-            if entry_id is not None:
-                self.node_fields_content[entry_id] = content
-
-        content += items_content
-        return content
-
-    def get_id(self, node: EntryTreeNode):
-        return get_node_entry_id(node)
+    ## faild because of stack overflow
+    # def print_node_recursive(self, node: EntryTreeNode, prop):
+    #     content = ""
+    #     head = self.entry_printer.print_head(node.entry, prop)
+    #     content += head
+    #
+    #     items_content = None
+    #     entry_id = get_node_entry_id(node)
+    #     if entry_id is not None:
+    #         items_content = self.node_fields_content.get(entry_id)
+    #
+    #     if items_content is None:
+    #         items_content = """<div class="entryindent">\n"""
+    #
+    #         for node_item in node.items:
+    #             items_content += self.print_node_recursive(node_item, node_item.property)
+    #
+    #         items_content += """</div>\n"""
+    #
+    #         if entry_id is not None:
+    #             self.node_fields_content[entry_id] = content
+    #
+    #     content += items_content
+    #     return content
 
     def print_node_old(self, node: EntryTreeNode):
         printer = EntryPrinter(include_internals=self.include_internals)
@@ -566,8 +596,7 @@ class NodePrinter:
             parent = ancestors_list[-2]
             parent = parent.entry
         node_level = len(ancestors_list) - 1
-        printer.print_item(node.entry, node_level, parent, prop)
-        return True
+        return printer.print_item(node.entry, node_level, parent, prop)
 
 
 class EntryPrinter:
@@ -575,7 +604,6 @@ class EntryPrinter:
         self.include_internals = include_internals
         self.content = ""
         self.recent_depth = -1
-        self.elem_id_counter = 0
 
     def print_item(self, entry, level, _parent: Entry, prop: str):
         if not self.include_internals:
@@ -598,8 +626,10 @@ class EntryPrinter:
         return head
 
     def close_sections(self, level=0):
-        for _ in range(level, self.recent_depth + 1):
-            self.content += "</div>\n"
+        diff = self.recent_depth + 1 - level
+        self.content += "</div>\n" * diff
+        # for _ in range(level, self.recent_depth + 1):
+        #     self.content += "</div>\n"
         self.recent_depth = level
 
 

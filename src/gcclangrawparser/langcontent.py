@@ -393,8 +393,11 @@ class EntryGraphAbstractTraversal(GraphAbstractTraversal):
         item = ancestors_list[-1]
         if not isinstance(item, Entry):
             return None
-        prop = item_data[1]
-        return (item.get_id(), prop)
+        return item.get_id()
+        ### why tuple as id?
+        ### it causes branches to be repeated/expanded
+        # prop = item_data[1]
+        # return (item.get_id(), prop)
 
     @classmethod
     def traverse(cls, entry: Entry, visitor):
@@ -440,8 +443,11 @@ EntryTreeNode = namedtuple("EntryTreeNode", ["entry", "property", "items"])
 def get_entry_tree(content: LangContent, include_internals=False) -> EntryTreeNode:
     content.convert_chains()
     first_entry = content.content_objs["@1"]
-    entry_tree: EntryTreeNode = create_entry_tree_breadth_first(first_entry, include_internals=include_internals)
-    return entry_tree
+
+    traversal = EntryGraphBreadthFirstTraversal()
+    # traversal = EntryGraphDepthFirstTraversal()
+    converter = EntryTreeConverter(include_internals=include_internals)
+    return converter.convert(first_entry, traversal)
 
 
 def get_node_entry_id(node: EntryTreeNode):
@@ -544,7 +550,10 @@ class EntryTreeConverter:
 
         if isinstance(entry, Entry):
             entry_node_id = self._get_entries_path(ancestors_list)
-            self.entry_node_dict[entry_node_id] = new_node
+            if entry_node_id not in self.entry_node_dict:
+                ## sometimes one entry has two children with the same ID but different prop value
+                ## we prefer first one to honor order of 'breadth first' and 'depth first' traversal
+                self.entry_node_dict[entry_node_id] = new_node
             # if not self.include_internals:
             #     if is_entry_language_internal(entry):
             #         return False
@@ -556,11 +565,5 @@ class EntryTreeConverter:
 
 def create_entry_tree_depth_first(entry: Entry, include_internals=False) -> EntryTreeNode:
     traversal = EntryGraphDepthFirstTraversal()
-    converter = EntryTreeConverter(include_internals=include_internals)
-    return converter.convert(entry, traversal)
-
-
-def create_entry_tree_breadth_first(entry: Entry, include_internals=False) -> EntryTreeNode:
-    traversal = EntryGraphBreadthFirstTraversal()
     converter = EntryTreeConverter(include_internals=include_internals)
     return converter.convert(entry, traversal)

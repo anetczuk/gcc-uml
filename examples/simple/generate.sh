@@ -7,7 +7,51 @@ set -eu
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 
-if [[ $* == *--venv* ]]; then
+ARGS=()
+
+VENV=false
+USE_PROFILER=false
+
+SRC_EMPTYMAIN=false
+SRC_EMPTYFUNCT=false
+SRC_EMPTY2FUNCTS=false
+SRC_EMPTYNS=false
+SRC_SOURCE1=false
+SRC_SOURCE2=false
+
+
+while :; do
+    if [ -z "${1+x}" ]; then
+        ## end of arguments (prevents unbound argument error)
+        break
+    fi
+
+    case "$1" in
+      --venv)     VENV=true 
+                  shift ;;
+      --profile)  USE_PROFILER=true 
+                  shift ;;
+
+      --emptymain)  SRC_EMPTYMAIN=true 
+                  	shift ;;
+      --emptyfunct)  SRC_EMPTYFUNCT=true 
+                  	 shift ;;
+      --empty2functs)  SRC_EMPTY2FUNCTS=true 
+                  	   shift ;;
+      --emptyns)  SRC_EMPTYNS=true 
+                  shift ;;
+      --source1)  SRC_SOURCE1=true 
+                  shift ;;
+      --source2)  SRC_SOURCE2=true 
+                  shift ;;
+
+      *)  ARGS+=("$1")
+          shift ;;
+    esac
+done
+
+
+if [ "$VENV" = true ]; then
 	## run under venv
 	VENV_DIR="$SCRIPT_DIR/../../venv"
 	"$VENV_DIR"/activatevenv.sh "$0; exit"
@@ -15,12 +59,8 @@ if [[ $* == *--venv* ]]; then
 fi
 
 
-USE_PROFILER=0
-if [[ $* == *--profile* ]]; then
-	USE_PROFILER=1
-fi
-
 # ===================================
+
 
 SRC_DIR="$SCRIPT_DIR/../../src"
 
@@ -41,12 +81,13 @@ prepare_sample() {
 	cd "$SCRIPT_DIR/../../src/"
 
 	set -x
-	if [ $USE_PROFILER -ne 1 ]; then
+	if [ "$USE_PROFILER" = false ]; then
 		"$SRC_DIR"/gcclangrawparser/main.py --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 											--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
 											--reducepaths "$SCRIPT_DIR/" \
 											--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt" \
-											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE"
+											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
+											${ARGS[@]}
 # 											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 	else
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
@@ -54,34 +95,35 @@ prepare_sample() {
 											--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
 											--reducepaths "$SCRIPT_DIR/" \
 											--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt" \
-											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE"
+											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
+											${ARGS[@]}
 #											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 	fi
 	set +x
 }
 
 
-if [[ $* == *--emptymain* ]]; then
+if [ "$SRC_EMPTYMAIN" = true ]; then
 	prepare_sample "emptymain.cpp"
 	exit 0
 fi
-if [[ $* == *--emptyfunct.cpp* ]]; then
+if [ "$SRC_EMPTYFUNCT" = true ]; then
 	prepare_sample "emptyfunct.cpp"
 	exit 0
 fi
-if [[ $* == *--empty2functs* ]]; then
+if [ "$SRC_EMPTY2FUNCTS" = true ]; then
 	prepare_sample "empty2functs.cpp"
 	exit 0
 fi
-if [[ $* == *--emptyns* ]]; then
+if [ "$SRC_EMPTYNS" = true ]; then
 	prepare_sample "emptyns.cpp"
 	exit 0
 fi
-if [[ $* == *--source1* ]]; then
+if [ "$SRC_SOURCE1" = true ]; then
 	prepare_sample "source1.cpp"
 	exit 0
 fi
-if [[ $* == *--source2* ]]; then
+if [ "$SRC_SOURCE2" = true ]; then
 	prepare_sample "source2.c"
 	exit 0
 fi

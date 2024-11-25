@@ -81,7 +81,6 @@
                 "<entry-id>"
             ],
             "allowedtypes": [
-                "cleanup_point_expr",
                 "statement_list"
             ]
         },
@@ -108,7 +107,7 @@
         "accs": {
             "mandatory": false,
             "values": [
-                "priv"
+                "prot"
             ]
         },
         "bases": {
@@ -403,9 +402,9 @@
         "line": {
             "mandatory": false,
             "values": [
-                "24",
-                "34",
-                "35",
+                "32",
+                "42",
+                "43",
                 "9"
             ]
         },
@@ -424,6 +423,7 @@
             "mandatory": true,
             "values": [
                 "priv",
+                "prot",
                 "pub"
             ]
         },
@@ -452,6 +452,15 @@
             "allowedtypes": [
                 "field_decl",
                 "function_decl"
+            ]
+        },
+        "init": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "non_lvalue_expr"
             ]
         },
         "name": {
@@ -491,7 +500,8 @@
             "mandatory": true,
             "values": [
                 "<built-in>:0",
-                "source1.cpp:22",
+                "source1.cpp:27",
+                "source1.cpp:29",
                 "source1.cpp:6",
                 "source1.cpp:7"
             ]
@@ -613,12 +623,14 @@
             "values": [
                 "<built-in>:0",
                 "source1.cpp:12",
-                "source1.cpp:18",
+                "source1.cpp:15",
+                "source1.cpp:20",
                 "source1.cpp:22",
-                "source1.cpp:24",
                 "source1.cpp:27",
-                "source1.cpp:33",
+                "source1.cpp:32",
+                "source1.cpp:35",
                 "source1.cpp:4",
+                "source1.cpp:41",
                 "source1.cpp:9"
             ]
         },
@@ -1017,6 +1029,26 @@
             ]
         }
     },
+    "non_lvalue_expr": {
+        "op 0": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_cst"
+            ]
+        },
+        "type": {
+            "mandatory": true,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "integer_type"
+            ]
+        }
+    },
     "nop_expr": {
         "op 0": {
             "mandatory": true,
@@ -1035,7 +1067,8 @@
             ],
             "allowedtypes": [
                 "integer_type",
-                "pointer_type"
+                "pointer_type",
+                "reference_type"
             ]
         }
     },
@@ -1114,9 +1147,11 @@
             "mandatory": true,
             "values": [
                 "source1.cpp:12",
-                "source1.cpp:24",
-                "source1.cpp:27",
-                "source1.cpp:34",
+                "source1.cpp:15",
+                "source1.cpp:22",
+                "source1.cpp:32",
+                "source1.cpp:35",
+                "source1.cpp:42",
                 "source1.cpp:9"
             ]
         },
@@ -1291,6 +1326,15 @@
                 "record_type"
             ]
         },
+        "bfld": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        },
         "binf": {
             "mandatory": false,
             "values": [
@@ -1301,7 +1345,7 @@
             ]
         },
         "flds": {
-            "mandatory": true,
+            "mandatory": false,
             "values": [
                 "<entry-id>"
             ],
@@ -1335,7 +1379,7 @@
             ]
         },
         "tag": {
-            "mandatory": true,
+            "mandatory": false,
             "values": [
                 "struct"
             ]
@@ -1412,7 +1456,7 @@
             "mandatory": true,
             "values": [
                 "source1.cpp:12",
-                "source1.cpp:33"
+                "source1.cpp:41"
             ]
         },
         "type": {
@@ -1585,8 +1629,8 @@
             "mandatory": false,
             "values": [
                 "<built-in>:0",
-                "source1.cpp:18",
-                "source1.cpp:22",
+                "source1.cpp:20",
+                "source1.cpp:27",
                 "source1.cpp:4"
             ]
         },
@@ -1647,7 +1691,7 @@
         "srcp": {
             "mandatory": true,
             "values": [
-                "source1.cpp:34"
+                "source1.cpp:42"
             ]
         },
         "type": {

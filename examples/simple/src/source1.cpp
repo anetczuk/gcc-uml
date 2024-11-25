@@ -12,19 +12,27 @@ namespace items {
 		int getval() const {
 			return field1;
 		}
+		void callfunc1() {
+		}
 	};
 
 
 	class Abc2 {
+	public:
+		void callfunc2() {
+		}
 	};
 
 
-	class Abc3: public Abc, private Abc2 {
+	class Abc3: public Abc, protected Abc2 {
+	private:
+		int fieldC = 0;
+
 	public:
 		Abc3(): Abc(2, 3.0) {
 		}
 
-		void callfunc() {
+		void callfunc3() {
 		}
 	};
 }

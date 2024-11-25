@@ -58,7 +58,10 @@ def process_parse(args):
     if args.outhtmldir:
         generate_page_graph = args.entrygraph
         use_vizjs = args.usevizjs
-        print_html(content, args.outhtmldir, generate_page_graph, use_vizjs)
+        jobs = args.jobs
+        if jobs is not None:
+            jobs = int(jobs)
+        print_html(content, args.outhtmldir, generate_page_graph, use_vizjs, jobs)
 
 
 # =======================================================================
@@ -70,8 +73,8 @@ def main():
         description="parse gcc/g++ raw internal tree data",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("-la", "--logall", action="store_true", help="Log all messages")
     parser.set_defaults(func=process_parse)
+    parser.add_argument("-la", "--logall", action="store_true", help="Log all messages")
     parser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
     parser.add_argument("--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths")
     parser.add_argument(
@@ -84,6 +87,9 @@ def main():
         const=True,
         default=True,
         help="Use viz.js standalone for graph rendering.",
+    )
+    parser.add_argument(
+        "-j", "--jobs", action="store", required=False, default=None, help="Number to subprocesses to execute"
     )
     parser.add_argument(
         "--outtypefields", action="store", required=False, default="", help="Output path to types and fields "

@@ -3,7 +3,7 @@
 usage: python3 -m gcclangrawparser.main [-h] [-la] --rawfile RAWFILE
                                         [--reducepaths REDUCEPATHS]
                                         [--entrygraph [ENTRYGRAPH]]
-                                        [--usevizjs [USEVIZJS]]
+                                        [--usevizjs [USEVIZJS]] [-j JOBS]
                                         [--outtypefields OUTTYPEFIELDS]
                                         [--outtreetxt OUTTREETXT]
                                         [--outbiggraph OUTBIGGRAPH]
@@ -22,6 +22,7 @@ options:
   --usevizjs [USEVIZJS]
                         Use viz.js standalone for graph rendering. (default:
                         True)
+  -j JOBS, --jobs JOBS  Number to subprocesses to execute (default: None)
   --outtypefields OUTTYPEFIELDS
                         Output path to types and fields (default: )
   --outtreetxt OUTTREETXT

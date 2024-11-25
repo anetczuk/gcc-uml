@@ -10,9 +10,7 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
     type: entry: {'_id': '@7', '_type': 'function_type', '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @12>, 'retn': <Entry @11>, 'size': <Entry @10>} items num: 4
       algn: entry: 8 items num: 0
       prms: entry: {'_id': '@12', '_type': 'tree_list', '_chains': {}, '_chained': False, 'valu': <Entry @11>} items num: 1
-        valu: entry: {'_id': '@11', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18>} items num: 2
-          algn: entry: 8 items num: 0
-          name: entry: {'_id': '@18', '_type': 'type_decl', '_chains': {}, '_chained': False, 'name': <Entry @26>, 'note': 'artificial', 'srcp': '<built-in>:0', 'type': <Entry @11>} items num: 0
+        valu: entry: {'_id': '@11', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18>} items num: 0
       retn: entry: {'_id': '@11', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18>} items num: 2
         algn: entry: 8 items num: 0
         name: entry: {'_id': '@18', '_type': 'type_decl', '_chains': {}, '_chained': False, 'name': <Entry @26>, 'note': 'artificial', 'srcp': '<built-in>:0', 'type': <Entry @11>} items num: 4
@@ -21,9 +19,7 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
             strg: entry: void items num: 0
           note: entry: artificial items num: 0
           srcp: entry: <built-in>:0 items num: 0
-          type: entry: {'_id': '@11', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18>} items num: 2
-            algn: entry: 8 items num: 0
-            name: entry: {'_id': '@18', '_type': 'type_decl', '_chains': {}, '_chained': False, 'name': <Entry @26>, 'note': 'artificial', 'srcp': '<built-in>:0', 'type': <Entry @11>} items num: 0
+          type: entry: {'_id': '@11', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18>} items num: 0
       size: entry: {'_id': '@10', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '8', 'type': <Entry @17>} items num: 2
         int: entry: 8 items num: 0
         type: entry: {'_id': '@17', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '128', 'max': <Entry @25>, 'min': <Entry @24>, 'name': <Entry @22>, 'prec': '128', 'sign': 'unsigned', 'size': <Entry @23>} items num: 7
