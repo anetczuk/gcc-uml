@@ -19,6 +19,8 @@ from gcclangrawparser.abstracttraversal import (
     get_nodes_from_graph,
     DepthFirstTreeTraversal,
     BreadthFirstTreeTraversal,
+    get_nodes_from_tree_ancestors,
+    TreeAbstractTraversal,
 )
 
 
@@ -440,14 +442,68 @@ def get_sub_entries(ancestors_list: List[Entry]):
 EntryTreeNode = namedtuple("EntryTreeNode", ["entry", "property", "items"])
 
 
-def get_entry_tree(content: LangContent, include_internals=False) -> EntryTreeNode:
+class EntryTree:
+
+    def __init__(self, content: LangContent):
+        self.content: LangContent = content
+        self.root: EntryTreeNode = None
+        self.include_internals: bool = False
+        self.depth_first: bool = False
+
+    def get_tree_root(self) -> EntryTreeNode:
+        return self.root
+
+    def generate_tree(self, include_internals=False, depth_first=False):
+        self.include_internals: bool = include_internals
+        self.depth_first = depth_first
+        self.root = get_entry_tree(self.content, include_internals, depth_first)
+        return self.root
+
+    def get_filtered_nodes(self):
+        return filter_repeated_entries(self.root, self.depth_first)
+
+
+def get_entry_tree(content: LangContent, include_internals=False, depth_first=False) -> EntryTreeNode:
     content.convert_chains()
     first_entry = content.content_objs["@1"]
 
-    traversal = EntryGraphBreadthFirstTraversal()
-    # traversal = EntryGraphDepthFirstTraversal()
+    traversal: EntryGraphAbstractTraversal = None
+    if depth_first:
+        traversal = EntryGraphDepthFirstTraversal()
+    else:
+        traversal = EntryGraphBreadthFirstTraversal()
+
     converter = EntryTreeConverter(include_internals=include_internals)
     return converter.convert(first_entry, traversal)
+
+
+def filter_repeated_entries(entry_tree: EntryTreeNode, depth_first=False) -> List[List[EntryTreeNode]]:
+    ## to properly work, the traversal have to be the same as traversal
+    ## for creating the entry_tree
+
+    traversal: TreeAbstractTraversal = None
+    if depth_first:
+        traversal = EntryTreeDepthFirstTraversal()
+    else:
+        traversal = EntryTreeBreadthFirstTraversal()
+
+    node_list: List[List[EntryTreeNode]] = get_nodes_from_tree_ancestors(entry_tree, traversal)
+
+    # nodes_dict = {}
+    ret_list = []
+    visited = set()
+    for ancestors_list in node_list:
+        node = ancestors_list[-1]
+        entry = node.entry
+        if not isinstance(entry, Entry):
+            continue
+        entry_id = entry.get_id()
+        if entry_id in visited:
+            continue
+        visited.add(entry_id)
+        ret_list.append(ancestors_list)
+
+    return ret_list
 
 
 def get_node_entry_id(node: EntryTreeNode):

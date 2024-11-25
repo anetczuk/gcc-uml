@@ -87,7 +87,7 @@ prepare_sample() {
 											--reducepaths "$SCRIPT_DIR/" \
 											--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt" \
 											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
-											${ARGS[@]}
+											"${ARGS[@]}"
 # 											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 	else
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
@@ -96,7 +96,7 @@ prepare_sample() {
 											--reducepaths "$SCRIPT_DIR/" \
 											--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt" \
 											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
-											${ARGS[@]}
+											"${ARGS[@]}"
 #											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 	fi
 	set +x

@@ -1,7 +1,9 @@
 usage: python3 -m gcclangrawparser.main [-h] [-la] --rawfile RAWFILE
                                         [--reducepaths REDUCEPATHS]
                                         [--entrygraph [ENTRYGRAPH]]
-                                        [--usevizjs [USEVIZJS]] [-j JOBS]
+                                        [--usevizjs [USEVIZJS]]
+                                        [--includeinternals [INCLUDEINTERNALS]]
+                                        [-j JOBS]
                                         [--outtypefields OUTTYPEFIELDS]
                                         [--outtreetxt OUTTREETXT]
                                         [--outbiggraph OUTBIGGRAPH]
@@ -20,7 +22,10 @@ options:
   --usevizjs [USEVIZJS]
                         Use viz.js standalone for graph rendering. (default:
                         True)
-  -j JOBS, --jobs JOBS  Number to subprocesses to execute (default: None)
+  --includeinternals [INCLUDEINTERNALS]
+                        Should include C++ internals? (default: False)
+  -j JOBS, --jobs JOBS  Number to subprocesses to execute. Auto means to spawn
+                        job per CPU core. (default: auto)
   --outtypefields OUTTYPEFIELDS
                         Output path to types and fields (default: )
   --outtreetxt OUTTREETXT

@@ -21,47 +21,39 @@ from multiprocessing import Pool as Pool1
 from showgraph.graphviz import Graph, set_node_style
 
 from gcclangrawparser.langcontent import (
-    LangContent,
     Entry,
     get_entry_name,
     EntryTreeNode,
-    get_entry_tree,
     EntryTreeDepthFirstTraversal,
     print_entry_tree,
     is_entry_language_internal,
     is_entry_prop_internal,
-    EntryTreeBreadthFirstTraversal,
+    EntryTree,
 )
 from gcclangrawparser.io import write_file, read_file
-from gcclangrawparser.abstracttraversal import get_nodes_from_tree_ancestors
 from gcclangrawparser.vizjs import DATA_DIR
 
 
 _LOGGER = logging.getLogger(__name__)
 
 
-def print_html(content: LangContent, out_dir, generate_page_graph=True, use_vizjs=True, jobs=None):
+def print_html(entry_tree: EntryTree, out_dir, generate_page_graph=True, use_vizjs=True, jobs=None):
     _LOGGER.info("writing HTML output to %s", out_dir)
     os.makedirs(out_dir, exist_ok=True)
-
-    # generate pages
-    print_content_pages(content, out_dir, generate_page_graph, use_vizjs, include_internals=True, jobs=jobs)
-
+    print_html_pages(entry_tree, out_dir, generate_page_graph, use_vizjs, jobs=jobs)
     _LOGGER.info("writing completed")
 
 
-def write_entry_tree(content: LangContent, out_path, indent=2):
-    entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=False)
-
-    tree_content = print_entry_tree(entry_tree, indent)
+def write_entry_tree(entry_tree: EntryTree, out_path, indent=2):
+    tree_root = entry_tree.get_tree_root()
+    tree_content = print_entry_tree(tree_root, indent)
     write_file(out_path, tree_content)
 
 
-def generate_big_graph(content: LangContent, out_path):
-    entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=False)
-
-    # print_entry_tree(entry_tree)
-    nodes_list = EntryTreeDepthFirstTraversal.to_list(entry_tree)
+def generate_big_graph(entry_tree: EntryTree, out_path):
+    tree_root = entry_tree.get_tree_root()
+    # print_entry_tree(tree_root)
+    nodes_list = EntryTreeDepthFirstTraversal.to_list(tree_root)
 
     entry_graph = EntryDotGraph()
 
@@ -214,9 +206,10 @@ class EntryDotGraph:
         return entry.replace(":", "_")
 
 
-def print_content_pages(
-    content: LangContent, out_dir, generate_page_graph, use_vizjs, include_internals=False, jobs=None
-):
+def print_html_pages(entry_tree: EntryTree, out_dir, generate_page_graph, use_vizjs, jobs=None):
+    content = entry_tree.content
+    include_internals = entry_tree.include_internals
+
     depends_dict: Dict[str, List[Any]] = {}
     for entry in content.content_objs.values():
         for entry_field, entry_val in entry.items():
@@ -230,15 +223,14 @@ def print_content_pages(
             depends_dict[dep_id] = dep_list
 
     _LOGGER.info("converting %s entries to tree", content.size())
-    entry_tree: EntryTreeNode = get_entry_tree(content, include_internals=include_internals)
 
-    # tree_content = print_entry_tree(entry_tree)
+    # tree_content = print_entry_tree(tree_root)
     # print("tree:", tree_content)
 
-    node_list = filter_repeated_entries(entry_tree)
+    node_list = entry_tree.get_filtered_nodes()
     # random.shuffle(node_list)
 
-    # tree_content = print_entry_tree(entry_tree)
+    # tree_content = print_entry_tree(tree_root)
     # print("tree:", tree_content)
 
     if generate_page_graph and use_vizjs:
@@ -312,29 +304,6 @@ def chunks(data_list, chunk_size):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(data_list), chunk_size):
         yield data_list[i : i + chunk_size]
-
-
-def filter_repeated_entries(entry_tree: EntryTreeNode) -> List[List[EntryTreeNode]]:
-    ## to properly work, the traversal have to be the same as traversal
-    ## for creating the entry_tree
-    traversal = EntryTreeBreadthFirstTraversal()
-    node_list: List[List[EntryTreeNode]] = get_nodes_from_tree_ancestors(entry_tree, traversal)
-
-    # nodes_dict = {}
-    ret_list = []
-    visited = set()
-    for ancestors_list in node_list:
-        node = ancestors_list[-1]
-        entry = node.entry
-        if not isinstance(entry, Entry):
-            continue
-        entry_id = entry.get_id()
-        if entry_id in visited:
-            continue
-        visited.add(entry_id)
-        ret_list.append(ancestors_list)
-
-    return ret_list
 
 
 class NodePageGenerator:

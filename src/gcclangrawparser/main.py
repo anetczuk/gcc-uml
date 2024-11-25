@@ -25,7 +25,7 @@ import json
 from gcclangrawparser import logger
 from gcclangrawparser.langparser import parse_raw
 from gcclangrawparser.io import write_file
-from gcclangrawparser.langcontent import LangContent
+from gcclangrawparser.langcontent import LangContent, EntryTree
 from gcclangrawparser.printhtml import print_html, generate_big_graph, write_entry_tree
 
 
@@ -47,21 +47,27 @@ def process_parse(args):
         types_str = json.dumps(content.types_fields, indent=4)
         write_file(out_types_fields, types_str)
 
+    include_internals = args.includeinternals
+    entry_tree: EntryTree = EntryTree(content)
+    entry_tree.generate_tree(include_internals=include_internals, depth_first=False)
+
     if args.outtreetxt:
         _LOGGER.info("dumping nodes text representation to %s", args.outtreetxt)
-        write_entry_tree(content, args.outtreetxt)
+        write_entry_tree(entry_tree, args.outtreetxt)
 
     if args.outbiggraph:
         _LOGGER.info("dumping nodes dot representation to %s", args.outbiggraph)
-        generate_big_graph(content, args.outbiggraph)
+        generate_big_graph(entry_tree, args.outbiggraph)
 
     if args.outhtmldir:
         generate_page_graph = args.entrygraph
         use_vizjs = args.usevizjs
         jobs = args.jobs
+        if jobs is not None and jobs == "auto":
+            jobs = None
         if jobs is not None:
             jobs = int(jobs)
-        print_html(content, args.outhtmldir, generate_page_graph, use_vizjs, jobs)
+        print_html(entry_tree, args.outhtmldir, generate_page_graph, use_vizjs, jobs)
 
 
 # =======================================================================
@@ -89,7 +95,15 @@ def main():
         help="Use viz.js standalone for graph rendering.",
     )
     parser.add_argument(
-        "-j", "--jobs", action="store", required=False, default=None, help="Number to subprocesses to execute"
+        "--includeinternals", type=str2bool, nargs="?", const=True, default=False, help="Should include C++ internals?"
+    )
+    parser.add_argument(
+        "-j",
+        "--jobs",
+        action="store",
+        required=False,
+        default="auto",
+        help="Number to subprocesses to execute. Auto means to spawn job per CPU core.",
     )
     parser.add_argument(
         "--outtypefields", action="store", required=False, default="", help="Output path to types and fields "
