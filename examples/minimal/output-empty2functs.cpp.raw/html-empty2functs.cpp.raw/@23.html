@@ -44,10 +44,6 @@ Project is distributed under the BSD 3-Clause license.
 /* jshint esversion: 6 */
 
 
-function element_click(source) {
-    /// do nothing
-}
-
 function toggle_element(element) {
     let next_elem = element.parentElement;
     next_elem = next_elem.nextSibling;
@@ -75,17 +71,22 @@ function toggle_element(element) {
 }
     </script>
 
+    <script>
+        function load_graph() {{
+            /// do nothing
+        }}
+    </script>
 
 
 </head>
-<body>
+<body onload="load_graph()">
     <div class="section"><a href="@1.html">back to @1</a></div>
     <div id="graph" class="graphsection section">
 
     </div>
 
     <div class="section">
-<div class="entryhead">integer_cst <a href="@23.html">@23</a> 128</div>
+<div class="entryhead">integer_cst <a href="@23.html">@23</a> [--unknown--]</div>
 <div class="entryindent">
 <div class="entryhead"><span onclick='toggle_element(this);'>int:</span> 128</div>
 <div class="entryindent">

@@ -44,10 +44,6 @@ Project is distributed under the BSD 3-Clause license.
 /* jshint esversion: 6 */
 
 
-function element_click(source) {
-    /// do nothing
-}
-
 function toggle_element(element) {
     let next_elem = element.parentElement;
     next_elem = next_elem.nextSibling;
@@ -75,10 +71,15 @@ function toggle_element(element) {
 }
     </script>
 
+    <script>
+        function load_graph() {{
+            /// do nothing
+        }}
+    </script>
 
 
 </head>
-<body>
+<body onload="load_graph()">
     <div class="section"><a href="@1.html">back to @1</a></div>
     <div id="graph" class="graphsection section">
 
@@ -87,7 +88,7 @@ function toggle_element(element) {
     <div class="section">
 <div class="entryhead">function_decl <a href="@8.html">@8</a> funct_a</div>
 <div class="entryindent">
-<div class="entryhead"><span onclick='toggle_element(this);'>body:</span> statement_list <a href="@16.html">@16</a> [unhandled entry type: @16 statement_list]</div>
+<div class="entryhead"><span onclick='toggle_element(this);'>body:</span> statement_list <a href="@16.html">@16</a> [--unknown--]</div>
 <div class="entryindent">
 </div>
 <div class="entryhead"><span onclick='toggle_element(this);'>link:</span> extern</div>
@@ -117,7 +118,7 @@ function toggle_element(element) {
 <div class="entryhead"><span onclick='toggle_element(this);'>srcp:</span> empty2functs.cpp:4</div>
 <div class="entryindent">
 </div>
-<div class="entryhead"><span onclick='toggle_element(this);'>type:</span> function_type <a href="@7.html">@7</a> void</div>
+<div class="entryhead"><span onclick='toggle_element(this);'>type:</span> function_type <a href="@7.html">@7</a> [--unknown--]</div>
 <div class="entryindent">
 </div>
 </div>

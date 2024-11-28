@@ -7,7 +7,7 @@
 #
 
 import logging
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Tuple
 from collections import namedtuple
 import pprint
 
@@ -38,7 +38,7 @@ class Entry(Munch):
     def __init__(self, props_dict):
         self._id = None
         self._type = None
-        self._chains = {}
+        self._chains: Dict[str, List[Entry]] = {}
         self._chained = False  # is chain converted?
         super().__init__(props_dict)
 
@@ -63,39 +63,72 @@ class Entry(Munch):
     def set_chained(self, value: bool):
         self._chained = value
 
-    def get_sub_entries(self):
+    def get_sub_entries(self, prop=None):
         ret_list = []
-        entry_chains = self.get_chains()
-        chain_props = set()
-        for chain_prop, chain_list in entry_chains.items():
-            chain_props.add(chain_prop)
-            for chain_item in chain_list:
-                ret_list.append((chain_prop, chain_item))
-        for prop, subentry in self.items():
-            if is_entry_prop_internal(prop):
-                continue
-            if self._chained and prop == "chain":
-                continue
-            if prop in chain_props:
-                ## already added
-                continue
-            ret_list.append((prop, subentry))
+        if prop is not None:
+            entry_chains = self.get_chains()
+            prop_items = entry_chains.get(prop, [])
+            for chain_item in prop_items:
+                ret_list.append((prop, chain_item))
+            self_item = self.get(prop)
+            if self_item is not None:
+                ret_list.append((prop, self_item))
+        else:
+            entry_chains = self.get_chains()
+            chain_props = set()
+            for chain_prop, chain_list in entry_chains.items():
+                chain_props.add(chain_prop)
+                for chain_item in chain_list:
+                    ret_list.append((chain_prop, chain_item))
+            for subprop, subentry in self.items():
+                if is_entry_prop_internal(subprop):
+                    continue
+                if self._chained and subprop == "chain":
+                    continue
+                if subprop in chain_props:
+                    ## already added
+                    continue
+                ret_list.append((subprop, subentry))
         return sorted(ret_list, key=lambda container: container[0])
 
 
 class LangContent:
 
     def __init__(self, content_dict):
-        self.content_lines = content_dict  # raw text lines
+        self.content_lines: Dict[str, Tuple[str, str, Dict[str, str]]] = content_dict  # raw text lines
 
         # dict with found types and it's properties
-        self.types_fields = self._prepare_types_fields()
+        self.types_fields = None
 
         # Entries tree
         # dict keys are entry ids (e.g. @123) values are 'Entry' objects
         self.content_objs: Dict[str, Entry] = self._objectify()
 
-    def _prepare_types_fields(self):
+        self.parents_dict: Dict[str, Tuple[str, Entry]] = None
+        self.ancestors_dict: Dict[str, List[Tuple[Entry, str]]] = None
+
+    def _objectify(self):
+        ret_objs_dict = {}
+        for key, entry in self.content_lines.items():
+            entry_type = entry[1]
+            entry_data = entry[2]
+            obj_dict = {"_id": key, "_type": entry_type}
+            obj_dict.update(entry_data)
+            obj_dict = dict(sorted(obj_dict.items()))  # sort by keys
+            ret_objs_dict[key] = Entry(obj_dict)
+        ## convert entry ids to references
+        for _key, object_item in ret_objs_dict.items():
+            for field, value in object_item.items():
+                if is_entry_prop_internal(field):
+                    continue
+                if value.startswith("@"):
+                    object_item[field] = ret_objs_dict[value]
+        return ret_objs_dict
+
+    def get_types_fields(self):
+        if self.types_fields is not None:
+            return self.types_fields
+
         ret_types_dict = {}
         for _key, entry in self.content_lines.items():
             entry_type = entry[1]
@@ -149,29 +182,74 @@ class LangContent:
             ret_types_dict[entry_type] = type_props
         ret_types_dict = dict(sorted(ret_types_dict.items()))
 
-        return ret_types_dict
-
-    def _objectify(self):
-        ret_objs_dict = {}
-        for key, entry in self.content_lines.items():
-            entry_type = entry[1]
-            entry_data = entry[2]
-            obj_dict = {"_id": key, "_type": entry_type}
-            obj_dict.update(entry_data)
-            obj_dict = dict(sorted(obj_dict.items()))  # sort by keys
-            ret_objs_dict[key] = Entry(obj_dict)
-        for _key, object_item in ret_objs_dict.items():
-            for field, value in object_item.items():
-                if is_entry_prop_internal(field):
-                    continue
-                if value.startswith("@"):
-                    object_item[field] = ret_objs_dict[value]
-        return ret_objs_dict
+        self.types_fields = ret_types_dict
+        return self.types_fields
 
     def size(self):
         return len(self.content_objs)
 
+    def get_root_entry(self):
+        return list(self.content_objs.values())[0]
+
+    def get_parents_dict(self):
+        if self.parents_dict is not None:
+            return self.parents_dict
+
+        parents_dict: Dict[str, List[Any]] = {}
+        for entry in self.content_objs.values():
+            for entry_field, entry_val in entry.items():
+                if is_entry_prop_internal(entry_field):
+                    continue
+                if not isinstance(entry_val, Entry):
+                    continue
+                dep_id = entry_val.get_id()
+                dep_list = parents_dict.get(dep_id, [])
+                dep_list.append((entry_field, entry))
+                parents_dict[dep_id] = dep_list
+
+        self.parents_dict = parents_dict
+        return self.parents_dict
+
+    def get_ancestors_dict(self):
+        if self.ancestors_dict is not None:
+            return self.ancestors_dict
+
+        ret_dict = {}
+
+        def visitor(item_data, ret_dict):
+            ancestors_list = item_data[0]
+            entry = ancestors_list[-1]
+            if not isinstance(entry, Entry):
+                return False
+            entry_id = entry.get_id()
+            curr_ancestors = ret_dict.get(entry_id)
+            if curr_ancestors:
+                # already found - skip
+                return False
+            if len(ancestors_list) < 2:
+                return True
+
+            parent = ancestors_list[-2]
+            prop = item_data[1]
+            parent_id = parent.get_id()
+            parent_ancestors = ret_dict.get(parent_id, [])
+            curr_ancestors = parent_ancestors.copy()
+            curr_ancestors.append((parent, prop))
+            ret_dict[entry_id] = curr_ancestors
+
+            return True
+
+        traversal = EntryGraphBreadthFirstTraversal()
+        root_entry = self.get_root_entry()
+        traversal.visit_graph(root_entry, visitor, ret_dict)
+
+        self.ancestors_dict = ret_dict
+        return self.ancestors_dict
+
     def convert_chains(self):
+        self.parents_dict = None
+        self.ancestors_dict = None
+
         for entry in self.content_objs.values():
             for prop, value in list(entry.items()):
                 if not is_entry_prop_chain(prop):
@@ -305,16 +383,26 @@ def is_entry_language_internal(entry: Entry):
         return False
     if entry.get_type() == "namespace_decl":
         entry_name = get_entry_name(entry)
-        if entry_name == "std" or entry_name.startswith("__"):
-            # internal - do not go deeper
-            return True
-        return False
+        return is_namespace_internal(entry_name)
     if entry.get_type() == "type_decl":
         entry_name = get_entry_name(entry)
         if entry_name.startswith("__"):
             # internal - do not go deeper
             return True
         return False
+    if entry.get_type() == "record_type":
+        entry_name = get_entry_name(entry)
+        if entry_name.startswith("__"):
+            # internal - do not go deeper
+            return True
+        return False
+    return False
+
+
+def is_namespace_internal(name):
+    if name == "std" or name.startswith("__"):
+        # internal - do not go deeper
+        return True
     return False
 
 
@@ -334,14 +422,35 @@ def get_entry_name(entry: Entry):
 
     entry_type = entry.get_type()
 
+    if entry_type == "identifier_node":
+        try:
+            entry_value = entry.get("strg", "[--no entry--]")
+            return get_entry_name_rec(entry_value)
+        except KeyError:
+            print(f"invalid props - {entry}")
+            raise
+
+    entry_value = entry.get("name")
+    if entry_value is not None:
+        return get_entry_name(entry_value)
+
+    return "[--unknown--]"
+
+
+def get_entry_name_rec(entry: Entry):
+    if not isinstance(entry, Entry):
+        return entry
+
+    entry_type = entry.get_type()
+
     if entry_type == "integer_type":
         label = ""
         entry_value = entry.get("name")
         if entry_value is not None:
-            label = get_entry_name(entry_value)
+            label = get_entry_name_rec(entry_value)
 
         entry_qual = entry.get("qual")
-        qual_label = get_entry_name(entry_qual)
+        qual_label = get_entry_name_rec(entry_qual)
         if qual_label is not None:
             if qual_label == "c":
                 label = "const " + label
@@ -351,31 +460,31 @@ def get_entry_name(entry: Entry):
 
     entry_value = entry.get("name")
     if entry_value is not None:
-        return get_entry_name(entry_value)
+        return get_entry_name_rec(entry_value)
 
     if entry_type == "type_decl":
         entry_value = entry["type"]
-        return get_entry_name(entry_value)
+        return get_entry_name_rec(entry_value)
 
     if entry_type == "identifier_node":
         try:
             entry_value = entry.get("strg", "[--no entry--]")
-            return get_entry_name(entry_value)
+            return get_entry_name_rec(entry_value)
         except KeyError:
             print(f"invalid props - {entry}")
             raise
 
     if entry_type == "pointer_type":
         entry_value = entry["ptd"]
-        return get_entry_name(entry_value)
+        return get_entry_name_rec(entry_value)
 
     if entry_type == "function_type":
         entry_value = entry["retn"]
-        return get_entry_name(entry_value)
+        return get_entry_name_rec(entry_value)
 
     if entry_type == "integer_cst":
         entry_value = entry["int"]
-        return get_entry_name(entry_value)
+        return get_entry_name_rec(entry_value)
 
     if entry_type == "complex_type":
         return "[unknown]"
@@ -465,7 +574,7 @@ class EntryTree:
 
 def get_entry_tree(content: LangContent, include_internals=False, depth_first=False) -> EntryTreeNode:
     content.convert_chains()
-    first_entry = content.content_objs["@1"]
+    first_entry = content.get_root_entry()
 
     traversal: EntryGraphAbstractTraversal = None
     if depth_first:

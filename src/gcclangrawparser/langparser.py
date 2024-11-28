@@ -7,6 +7,7 @@
 #
 
 import os
+import logging
 import re
 from typing import Dict
 
@@ -15,24 +16,26 @@ from gcclangrawparser.langcontent import LangContent
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+_LOGGER = logging.getLogger(__name__)
 
-def parse_raw(input_path, reducepaths) -> LangContent:
+
+def parse_raw(input_path, reducepaths=None) -> LangContent:
     if not os.path.isfile(input_path):
         return None
+    _LOGGER.debug("reading input file")
     content_lines = read_raw_file(input_path)
-    return parse_raw_content(content_lines, reducepaths)
-
-
-def parse_raw_content(content_lines, reducepaths) -> LangContent:
     content_dict = convert_lines_to_dict(content_lines, reducepaths)
+    _LOGGER.debug("parsing raw content")
     return LangContent(content_dict)
 
 
 # =========================================
 
 
-def convert_lines_to_dict(content_lines, reducepaths):
-    reduce_len = len(reducepaths)
+def convert_lines_to_dict(content_lines, reducepaths=None):
+    reduce_len = 0
+    if reducepaths:
+        reduce_len = len(reducepaths)
     content_dict = {}
     converter = ProprertiesConverter()
     for line in content_lines:

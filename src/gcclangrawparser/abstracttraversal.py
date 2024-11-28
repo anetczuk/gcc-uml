@@ -38,7 +38,8 @@ class GraphAbstractTraversal:
                 continue
             visited.add(node_id)
 
-            if visitor(item_data, visitor_context):
+            visit_ret = visitor(item_data, visitor_context)
+            if visit_ret is None or visit_ret is True:
                 self._add_subnodes(item_data)
 
     # 'item_data' -- data returned by visitor

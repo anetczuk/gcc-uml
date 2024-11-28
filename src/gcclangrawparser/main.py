@@ -26,7 +26,9 @@ from gcclangrawparser import logger
 from gcclangrawparser.langparser import parse_raw
 from gcclangrawparser.io import write_file
 from gcclangrawparser.langcontent import LangContent, EntryTree
-from gcclangrawparser.printhtml import print_html, generate_big_graph, write_entry_tree
+from gcclangrawparser.tool.tools import write_entry_tree, generate_big_graph
+from gcclangrawparser.tool.printhtml import print_html
+from gcclangrawparser.tool.inheritgraph import generate_inherit_graph
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -35,7 +37,7 @@ _LOGGER = logging.getLogger(__name__)
 # =======================================================================
 
 
-def process_parse(args):
+def process_tools(args):
     _LOGGER.info("parsing input file %s", args.rawfile)
     content: LangContent = parse_raw(args.rawfile, args.reducepaths)
     if content is None:
@@ -44,7 +46,8 @@ def process_parse(args):
     out_types_fields = args.outtypefields
     if out_types_fields:
         _LOGGER.info("dumping types dict")
-        types_str = json.dumps(content.types_fields, indent=4)
+        types_fields = content.get_types_fields()
+        types_str = json.dumps(types_fields, indent=4)
         write_file(out_types_fields, types_str)
 
     include_internals = args.includeinternals
@@ -59,8 +62,20 @@ def process_parse(args):
         _LOGGER.info("dumping nodes dot representation to %s", args.outbiggraph)
         generate_big_graph(entry_tree, args.outbiggraph)
 
+
+def process_printhtml(args):
+    _LOGGER.info("parsing input file %s", args.rawfile)
+    content: LangContent = parse_raw(args.rawfile, args.reducepaths)
+    if content is None:
+        raise RuntimeError(f"unable to parse {args.rawfile}")
+
+    _LOGGER.info("generating entry tree")
+    include_internals = args.includeinternals
+    entry_tree: EntryTree = EntryTree(content)
+    entry_tree.generate_tree(include_internals=include_internals, depth_first=False)
+
     if args.outhtmldir:
-        generate_page_graph = args.entrygraph
+        generate_page_graph = args.genentrygraphs
         use_vizjs = args.usevizjs
         jobs = args.jobs
         if jobs is not None and jobs == "auto":
@@ -68,6 +83,14 @@ def process_parse(args):
         if jobs is not None:
             jobs = int(jobs)
         print_html(entry_tree, args.outhtmldir, generate_page_graph, use_vizjs, jobs)
+
+
+def process_inheritgraph(args):
+    _LOGGER.info("parsing input file %s", args.rawfile)
+    content: LangContent = parse_raw(args.rawfile, args.reducepaths)
+    if content is None:
+        raise RuntimeError(f"unable to parse {args.rawfile}")
+    generate_inherit_graph(content, args.outpath)
 
 
 # =======================================================================
@@ -79,25 +102,47 @@ def main():
         description="parse gcc/g++ raw internal tree data",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.set_defaults(func=process_parse)
     parser.add_argument("-la", "--logall", action="store_true", help="Log all messages")
-    parser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
-    parser.add_argument("--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths")
-    parser.add_argument(
-        "--entrygraph", type=str2bool, nargs="?", const=True, default=True, help="Should generate graph for each entry?"
+    parser.add_argument("--listtools", action="store_true", help="List tools")
+    parser.set_defaults(func=None)
+
+    subparsers = parser.add_subparsers(help="one of tools", description="use one of tools", dest="tool", required=False)
+
+    ## =================================================
+
+    description = "various tools"
+    subparser = subparsers.add_parser("tools", help=description, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    subparser.description = description
+    subparser.set_defaults(func=process_tools)
+    subparser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
+    subparser.add_argument(
+        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"
     )
-    parser.add_argument(
-        "--usevizjs",
+    subparser.add_argument(
+        "-ii",
+        "--includeinternals",
         type=str2bool,
         nargs="?",
         const=True,
-        default=True,
-        help="Use viz.js standalone for graph rendering.",
+        default=False,
+        help="Should include C++ internals?",
     )
-    parser.add_argument(
-        "--includeinternals", type=str2bool, nargs="?", const=True, default=False, help="Should include C++ internals?"
+    subparser.add_argument(
+        "--outtypefields", action="store", required=False, default="", help="Output path to types and fields"
     )
-    parser.add_argument(
+    subparser.add_argument("--outtreetxt", action="store", required=False, default="", help="Output path to tree print")
+    subparser.add_argument("--outbiggraph", action="store", required=False, default="", help="Output path to big graph")
+
+    ## =================================================
+
+    description = "generate static HTML for lang file"
+    subparser = subparsers.add_parser(
+        "printhtml", help=description, formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    subparser.description = description
+    subparser.set_defaults(func=process_printhtml)
+    subparser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
+    subparser.add_argument(
         "-j",
         "--jobs",
         action="store",
@@ -105,18 +150,62 @@ def main():
         default="auto",
         help="Number to subprocesses to execute. Auto means to spawn job per CPU core.",
     )
-    parser.add_argument(
-        "--outtypefields", action="store", required=False, default="", help="Output path to types and fields "
+    subparser.add_argument(
+        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"
     )
-    parser.add_argument("--outtreetxt", action="store", required=False, default="", help="Output path to tree print")
-    parser.add_argument("--outbiggraph", action="store", required=False, default="", help="Output path to big graph")
-    parser.add_argument(
-        "--outhtmldir", action="store", required=False, default="", help="Output directory for HTML representation"
+    subparser.add_argument(
+        "--genentrygraphs",
+        type=str2bool,
+        nargs="?",
+        const=True,
+        default=True,
+        help="Should generate graph for each entry?",
+    )
+    subparser.add_argument(
+        "--usevizjs",
+        type=str2bool,
+        nargs="?",
+        const=True,
+        default=True,
+        help="Use viz.js standalone for graph rendering.",
+    )
+    subparser.add_argument(
+        "-ii",
+        "--includeinternals",
+        type=str2bool,
+        nargs="?",
+        const=True,
+        default=False,
+        help="Should include C++ internals?",
+    )
+    subparser.add_argument(
+        "--outhtmldir", action="store", required=True, default="", help="Output directory for HTML representation"
+    )
+
+    ## =================================================
+
+    description = "generate inheritance graph"
+    subparser = subparsers.add_parser(
+        "inheritgraph", help=description, formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    subparser.description = description
+    subparser.set_defaults(func=process_inheritgraph)
+    subparser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
+    subparser.add_argument(
+        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"
+    )
+    subparser.add_argument(
+        "--outpath", action="store", required=True, default="", help="Output directory for HTML representation"
     )
 
     ## =================================================
 
     args = parser.parse_args()
+
+    if args.listtools is True:
+        tools_list = list(subparsers.choices.keys())
+        print(", ".join(tools_list))
+        return 0
 
     if args.logall is True:
         logger.configure(logLevel=logging.DEBUG)

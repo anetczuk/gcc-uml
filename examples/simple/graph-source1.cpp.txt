@@ -199,19 +199,12 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
             0: entry: {'_id': '@263', '_type': 'cleanup_point_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @293>, 'type': <Entry @14>} items num: 2
               op 0: entry: {'_id': '@293', '_type': 'expr_stmt', '_chains': {}, '_chained': False, 'expr': <Entry @320>, 'type': <Entry @14>} items num: 2
                 expr: entry: {'_id': '@320', '_type': 'modify_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @346>, 'op 1': <Entry @347>, 'type': <Entry @14>} items num: 3
-                  op 0: entry: {'_id': '@346', '_type': 'indirect_ref', '_chains': {}, '_chained': False, 'op 0': <Entry @372>, 'type': <Entry @371>} items num: 2
+                  op 0: entry: {'_id': '@346', '_type': 'indirect_ref', '_chains': {}, '_chained': False, 'op 0': <Entry @372>, 'type': <Entry @371>} items num: 1
                     op 0: entry: {'_id': '@372', '_type': 'nop_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @232>, 'type': <Entry @394>} items num: 2
                       op 0: entry: {'_id': '@232', '_type': 'parm_decl', '_chains': {}, '_chained': True, 'algn': '64', 'argt': <Entry @95>, 'name': <Entry @94>, 'note': 'artificial', 'orig': <Entry @200>, 'scpe': <Entry @199>, 'size': <Entry @77>, 'srcp': 'source1.cpp:32', 'type': <Entry @95>, 'used': '0'} items num: 0
-                      type: entry: {'_id': '@394', '_type': 'reference_type', '_chains': {}, '_chained': False, 'algn': '64', 'refd': <Entry @371>, 'size': <Entry @77>} items num: 3
+                      type: entry: {'_id': '@394', '_type': 'reference_type', '_chains': {}, '_chained': False, 'algn': '64', 'refd': <Entry @371>, 'size': <Entry @77>} items num: 2
                         algn: entry: 64 items num: 0
-                        refd: entry: {'_id': '@371', '_type': 'record_type', '_chains': {}, '_chained': False, 'algn': '64', 'bfld': <Entry @29>, 'name': <Entry @392>, 'size': <Entry @393>} items num: 0
                         size: entry: {'_id': '@77', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '64', 'type': <Entry @19>} items num: 0
-                    type: entry: {'_id': '@371', '_type': 'record_type', '_chains': {}, '_chained': False, 'algn': '64', 'bfld': <Entry @29>, 'name': <Entry @392>, 'size': <Entry @393>} items num: 3
-                      algn: entry: 64 items num: 0
-                      bfld: entry: {'_id': '@29', '_type': 'record_type', '_chains': {'flds': [<Entry @47>, <Entry @69>, <Entry @92>, <Entry @121>, <Entry @144>, <Entry @167>, <Entry @195>, <Entry @228>, <Entry @260>, <Entry @210>, <Entry @242>, <Entry @270>, <Entry @172>, <Entry @199>, <Entry @147>, <Entry @173>, <Entry @202>]}, '_chained': False, 'accs': 'pub', 'algn': '64', 'base': <Entry @46>, 'binf': <Entry @48>, 'flds': <Entry @47>, 'name': <Entry @16>, 'size': <Entry @44>, 'tag': 'struct'} items num: 0
-                      size: entry: {'_id': '@393', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '160', 'type': <Entry @19>} items num: 2
-                        int: entry: 160 items num: 0
-                        type: entry: {'_id': '@19', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '128', 'max': <Entry @37>, 'min': <Entry @36>, 'name': <Entry @34>, 'prec': '128', 'sign': 'unsigned', 'size': <Entry @35>} items num: 0
                   op 1: entry: {'_id': '@347', '_type': 'constructor', '_chains': {}, '_chained': False, 'lngt': '0'} items num: 1
                     lngt: entry: 0 items num: 0
                   type: entry: {'_id': '@14', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @24>} items num: 0
