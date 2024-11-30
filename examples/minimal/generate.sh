@@ -43,6 +43,7 @@ prepare_sample() {
 	if [ $USE_PROFILER -eq 1 ]; then
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
 		"$SRC_DIR"/gcclangrawparser/main.py printhtml \
+											--progressbar=False \
 											--rawfile "$SAMPLE_PATH" \
 											--genentrygraphs=False \
 											--outhtmldir "$OUT_DIR/html-$SAMPLE_FILE"

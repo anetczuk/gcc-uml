@@ -15,6 +15,7 @@ import shutil
 from multiprocessing import Pool as Pool1
 
 # from multiprocessing.pool import ThreadPool as Pool1
+
 # from gcclangrawparser.multiprocessingmock import DummyPool as Pool1
 
 from gcclangrawparser.langcontent import (
@@ -29,6 +30,7 @@ from gcclangrawparser.langcontent import (
 from gcclangrawparser.io import write_file
 from gcclangrawparser.vizjs import DATA_DIR
 from gcclangrawparser.tool.tools import EntryDotGraph, get_graph_as_svg
+from gcclangrawparser.progressbar import get_processbar_pool, iterate_progressar, end_progressbar
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -102,7 +104,10 @@ def print_html_pages(entry_tree: EntryTree, out_dir, generate_page_graph, use_vi
         return
 
     process_num = jobs
-    with Pool1(process_num) as process_pool:
+
+    with get_processbar_pool(Pool1, process_num) as process_pool:
+        # with Pool1(process_num) as process_pool:
+
         result_queue = []
         node_list_size = len(node_list)
         chunk_size = int(node_list_size / process_num) + 1
@@ -126,15 +131,21 @@ def print_html_pages(entry_tree: EntryTree, out_dir, generate_page_graph, use_vi
 
 
 def generate_content_list(
-    node_list, depends_dict, out_dir, generate_page_graph, use_vizjs, include_internals=False, _proc_index=0
+    node_list, depends_dict, out_dir, generate_page_graph, use_vizjs, include_internals=False, proc_index=0
 ):
     node_page_gen = NodePageGenerator(
         include_internals=include_internals, generate_page_graph=generate_page_graph, use_vizjs=use_vizjs
     )
     # node_page_gen.generate_from_list(node_list, depends_dict, out_dir)
 
-    for ancestors_list in node_list:
+    name = f"job {proc_index + 1}"
+
+    for ancestors_list in iterate_progressar(node_list, name, len(node_list)):
         node_page_gen.generate_node_page(ancestors_list, depends_dict, out_dir)
+    end_progressbar()
+
+    # for ancestors_list in node_list:
+    #     node_page_gen.generate_node_page(ancestors_list, depends_dict, out_dir)
 
 
 def chunks_equal(nodes_list, chunks_num):

@@ -54,6 +54,7 @@ options:
 ```
 usage: python3 -m gcclangrawparser.main printhtml [-h] --rawfile RAWFILE
                                                   [-j JOBS]
+                                                  [--progressbar [PROGRESSBAR]]
                                                   [--reducepaths REDUCEPATHS]
                                                   [--genentrygraphs [GENENTRYGRAPHS]]
                                                   [--usevizjs [USEVIZJS]]
@@ -67,6 +68,8 @@ options:
   --rawfile RAWFILE     Path to raw file to analyze (default: )
   -j JOBS, --jobs JOBS  Number to subprocesses to execute. Auto means to spawn
                         job per CPU core. (default: auto)
+  --progressbar [PROGRESSBAR]
+                        Show progress bar (default: True)
   --reducepaths REDUCEPATHS
                         Prefix to remove from paths (default: )
   --genentrygraphs [GENENTRYGRAPHS]

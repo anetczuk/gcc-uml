@@ -29,6 +29,7 @@ from gcclangrawparser.langcontent import LangContent, EntryTree
 from gcclangrawparser.tool.tools import write_entry_tree, generate_big_graph
 from gcclangrawparser.tool.printhtml import print_html
 from gcclangrawparser.tool.inheritgraph import generate_inherit_graph
+from gcclangrawparser.progressbar import disable_progressar
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -64,6 +65,9 @@ def process_tools(args):
 
 
 def process_printhtml(args):
+    if not args.progressbar:
+        disable_progressar()
+
     _LOGGER.info("parsing input file %s", args.rawfile)
     content: LangContent = parse_raw(args.rawfile, args.reducepaths)
     if content is None:
@@ -149,6 +153,14 @@ def main():
         required=False,
         default="auto",
         help="Number to subprocesses to execute. Auto means to spawn job per CPU core.",
+    )
+    subparser.add_argument(
+        "--progressbar",
+        type=str2bool,
+        nargs="?",
+        const=True,
+        default=True,
+        help="Show progress bar",
     )
     subparser.add_argument(
         "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"

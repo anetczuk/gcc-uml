@@ -1,2 +1,7 @@
+# worked on version 4.0.0
 munch
+
+# worked on version 2.0.5
+atpbar
+
 showgraph @ git+https://github.com/anetczuk/showgraph-py#subdirectory=src

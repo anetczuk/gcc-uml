@@ -82,14 +82,15 @@ prepare_sample() {
 
 	set -x
 
+	## generate various data
 	"$SRC_DIR"/gcclangrawparser/main.py tools \
 										--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 										--reducepaths "$SCRIPT_DIR/" \
 										--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
-										--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt" \
-										"${ARGS[@]}"
+										--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt"
 # 											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 
+	## print html
 	if [ "$USE_PROFILER" = false ]; then
 		"$SRC_DIR"/gcclangrawparser/main.py printhtml \
 											--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
@@ -99,6 +100,7 @@ prepare_sample() {
 	else
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
 		"$SRC_DIR"/gcclangrawparser/main.py printhtml \
+											--progressbar=False \
 											--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 											--reducepaths "$SCRIPT_DIR/" \
 											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
