@@ -70,10 +70,11 @@ class ClassDiagramGenerator:
             return
 
         # generate
-        content = """\
+        content_list = [] 
+        content_list.append("""\
 @startuml
 
-"""
+""")
 
         counter = 0
         name_dict = {}
@@ -82,17 +83,18 @@ class ClassDiagramGenerator:
             actor_id = f"item_{counter}"
             counter += 1
             name_dict[actor] = actor_id
-            content += f"""class "{actor}" as {actor_id}\n"""
+            content_list.append(f"""class "{actor}" as {actor_id}\n""")
 
-        content += "\n"
+        content_list.append("\n")
 
         for from_class, to_list in self.connections_dict.items():
             from_id = name_dict[from_class]
             for base_class, access in to_list:
                 to_id = name_dict[base_class]
-                content += f"""{from_id} --|> {to_id}: "{access}"\n"""
+                content_list.append(f"""{from_id} --|> {to_id}: "{access}"\n""")
 
-        content += "\n@enduml\n"
+        content_list.append("\n@enduml\n")
+        content = "".join(content_list)
 
         print(f"\ndiagram:\n{content}")
 

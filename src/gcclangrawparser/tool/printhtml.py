@@ -96,6 +96,7 @@ def print_html_pages(entry_tree: EntryTree, out_dir, generate_page_graph, use_vi
 
     if jobs is None:
         jobs = os.cpu_count()
+        jobs = int(jobs * 2 / 3) + 1
 
     elif jobs < 2:
         node_list_size = len(node_list)
@@ -420,7 +421,7 @@ class NodePrinter:
         printer = EntryPrinter(include_internals=self.include_internals)
         EntryTreeDepthFirstTraversal.traverse(node, self._print_single_node, [printer, node])
         printer.close_sections()
-        return printer.content
+        return printer.get_content()
 
     def _print_single_node(self, ancestors_list: EntryTreeNode, _node_data=None, visitor_context=None):
         node = ancestors_list[-1]
@@ -441,8 +442,11 @@ class NodePrinter:
 class EntryPrinter:
     def __init__(self, include_internals=False):
         self.include_internals = include_internals
-        self.content = ""
+        self.content_list = []
         self.recent_depth = -1
+
+    def get_content(self):
+        return "".join(self.content_list)
 
     def print_item(self, entry, level, _parent: Entry, prop: str):
         if not self.include_internals:
@@ -453,8 +457,8 @@ class EntryPrinter:
         self.close_sections(level)
         head = self.print_head(entry, prop)
 
-        self.content += head
-        self.content += """<div class="entryindent">\n"""
+        self.content_list.append(head)
+        self.content_list.append("""<div class="entryindent">\n""")
         return True
 
     def print_head(self, entry, prop):
@@ -466,9 +470,7 @@ class EntryPrinter:
 
     def close_sections(self, level=0):
         diff = self.recent_depth + 1 - level
-        self.content += "</div>\n" * diff
-        # for _ in range(level, self.recent_depth + 1):
-        #     self.content += "</div>\n"
+        self.content_list.append("</div>\n" * diff)
         self.recent_depth = level
 
 

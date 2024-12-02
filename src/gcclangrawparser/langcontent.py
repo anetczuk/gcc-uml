@@ -663,15 +663,15 @@ class EntryTreeBreadthFirstTraversal(BreadthFirstTreeTraversal):
 
 
 def print_entry_tree(entry_tree: EntryTreeNode, indent=2) -> str:
-    ret_content = ""
+    ret_content = []
     nodes_list = EntryTreeDepthFirstTraversal.to_list(entry_tree)
     for curr_item, level in nodes_list:
         spaces = " " * level * indent
         prop = ""
         if curr_item.property is not None:
             prop = f"{curr_item.property}: "
-        ret_content += f"{spaces}{prop}entry: {curr_item.entry} items num: {len(curr_item.items)}\n"
-    return ret_content
+        ret_content.append(f"{spaces}{prop}entry: {curr_item.entry} items num: {len(curr_item.items)}\n")
+    return "".join(ret_content)
 
 
 ## ==================================================

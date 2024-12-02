@@ -41,14 +41,14 @@ def read_dict(file_path):
     if not os.path.isfile(file_path):
         return {}
     with open(file_path, "r", encoding="utf-8") as content_file:
-        content = ""
+        content = []
         for line in content_file:
             index = line.find("#")
             if index >= 0:
                 line = line[:index] + "\n"
-            content += line
+            content.append(line)
         # content = content_file.read()
-        return json.loads(content)
+        return json.loads("".join(content))
     return {}
 
 

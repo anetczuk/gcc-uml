@@ -328,12 +328,12 @@ class NodeTreeBreadthFirstTraversal(BreadthFirstTreeTraversal):
 
 
 def print_node_tree(node_tree: TreeNode, indent=2) -> str:
-    ret_content = ""
+    ret_content = []
     nodes_list = NodeTreeDepthFirstTraversal.to_list(node_tree)
     for curr_item, level in nodes_list:
         spaces = " " * level * indent
-        ret_content += f"{spaces}node data: {curr_item.data} items num: {len(curr_item.items)}\n"
-    return ret_content
+        ret_content.append(f"{spaces}node data: {curr_item.data} items num: {len(curr_item.items)}\n")
+    return "".join(ret_content)
 
 
 # ===========================================================
