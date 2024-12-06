@@ -423,10 +423,8 @@ class NodePrinter:
         printer.close_sections()
         return printer.get_content()
 
-    def _print_single_node(self, ancestors_list: EntryTreeNode, _node_data=None, visitor_context=None):
-        node = ancestors_list[-1]
-        if not _node_data:
-            _node_data = 0
+    def _print_single_node(self, ancestors_list: List[EntryTreeNode], visitor_context=None):
+        node: EntryTreeNode = ancestors_list[-1]
         printer, root_node = visitor_context
         prop = node.property
         if root_node == node:
@@ -482,7 +480,7 @@ def print_head(entry, prefix_content="", postfix_content="", print_label=False):
     if print_label:
         label_content = " " + get_entry_name(entry)
     return (
-        f"""<div class="entryhead">{prefix_content}{entry.get_type()} {get_entry_id_href(entry)}"""
+        f"""<div class="entryhead">{prefix_content}{get_entry_id_href(entry)} {entry.get_type()}"""
         f"""{label_content}{postfix_content}</div>\n"""
     )
 

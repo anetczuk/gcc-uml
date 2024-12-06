@@ -13,7 +13,7 @@ VENV=false
 USE_PROFILER=false
 USE_PRINTHTML=false
 
-SRC_SOURCE1=false
+SRC_FILES=()
 
 
 while :; do
@@ -30,8 +30,12 @@ while :; do
       --printhtml)  USE_PRINTHTML=true 
                     shift ;;
 
-      --source1)  SRC_SOURCE1=true 
-                  shift ;;
+      --inherit1)  SRC_FILES+=("inherit1.cpp") 
+                   shift ;;
+      --inherit2a)  SRC_FILES+=("inherit2a.cpp") 
+                    shift ;;
+      --inherit2b)  SRC_FILES+=("inherit2b.cpp") 
+                    shift ;;
 
       *)  ARGS+=("$1")
           shift ;;
@@ -79,7 +83,7 @@ prepare_sample() {
 											"${ARGS[@]}"
 	fi
 
-	OUT_DIAG_PATH="$BUILD_DIR/inherit-${SAMPLE_FILE}.puml"
+	OUT_DIAG_PATH="$BUILD_DIR/../${SAMPLE_FILE}.puml"
 
 	if [ "$USE_PROFILER" = false ]; then
 		"$SRC_DIR"/gcclangrawparser/main.py inheritgraph \
@@ -97,14 +101,23 @@ prepare_sample() {
 	fi
 	set +x
 	
-	plantuml "$OUT_DIAG_PATH"
+	plantuml -tsvg "$OUT_DIAG_PATH" -o "$BUILD_DIR"
 }
 
 
-if [ "$SRC_SOURCE1" = true ]; then
-	prepare_sample "source1.cpp"
+if [ ${#SRC_FILES[@]} -ne 0 ]; then
+	for file_name in "${SRC_FILES[@]}"; do
+		prepare_sample "$file_name"
+	done
+
 	exit 0
 fi
 
 
-prepare_sample "source1.cpp"
+# no files given - use all files
+for src_file in "$SCRIPT_DIR"/src/*.cpp; do
+	file_name=$(basename "${src_file}")
+	prepare_sample "$file_name"
+done
+
+exit 0

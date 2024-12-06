@@ -35,7 +35,7 @@ calling `cmake`). For custom made `Makefile`-s investigate the file (try *standa
 ## Callgraph info
 
 Other interesting *gcc* option is `-fcallgraph-info`. Using `graph-easy` from `libgraph-easy-perl` output can be converted 
-to dot diagram.
+to *dot* diagram.
 
 
 ## Installation
@@ -49,6 +49,13 @@ Installation for development:
  - `install-deps.sh` to install package dependencies only (`requirements.txt`)
  - `install-package.sh` to install package in standard way through `pip` (with dependencies)
  - `install-devel.sh` to install package in developer mode using `pip` (with dependencies)
+
+
+## Issues
+
+- In case of multiple inheritance it is not possible to get accurate information about virtual inheritance, so 
+virtual property is not shown on the graphs (tested under *g++* version 13.2.0). Sample code is in 
+`examples/inherit/src/inherit2a.cpp` file.
 
 
 ## Development

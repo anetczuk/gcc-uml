@@ -1,0 +1,12 @@
+@startuml
+
+class "::Abc4B" as item_0
+class "::items::Abc2" as item_1
+class "::items::Abc1" as item_2
+
+' ::Abc4B --|> ::items::Abc2
+item_0 --|> item_1: "virt pub"
+' ::Abc4B --|> ::items::Abc1
+item_0 --|> item_2: "priv"
+
+@enduml

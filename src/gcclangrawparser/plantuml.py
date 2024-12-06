@@ -59,7 +59,7 @@ class ClassDiagramGenerator:
         conns.append(new_data)
 
     def generate(self, out_path):
-        if not self.connections_dict:
+        if not self.connections_dict and not self.actors_list:
             ## empty data
             content = """\
 @startuml
@@ -70,11 +70,13 @@ class ClassDiagramGenerator:
             return
 
         # generate
-        content_list = [] 
-        content_list.append("""\
+        content_list = []
+        content_list.append(
+            """\
 @startuml
 
-""")
+"""
+        )
 
         counter = 0
         name_dict = {}
@@ -91,6 +93,7 @@ class ClassDiagramGenerator:
             from_id = name_dict[from_class]
             for base_class, access in to_list:
                 to_id = name_dict[base_class]
+                content_list.append(f"""' {from_class} --|> {base_class}\n""")
                 content_list.append(f"""{from_id} --|> {to_id}: "{access}"\n""")
 
         content_list.append("\n@enduml\n")

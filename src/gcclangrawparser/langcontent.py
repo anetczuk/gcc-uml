@@ -63,7 +63,7 @@ class Entry(Munch):
     def set_chained(self, value: bool):
         self._chained = value
 
-    def get_sub_entries(self, prop=None):
+    def get_sub_entries(self, prop=None) -> List[Tuple[str, "Entry"]]:
         ret_list = []
         if prop is not None:
             entry_chains = self.get_chains()
@@ -104,7 +104,7 @@ class LangContent:
         # dict keys are entry ids (e.g. @123) values are 'Entry' objects
         self.content_objs: Dict[str, Entry] = self._objectify()
 
-        self.parents_dict: Dict[str, Tuple[str, Entry]] = None
+        self.parents_dict: Dict[str, List[Tuple[str, Entry]]] = None
         self.ancestors_dict: Dict[str, List[Tuple[Entry, str]]] = None
 
     def _objectify(self):
@@ -191,59 +191,81 @@ class LangContent:
     def get_root_entry(self):
         return list(self.content_objs.values())[0]
 
-    def get_parents_dict(self):
+    # returns dict: {entry_id: [(parent_prop, parent_entry)]}
+    def get_parents_dict(self) -> Dict[str, List[Tuple[str, Entry]]]:
         if self.parents_dict is not None:
             return self.parents_dict
 
-        parents_dict: Dict[str, List[Any]] = {}
+        self.parents_dict = {}
         for entry in self.content_objs.values():
-            for entry_field, entry_val in entry.items():
-                if is_entry_prop_internal(entry_field):
+            for entry_prop, entry_val in entry.items():
+                if is_entry_prop_internal(entry_prop):
                     continue
                 if not isinstance(entry_val, Entry):
                     continue
                 dep_id = entry_val.get_id()
-                dep_list = parents_dict.get(dep_id, [])
-                dep_list.append((entry_field, entry))
-                parents_dict[dep_id] = dep_list
+                dep_list: List[Tuple[str, Entry]] = self.parents_dict.get(dep_id, [])
+                dep_list.append((entry_prop, entry))
+                self.parents_dict[dep_id] = dep_list
 
-        self.parents_dict = parents_dict
         return self.parents_dict
 
     def get_ancestors_dict(self):
         if self.ancestors_dict is not None:
             return self.ancestors_dict
 
-        ret_dict = {}
-
-        def visitor(item_data, ret_dict):
-            ancestors_list = item_data[0]
-            entry = ancestors_list[-1]
+        def visitor(ancestors_list, ret_dict):
+            curr_data = ancestors_list[-1]
+            entry = curr_data[1]
             if not isinstance(entry, Entry):
                 return False
             entry_id = entry.get_id()
-            curr_ancestors = ret_dict.get(entry_id)
-            if curr_ancestors:
-                # already found - skip
-                return False
-            if len(ancestors_list) < 2:
-                return True
 
-            parent = ancestors_list[-2]
-            prop = item_data[1]
-            parent_id = parent.get_id()
-            parent_ancestors = ret_dict.get(parent_id, [])
-            curr_ancestors = parent_ancestors.copy()
-            curr_ancestors.append((parent, prop))
-            ret_dict[entry_id] = curr_ancestors
+            entry_ancestors = ret_dict.get(entry_id)
+            if entry_ancestors is None:
+                entry_ancestors = []
+                ret_dict[entry_id] = entry_ancestors
+
+            # parent_ancestors_lists = ancestors_list[:-1]
+            entry_ancestors.append(ancestors_list.copy())
+
+            # # curr_ancestors = ret_dict.get(entry_id)
+            # # if curr_ancestors is None:
+            # #     curr_ancestors = []
+            # # ret_dict[entry_id] = curr_ancestors
+            #
+            # # if curr_ancestors:
+            # #     # already found - skip
+            # #     return False
+            # if len(ancestors_list) < 2:
+            #     return True
+            #
+            # parent_data = ancestors_list[-2]
+            # parent_entry = parent_data[1]
+            # parent_prop = curr_data[0]
+            # parent_id = parent_entry.get_id()
+            # parent_ancestors_lists = ret_dict.get(parent_id, [])
+            # if not parent_ancestors_lists:
+            #     # empty list - add first item
+            #     new_list = []
+            #     curr_ancestors = [(parent_entry, parent_prop)]
+            #     new_list.append(curr_ancestors)
+            #     ret_dict[entry_id] = new_list
+            # else:
+            #     new_list = []
+            #     for parent_ancestors in parent_ancestors_lists:
+            #         curr_ancestors = parent_ancestors.copy()
+            #         curr_ancestors.append((parent_entry, parent_prop))
+            #         new_list.append(curr_ancestors)
+            #     ret_dict[entry_id] = new_list
 
             return True
 
         traversal = EntryGraphBreadthFirstTraversal()
         root_entry = self.get_root_entry()
-        traversal.visit_graph(root_entry, visitor, ret_dict)
+        self.ancestors_dict = {}
+        traversal.visit_graph(root_entry, visitor, self.ancestors_dict)
 
-        self.ancestors_dict = ret_dict
         return self.ancestors_dict
 
     def convert_chains(self):
@@ -366,8 +388,11 @@ def is_entry_prop_internal(prop: str):
 def is_entry_language_internal(entry: Entry):
     if not isinstance(entry, Entry):
         return False
+    entry_name = get_entry_name(entry)
+    if entry_name and entry_name.startswith("._anon_"):
+        # internal - do not go deeper
+        return True
     if entry.get_type() == "field_decl":
-        entry_name = get_entry_name(entry)
         if not entry_name:
             # internal - do not go deeper
             return True
@@ -382,17 +407,32 @@ def is_entry_language_internal(entry: Entry):
             return True
         return False
     if entry.get_type() == "namespace_decl":
-        entry_name = get_entry_name(entry)
         return is_namespace_internal(entry_name)
     if entry.get_type() == "type_decl":
-        entry_name = get_entry_name(entry)
         if entry_name.startswith("__"):
             # internal - do not go deeper
             return True
         return False
     if entry.get_type() == "record_type":
-        entry_name = get_entry_name(entry)
         if entry_name.startswith("__"):
+            # internal - do not go deeper
+            return True
+        if entry_name.startswith("._anon_"):
+            # internal - do not go deeper
+            return True
+        return False
+    if entry.get_type() == "function_decl":
+        if entry_name.startswith("__"):
+            # internal - do not go deeper
+            return True
+        return False
+    if entry.get_type() == "var_decl":
+        if entry_name.startswith("_ZT"):
+            # internal - do not go deeper
+            return True
+        return False
+    if entry.get_type() == "const_decl":
+        if entry_name.startswith("__IS"):
             # internal - do not go deeper
             return True
         return False
@@ -497,11 +537,11 @@ def get_entry_name_rec(entry: Entry):
 
 class EntryGraphAbstractTraversal(GraphAbstractTraversal):
     def visit_graph(self, node, visitor, visitor_context=None):
-        return self._visit_graph(([node], None), visitor, visitor_context)
+        return self._visit_graph([(None, node)], visitor, visitor_context)
 
     def _get_node_id(self, item_data) -> Any:
-        ancestors_list = item_data[0]
-        item = ancestors_list[-1]
+        curr_data = item_data[-1]
+        item = curr_data[1]
         if not isinstance(item, Entry):
             return None
         return item.get_id()
@@ -523,25 +563,24 @@ class EntryGraphAbstractTraversal(GraphAbstractTraversal):
 
 class EntryGraphDepthFirstTraversal(EntryGraphAbstractTraversal):
     def _add_subnodes(self, item_data):
-        ancestors_list = item_data[0]
-        subentries = get_sub_entries(ancestors_list)
+        subentries = get_sub_entries(item_data)
         rev_list = reversed(subentries)
         self.visit_list.extendleft(rev_list)
 
 
 class EntryGraphBreadthFirstTraversal(EntryGraphAbstractTraversal):
     def _add_subnodes(self, item_data):
-        ancestors_list = item_data[0]
-        subentries = get_sub_entries(ancestors_list)
+        subentries = get_sub_entries(item_data)
         self.visit_list.extend(subentries)
 
 
-def get_sub_entries(ancestors_list: List[Entry]):
-    ret_list = []
-    entry: Entry = ancestors_list[-1]
+def get_sub_entries(ancestors_list: List[Tuple[str, Entry]]) -> List[List[Tuple[str, Entry]]]:
+    entry_data = ancestors_list[-1]
+    entry: Entry = entry_data[1]
     sub_entries = entry.get_sub_entries()
+    ret_list = []
     for prop, subentry in sub_entries:
-        ret_list.append((ancestors_list + [subentry], prop))
+        ret_list.append(ancestors_list + [(prop, subentry)])
     return ret_list
 
 
@@ -626,11 +665,10 @@ def get_node_entry_id(node: EntryTreeNode):
 
 class EntryTreeDepthFirstTraversal(DepthFirstTreeTraversal):
     def _get_subnodes(self, ancestors_list):
-        curr_node = ancestors_list[-1]
-        ret_list = []
-        for subnode in curr_node.items:
-            ret_list.append((ancestors_list + [subnode], None))
-        return ret_list
+        return get_entry_tree_subnodes(ancestors_list)
+
+    def _get_current_item(self, ancestors_list):
+        return ancestors_list[-1]
 
     @classmethod
     def traverse(cls, node: EntryTreeNode, visitor, visitor_context=None):
@@ -645,11 +683,10 @@ class EntryTreeDepthFirstTraversal(DepthFirstTreeTraversal):
 
 class EntryTreeBreadthFirstTraversal(BreadthFirstTreeTraversal):
     def _get_subnodes(self, ancestors_list):
-        curr_node = ancestors_list[-1]
-        ret_list = []
-        for subnode in curr_node.items:
-            ret_list.append((ancestors_list + [subnode], None))
-        return ret_list
+        return get_entry_tree_subnodes(ancestors_list)
+
+    def _get_current_item(self, ancestors_list):
+        return ancestors_list[-1]
 
     @classmethod
     def traverse(cls, node: EntryTreeNode, visitor, visitor_context=None):
@@ -660,6 +697,14 @@ class EntryTreeBreadthFirstTraversal(BreadthFirstTreeTraversal):
     def to_list(cls, node: EntryTreeNode):
         traversal = cls()
         return get_nodes_from_tree(node, traversal)
+
+
+def get_entry_tree_subnodes(ancestors_list):
+    curr_node: EntryTreeNode = ancestors_list[-1]
+    ret_list = []
+    for subnode in curr_node.items:
+        ret_list.append(ancestors_list + [subnode])
+    return ret_list
 
 
 def print_entry_tree(entry_tree: EntryTreeNode, indent=2) -> str:
@@ -696,15 +741,15 @@ class EntryTreeConverter:
         root_node: EntryTreeNode = root_list[0]
         return root_node
 
-    def convert_item(self, item_data, _context=None):
-        ancestors_list: List[Entry] = item_data[0]
-        entry = ancestors_list[-1]
+    def convert_item(self, ancestors_list, _context=None):
+        curr_data = ancestors_list[-1]
+        entry = curr_data[1]
         if isinstance(entry, Entry):
             if not self.include_internals:
                 if is_entry_language_internal(entry):
                     return False
 
-        prop = item_data[1]
+        prop = curr_data[0]
         parents_list = ancestors_list[:-1]
         parent_node_id = self._get_entries_path(parents_list)
         parent_node = self.entry_node_dict[parent_node_id]
@@ -725,7 +770,7 @@ class EntryTreeConverter:
         return True
 
     def _get_entries_path(self, entries_list):
-        return "".join([entry.get_id() for entry in entries_list])
+        return "".join([entry_data[1].get_id() for entry_data in entries_list])
 
 
 def create_entry_tree_depth_first(entry: Entry, include_internals=False) -> EntryTreeNode:
