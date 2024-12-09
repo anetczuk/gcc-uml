@@ -30,11 +30,8 @@ while :; do
       --printhtml)  USE_PRINTHTML=true 
                     shift ;;
 
-      --inherit1)  SRC_FILES+=("inherit1.cpp") 
-                   shift ;;
-      --inherit2a)  SRC_FILES+=("inherit2a.cpp") 
-                    shift ;;
-      --inherit2b)  SRC_FILES+=("inherit2b.cpp") 
+      --inherit_*)  PARAM=${1:2}
+      				SRC_FILES+=("${PARAM}.cpp")
                     shift ;;
 
       *)  ARGS+=("$1")

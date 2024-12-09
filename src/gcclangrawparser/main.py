@@ -244,4 +244,5 @@ def str2bool(v):
 
 if __name__ == "__main__":
     code = main()
+    _LOGGER.info("exiting")
     sys.exit(code)

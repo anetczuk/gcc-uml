@@ -8,7 +8,7 @@
 
 import os
 import logging
-from typing import List, Tuple, Any, Dict
+from typing import List, Any, Dict
 
 from gcclangrawparser.langcontent import (
     LangContent,
@@ -22,6 +22,9 @@ from gcclangrawparser.plantuml import ClassDiagramGenerator
 _LOGGER = logging.getLogger(__name__)
 
 
+FIELD_ACCESS_CONVERT_DICT = {"priv": "private", "prot": "protected", "pub": "public"}
+
+
 def generate_inherit_graph(content: LangContent, out_path, include_internals=False):
     _LOGGER.info("generating inheritance graph to %s", out_path)
     parent_dir = os.path.abspath(os.path.join(out_path, os.pardir))
@@ -29,26 +32,11 @@ def generate_inherit_graph(content: LangContent, out_path, include_internals=Fal
 
     content.convert_chains()
 
-    diagram_gen = ClassDiagramGenerator()
-
-    classes_info: List[ClassData] = get_classes_info(content, include_internals)
-    for class_info in classes_info:
-        class_name = class_info.name
-        diagram_gen.add_class(class_name, allow_repeated=False)
-        for base_name, base_access in class_info.bases:
-            diagram_gen.add_connection(class_name, base_name, base_access, allow_repeated=False)
+    classes_info = get_classes_info(content, include_internals)
+    diagram_gen = ClassDiagramGenerator(classes_info)
 
     diagram_gen.generate(out_path)
     _LOGGER.info("generating completed")
-
-
-class ClassData:
-    def __init__(self, name):
-        self.name = name
-        self.bases = []
-
-    def add_base(self, base_name, base_access):
-        self.bases.append((base_name, base_access))
 
 
 def is_namespace_internal(namepace_list):
@@ -65,22 +53,24 @@ def is_namespace_internal(namepace_list):
     return False
 
 
-def get_classes_info(content: LangContent, include_internals=False) -> List[ClassData]:
-    ret_list = []
+def get_classes_info(content: LangContent, include_internals=False) -> Dict[str, ClassDiagramGenerator.ClassData]:
+    ret_dict = {}
     for entry in content.content_objs.values():
         if entry.get_type() != "identifier_node":
             continue
         if not include_internals:
             if is_entry_language_internal(entry):
                 continue
-        info: ClassData = get_class_info(content, entry, include_internals=include_internals)
+        info = get_class_info(content, entry, include_internals=include_internals)
         if info is None:
             continue
-        ret_list.append(info)
-    return ret_list
+        ret_dict[info.name] = info
+    return ret_dict
 
 
-def get_class_info(content: LangContent, identifier_entry: Entry, include_internals=False) -> ClassData:
+def get_class_info(
+    content: LangContent, identifier_entry: Entry, include_internals=False
+) -> ClassDiagramGenerator.ClassData:
     class_name = identifier_entry.get("strg")
     if not class_name:
         return None
@@ -105,8 +95,6 @@ def get_class_info(content: LangContent, identifier_entry: Entry, include_intern
         entry_namespace_list = get_namespace_list(record_entry, ancestors_dict)
         if entry_namespace_list is None:
             continue
-
-        entry_namespace_list.append(class_name)
         if not include_internals:
             if is_namespace_internal(entry_namespace_list):
                 continue
@@ -115,37 +103,32 @@ def get_class_info(content: LangContent, identifier_entry: Entry, include_intern
         data_dict: Dict[str, Any] = {}
         data_dict["type_entry"] = parent_entry
         data_dict["name"] = entry_name
-        bases_data: List[Tuple[str, str]] = []
 
-        bases = get_bases(record_entry, include_internals=include_internals)
-        for base_entry, base_access in bases:
-            base_namespace_list = get_namespace_list(base_entry, ancestors_dict)
-            base_type_name = get_name_record_type(base_entry)
-            base_namespace_list.append(base_type_name)
-            if not include_internals:
-                if is_namespace_internal(base_namespace_list):
-                    continue
-            base_name = "::".join(base_namespace_list)
-            bases_data.append((base_access, base_name))
+        base_list = get_bases_list(record_entry, ancestors_dict, include_internals=include_internals)
+        data_dict["bases"] = base_list
 
-        data_dict["bases"] = bases_data
+        field_list = get_fields_list(record_entry, include_internals=include_internals)
+        data_dict["fields"] = field_list
+
+        method_list = get_methods_list(entry_name, record_entry, ancestors_dict)
+        data_dict["methods"] = method_list
+
         class_data_list.append(data_dict)
 
     if not class_data_list:
         return None
-    if len(class_data_list) > 1:
-        return None
+    # if len(class_data_list) > 1:
+    #     return None
 
-    class_data = class_data_list[0]
-    type_entry = class_data["type_entry"]
-    class_name = class_data["name"]
-    bases_data = class_data["bases"]
-    _LOGGER.info("inheritance: %s (%s) -> %a", class_name, type_entry.get_id(), bases_data)
-    class_info = ClassData(class_name)
-    for base_access, base_name in bases_data:
-        class_info.add_base(base_name, base_access)
+    raw_data = class_data_list[0]
 
-    return class_info
+    class_data = ClassDiagramGenerator.ClassData()
+    class_data.name = raw_data["name"]
+    class_data.bases = raw_data["bases"]
+    class_data.fields = raw_data["fields"]
+    class_data.methods = raw_data["methods"]
+
+    return class_data
 
 
 def get_name_record_type(entry: Entry):
@@ -154,7 +137,18 @@ def get_name_record_type(entry: Entry):
     return identifier_entry.get("strg")
 
 
+def get_full_name(entry: Entry, ancestors_dict) -> str:
+    if entry.get_type() == "record_type":
+        ns_list = get_namespace_list(entry, ancestors_dict)
+        return "::".join(ns_list)
+    return get_entry_name(entry)
+
+
 def get_namespace_list(record_entry: Entry, ancestors_dict) -> List[str]:
+    unql_entry = record_entry.get("unql")
+    if unql_entry is not None:
+        record_entry = unql_entry
+
     ret_list = None
     entry_id = record_entry.get_id()
     lists = ancestors_dict.get(entry_id)
@@ -188,7 +182,25 @@ def get_namespace_list(record_entry: Entry, ancestors_dict) -> List[str]:
             if len(namespace_list) < len(ret_list):
                 ret_list = namespace_list
 
+    if ret_list is not None:
+        base_type_name = get_name_record_type(record_entry)
+        ret_list.append(base_type_name)
+
     return ret_list
+
+
+def get_bases_list(record_entry: Entry, ancestors_dict, include_internals=False):
+    base_list = []
+    entry_bases = get_bases(record_entry, include_internals=include_internals)
+    for base_entry, base_access in entry_bases:
+        base_namespace_list = get_namespace_list(base_entry, ancestors_dict)
+        if not include_internals:
+            if is_namespace_internal(base_namespace_list):
+                continue
+        base_name = "::".join(base_namespace_list)
+        base = ClassDiagramGenerator.ClassBase(base_name, base_access)
+        base_list.append(base)
+    return base_list
 
 
 def get_bases(record_entry: Entry, include_internals=False):
@@ -280,11 +292,194 @@ def get_bases(record_entry: Entry, include_internals=False):
     found_bases_num = len(ret_list) + internal_bases
     if found_bases_num != binf_bases:
         _LOGGER.info("found bases: %s", ret_list)
-        raise RuntimeError(
-            f"unable to find all bases for entry {record_entry.get_id()}, required {binf_bases} found {found_bases_num}"
+        _LOGGER.error(
+            "unable to find all bases for entry %s, required %s found %s",
+            record_entry.get_id(),
+            binf_bases,
+            found_bases_num,
         )
 
     return ret_list
+
+
+def get_fields_list(record_entry: Entry, include_internals=False):
+    field_list = []
+    entry_fields = get_fields(record_entry, include_internals=include_internals)
+    for item in entry_fields:
+        field_name, field_type, field_access = item
+        access = FIELD_ACCESS_CONVERT_DICT[field_access]
+        field = ClassDiagramGenerator.ClassField(field_name, field_type, access)
+        field_list.append(field)
+    return field_list
+
+
+def get_fields(record_entry: Entry, include_internals=False):
+    ret_list = []
+
+    flds_entries = record_entry.get_sub_entries("flds")
+    for _prop, item in flds_entries:
+        item_type = item.get_type()
+        if item_type != "field_decl":
+            # field is defined as field_decl
+            continue
+        field_name = item.get("name")
+        field_name = get_entry_name(field_name)
+        if field_name is None:
+            # proper field must have name
+            continue
+        if field_name.startswith("_vptr."):
+            # ignore vtable
+            continue
+        field_access = item.get("accs")
+        if field_access is None:
+            continue
+
+        field_type = item.get("type")
+        field_type = get_entry_name(field_type)
+        if field_type is None:
+            continue
+        if not include_internals and is_entry_language_internal(field_type):
+            continue
+
+        ret_list.append((field_name, field_type, field_access))
+
+    return ret_list
+
+
+def get_methods_list(class_name, record_entry: Entry, ancestors_dict):
+    method_list = []
+    entry_methods = get_methods(record_entry, ancestors_dict)
+    for item in entry_methods:
+        meth_name, meth_type, meth_mod, meth_access, meth_args = item
+        access = FIELD_ACCESS_CONVERT_DICT[meth_access]
+        args_list = []
+        for arg_item in meth_args:
+            arg_name, arg_type = arg_item
+            if arg_name != "this":
+                continue
+            if "const" in meth_mod:
+                if arg_type == f"{class_name} const * const":
+                    continue
+            else:
+                if arg_type == f"{class_name} * const":
+                    continue
+            arg = ClassDiagramGenerator.FunctionArg(arg_name, arg_type)
+            args_list.append(arg)
+        method = ClassDiagramGenerator.ClassMethod(meth_name, meth_type, meth_mod, access, args_list)
+        method_list.append(method)
+    return method_list
+
+
+def get_methods(record_entry: Entry, ancestors_dict):
+    ret_list = []
+
+    flds_entries = record_entry.get_sub_entries("flds")
+    for _prop, item in flds_entries:
+        if item.get_type() != "function_decl":
+            # base class is defined as field_decl
+            continue
+        method_name = item.get("name")
+        method_name = get_entry_name(method_name)
+        if method_name is None:
+            # proper field must have name
+            continue
+        method_access = item.get("accs")
+        if method_access is None:
+            continue
+
+        method_type = item.get("type")
+        if method_type is None:
+            continue
+        if method_type.get_type() != "method_type":
+            # function is defined as method_type
+            continue
+        method_retn = method_type.get("retn")
+        if method_retn is None:
+            continue
+        ret_type, ret_mod = get_type_name(method_retn, ancestors_dict)
+        method_return = ret_type
+        if ret_mod:
+            method_return = f"{method_return} {ret_mod}"
+
+        method_mod = method_retn.get("qual")
+        if method_mod is not None:
+            method_mod = get_entry_name(method_mod)
+            if method_mod == "c":
+                method_return = f"{method_return} const"
+
+        method_args = item.get_sub_entries("args")
+        if not method_args:
+            continue
+
+        this_arg = method_args[0]
+        this_arg = this_arg[1]
+        this_mod = get_this_modifier(this_arg)
+        if this_mod is None:
+            this_mod = ""
+
+        args_list = []
+        for _arg_prop, arg_entry in method_args:
+            arg_name = arg_entry.get("name")
+            arg_name = get_entry_name(arg_name)
+            arg_type_entry = arg_entry.get("type")
+            arg_type, arg_mod = get_type_name(arg_type_entry, ancestors_dict)
+            arg_type_full = arg_type
+            if arg_mod:
+                arg_type_full = f"{arg_type_full} {arg_mod}"
+            args_list.append([arg_name, arg_type_full])
+
+        ret_list.append((method_name, method_return, this_mod, method_access, args_list))
+
+    return ret_list
+
+
+def get_this_modifier(parm_decl_entry: Entry):
+    this_arg_name = parm_decl_entry.get("name")
+    this_arg_name = get_entry_name(this_arg_name)
+    if this_arg_name != "this":
+        return ""
+    this_arg_note = parm_decl_entry.get("note")
+    if not this_arg_note:
+        return ""
+    if this_arg_note != "artificial":
+        return ""
+
+    arg_type = parm_decl_entry.get("type")
+    if arg_type.get_type() != "pointer_type":
+        return ""
+    ptd = arg_type.get("ptd")
+    ptd_qual = ptd.get("qual")
+    if ptd_qual == "c":
+        return "const"
+    return ""
+
+
+def get_type_name(type_entry: Entry, ancestors_dict):
+    parm_mod = None
+    arg_qual = type_entry.get("qual")
+    if arg_qual == "c":
+        parm_mod = "const"
+
+    if type_entry.get_type() == "pointer_type":
+        ptd = type_entry.get("ptd")
+        ptd_name = get_full_name(ptd, ancestors_dict)
+        ptd_qual = ptd.get("qual")
+        if ptd_qual == "c":
+            ptd_name += " const"
+        ptd_name += " *"
+        return (ptd_name, parm_mod)
+
+    if type_entry.get_type() == "reference_type":
+        refd = type_entry.get("refd")
+        refd_name = get_full_name(refd, ancestors_dict)
+        refd_qual = refd.get("qual")
+        if refd_qual == "c":
+            refd_name += " const"
+        refd_name += " &"
+        return (refd_name, parm_mod)
+
+    param_name = get_entry_name(type_entry)
+    return (param_name, parm_mod)
 
 
 def is_class_struct(entry: Entry):

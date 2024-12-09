@@ -72,7 +72,9 @@ class Entry(Munch):
                 ret_list.append((prop, chain_item))
             self_item = self.get(prop)
             if self_item is not None:
-                ret_list.append((prop, self_item))
+                data = (prop, self_item)
+                if data not in ret_list:
+                    ret_list.append(data)
         else:
             entry_chains = self.get_chains()
             chain_props = set()
@@ -456,7 +458,7 @@ def print_entry_graph(entry: Entry):
             print(f"{indent}{node_data}: {curr_item}")
 
 
-def get_entry_name(entry: Entry):
+def get_entry_name(entry: Entry) -> str:
     if not isinstance(entry, Entry):
         return entry
 

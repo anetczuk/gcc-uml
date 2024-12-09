@@ -10,8 +10,9 @@ import logging
 import itertools
 import math
 import hashlib
+from typing import NamedTuple
 
-from typing import Set, List, Dict, Any
+from typing import Set, List, Dict
 
 from showgraph.io import write_file, read_list
 
@@ -32,34 +33,47 @@ BG_COLORS_LIST = read_list(BG_COLORS_PATH)
 
 class ClassDiagramGenerator:
 
-    def __init__(self, conns_dict=None):
-        self.actors_list: List[str] = []
-        self.connections_dict: Dict[str, List[Any]] = conns_dict
-        if self.connections_dict is None:
-            self.connections_dict = {}
+    class ClassData:
+        """Container for class data to be presented on graph."""
 
-    def add_class(self, name: str, allow_repeated=False):
-        if not allow_repeated:
-            if name in self.actors_list:
-                return
-        self.actors_list.append(name)
+        def __init__(self, name=None):
+            self.name: str = name
+            self.bases: List[ClassDiagramGenerator.ClassBase] = []
+            self.fields: List[ClassDiagramGenerator.ClassField] = []
+            self.methods: List[ClassDiagramGenerator.ClassMethod] = []
 
-    def add_connection(self, name_from: str, name_to: str, access: str, allow_repeated=False):
-        self.add_class(name_from, allow_repeated=allow_repeated)
-        self.add_class(name_to, allow_repeated=allow_repeated)
+    FunctionArg = NamedTuple("FunctionArg", [("name", str), ("type", str)])
+    ClassBase = NamedTuple("ClassBase", [("name", str), ("access", str)])
+    ClassField = NamedTuple("ClassField", [("name", str), ("type", str), ("access", str)])
+    ClassMethod = NamedTuple(
+        "ClassMethod", [("name", str), ("type", str), ("modifier", str), ("access", str), ("args", List[FunctionArg])]
+    )
+    Connection = NamedTuple("Connection", [("from_class", str), ("to_class", str), ("label", str)])
 
-        conns = self.connections_dict.get(name_from, None)
-        if conns is None:
-            conns = []
-            self.connections_dict[name_from] = conns
-        new_data = (name_to, access)
-        if not allow_repeated:
-            if new_data in conns:
-                return
-        conns.append(new_data)
+    FIELD_ACCESS_DICT = {"private": "-", "protected": "#", "package private": "~", "public": "+"}
+
+    def __init__(self, class_data_dict=None):
+        self.classes: Dict[str, ClassDiagramGenerator.ClassData] = class_data_dict
+        if self.classes is None:
+            self.classes = {}
+
+    def add_class(self, name: str):
+        self.classes[name] = self.ClassData(name)
+
+    def add_base(self, class_name, base: ClassBase):
+        class_data: ClassDiagramGenerator.ClassData = self.classes[class_name]
+        class_data.bases.append(base)
+
+    def add_class_field(self, class_name, field_data: ClassField):
+        class_data: ClassDiagramGenerator.ClassData = self.classes[class_name]
+        class_data.fields.append(field_data)
+
+    def add_class_method(self, class_name, method_data: ClassMethod):
+        class_data: ClassDiagramGenerator.ClassData = self.classes[class_name]
+        class_data.methods.append(method_data)
 
     def generate(self, out_path):
-        if not self.connections_dict and not self.actors_list:
+        if not self.classes:
             ## empty data
             content = """\
 @startuml
@@ -74,30 +88,70 @@ class ClassDiagramGenerator:
         content_list.append(
             """\
 @startuml
-
 """
         )
 
         counter = 0
         name_dict = {}
 
-        for actor in self.actors_list:
+        for class_data in self.classes.values():
+            actor = class_data.name
             actor_id = f"item_{counter}"
             counter += 1
             name_dict[actor] = actor_id
-            content_list.append(f"""class "{actor}" as {actor_id}\n""")
+            content_list.append(f"""class "{actor}" as {actor_id} {{""")
 
-        content_list.append("\n")
+            for field_item in class_data.fields:
+                field_name, field_type, field_access = field_item
+                access_mark = self.FIELD_ACCESS_DICT.get(field_access)
+                if access_mark is None:
+                    _LOGGER.error("unable to get access mark for access value: '%s'", field_access)
+                    access_mark = ""
+                content_list.append(f"""    {{field}} {access_mark} {field_type} {field_name}""")
 
-        for from_class, to_list in self.connections_dict.items():
+            for method_item in class_data.methods:
+                method_name, method_type, method_mod, method_access, method_args = method_item
+                access_mark = self.FIELD_ACCESS_DICT.get(method_access)
+                if access_mark is None:
+                    _LOGGER.error("unable to get access mark for access value: '%s'", method_access)
+                    access_mark = ""
+
+                args_list = []
+                for arg_item in method_args:
+                    if arg_item.name:
+                        args_list.append(f"{arg_item.type} {arg_item.name}")
+                    else:
+                        args_list.append(f"{arg_item.type} /*anonym*/")
+                        # args_list.append(arg_item.type)
+                args_string = ", ".join(args_list)
+
+                method_mod_prefix = ""
+                if "virtual" in method_mod:
+                    method_mod_prefix = "virtual"
+
+                method_mod_suffix = ""
+                if "const" in method_mod:
+                    method_mod_suffix = "const"
+
+                content_list.append(
+                    f"""    {{method}} {access_mark}{method_mod_prefix} {method_type}"""
+                    f""" {method_name}({args_string}) {method_mod_suffix}"""
+                )
+
+            content_list.append("}")
+
+        content_list.append("")
+
+        for class_data in self.classes.values():
+            from_class = class_data.name
             from_id = name_dict[from_class]
-            for base_class, access in to_list:
-                to_id = name_dict[base_class]
-                content_list.append(f"""' {from_class} --|> {base_class}\n""")
-                content_list.append(f"""{from_id} --|> {to_id}: "{access}"\n""")
+            for base in class_data.bases:
+                to_id = name_dict[base.name]
+                content_list.append(f"""' {from_class} --|> {base.name}""")
+                content_list.append(f"""{from_id} --|> {to_id}: "{base.access}\"""")
 
         content_list.append("\n@enduml\n")
-        content = "".join(content_list)
+        content = "\n".join(content_list)
 
         print(f"\ndiagram:\n{content}")
 
