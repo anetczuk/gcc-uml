@@ -355,14 +355,13 @@ def get_methods_list(class_name, record_entry: Entry, ancestors_dict):
         args_list = []
         for arg_item in meth_args:
             arg_name, arg_type = arg_item
-            if arg_name != "this":
-                continue
-            if "const" in meth_mod:
-                if arg_type == f"{class_name} const * const":
-                    continue
-            else:
-                if arg_type == f"{class_name} * const":
-                    continue
+            if arg_name == "this":
+                if "const" in meth_mod:
+                    if arg_type == f"{class_name} const * const":
+                        continue
+                else:
+                    if arg_type == f"{class_name} * const":
+                        continue
             arg = ClassDiagramGenerator.FunctionArg(arg_name, arg_type)
             args_list.append(arg)
         method = ClassDiagramGenerator.ClassMethod(meth_name, meth_type, meth_mod, access, args_list)
@@ -372,6 +371,8 @@ def get_methods_list(class_name, record_entry: Entry, ancestors_dict):
 
 def get_methods(record_entry: Entry, ancestors_dict):
     ret_list = []
+
+    class_name = get_entry_name(record_entry)
 
     flds_entries = record_entry.get_sub_entries("flds")
     for _prop, item in flds_entries:
@@ -383,6 +384,30 @@ def get_methods(record_entry: Entry, ancestors_dict):
         if method_name is None:
             # proper field must have name
             continue
+
+        method_note = item.get("note")
+        if method_note == "constructor":
+            if method_name == "__ct":
+                # does not allow to detect "default"
+                continue
+            if method_name == "__ct_comp":
+                continue
+            if method_name == "__ct_base":
+                # allows to detect "default"
+                method_name = class_name
+        elif method_note == "destructor":
+            if method_name == "__dt":
+                # does not allow to detect "default"
+                continue
+            if method_name == "__dt_base":
+                continue
+            if method_name == "__dt_comp":
+                # allows to detect "default"
+                method_name = f"~{class_name}"
+            elif method_name == "__dt_del":
+                # generated in case of virtual destructor
+                continue
+
         method_access = item.get("accs")
         if method_access is None:
             continue
@@ -393,42 +418,70 @@ def get_methods(record_entry: Entry, ancestors_dict):
         if method_type.get_type() != "method_type":
             # function is defined as method_type
             continue
-        method_retn = method_type.get("retn")
-        if method_retn is None:
-            continue
-        ret_type, ret_mod = get_type_name(method_retn, ancestors_dict)
-        method_return = ret_type
-        if ret_mod:
-            method_return = f"{method_return} {ret_mod}"
 
-        method_mod = method_retn.get("qual")
-        if method_mod is not None:
-            method_mod = get_entry_name(method_mod)
-            if method_mod == "c":
-                method_return = f"{method_return} const"
+        method_return = ""
+        if method_note not in ("constructor", "destructor"):
+            method_retn = method_type.get("retn")
+            if method_retn is None:
+                continue
+            ret_type, ret_mod = get_type_name(method_retn, ancestors_dict)
+            method_return = ret_type
+            if ret_mod:
+                method_return = f"{method_return} {ret_mod}"
+
+            method_mod = method_retn.get("qual")
+            if method_mod is not None:
+                method_mod = get_entry_name(method_mod)
+                if method_mod == "c":
+                    method_return = f"{method_return} const"
+
+        method_mods = []
 
         method_args = item.get_sub_entries("args")
         if not method_args:
             continue
 
+        ## determine "constness" of method
         this_arg = method_args[0]
         this_arg = this_arg[1]
         this_mod = get_this_modifier(this_arg)
-        if this_mod is None:
-            this_mod = ""
+        if this_mod:
+            method_mods.append(this_mod)
+
+        ## check if method is virtual
+        method_spec = item.get("spec")
+        method_virtual = False
+        if method_spec is not None:
+            if method_spec == "virt":
+                method_virtual = True
+                method_mods.append("virtual")
+            else:
+                _LOGGER.warning("entry %s unknown 'spec' value: %s", item.get_id(), method_spec)
+
+        method_body = item.get("body")
+        if method_body == "undefined":
+            if method_note in ("constructor", "destructor"):
+                method_mods.append("default")
+            else:
+                if method_virtual:
+                    method_mods.append("purevirt")
+
+        method_mods = " ".join(method_mods)
 
         args_list = []
-        for _arg_prop, arg_entry in method_args:
-            arg_name = arg_entry.get("name")
-            arg_name = get_entry_name(arg_name)
-            arg_type_entry = arg_entry.get("type")
-            arg_type, arg_mod = get_type_name(arg_type_entry, ancestors_dict)
-            arg_type_full = arg_type
-            if arg_mod:
-                arg_type_full = f"{arg_type_full} {arg_mod}"
-            args_list.append([arg_name, arg_type_full])
+        if method_note != "destructor":
+            ## destructor does not have any parameters
+            for _arg_prop, arg_entry in method_args:
+                arg_name = arg_entry.get("name")
+                arg_name = get_entry_name(arg_name)
+                arg_type_entry = arg_entry.get("type")
+                arg_type, arg_mod = get_type_name(arg_type_entry, ancestors_dict)
+                arg_type_full = arg_type
+                if arg_mod:
+                    arg_type_full = f"{arg_type_full} {arg_mod}"
+                args_list.append([arg_name, arg_type_full])
 
-        ret_list.append((method_name, method_return, this_mod, method_access, args_list))
+        ret_list.append((method_name, method_return, method_mods, method_access, args_list))
 
     return ret_list
 

@@ -1,0 +1,28 @@
+@startuml
+
+class "::items::Abc3D" as item_0 {
+    {method} +virt  ~Abc3D() 
+}
+class "::items::Abc3C" as item_1 {
+    {method} +  ~Abc3C() 
+}
+class "::items::Abc3B" as item_2 {
+    {method} +virt  ~Abc3B() =default
+}
+class "::items::Abc3A" as item_3 {
+    {method} +  ~Abc3A() =default
+}
+class "::items::Abc2" as item_4 {
+    {method} +  Abc2(::items::Abc2 const & /*anonym*/) 
+}
+class "::items::Abc1C" as item_5 {
+    {method} +  Abc1C() 
+}
+class "::items::Abc1B" as item_6 {
+    {method} +  Abc1B() =default
+}
+class "::items::Abc1A" as item_7 {
+}
+
+
+@enduml

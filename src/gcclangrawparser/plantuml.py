@@ -127,11 +127,16 @@ class ClassDiagramGenerator:
 
                 method_mod_prefix = ""
                 if "virtual" in method_mod:
-                    method_mod_prefix = "virtual"
+                    method_mod_prefix = "virt"
 
-                method_mod_suffix = ""
+                method_mod_suffix = []
                 if "const" in method_mod:
-                    method_mod_suffix = "const"
+                    method_mod_suffix.append("const")
+                if "purevirt" in method_mod:
+                    method_mod_suffix.append("=0")
+                if "default" in method_mod:
+                    method_mod_suffix.append("=default")
+                method_mod_suffix = " ".join(method_mod_suffix)
 
                 content_list.append(
                     f"""    {{method}} {access_mark}{method_mod_prefix} {method_type}"""

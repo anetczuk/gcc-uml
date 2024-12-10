@@ -11,14 +11,12 @@ class "::items::Abc3" as item_0 {
     {method} + int const & callfunc6_ref2() 
 }
 class "::items::Abc2" as item_1 {
-    {method} + void callfunc2() 
+    {method} +virt void callfunc2() 
 }
 class "::items::Abc1" as item_2 {
-    {method} + void __ct() 
-    {method} + void __ct_base() 
-    {method} + void __ct_comp() 
-    {method} + void callfunc1() 
-    {method} + void callfunc2() 
+    {method} +  Abc1() 
+    {method} +virt void callfunc1() 
+    {method} +virt void callfunc2() =0
 }
 
 ' ::items::Abc3 --|> ::items::Abc2
