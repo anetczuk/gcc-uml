@@ -1,17 +1,13 @@
 @startuml
 
-class "::Abc4" as item_0 {
+class "::Abc3" as item_0 {
 }
-class "::items::Abc3" as item_1 {
+class "::items::Abc2" as item_1 {
 }
 class "::items::Abc1" as item_2 {
 }
-class "::items::Abc2" as item_3 {
-}
 
-' ::Abc4 --|> ::items::Abc3
-item_0 --|> item_1: "prot"
-' ::Abc4 --|> ::items::Abc2
-item_0 --|> item_3: "pub"
+' ::Abc3 --|> ::items::Abc2
+item_0 --|> item_1: "pub"
 
 @enduml

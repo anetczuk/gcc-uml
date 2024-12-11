@@ -1,0 +1,24 @@
+@startuml
+
+class "::Abc3" as item_0 {
+}
+class "::items::Abc2A" as item_1 {
+}
+class "::items::Abc2B" as item_2 {
+}
+class "::items::Abc1" as item_3 {
+    {field} + int field
+}
+
+' ::Abc3 --|> ::items::Abc2B
+item_0 --|> item_2: "pub"
+' ::Abc3 --|> ::items::Abc2A
+item_0 --|> item_1: "pub"
+' ::Abc3 --|> ::items::Abc1
+item_0 --|> item_3: "priv"
+' ::items::Abc2A --|> ::items::Abc1
+item_1 --|> item_3: "virt pub"
+' ::items::Abc2B --|> ::items::Abc1
+item_2 --|> item_3: "virt pub"
+
+@enduml
