@@ -379,34 +379,10 @@ def get_methods(record_entry: Entry, ancestors_dict):
         if item.get_type() != "function_decl":
             # base class is defined as field_decl
             continue
-        method_name = item.get("name")
-        method_name = get_entry_name(method_name)
+        method_name = get_method_name(item, class_name)
         if method_name is None:
             # proper field must have name
             continue
-
-        method_note = item.get("note")
-        if method_note == "constructor":
-            if method_name == "__ct":
-                # does not allow to detect "default"
-                continue
-            if method_name == "__ct_comp":
-                continue
-            if method_name == "__ct_base":
-                # allows to detect "default"
-                method_name = class_name
-        elif method_note == "destructor":
-            if method_name == "__dt":
-                # does not allow to detect "default"
-                continue
-            if method_name == "__dt_base":
-                continue
-            if method_name == "__dt_comp":
-                # allows to detect "default"
-                method_name = f"~{class_name}"
-            elif method_name == "__dt_del":
-                # generated in case of virtual destructor
-                continue
 
         method_access = item.get("accs")
         if method_access is None:
@@ -420,6 +396,7 @@ def get_methods(record_entry: Entry, ancestors_dict):
             continue
 
         method_return = ""
+        method_note = item.get("note")
         if method_note not in ("constructor", "destructor"):
             method_retn = method_type.get("retn")
             if method_retn is None:
@@ -435,7 +412,7 @@ def get_methods(record_entry: Entry, ancestors_dict):
                 if method_mod == "c":
                     method_return = f"{method_return} const"
 
-        method_mods = []
+        method_mods: List[str] = []
 
         method_args = item.get_sub_entries("args")
         if not method_args:
@@ -466,7 +443,7 @@ def get_methods(record_entry: Entry, ancestors_dict):
                 if method_virtual:
                     method_mods.append("purevirt")
 
-        method_mods = " ".join(method_mods)
+        method_mods_str = " ".join(method_mods)
 
         args_list = []
         if method_note != "destructor":
@@ -481,9 +458,42 @@ def get_methods(record_entry: Entry, ancestors_dict):
                     arg_type_full = f"{arg_type_full} {arg_mod}"
                 args_list.append([arg_name, arg_type_full])
 
-        ret_list.append((method_name, method_return, method_mods, method_access, args_list))
+        ret_list.append((method_name, method_return, method_mods_str, method_access, args_list))
 
     return ret_list
+
+
+def get_method_name(function_decl: Entry, class_name: str) -> str:
+    method_name = function_decl.get("name")
+    method_name = get_entry_name(method_name)
+    if method_name is None:
+        # proper field must have name
+        return None
+
+    method_note = function_decl.get("note")
+    if method_note == "constructor":
+        if method_name == "__ct":
+            # does not allow to detect "default"
+            return None
+        if method_name == "__ct_comp":
+            return None
+        if method_name == "__ct_base":
+            # allows to detect "default"
+            method_name = class_name
+        return method_name
+    if method_note == "destructor":
+        if method_name == "__dt":
+            # does not allow to detect "default"
+            return None
+        if method_name == "__dt_base":
+            return None
+        if method_name == "__dt_comp":
+            # allows to detect "default"
+            method_name = f"~{class_name}"
+        elif method_name == "__dt_del":
+            # generated in case of virtual destructor
+            return None
+    return method_name
 
 
 def get_this_modifier(parm_decl_entry: Entry):

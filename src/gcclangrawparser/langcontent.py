@@ -465,12 +465,11 @@ def get_entry_name(entry: Entry) -> str:
     entry_type = entry.get_type()
 
     if entry_type == "identifier_node":
-        try:
-            entry_value = entry.get("strg", "[--no entry--]")
-            return get_entry_name_rec(entry_value)
-        except KeyError:
-            print(f"invalid props - {entry}")
-            raise
+        entry_value = entry.get("strg", "[--no entry--]")
+        return get_entry_name_rec(entry_value)
+
+    if entry_type == "integer_cst":
+        return entry.get("int", "[--no entry--]")
 
     entry_value = entry.get("name")
     if entry_value is not None:
