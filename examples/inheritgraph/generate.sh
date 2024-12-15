@@ -34,6 +34,10 @@ while :; do
       				SRC_FILES+=("${PARAM}.cpp")
                     shift ;;
 
+      --cpp_*)  PARAM=${1:2}
+      			SRC_FILES+=("${PARAM}.cpp")
+                shift ;;
+
       *)  ARGS+=("$1")
           shift ;;
     esac

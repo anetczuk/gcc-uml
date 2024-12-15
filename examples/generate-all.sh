@@ -11,9 +11,7 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 "$SCRIPT_DIR"/simple/generate.sh "$@"
 
-"$SCRIPT_DIR"/cpp/generate.sh "$@"
-
-"$SCRIPT_DIR"/inherit/generate.sh "$@"
+"$SCRIPT_DIR"/inheritgraph/generate.sh "$@"
 
 
 # generate small images
