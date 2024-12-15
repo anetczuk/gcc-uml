@@ -99,6 +99,8 @@ class LangContent:
     def __init__(self, content_dict):
         self.content_lines: Dict[str, Tuple[str, str, Dict[str, str]]] = content_dict  # raw text lines
 
+        self._entry_id_counter = None
+
         # dict with found types and it's properties
         self.types_fields = None
 
@@ -106,8 +108,8 @@ class LangContent:
         # dict keys are entry ids (e.g. @123) values are 'Entry' objects
         self.content_objs: Dict[str, Entry] = self._objectify()
 
-        self.parents_dict: Dict[str, List[Tuple[str, Entry]]] = None
-        self.ancestors_dict: Dict[str, List[Tuple[Entry, str]]] = None
+        self.parents_dict: Dict[str, List[Tuple[Entry, str]]] = None
+        self.ancestors_dict: Dict[str, List[List[Tuple[Entry, str]]]] = None
 
     def _objectify(self):
         ret_objs_dict = {}
@@ -126,6 +128,22 @@ class LangContent:
                 if value.startswith("@"):
                     object_item[field] = ret_objs_dict[value]
         return ret_objs_dict
+
+    def _get_next_entry_id(self):
+        if self._entry_id_counter is None:
+            self._entry_id_counter = 0
+            for entry in self.content_objs.values():
+                entry_id = entry.get_id()[1:]
+                entry_id = int(entry_id)
+                if entry_id > self._entry_id_counter:
+                    self._entry_id_counter = entry_id
+
+        self._entry_id_counter += 1
+        return f"@{self._entry_id_counter}"
+
+    def _add_entry(self, entry: Entry):
+        entry_id = entry.get_id()
+        self.content_objs[entry_id] = entry
 
     def get_types_fields(self):
         if self.types_fields is not None:
@@ -193,21 +211,22 @@ class LangContent:
     def get_root_entry(self):
         return list(self.content_objs.values())[0]
 
-    # returns dict: {entry_id: [(parent_prop, parent_entry)]}
-    def get_parents_dict(self) -> Dict[str, List[Tuple[str, Entry]]]:
+    # returns dict: {entry_id: [(parent_entry, prop_in_parent)]}
+    def get_parents_dict(self) -> Dict[str, List[Tuple[Entry, str]]]:
         if self.parents_dict is not None:
             return self.parents_dict
 
         self.parents_dict = {}
+        # entry: Entry
         for entry in self.content_objs.values():
-            for entry_prop, entry_val in entry.items():
+            for entry_prop, entry_val in entry.get_sub_entries():
                 if is_entry_prop_internal(entry_prop):
                     continue
                 if not isinstance(entry_val, Entry):
                     continue
                 dep_id = entry_val.get_id()
-                dep_list: List[Tuple[str, Entry]] = self.parents_dict.get(dep_id, [])
-                dep_list.append((entry_prop, entry))
+                dep_list: List[Tuple[Entry, str]] = self.parents_dict.get(dep_id, [])
+                dep_list.append((entry, entry_prop))
                 self.parents_dict[dep_id] = dep_list
 
         return self.parents_dict
@@ -270,7 +289,11 @@ class LangContent:
 
         return self.ancestors_dict
 
-    def convert_chains(self):
+    def convert_entries(self):
+        self.convert_chain()
+        self.convert_chan()
+
+    def convert_chain(self):
         self.parents_dict = None
         self.ancestors_dict = None
 
@@ -294,12 +317,52 @@ class LangContent:
                 #     if "chain" in chain_entry:
                 #         del chain_entry["chain"]
 
+    def convert_chan(self):
+        self.parents_dict = None
+        self.ancestors_dict = None
+
+        # entry: Entry
+        for entry in list(self.content_objs.values()):
+            if entry.get_type() == "tree_vec":
+                continue
+            for prop, value in list(entry.items()):
+                # if prop != "chan":
+                #     continue
+                if not isinstance(value, Entry):
+                    continue
+                if value.get_type() != "tree_list":
+                    continue
+
+                chan_list = self._get_tree_list_entries(value)
+                if not chan_list:
+                    continue
+                next_id = self._get_next_entry_id()
+                len_str = str(len(chan_list))
+                entry_data = {"_id": next_id, "_type": "tree_vec", "lngt": len_str}
+                for index, item in enumerate(chan_list):
+                    index_str = str(index)
+                    entry_data[index_str] = item
+                tree_vec_entry = Entry(entry_data)
+                self._add_entry(tree_vec_entry)
+                entry[prop] = tree_vec_entry
+
     def _get_chain_entries(self, chain_start: Entry):
         ret_list = []
         chain_item = chain_start
         while chain_item:
             ret_list.append(chain_item)
             chain_item = chain_item.get("chain")
+        return ret_list
+
+    def _get_tree_list_entries(self, tree_list_start: Entry):
+        ret_list = []
+        tree_list_item = tree_list_start
+        while tree_list_item:
+            ret_list.append(tree_list_item)
+            next_item = tree_list_item.get("chan")
+            if next_item:
+                del tree_list_item["chan"]
+            tree_list_item = next_item
         return ret_list
 
     def print_types_fields(self):
@@ -613,7 +676,7 @@ class EntryTree:
 
 
 def get_entry_tree(content: LangContent, include_internals=False, depth_first=False) -> EntryTreeNode:
-    content.convert_chains()
+    content.convert_entries()
     first_entry = content.get_root_entry()
 
     traversal: EntryGraphAbstractTraversal = None

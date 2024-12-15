@@ -99,6 +99,9 @@ prepare_sample() {
 	set +x
 	
 	plantuml -tsvg "$OUT_DIAG_PATH" -o "$BUILD_DIR"
+
+	OUT_DIAG="$BUILD_DIR"/$(basename "${OUT_DIAG_PATH/puml/svg}")
+	echo "diagram output: file://${OUT_DIAG}"
 }
 
 

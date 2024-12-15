@@ -10,7 +10,8 @@ import logging
 import itertools
 import math
 import hashlib
-from typing import NamedTuple
+from enum import Enum, auto
+from typing import NamedTuple, Tuple
 
 from typing import Set, List, Dict
 
@@ -33,14 +34,26 @@ BG_COLORS_LIST = read_list(BG_COLORS_PATH)
 
 class ClassDiagramGenerator:
 
+    CLASS_SPOT_COLOR = "#add1b2"
+
+    class ClassType(Enum):
+        """Predefined struct type."""
+
+        CLASS = auto()
+        TEMPLATE = auto()
+
     class ClassData:
         """Container for class data to be presented on graph."""
 
         def __init__(self, name=None):
+            self.type: ClassDiagramGenerator.ClassType = None  # predefined spot if not explicit
+            self.spot: Tuple[str, str] | str = None  # string and color (color name or #RGB)
+
             self.name: str = name
             self.bases: List[ClassDiagramGenerator.ClassBase] = []
             self.fields: List[ClassDiagramGenerator.ClassField] = []
             self.methods: List[ClassDiagramGenerator.ClassMethod] = []
+            self.generics: List[str] = []
 
     FunctionArg = NamedTuple("FunctionArg", [("name", str), ("type", str)])
     ClassBase = NamedTuple("ClassBase", [("name", str), ("access", str)])
@@ -99,7 +112,17 @@ class ClassDiagramGenerator:
             actor_id = f"item_{counter}"
             counter += 1
             name_dict[actor] = actor_id
-            content_list.append(f"""class "{actor}" as {actor_id} {{""")
+
+            struct_spot = self._get_spot_value(class_data)
+            if struct_spot:
+                struct_spot = f"{struct_spot} "
+
+            gen_string = ""
+            if class_data.generics:
+                gen_string = ", ".join(class_data.generics)
+                gen_string = f"<{gen_string}> "
+
+            content_list.append(f"""class "{actor}" as {actor_id} {gen_string}{struct_spot}{{""")
 
             for field_item in class_data.fields:
                 field_name, field_type, field_access = field_item
@@ -162,6 +185,26 @@ class ClassDiagramGenerator:
 
         _LOGGER.info("writing output to file %s", out_path)
         write_file(out_path, content)
+
+    def _get_spot_value(self, class_data: "ClassDiagramGenerator.ClassData"):
+        if class_data.spot:
+            if isinstance(class_data.spot, str):
+                return class_data.spot
+            spot_string = class_data.spot[0]
+            spot_string = spot_string[0]  # get single character
+            spot_color = class_data.spot[1]
+            if not spot_color:
+                spot_color = self.CLASS_SPOT_COLOR
+            return f"<<({spot_string},{spot_color})>>"
+
+        if class_data.type == ClassDiagramGenerator.ClassType.CLASS:
+            # default style
+            return ""
+
+        if class_data.type == ClassDiagramGenerator.ClassType.TEMPLATE:
+            return "<<T,#FF7700>>"
+
+        return ""
 
 
 ## ===========================================================

@@ -1,0 +1,16 @@
+@startuml
+
+class "::items::Abc3" as item_0 {
+}
+class "::items::Abc2C" as item_1 {
+}
+class "::items::Abc2B" as item_2 {
+}
+class "::items::Abc2A" as item_3 {
+}
+class "::items::Abc1" as item_4 <TTypeA, TTypeB> <<T,#FF7700>> {
+    {field} + TTypeA field
+}
+
+
+@enduml

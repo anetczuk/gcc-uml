@@ -49,7 +49,8 @@ def generate_entry_local_graph(entry, depends_dict, include_internals=True):
     entry_graph.add_node(entry, "red")
 
     # create forward edges
-    for entry_prop, entry_val in entry.items():
+    # entry: Entry
+    for entry_prop, entry_val in entry.get_sub_entries():
         if is_entry_prop_internal(entry_prop):
             continue
         add_hyperlink = True
@@ -60,7 +61,7 @@ def generate_entry_local_graph(entry, depends_dict, include_internals=True):
 
     # create backward edges
     dep_list = depends_dict.get(entry.get_id(), [])
-    for entry_prop, dep_entry in dep_list:
+    for dep_entry, entry_prop in dep_list:
         add_hyperlink = True
         if not include_internals:
             if is_entry_language_internal(dep_entry):

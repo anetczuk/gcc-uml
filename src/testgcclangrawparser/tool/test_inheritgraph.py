@@ -11,8 +11,8 @@ from testgcclangrawparser.data import get_data_path
 
 from gcclangrawparser.langcontent import LangContent
 from gcclangrawparser.langparser import parse_raw
-from gcclangrawparser.tool.inheritgraph import get_classes_info
 from gcclangrawparser.plantuml import ClassDiagramGenerator
+from gcclangrawparser.tool.inheritgraph import InheritanceData
 
 
 class GetClassesInfoTest(unittest.TestCase):
@@ -20,9 +20,10 @@ class GetClassesInfoTest(unittest.TestCase):
     def test_args(self):
         inherit_raw_path = get_data_path("inherit_args.cpp.003l.raw")
         content: LangContent = parse_raw(inherit_raw_path)
-        content.convert_chains()
+        content.convert_entries()
 
-        classes_info = get_classes_info(content)
+        inherit_data = InheritanceData(content)
+        classes_info = inherit_data.get_classes_info()
 
         classes_list = list(classes_info.values())
         self.assertEqual(1, len(classes_list))
@@ -75,9 +76,10 @@ class GetClassesInfoTest(unittest.TestCase):
     def test_methods(self):
         inherit_raw_path = get_data_path("inherit_meths.cpp.003l.raw")
         content: LangContent = parse_raw(inherit_raw_path)
-        content.convert_chains()
+        content.convert_entries()
 
-        classes_info = get_classes_info(content)
+        inherit_data = InheritanceData(content)
+        classes_info = inherit_data.get_classes_info()
 
         classes_list = list(classes_info.values())
         self.assertEqual(3, len(classes_list))
@@ -192,9 +194,10 @@ class GetClassesInfoTest(unittest.TestCase):
     def test_ctors(self):
         inherit_raw_path = get_data_path("inherit_ctors.cpp.003l.raw")
         content: LangContent = parse_raw(inherit_raw_path)
-        content.convert_chains()
+        content.convert_entries()
 
-        classes_info = get_classes_info(content)
+        inherit_data = InheritanceData(content)
+        classes_info = inherit_data.get_classes_info()
 
         classes_list = list(classes_info.values())
         self.assertEqual(8, len(classes_list))
