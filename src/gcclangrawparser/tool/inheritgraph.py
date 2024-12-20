@@ -15,8 +15,9 @@ from gcclangrawparser.langcontent import (
     Entry,
     is_entry_language_internal,
     get_entry_name,
+    is_namespace_internal,
 )
-from gcclangrawparser.plantuml import ClassDiagramGenerator
+from gcclangrawparser.diagram.plantuml import ClassDiagramGenerator
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -33,10 +34,11 @@ def generate_inherit_graph(content: LangContent, out_path, include_internals=Fal
     content.convert_entries()
 
     inherit_data = InheritanceData(content, include_internals)
-    classes_info = inherit_data.get_classes_info()
-    diagram_gen = ClassDiagramGenerator(classes_info)
+    classes_info = inherit_data.generate_data()
 
+    diagram_gen = ClassDiagramGenerator(classes_info)
     diagram_gen.generate(out_path)
+
     _LOGGER.info("generating completed")
 
 
@@ -89,7 +91,7 @@ class InheritanceData:
     def get_dcls_entry(self, record_type_entry: Entry):
         pass
 
-    def get_classes_info(self) -> Dict[str, ClassDiagramGenerator.ClassData]:
+    def generate_data(self) -> Dict[str, ClassDiagramGenerator.ClassData]:
         self.get_identifier_node_decl_dict()
 
         ret_dict = {}
@@ -271,20 +273,6 @@ class InheritanceData:
                     continue
             ret_list.append(entry)
         return ret_list
-
-
-def is_namespace_internal(namepace_list):
-    copied_list = namepace_list.copy()
-    copied_list = [value for value in copied_list if value != ""]  # remove empty elements
-    if not copied_list:
-        # empty list
-        return False
-    if copied_list[0] == "std":
-        return True
-    for name in namepace_list:
-        if name.startswith("__"):
-            return True
-    return False
 
 
 def get_template_parameters(template_decl: Entry):

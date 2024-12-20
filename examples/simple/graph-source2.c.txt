@@ -23,7 +23,7 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
         srcp: entry: source2.c:18 items num: 0
         type: entry: {'_id': '@30', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'qual': 'c', 'sign': 'signed', 'size': <Entry @31>, 'unql': <Entry @24>} items num: 0
         used: entry: 1 items num: 0
-      body: entry: {'_id': '@21', '_type': 'bind_expr', '_chains': {}, '_chained': False, 'body': <Entry @42>, 'type': <Entry @7>, 'vars': <Entry @41>} items num: 3
+      body: entry: {'_id': '@21', '_type': 'bind_expr', '_chains': {'vars': [<Entry @41>, <Entry @64>]}, '_chained': False, 'body': <Entry @42>, 'type': <Entry @7>, 'vars': <Entry @41>} items num: 4
         body: entry: {'_id': '@42', '_type': 'statement_list', '_chains': {}, '_chained': False, '0': <Entry @65>, '1': <Entry @66>, '2': <Entry @67>, '3': <Entry @68>} items num: 4
           0: entry: {'_id': '@65', '_type': 'decl_expr', '_chains': {}, '_chained': False, 'type': <Entry @7>} items num: 1
             type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
@@ -31,7 +31,7 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
             op 0: entry: {'_id': '@89', '_type': 'expr_stmt', '_chains': {}, '_chained': False, 'expr': <Entry @104>, 'line': '19', 'type': <Entry @7>} items num: 3
               expr: entry: {'_id': '@104', '_type': 'convert_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @114>, 'type': <Entry @7>} items num: 2
                 op 0: entry: {'_id': '@114', '_type': 'init_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @41>, 'op 1': <Entry @122>, 'type': <Entry @30>} items num: 3
-                  op 0: entry: {'_id': '@41', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'chain': <Entry @64>, 'name': <Entry @63>, 'scpe': <Entry @9>, 'size': <Entry @31>, 'srcp': 'source2.c:19', 'type': <Entry @30>, 'used': '1'} items num: 0
+                  op 0: entry: {'_id': '@41', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'chain': <Entry @64>, 'name': <Entry @63>, 'scpe': <Entry @9>, 'size': <Entry @31>, 'srcp': 'source2.c:19', 'type': <Entry @30>, 'used': '1'} items num: 0
                   op 1: entry: {'_id': '@122', '_type': 'mult_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @131>, 'op 1': <Entry @132>, 'type': <Entry @24>} items num: 3
                     op 0: entry: {'_id': '@131', '_type': 'call_expr', '_chains': {}, '_chained': False, '0': <Entry @140>, 'fn': <Entry @139>, 'type': <Entry @24>} items num: 3
                       0: entry: {'_id': '@140', '_type': 'nop_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @20>, 'type': <Entry @24>} items num: 2
@@ -65,33 +65,35 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
                 srcp: entry: source2.c:18 items num: 0
                 type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
               op 1: entry: {'_id': '@106', '_type': 'nop_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @64>, 'type': <Entry @24>} items num: 2
-                op 0: entry: {'_id': '@64', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'init': <Entry @88>, 'name': <Entry @84>, 'scpe': <Entry @9>, 'size': <Entry @31>, 'srcp': 'source2.c:20', 'type': <Entry @30>, 'used': '1'} items num: 0
+                op 0: entry: {'_id': '@64', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'init': <Entry @88>, 'name': <Entry @84>, 'scpe': <Entry @9>, 'size': <Entry @31>, 'srcp': 'source2.c:20', 'type': <Entry @30>, 'used': '1'} items num: 0
                 type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
               type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
             type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
         type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
-        vars: entry: {'_id': '@41', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'chain': <Entry @64>, 'name': <Entry @63>, 'scpe': <Entry @9>, 'size': <Entry @31>, 'srcp': 'source2.c:19', 'type': <Entry @30>, 'used': '1'} items num: 8
+        vars: entry: {'_id': '@41', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'chain': <Entry @64>, 'name': <Entry @63>, 'scpe': <Entry @9>, 'size': <Entry @31>, 'srcp': 'source2.c:19', 'type': <Entry @30>, 'used': '1'} items num: 7
           algn: entry: 32 items num: 0
-          chain: entry: {'_id': '@64', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'init': <Entry @88>, 'name': <Entry @84>, 'scpe': <Entry @9>, 'size': <Entry @31>, 'srcp': 'source2.c:20', 'type': <Entry @30>, 'used': '1'} items num: 8
-            algn: entry: 32 items num: 0
-            init: entry: {'_id': '@88', '_type': 'plus_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @103>, 'op 1': <Entry @79>, 'type': <Entry @24>} items num: 3
-              op 0: entry: {'_id': '@103', '_type': 'nop_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @41>, 'type': <Entry @24>} items num: 2
-                op 0: entry: {'_id': '@41', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'chain': <Entry @64>, 'name': <Entry @63>, 'scpe': <Entry @9>, 'size': <Entry @31>, 'srcp': 'source2.c:19', 'type': <Entry @30>, 'used': '1'} items num: 0
-                type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
-              op 1: entry: {'_id': '@79', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '2', 'type': <Entry @24>} items num: 0
-              type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
-            name: entry: {'_id': '@84', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '4', 'strg': 'bbb2'} items num: 0
-            scpe: entry: {'_id': '@9', '_type': 'function_decl', '_chains': {'args': [<Entry @20>, <Entry @40>]}, '_chained': True, 'args': <Entry @20>, 'body': <Entry @21>, 'chain': <Entry @19>, 'link': 'extern', 'name': <Entry @17>, 'scpe': <Entry @4>, 'srcp': 'source2.c:18', 'type': <Entry @18>} items num: 0
-            size: entry: {'_id': '@31', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '32', 'type': <Entry @43>} items num: 0
-            srcp: entry: source2.c:20 items num: 0
-            type: entry: {'_id': '@30', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'qual': 'c', 'sign': 'signed', 'size': <Entry @31>, 'unql': <Entry @24>} items num: 0
-            used: entry: 1 items num: 0
           name: entry: {'_id': '@63', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '4', 'strg': 'bbb1'} items num: 2
             lngt: entry: 4 items num: 0
             strg: entry: bbb1 items num: 0
           scpe: entry: {'_id': '@9', '_type': 'function_decl', '_chains': {'args': [<Entry @20>, <Entry @40>]}, '_chained': True, 'args': <Entry @20>, 'body': <Entry @21>, 'chain': <Entry @19>, 'link': 'extern', 'name': <Entry @17>, 'scpe': <Entry @4>, 'srcp': 'source2.c:18', 'type': <Entry @18>} items num: 0
           size: entry: {'_id': '@31', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '32', 'type': <Entry @43>} items num: 0
           srcp: entry: source2.c:19 items num: 0
+          type: entry: {'_id': '@30', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'qual': 'c', 'sign': 'signed', 'size': <Entry @31>, 'unql': <Entry @24>} items num: 0
+          used: entry: 1 items num: 0
+        vars: entry: {'_id': '@64', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'init': <Entry @88>, 'name': <Entry @84>, 'scpe': <Entry @9>, 'size': <Entry @31>, 'srcp': 'source2.c:20', 'type': <Entry @30>, 'used': '1'} items num: 8
+          algn: entry: 32 items num: 0
+          init: entry: {'_id': '@88', '_type': 'plus_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @103>, 'op 1': <Entry @79>, 'type': <Entry @24>} items num: 3
+            op 0: entry: {'_id': '@103', '_type': 'nop_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @41>, 'type': <Entry @24>} items num: 2
+              op 0: entry: {'_id': '@41', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'chain': <Entry @64>, 'name': <Entry @63>, 'scpe': <Entry @9>, 'size': <Entry @31>, 'srcp': 'source2.c:19', 'type': <Entry @30>, 'used': '1'} items num: 0
+              type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
+            op 1: entry: {'_id': '@79', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '2', 'type': <Entry @24>} items num: 0
+            type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
+          name: entry: {'_id': '@84', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '4', 'strg': 'bbb2'} items num: 2
+            lngt: entry: 4 items num: 0
+            strg: entry: bbb2 items num: 0
+          scpe: entry: {'_id': '@9', '_type': 'function_decl', '_chains': {'args': [<Entry @20>, <Entry @40>]}, '_chained': True, 'args': <Entry @20>, 'body': <Entry @21>, 'chain': <Entry @19>, 'link': 'extern', 'name': <Entry @17>, 'scpe': <Entry @4>, 'srcp': 'source2.c:18', 'type': <Entry @18>} items num: 0
+          size: entry: {'_id': '@31', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '32', 'type': <Entry @43>} items num: 0
+          srcp: entry: source2.c:20 items num: 0
           type: entry: {'_id': '@30', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'qual': 'c', 'sign': 'signed', 'size': <Entry @31>, 'unql': <Entry @24>} items num: 0
           used: entry: 1 items num: 0
       link: entry: extern items num: 0
@@ -130,7 +132,7 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
         srcp: entry: source2.c:14 items num: 0
         type: entry: {'_id': '@30', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'qual': 'c', 'sign': 'signed', 'size': <Entry @31>, 'unql': <Entry @24>} items num: 0
         used: entry: 1 items num: 0
-      body: entry: {'_id': '@38', '_type': 'bind_expr', '_chains': {}, '_chained': False, 'body': <Entry @61>, 'type': <Entry @7>, 'vars': <Entry @60>} items num: 3
+      body: entry: {'_id': '@38', '_type': 'bind_expr', '_chains': {'vars': [<Entry @60>]}, '_chained': False, 'body': <Entry @61>, 'type': <Entry @7>, 'vars': <Entry @60>} items num: 3
         body: entry: {'_id': '@61', '_type': 'statement_list', '_chains': {}, '_chained': False, '0': <Entry @86>, '1': <Entry @87>} items num: 2
           0: entry: {'_id': '@86', '_type': 'decl_expr', '_chains': {}, '_chained': False, 'type': <Entry @7>} items num: 1
             type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
@@ -144,12 +146,12 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
                 srcp: entry: source2.c:14 items num: 0
                 type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
               op 1: entry: {'_id': '@113', '_type': 'nop_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @60>, 'type': <Entry @24>} items num: 2
-                op 0: entry: {'_id': '@60', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'init': <Entry @85>, 'name': <Entry @84>, 'scpe': <Entry @19>, 'size': <Entry @31>, 'srcp': 'source2.c:15', 'type': <Entry @30>, 'used': '1'} items num: 0
+                op 0: entry: {'_id': '@60', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'init': <Entry @85>, 'name': <Entry @84>, 'scpe': <Entry @19>, 'size': <Entry @31>, 'srcp': 'source2.c:15', 'type': <Entry @30>, 'used': '1'} items num: 0
                 type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
               type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
             type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
         type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
-        vars: entry: {'_id': '@60', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'init': <Entry @85>, 'name': <Entry @84>, 'scpe': <Entry @19>, 'size': <Entry @31>, 'srcp': 'source2.c:15', 'type': <Entry @30>, 'used': '1'} items num: 8
+        vars: entry: {'_id': '@60', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'init': <Entry @85>, 'name': <Entry @84>, 'scpe': <Entry @19>, 'size': <Entry @31>, 'srcp': 'source2.c:15', 'type': <Entry @30>, 'used': '1'} items num: 8
           algn: entry: 32 items num: 0
           init: entry: {'_id': '@85', '_type': 'mult_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @37>, 'op 1': <Entry @101>, 'type': <Entry @24>} items num: 3
             op 0: entry: {'_id': '@37', '_type': 'parm_decl', '_chains': {}, '_chained': True, 'algn': '32', 'argt': <Entry @24>, 'chain': <Entry @59>, 'name': <Entry @39>, 'scpe': <Entry @19>, 'size': <Entry @31>, 'srcp': 'source2.c:14', 'type': <Entry @24>, 'used': '1'} items num: 0
@@ -157,9 +159,7 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
               op 0: entry: {'_id': '@59', '_type': 'parm_decl', '_chains': {}, '_chained': True, 'algn': '32', 'argt': <Entry @30>, 'name': <Entry @62>, 'scpe': <Entry @19>, 'size': <Entry @31>, 'srcp': 'source2.c:14', 'type': <Entry @30>, 'used': '1'} items num: 0
               type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
             type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
-          name: entry: {'_id': '@84', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '4', 'strg': 'bbb2'} items num: 2
-            lngt: entry: 4 items num: 0
-            strg: entry: bbb2 items num: 0
+          name: entry: {'_id': '@84', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '4', 'strg': 'bbb2'} items num: 0
           scpe: entry: {'_id': '@19', '_type': 'function_decl', '_chains': {'args': [<Entry @37>, <Entry @59>]}, '_chained': True, 'args': <Entry @37>, 'body': <Entry @38>, 'chain': <Entry @36>, 'link': 'extern', 'name': <Entry @35>, 'scpe': <Entry @4>, 'srcp': 'source2.c:14', 'type': <Entry @18>} items num: 0
           size: entry: {'_id': '@31', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '32', 'type': <Entry @43>} items num: 0
           srcp: entry: source2.c:15 items num: 0
@@ -184,7 +184,7 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
         srcp: entry: source2.c:10 items num: 0
         type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
         used: entry: 1 items num: 0
-      body: entry: {'_id': '@58', '_type': 'bind_expr', '_chains': {}, '_chained': False, 'body': <Entry @83>, 'type': <Entry @7>, 'vars': <Entry @82>} items num: 3
+      body: entry: {'_id': '@58', '_type': 'bind_expr', '_chains': {'vars': [<Entry @82>]}, '_chained': False, 'body': <Entry @83>, 'type': <Entry @7>, 'vars': <Entry @82>} items num: 3
         body: entry: {'_id': '@83', '_type': 'statement_list', '_chains': {}, '_chained': False, '0': <Entry @99>, '1': <Entry @100>} items num: 2
           0: entry: {'_id': '@99', '_type': 'decl_expr', '_chains': {}, '_chained': False, 'type': <Entry @7>} items num: 1
             type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
@@ -198,12 +198,12 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
                 srcp: entry: source2.c:10 items num: 0
                 type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
               op 1: entry: {'_id': '@121', '_type': 'nop_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @82>, 'type': <Entry @24>} items num: 2
-                op 0: entry: {'_id': '@82', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'init': <Entry @98>, 'name': <Entry @63>, 'scpe': <Entry @36>, 'size': <Entry @31>, 'srcp': 'source2.c:11', 'type': <Entry @30>, 'used': '1'} items num: 0
+                op 0: entry: {'_id': '@82', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'init': <Entry @98>, 'name': <Entry @63>, 'scpe': <Entry @36>, 'size': <Entry @31>, 'srcp': 'source2.c:11', 'type': <Entry @30>, 'used': '1'} items num: 0
                 type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
               type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
             type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
         type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
-        vars: entry: {'_id': '@82', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'init': <Entry @98>, 'name': <Entry @63>, 'scpe': <Entry @36>, 'size': <Entry @31>, 'srcp': 'source2.c:11', 'type': <Entry @30>, 'used': '1'} items num: 8
+        vars: entry: {'_id': '@82', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'init': <Entry @98>, 'name': <Entry @63>, 'scpe': <Entry @36>, 'size': <Entry @31>, 'srcp': 'source2.c:11', 'type': <Entry @30>, 'used': '1'} items num: 8
           algn: entry: 32 items num: 0
           init: entry: {'_id': '@98', '_type': 'mult_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @57>, 'op 1': <Entry @110>, 'type': <Entry @24>} items num: 3
             op 0: entry: {'_id': '@57', '_type': 'parm_decl', '_chains': {}, '_chained': True, 'algn': '32', 'argt': <Entry @24>, 'name': <Entry @81>, 'scpe': <Entry @36>, 'size': <Entry @31>, 'srcp': 'source2.c:10', 'type': <Entry @24>, 'used': '1'} items num: 0
@@ -274,7 +274,7 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
       srcp: entry: source2.c:3 items num: 0
       type: entry: {'_id': '@30', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'qual': 'c', 'sign': 'signed', 'size': <Entry @31>, 'unql': <Entry @24>} items num: 0
       used: entry: 1 items num: 0
-    body: entry: {'_id': '@16', '_type': 'bind_expr', '_chains': {}, '_chained': False, 'body': <Entry @33>, 'type': <Entry @7>, 'vars': <Entry @32>} items num: 3
+    body: entry: {'_id': '@16', '_type': 'bind_expr', '_chains': {'vars': [<Entry @32>]}, '_chained': False, 'body': <Entry @33>, 'type': <Entry @7>, 'vars': <Entry @32>} items num: 3
       body: entry: {'_id': '@33', '_type': 'statement_list', '_chains': {}, '_chained': False, '0': <Entry @53>, '1': <Entry @54>} items num: 2
         0: entry: {'_id': '@53', '_type': 'decl_expr', '_chains': {}, '_chained': False, 'type': <Entry @7>} items num: 1
           type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
@@ -288,12 +288,12 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4>,
               srcp: entry: source2.c:3 items num: 0
               type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
             op 1: entry: {'_id': '@97', '_type': 'nop_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @32>, 'type': <Entry @24>} items num: 2
-              op 0: entry: {'_id': '@32', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'init': <Entry @52>, 'name': <Entry @51>, 'scpe': <Entry @8>, 'size': <Entry @31>, 'srcp': 'source2.c:4', 'type': <Entry @30>, 'used': '1'} items num: 0
+              op 0: entry: {'_id': '@32', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'init': <Entry @52>, 'name': <Entry @51>, 'scpe': <Entry @8>, 'size': <Entry @31>, 'srcp': 'source2.c:4', 'type': <Entry @30>, 'used': '1'} items num: 0
               type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
             type: entry: {'_id': '@24', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '32', 'max': <Entry @46>, 'min': <Entry @45>, 'name': <Entry @44>, 'prec': '32', 'sign': 'signed', 'size': <Entry @31>} items num: 0
           type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
       type: entry: {'_id': '@7', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @10>} items num: 0
-      vars: entry: {'_id': '@32', '_type': 'var_decl', '_chains': {}, '_chained': False, 'algn': '32', 'init': <Entry @52>, 'name': <Entry @51>, 'scpe': <Entry @8>, 'size': <Entry @31>, 'srcp': 'source2.c:4', 'type': <Entry @30>, 'used': '1'} items num: 8
+      vars: entry: {'_id': '@32', '_type': 'var_decl', '_chains': {}, '_chained': True, 'algn': '32', 'init': <Entry @52>, 'name': <Entry @51>, 'scpe': <Entry @8>, 'size': <Entry @31>, 'srcp': 'source2.c:4', 'type': <Entry @30>, 'used': '1'} items num: 8
         algn: entry: 32 items num: 0
         init: entry: {'_id': '@52', '_type': 'mult_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @78>, 'op 1': <Entry @79>, 'type': <Entry @24>} items num: 3
           op 0: entry: {'_id': '@78', '_type': 'nop_expr', '_chains': {}, '_chained': False, 'op 0': <Entry @15>, 'type': <Entry @24>} items num: 2

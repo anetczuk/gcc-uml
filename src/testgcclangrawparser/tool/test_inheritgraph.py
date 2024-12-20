@@ -11,7 +11,7 @@ from testgcclangrawparser.data import get_data_path
 
 from gcclangrawparser.langcontent import LangContent
 from gcclangrawparser.langparser import parse_raw
-from gcclangrawparser.plantuml import ClassDiagramGenerator
+from gcclangrawparser.diagram.plantuml import ClassDiagramGenerator
 from gcclangrawparser.tool.inheritgraph import InheritanceData
 
 
@@ -23,7 +23,7 @@ class GetClassesInfoTest(unittest.TestCase):
         content.convert_entries()
 
         inherit_data = InheritanceData(content)
-        classes_info = inherit_data.get_classes_info()
+        classes_info = inherit_data.generate_data()
 
         classes_list = list(classes_info.values())
         self.assertEqual(1, len(classes_list))
@@ -79,7 +79,7 @@ class GetClassesInfoTest(unittest.TestCase):
         content.convert_entries()
 
         inherit_data = InheritanceData(content)
-        classes_info = inherit_data.get_classes_info()
+        classes_info = inherit_data.generate_data()
 
         classes_list = list(classes_info.values())
         self.assertEqual(3, len(classes_list))
@@ -197,7 +197,7 @@ class GetClassesInfoTest(unittest.TestCase):
         content.convert_entries()
 
         inherit_data = InheritanceData(content)
-        classes_info = inherit_data.get_classes_info()
+        classes_info = inherit_data.generate_data()
 
         classes_list = list(classes_info.values())
         self.assertEqual(8, len(classes_list))

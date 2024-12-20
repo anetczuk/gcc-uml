@@ -17,7 +17,7 @@ from typing import Set, List, Dict
 
 from showgraph.io import write_file, read_list
 
-from gcclangrawparser.seqgraph import SequenceGraph, SeqItems, MsgData, DiagramData, NodeData, NotesContainer
+from gcclangrawparser.diagram.seqgraph import SequenceGraph, SeqItems, MsgData, DiagramData, NodeData, NotesContainer
 
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -107,6 +107,9 @@ class ClassDiagramGenerator:
         counter = 0
         name_dict = {}
 
+        ##
+        ## add nodes
+        ##
         for class_data in self.classes.values():
             actor = class_data.name
             actor_id = f"item_{counter}"
@@ -170,6 +173,9 @@ class ClassDiagramGenerator:
 
         content_list.append("")
 
+        ##
+        ## add connections
+        ##
         for class_data in self.classes.values():
             from_class = class_data.name
             from_id = name_dict[from_class]
@@ -178,6 +184,9 @@ class ClassDiagramGenerator:
                 content_list.append(f"""' {from_class} --|> {base.name}""")
                 content_list.append(f"""{from_id} --|> {to_id}: "{base.access}\"""")
 
+        ##
+        ## close diagram
+        ##
         content_list.append("\n@enduml\n")
         content = "\n".join(content_list)
 

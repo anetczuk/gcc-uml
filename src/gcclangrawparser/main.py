@@ -25,11 +25,12 @@ import json
 from gcclangrawparser import logger
 from gcclangrawparser.langparser import parse_raw
 from gcclangrawparser.io import write_file
+from gcclangrawparser.progressbar import disable_progressar
 from gcclangrawparser.langcontent import LangContent, EntryTree
 from gcclangrawparser.tool.tools import write_entry_tree, generate_big_graph
 from gcclangrawparser.tool.printhtml import print_html
 from gcclangrawparser.tool.inheritgraph import generate_inherit_graph
-from gcclangrawparser.progressbar import disable_progressar
+from gcclangrawparser.tool.memlayout import generate_memory_layout_graph
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -95,6 +96,15 @@ def process_inheritgraph(args):
     if content is None:
         raise RuntimeError(f"unable to parse {args.rawfile}")
     generate_inherit_graph(content, args.outpath)
+
+
+def process_memlayout(args):
+    _LOGGER.info("parsing input file %s", args.rawfile)
+    content: LangContent = parse_raw(args.rawfile, args.reducepaths)
+    if content is None:
+        raise RuntimeError(f"unable to parse {args.rawfile}")
+    include_internals = args.includeinternals
+    generate_memory_layout_graph(content, args.outpath, include_internals=include_internals, graphnote=args.graphnote)
 
 
 # =======================================================================
@@ -207,7 +217,33 @@ def main():
         "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"
     )
     subparser.add_argument(
-        "--outpath", action="store", required=True, default="", help="Output directory for HTML representation"
+        "--outpath", action="store", required=True, default="", help="Output for for PUML representation"
+    )
+
+    ## =================================================
+
+    description = "generate memory layout diagram"
+    subparser = subparsers.add_parser(
+        "memlayout", help=description, formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    subparser.description = description
+    subparser.set_defaults(func=process_memlayout)
+    subparser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
+    subparser.add_argument(
+        "-ii",
+        "--includeinternals",
+        type=str2bool,
+        nargs="?",
+        const=True,
+        default=False,
+        help="Should include C++ internals?",
+    )
+    subparser.add_argument(
+        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"
+    )
+    subparser.add_argument("--graphnote", action="store", required=False, default="", help="Note to put on graph")
+    subparser.add_argument(
+        "--outpath", action="store", required=True, default="", help="Output path for DOT representation"
     )
 
     ## =================================================

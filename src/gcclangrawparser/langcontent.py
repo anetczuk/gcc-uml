@@ -443,7 +443,7 @@ class LangContent:
 
 
 def is_entry_prop_chain(prop: str):
-    return prop in ("args", "dcls", "flds")
+    return prop in ("args", "dcls", "flds", "vars")
 
 
 def is_entry_prop_internal(prop: str):
@@ -472,7 +472,10 @@ def is_entry_language_internal(entry: Entry):
             return True
         return False
     if entry.get_type() == "namespace_decl":
-        return is_namespace_internal(entry_name)
+        if entry_name == "std" or entry_name.startswith("__"):
+            # internal - do not go deeper
+            return True
+        return False
     if entry.get_type() == "type_decl":
         if entry_name.startswith("__"):
             # internal - do not go deeper
@@ -491,6 +494,11 @@ def is_entry_language_internal(entry: Entry):
             # internal - do not go deeper
             return True
         return False
+    if entry.get_type() == "identifier_node":
+        if entry_name.startswith("__"):
+            # internal - do not go deeper
+            return True
+        return False
     if entry.get_type() == "var_decl":
         if entry_name.startswith("_ZT"):
             # internal - do not go deeper
@@ -504,10 +512,17 @@ def is_entry_language_internal(entry: Entry):
     return False
 
 
-def is_namespace_internal(name):
-    if name == "std" or name.startswith("__"):
-        # internal - do not go deeper
+def is_namespace_internal(namepace_list):
+    copied_list = namepace_list.copy()
+    copied_list = [value for value in copied_list if value != ""]  # remove empty elements
+    if not copied_list:
+        # empty list
+        return False
+    if copied_list[0] == "std":
         return True
+    for name in namepace_list:
+        if name.startswith("__"):
+            return True
     return False
 
 
@@ -533,6 +548,14 @@ def get_entry_name(entry: Entry) -> str:
 
     if entry_type == "integer_cst":
         return entry.get("int", "[--no entry--]")
+
+    if entry_type == "pointer_type":
+        ptd_entry = entry.get("ptd")
+        return get_entry_name(ptd_entry) + "*"
+
+    if entry_type == "reference_type":
+        refd_entry = entry.get("refd")
+        return get_entry_name(refd_entry) + "&"
 
     entry_value = entry.get("name")
     if entry_value is not None:

@@ -1,0 +1,134 @@
+digraph memory_layout {
+
+fontname="Helvetica,Arial,sans-serif"
+node [fontname="Helvetica,Arial,sans-serif"]
+edge [fontname="Helvetica,Arial,sans-serif"]
+
+graph [
+    rankdir = "LR"
+];
+node [
+    fontsize = "16"
+    shape = "record"
+];
+
+ranksep = 2
+
+
+# items subgraph
+{
+
+    "-items-Abc2C" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::Abc2C</b>  (384b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">96</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::items::AbcTempl&lt;int, int&gt;</td> </tr>
+            <tr> <td align="right" port='in_1'>96</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_1'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>128</td> <td align="right">192</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::items::AbcTempl&lt;double, double&gt;</td> </tr>
+            <tr> <td align="right" port='in_3'>320</td> <td align="right">8</td> <td align="left" port='out_3'>dataA: bool</td> </tr>
+            <tr> <td align="right" port='in_4'>328</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_4'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-items-Abc2B" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::Abc2B</b>  (96b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::items::AbcTempl&lt;int, bool&gt;</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">32</td> <td align="left" port='out_1'>fieldA: int</td> </tr>
+        </table>>
+    ]
+
+    "-items-Abc2A" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::Abc2A</b>  (96b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>fieldA: int</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">64</td> <td align="left" port='out_1'>fieldB: ::items::AbcTempl&lt;float, char&gt;</td> </tr>
+        </table>>
+    ]
+
+    "-items-AbcTempl" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="#cde6ff" port='-1'> <b>::items::AbcTempl</b>  (0b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">0</td> <td align="left" port='out_0'>field1: TTypeA</td> </tr>
+            <tr> <td align="right" port='in_1'>0</td> <td align="right">0</td> <td align="left" port='out_1'>field2: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>0</td> <td align="right">0</td> <td align="left" port='out_2'>field3: TTypeB</td> </tr>
+        </table>>
+    ]
+
+    "-items-AbcTempl&lt;double, double&gt;" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::AbcTempl&lt;double, double&gt;</b>  (192b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" port='out_0'>field1: double</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>72</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>128</td> <td align="right">64</td> <td align="left" port='out_3'>field3: double</td> </tr>
+        </table>>
+    ]
+
+    "-items-AbcTempl&lt;int, int&gt;" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::AbcTempl&lt;int, int&gt;</b>  (96b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: int</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>64</td> <td align="right">32</td> <td align="left" port='out_3'>field3: int</td> </tr>
+        </table>>
+    ]
+
+    "-items-AbcTempl&lt;int, bool&gt;" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::AbcTempl&lt;int, bool&gt;</b>  (64b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: int</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">8</td> <td align="left" port='out_2'>field3: bool</td> </tr>
+            <tr> <td align="right" port='in_3'>48</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-items-AbcTempl&lt;float, char&gt;" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::AbcTempl&lt;float, char&gt;</b>  (64b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: float</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">8</td> <td align="left" port='out_2'>field3: char</td> </tr>
+            <tr> <td align="right" port='in_3'>48</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-items-AbcEmpty" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::AbcEmpty</b>  (8b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">8</td> <td align="left" bgcolor='lightgray' port='out_0'>[empty]</td> </tr>
+        </table>>
+    ]
+
+
+    "-items-Abc2C":"out_0" -> "-items-AbcTempl&lt;int, int&gt;":"-1"
+    "-items-Abc2C":"out_2" -> "-items-AbcTempl&lt;double, double&gt;":"-1"
+    "-items-Abc2B":"out_0" -> "-items-AbcTempl&lt;int, bool&gt;":"-1"
+    "-items-Abc2A":"out_1" -> "-items-AbcTempl&lt;float, char&gt;":"-1"
+    "-items-AbcTempl&lt;double, double&gt;":"-1" -> "-items-AbcTempl":"-1"
+    "-items-AbcTempl&lt;int, int&gt;":"-1" -> "-items-AbcTempl":"-1"
+    "-items-AbcTempl&lt;int, bool&gt;":"-1" -> "-items-AbcTempl":"-1"
+    "-items-AbcTempl&lt;float, char&gt;":"-1" -> "-items-AbcTempl":"-1"
+
+}  # end of items subgraph
+
+}  # end of graph

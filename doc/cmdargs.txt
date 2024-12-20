@@ -1,5 +1,6 @@
 usage: python3 -m gcclangrawparser.main [-h] [-la] [--listtools]
-                                        {tools,printhtml,inheritgraph} ...
+                                        {tools,printhtml,inheritgraph,memlayout}
+                                        ...
 
 parse gcc/g++ raw internal tree data
 
@@ -11,8 +12,9 @@ options:
 subcommands:
   use one of tools
 
-  {tools,printhtml,inheritgraph}
+  {tools,printhtml,inheritgraph,memlayout}
                         one of tools
     tools               various tools
     printhtml           generate static HTML for lang file
     inheritgraph        generate inheritance graph
+    memlayout           generate memory layout diagram

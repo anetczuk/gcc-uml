@@ -1,0 +1,175 @@
+digraph memory_layout {
+
+fontname="Helvetica,Arial,sans-serif"
+node [fontname="Helvetica,Arial,sans-serif"]
+edge [fontname="Helvetica,Arial,sans-serif"]
+
+graph [
+    rankdir = "LR"
+];
+node [
+    fontsize = "16"
+    shape = "record"
+];
+
+ranksep = 2
+
+
+# items subgraph
+{
+
+    "-virt2-VAbc3" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::virt2::VAbc3</b>  (256b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.VAbc3</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">32</td> <td align="left" port='out_1'>data: int</td> </tr>
+            <tr> <td align="right" port='in_2'>96</td> <td align="right">40</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::virt2::Abc2A</td> </tr>
+            <tr> <td align="right" port='in_3'>136</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_4'>160</td> <td align="right">40</td> <td align="left" bgcolor='#FEFECE' port='out_4'>::virt2::Abc2B</td> </tr>
+            <tr> <td align="right" port='in_5'>200</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_5'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-virt2-Abc2B" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::virt2::Abc2B</b>  (64b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::virt2::Abc1</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>fieldB: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-virt2-Abc2A" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::virt2::Abc2A</b>  (64b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::virt2::Abc1</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>fieldA: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-virt2-Abc1" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::virt2::Abc1</b>  (32b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field: int</td> </tr>
+        </table>>
+    ]
+
+    "-virt1-Abc3" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::virt1::Abc3</b>  (320b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">72</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::virt1::VAbc2A</td> </tr>
+            <tr> <td align="right" port='in_1'>72</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_1'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>128</td> <td align="right">72</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::virt1::VAbc2B</td> </tr>
+            <tr> <td align="right" port='in_3'>200</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_4'>224</td> <td align="right">32</td> <td align="left" port='out_4'>data: int</td> </tr>
+            <tr> <td align="right" port='in_5'>256</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_5'>::virt1::Abc1</td> </tr>
+            <tr> <td align="right" port='in_6'>288</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_6'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-virt1-VAbc2B" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::virt1::VAbc2B</b>  (128b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.VAbc2B</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">8</td> <td align="left" port='out_1'>fieldB: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>72</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>96</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_3'>::virt1::Abc1</td> </tr>
+        </table>>
+    ]
+
+    "-virt1-VAbc2A" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::virt1::VAbc2A</b>  (128b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.VAbc2A</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">8</td> <td align="left" port='out_1'>fieldA: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>72</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>96</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_3'>::virt1::Abc1</td> </tr>
+        </table>>
+    ]
+
+    "-virt1-Abc1" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::virt1::Abc1</b>  (32b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field: int</td> </tr>
+        </table>>
+    ]
+
+    "-items-Abc3" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::Abc3</b>  (160b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">40</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::items::Abc2A</td> </tr>
+            <tr> <td align="right" port='in_1'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_1'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>64</td> <td align="right">40</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::items::Abc2B</td> </tr>
+            <tr> <td align="right" port='in_3'>104</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_4'>128</td> <td align="right">32</td> <td align="left" port='out_4'>data: int</td> </tr>
+        </table>>
+    ]
+
+    "-items-Abc2B" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::Abc2B</b>  (64b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::items::Abc1</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>fieldB: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-items-Abc2A" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::Abc2A</b>  (64b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::items::Abc1</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>fieldA: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-items-Abc1" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::Abc1</b>  (32b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field: int</td> </tr>
+        </table>>
+    ]
+
+
+    "-virt2-VAbc3":"out_2" -> "-virt2-Abc2A":"-1"
+    "-virt2-VAbc3":"out_4" -> "-virt2-Abc2B":"-1"
+    "-virt2-Abc2B":"out_0" -> "-virt2-Abc1":"-1"
+    "-virt2-Abc2A":"out_0" -> "-virt2-Abc1":"-1"
+    "-virt1-Abc3":"out_0" -> "-virt1-VAbc2A":"-1"
+    "-virt1-Abc3":"out_2" -> "-virt1-VAbc2B":"-1"
+    "-virt1-Abc3":"out_5" -> "-virt1-Abc1":"-1"
+    "-virt1-VAbc2B":"out_3" -> "-virt1-Abc1":"-1"
+    "-virt1-VAbc2A":"out_3" -> "-virt1-Abc1":"-1"
+    "-items-Abc3":"out_0" -> "-items-Abc2A":"-1"
+    "-items-Abc3":"out_2" -> "-items-Abc2B":"-1"
+    "-items-Abc2B":"out_0" -> "-items-Abc1":"-1"
+    "-items-Abc2A":"out_0" -> "-items-Abc1":"-1"
+
+}  # end of items subgraph
+
+}  # end of graph

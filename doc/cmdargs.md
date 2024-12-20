@@ -1,7 +1,8 @@
 ## <a name="main_help"></a> python3 -m gcclangrawparser.main --help
 ```
 usage: python3 -m gcclangrawparser.main [-h] [-la] [--listtools]
-                                        {tools,printhtml,inheritgraph} ...
+                                        {tools,printhtml,inheritgraph,memlayout}
+                                        ...
 
 parse gcc/g++ raw internal tree data
 
@@ -13,11 +14,12 @@ options:
 subcommands:
   use one of tools
 
-  {tools,printhtml,inheritgraph}
+  {tools,printhtml,inheritgraph,memlayout}
                         one of tools
     tools               various tools
     printhtml           generate static HTML for lang file
     inheritgraph        generate inheritance graph
+    memlayout           generate memory layout diagram
 ```
 
 
@@ -98,5 +100,29 @@ options:
   --rawfile RAWFILE     Path to raw file to analyze (default: )
   --reducepaths REDUCEPATHS
                         Prefix to remove from paths (default: )
-  --outpath OUTPATH     Output directory for HTML representation (default: )
+  --outpath OUTPATH     Output for for PUML representation (default: )
+```
+
+
+
+## <a name="memlayout_help"></a> python3 -m gcclangrawparser.main memlayout --help
+```
+usage: python3 -m gcclangrawparser.main memlayout [-h] --rawfile RAWFILE
+                                                  [-ii [INCLUDEINTERNALS]]
+                                                  [--reducepaths REDUCEPATHS]
+                                                  [--graphnote GRAPHNOTE]
+                                                  --outpath OUTPATH
+
+generate memory layout diagram
+
+options:
+  -h, --help            show this help message and exit
+  --rawfile RAWFILE     Path to raw file to analyze (default: )
+  -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
+                        Should include C++ internals? (default: False)
+  --reducepaths REDUCEPATHS
+                        Prefix to remove from paths (default: )
+  --graphnote GRAPHNOTE
+                        Note to put on graph (default: )
+  --outpath OUTPATH     Output path for DOT representation (default: )
 ```
