@@ -84,6 +84,18 @@ ranksep = 2
         </table>>
     ]
 
+    "-items2-Bbc4" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items2::Bbc4</b>  (128b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">104</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::items2::Bbc3</td> </tr>
+            <tr> <td align="right" port='in_1'>104</td> <td align="right">8</td> <td align="left" port='out_1'>fieldD: char</td> </tr>
+            <tr> <td align="right" port='in_2'>112</td> <td align="right">8</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::items2::VBbc2</td> </tr>
+            <tr> <td align="right" port='in_3'>120</td> <td align="right">8</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+        </table>>
+    ]
+
     "-items2-Bbc3" [
         shape=plain
         label=
@@ -91,8 +103,9 @@ ranksep = 2
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items2::Bbc3</b>  (128b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.Bbc3</td> </tr>
             <tr> <td align="right" port='in_1'>64</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_1'>::items2::Bbc1</td> </tr>
-            <tr> <td align="right" port='in_2'>96</td> <td align="right">8</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::items2::VBbc2</td> </tr>
-            <tr> <td align="right" port='in_3'>104</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>96</td> <td align="right">8</td> <td align="left" port='out_2'>fieldC: char</td> </tr>
+            <tr> <td align="right" port='in_3'>104</td> <td align="right">8</td> <td align="left" bgcolor='#FEFECE' port='out_3'>::items2::VBbc2</td> </tr>
+            <tr> <td align="right" port='in_4'>112</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_4'>[empty]</td> </tr>
         </table>>
     ]
 
@@ -101,7 +114,7 @@ ranksep = 2
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items2::VBbc2</b>  (8b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">8</td> <td align="left" port='out_0'>fieldA: bool</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">8</td> <td align="left" port='out_0'>fieldB: bool</td> </tr>
         </table>>
     ]
 
@@ -110,7 +123,19 @@ ranksep = 2
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items2::Bbc1</b>  (32b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: int</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>fieldA: int</td> </tr>
+        </table>>
+    ]
+
+    "-items1-Abc4" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items1::Abc4</b>  (128b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">80</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::items1::Abc3</td> </tr>
+            <tr> <td align="right" port='in_1'>80</td> <td align="right">8</td> <td align="left" port='out_1'>fieldD: char</td> </tr>
+            <tr> <td align="right" port='in_2'>88</td> <td align="right">8</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>96</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_3'>::items1::VAbc1</td> </tr>
         </table>>
     ]
 
@@ -121,8 +146,9 @@ ranksep = 2
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items1::Abc3</b>  (128b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.Abc3</td> </tr>
             <tr> <td align="right" port='in_1'>64</td> <td align="right">8</td> <td align="left" bgcolor='#FEFECE' port='out_1'>::items1::Abc2</td> </tr>
-            <tr> <td align="right" port='in_2'>72</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
-            <tr> <td align="right" port='in_3'>96</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_3'>::items1::VAbc1</td> </tr>
+            <tr> <td align="right" port='in_2'>72</td> <td align="right">8</td> <td align="left" port='out_2'>fieldC: char</td> </tr>
+            <tr> <td align="right" port='in_3'>80</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_4'>96</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_4'>::items1::VAbc1</td> </tr>
         </table>>
     ]
 
@@ -131,7 +157,7 @@ ranksep = 2
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items1::Abc2</b>  (8b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">8</td> <td align="left" port='out_0'>fieldA: bool</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">8</td> <td align="left" port='out_0'>fieldB: bool</td> </tr>
         </table>>
     ]
 
@@ -140,7 +166,7 @@ ranksep = 2
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items1::VAbc1</b>  (32b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: int</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>fieldA: int</td> </tr>
         </table>>
     ]
 
@@ -149,10 +175,14 @@ ranksep = 2
     "-items4-Dbc3":"out_2" -> "-items4-Dbc2":"-1"
     "-items3-Cbc3":"out_0" -> "-items3-Cbc2":"-1"
     "-items3-Cbc2":"out_0" -> "-items3-Cbc1":"-1"
+    "-items2-Bbc4":"out_0" -> "-items2-Bbc3":"-1"
+    "-items2-Bbc4":"out_2" -> "-items2-VBbc2":"-1"
     "-items2-Bbc3":"out_1" -> "-items2-Bbc1":"-1"
-    "-items2-Bbc3":"out_2" -> "-items2-VBbc2":"-1"
+    "-items2-Bbc3":"out_3" -> "-items2-VBbc2":"-1"
+    "-items1-Abc4":"out_0" -> "-items1-Abc3":"-1"
+    "-items1-Abc4":"out_3" -> "-items1-VAbc1":"-1"
     "-items1-Abc3":"out_1" -> "-items1-Abc2":"-1"
-    "-items1-Abc3":"out_3" -> "-items1-VAbc1":"-1"
+    "-items1-Abc3":"out_4" -> "-items1-VAbc1":"-1"
 
 }  # end of items subgraph
 

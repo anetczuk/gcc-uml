@@ -18,6 +18,7 @@ from gcclangrawparser.langcontent import (
     is_namespace_internal,
 )
 from gcclangrawparser.diagram.plantuml import ClassDiagramGenerator
+from gcclangrawparser.langanalyze import get_record_namespace_list, StructAnalyzer
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -47,98 +48,34 @@ class InheritanceData:
     def __init__(self, content, include_internals=False):
         self.content = content
         self.include_internals = include_internals
-        # gets type declaration from identifier_node id
-        self.identifier_node_decl_dict: Dict[str, Entry] = None
-
-    def get_identifier_node_decl_dict(self):
-        ## will not work as expected, because the same identifier will be assigned to
-        ## different items only with the same name, e.g.
-        ## function ::std::xxx() and ::custom::xxx() will have the same identifier_node
-
-        if self.identifier_node_decl_dict is not None:
-            return self.identifier_node_decl_dict
-
-        parents_dict = self.content.get_parents_dict()
-
-        identifier_dict = {}
-        identifier_list = self._get_identifier_nodes()
-        for identifier_node in identifier_list:
-            ident_name = identifier_node.get("strg")
-            if not ident_name:
-                continue
-            entry_id = identifier_node.get_id()
-            parents_list = parents_dict.get(entry_id)
-            for parent_entry, parent_prop in parents_list:
-                if parent_prop != "name":
-                    continue
-                parent_id = parent_entry.get_id()
-                grandparents_list = parents_dict.get(parent_id)
-                if grandparents_list is None:
-                    decl_list = identifier_dict.get(entry_id, [])
-                    decl_list.append(parent_entry)
-                    identifier_dict[entry_id] = decl_list
-                    continue
-                for _grandparent_entry, grandparent_prop in grandparents_list:
-                    if grandparent_prop != "dcls":
-                        continue
-                    decl_list = identifier_dict.get(entry_id, [])
-                    decl_list.append(parent_entry)
-                    identifier_dict[entry_id] = decl_list
-
-        self.identifier_node_decl_dict = identifier_dict
-        return self.identifier_node_decl_dict
-
-    def get_dcls_entry(self, record_type_entry: Entry):
-        pass
+        self.analyzer = StructAnalyzer(content, include_internals)
 
     def generate_data(self) -> Dict[str, ClassDiagramGenerator.ClassData]:
-        self.get_identifier_node_decl_dict()
-
         ret_dict = {}
-        identifier_list = self._get_identifier_nodes()
-        for identifier_node in identifier_list:
-            info = self.get_class_info(identifier_node)
-            if info is None:
-                continue
-            ret_dict[info.name] = info
+        dcls_list = self.content.get_entries("dcls")
+        for dcls_entry in dcls_list:
+            info_list = self.get_class_info(dcls_entry)
+            if info_list:
+                for info in info_list:
+                    ret_dict[info.name] = info
         return ret_dict
 
-    def get_class_info(self, identifier_node: Entry) -> ClassDiagramGenerator.ClassData:
-        class_name = identifier_node.get("strg")
-        if not class_name:
-            return None
+    def get_class_info(self, dcls_entry: Entry) -> List[ClassDiagramGenerator.ClassData]:
+        class_data_list = None
 
-        class_data_list = []
+        if dcls_entry.get_type() == "type_decl":
+            class_data_list = self._get_class_type_decl(dcls_entry)
 
-        parents_dict = self.content.get_parents_dict()
-        entry_id = identifier_node.get_id()
-        parents_list = parents_dict.get(entry_id)
-        for parent_entry, _parent_prop in parents_list:
-            if parent_entry.get_type() == "type_decl":
-                class_data = self._get_class_type_decl(parent_entry)
-                if class_data is not None:
-                    _LOGGER.info("found class %s for entry %s", class_data.name, parent_entry.get_id())
-                    class_data_list.append(class_data)
-                continue
+        elif dcls_entry.get_type() == "template_decl":
+            class_data_list = self._get_class_template_decl(dcls_entry)
 
-            if parent_entry.get_type() == "template_decl":
-                class_data = self._get_class_template_decl(parent_entry)
-                if class_data is not None:
-                    _LOGGER.info("found template %s for entry %s", class_data.name, parent_entry.get_id())
-                    class_data_list.append(class_data)
-                continue
+        if class_data_list:
+            class_names = [item.name for item in class_data_list]
+            _LOGGER.info("found items %s for entry %s", class_names, dcls_entry.get_id())
 
-        if not class_data_list:
-            return None
-        # if len(class_data_list) > 1:
-        #     return None
+        return class_data_list
 
-        raw_data = class_data_list[0]
-        return raw_data
-
-    def _get_class_type_decl(self, type_decl: Entry):
-        ancestors_dict = self.content.get_ancestors_dict()
-
+    def _get_class_type_decl(self, type_decl: Entry) -> List[ClassDiagramGenerator.ClassData]:
         record_entry = type_decl.get("type")
         if record_entry is None:
             _LOGGER.info("entry %s has no record_type", type_decl.get_id())
@@ -146,13 +83,9 @@ class InheritanceData:
         if record_entry.get_type() != "record_type":
             return None
 
-        entry_namespace_list = self._get_namespace_list(record_entry, type_decl)
-        if entry_namespace_list is None:
+        entry_name: str = self.analyzer.get_record_full_name(record_entry)
+        if entry_name is None:
             return None
-        if not self.include_internals:
-            if is_namespace_internal(entry_namespace_list):
-                return None
-        entry_name: str = "::".join(entry_namespace_list)
 
         class_data = ClassDiagramGenerator.ClassData()
         class_data.name = entry_name
@@ -163,16 +96,14 @@ class InheritanceData:
         field_list = get_fields_list(record_entry, include_internals=self.include_internals)
         class_data.fields = field_list
 
-        method_list = get_methods_list(entry_name, record_entry, ancestors_dict)
+        method_list = get_methods_list(entry_name, record_entry)
         class_data.methods = method_list
 
         class_data.generics = []
 
-        return class_data
+        return [class_data]
 
-    def _get_class_template_decl(self, template_decl: Entry):
-        ancestors_dict = self.content.get_ancestors_dict()
-
+    def _get_class_template_decl(self, template_decl: Entry) -> List[ClassDiagramGenerator.ClassData]:
         record_entry = template_decl.get("type")
         if record_entry is None:
             _LOGGER.info("entry %s has no record_type", template_decl.get_id())
@@ -180,7 +111,7 @@ class InheritanceData:
         if record_entry.get_type() != "record_type":
             return None
 
-        entry_namespace_list = self._get_namespace_list(record_entry, template_decl)
+        entry_namespace_list = get_record_namespace_list(record_entry)
         if entry_namespace_list is None:
             return None
         if not self.include_internals:
@@ -197,81 +128,147 @@ class InheritanceData:
         field_list = get_fields_list(record_entry, include_internals=self.include_internals)
         class_data.fields = field_list
 
-        method_list = get_methods_list(entry_name, record_entry, ancestors_dict)
+        method_list = get_methods_list(entry_name, record_entry)
         class_data.methods = method_list
 
         class_data.type = ClassDiagramGenerator.ClassType.TEMPLATE
         generics_list = get_template_parameters(template_decl)
         class_data.generics = generics_list
 
-        return class_data
+        ret_list = [class_data]
+
+        ## read instances
+        instantiations_entry = template_decl.get("inst")
+        if instantiations_entry is None:
+            # template without instantiations
+            return ret_list
+
+        insts_size = int(instantiations_entry.get("lngt"))
+        for inst_index in range(0, insts_size):
+            inst_index_str = str(inst_index)
+            inst_entry = instantiations_entry.get(inst_index_str)
+            valu_record_entry = inst_entry.get("valu")
+            valu_type_entry = valu_record_entry.get("name")
+            instance_info = self._get_class_type_decl(valu_type_entry)
+            if instance_info is None:
+                continue
+            for inst_item in instance_info:
+                base = ClassDiagramGenerator.ClassBase(entry_name, None)
+                inst_item.bases.append(base)
+            ret_list.extend(instance_info)
+
+        return ret_list
 
     def _get_bases_list(self, record_entry: Entry):
         base_list = []
-        entry_bases = get_bases(record_entry, include_internals=self.include_internals)
-        for base_entry, base_access in entry_bases:
-            base_namespace_list = self._get_namespace_list(base_entry)
-            if base_namespace_list is None:
+        record_entry_bases = self._get_bases(record_entry)
+        for base_entry, base_access in record_entry_bases:
+            base_name: str = self.analyzer.get_record_full_name(base_entry)
+            if base_name is None:
                 continue
-            if not self.include_internals:
-                if is_namespace_internal(base_namespace_list):
-                    continue
-            base_name = "::".join(base_namespace_list)
             base = ClassDiagramGenerator.ClassBase(base_name, base_access)
             base_list.append(base)
         return base_list
 
-    def _get_namespace_list(self, record_entry: Entry, parent=None) -> List[str]:
-        ancestors_dict = self.content.get_ancestors_dict()
+    def _get_bases(self, record_entry: Entry):
+        binf_entries = record_entry.get_sub_entries("binf")
+        binf_entries_num = len(binf_entries)
+        if binf_entries_num < 1:
+            # happens e.g. for old-school enums
+            return []
 
-        unql_entry = record_entry.get("unql")
-        if unql_entry is not None:
-            record_entry = unql_entry
-            # return None
+        if binf_entries_num > 1:
+            raise RuntimeError(f"invalid number of 'binf' items: {binf_entries_num} for entry {record_entry.get_id()}")
 
-        ret_list = None
-        entry_id = record_entry.get_id()
-        lists = ancestors_dict.get(entry_id)
-        for ancestors_list in lists:
-            if len(ancestors_list) < 2:
-                continue
-            # ancestors_list = ancestors_list.copy()
-            ancestor_data = ancestors_list[-1]
-            record_entry_prop, _rec_entry = ancestor_data
-            if record_entry_prop != "type":
-                continue
-            ancestor_data = ancestors_list[-2]
-            parent_entry_prop, parent_entry = ancestor_data
-            if parent_entry_prop != "dcls":
-                continue
-            if parent:
-                if parent_entry.get_id() != parent.get_id():
+        _prop, binf_item = binf_entries[0]
+
+        binf_bases = binf_item.get("bases")
+        if binf_bases is None:
+            raise RuntimeError("missing required property 'bases'")
+        binf_bases = int(binf_bases)
+        if binf_bases < 1:
+            return []
+
+        ret_list, internal_bases = get_bases_from_binf(binf_item, include_internals=self.include_internals)
+
+        binfo_access = binf_item.get("accs")
+        if binfo_access is None:
+            raise RuntimeError(f"missing required property 'accs' for entry {binf_item.get_id()}")
+
+        found_bases = set()
+        for base_item in ret_list:
+            base_type = base_item[0]
+            base_name: str = self.analyzer.get_record_full_name(base_type)
+            found_bases.add(base_name)
+
+        if binf_bases > 1:
+            class_name = get_entry_name(record_entry)
+
+            record_spec = record_entry.get("spec")  # virt value
+            virtual_bases_marker = False
+
+            flds_entries = record_entry.get_sub_entries("flds")
+            for _prop, item in flds_entries:
+                item_type = item.get_type()
+
+                if item_type == "type_decl":
+                    if record_spec:
+                        field_name = item.get("name")
+                        field_name = get_entry_name(field_name)
+                        if field_name is None:
+                            continue
+                        if field_name == class_name:
+                            virtual_bases_marker = True
+                        continue
+                    # does not use virtual inheritance directly, so ignore other elements
+                    break
+
+                if item_type != "field_decl":
+                    # base class is defined as field_decl
                     continue
-            else:
-                if parent_entry.get_type() != "type_decl":
+                field_name = item.get("name")
+                if field_name is not None:
+                    # base class definition does not have name
+                    continue
+                base_access = item.get("accs")
+                if base_access is None:
                     continue
 
-            namespace_list = get_type_namespace_list(parent_entry, ancestors_dict)
-            if namespace_list is None:
-                continue
+                if not virtual_bases_marker:
+                    base_spec = item.get("spec")
+                    if base_spec:
+                        base_access = base_spec + base_access
+                else:
+                    base_access = "virt ???"
 
-            if ret_list is None:
-                ret_list = namespace_list
-            else:
-                if len(namespace_list) < len(ret_list):
-                    ret_list = namespace_list
-
-        return ret_list
-
-    def _get_identifier_nodes(self):
-        ret_list = []
-        for entry in self.content.content_objs.values():
-            if entry.get_type() != "identifier_node":
-                continue
-            if not self.include_internals:
-                if is_entry_language_internal(entry):
+                base_type = item.get("type")
+                if base_type is None:
                     continue
-            ret_list.append(entry)
+                if base_type.get_type() != "record_type":
+                    continue
+                if not is_class_struct(base_type):
+                    continue
+                if not self.include_internals and is_entry_language_internal(base_type):
+                    internal_bases += 1
+                    continue
+
+                base_type_name: str = self.analyzer.get_record_full_name(base_type)
+                if base_type_name in found_bases:
+                    continue
+                found_bases.add(base_type_name)
+
+                ret_list.append((base_type, base_access))
+
+        found_bases_num = len(ret_list) + internal_bases
+        if found_bases_num != binf_bases:
+            _LOGGER.info("found bases: %s", ret_list)
+            _LOGGER.error(
+                "unable to find all bases for entry %s, required %s found %s",
+                record_entry.get_id(),
+                binf_bases,
+                found_bases_num,
+            )
+
         return ret_list
 
 
@@ -376,33 +373,14 @@ def get_type_namespace_list(type_decl: Entry, ancestors_dict):
     return ret_list
 
 
-def get_bases(record_entry: Entry, include_internals=False):
-    binf_entries = record_entry.get_sub_entries("binf")
-    binf_entries_num = len(binf_entries)
-    if binf_entries_num < 1:
-        # happens e.g. for old-school enums
-        return []
-
-    if binf_entries_num > 1:
-        raise RuntimeError(f"invalid number of 'binf' items: {binf_entries_num} for entry {record_entry.get_id()}")
-
-    _prop, binf_item = binf_entries[0]
-
-    binf_bases = binf_item.get("bases")
-    if binf_bases is None:
-        raise RuntimeError("missing required property 'bases'")
-    binf_bases = int(binf_bases)
-    if binf_bases < 1:
-        return []
-
+def get_bases_from_binf(binf_item: Entry, include_internals=True):
     binfo_access = binf_item.get("accs")
     if binfo_access is None:
         raise RuntimeError(f"missing required property 'accs' for entry {binf_item.get_id()}")
 
     ret_list = []
-    found_items = set()
-
     internal_bases = 0
+
     subbinf_entries = binf_item.get_sub_entries("binf")
     for _prop, subitem in subbinf_entries:
         base_type = subitem.get("type")
@@ -419,60 +397,9 @@ def get_bases(record_entry: Entry, include_internals=False):
         if base_spec:
             base_access = f"{base_spec} {base_access}"
 
-        found_id = (base_type.get_id(), base_access)
-        if found_id in found_items:
-            continue
-        found_items.add(found_id)
-
         ret_list.append((base_type, base_access))
 
-    if binf_bases > 1:
-        flds_entries = record_entry.get_sub_entries("flds")
-        for _prop, item in flds_entries:
-            item_type = item.get_type()
-            if item_type != "field_decl":
-                # base class is defined as field_decl
-                continue
-            field_name = item.get("name")
-            if field_name is not None:
-                # base class definition does not have name
-                continue
-            base_access = item.get("accs")
-            if base_access is None:
-                continue
-            base_spec = item.get("spec")
-            if base_spec:
-                base_access = base_spec + base_access
-
-            base_type = item.get("type")
-            if base_type is None:
-                continue
-            if base_type.get_type() != "record_type":
-                continue
-            if not is_class_struct(base_type):
-                continue
-            if not include_internals and is_entry_language_internal(base_type):
-                internal_bases += 1
-                continue
-
-            found_id = (base_type.get_id(), base_access)
-            if found_id in found_items:
-                continue
-            found_items.add(found_id)
-
-            ret_list.append((base_type, base_access))
-
-    found_bases_num = len(ret_list) + internal_bases
-    if found_bases_num != binf_bases:
-        _LOGGER.info("found bases: %s", ret_list)
-        _LOGGER.error(
-            "unable to find all bases for entry %s, required %s found %s",
-            record_entry.get_id(),
-            binf_bases,
-            found_bases_num,
-        )
-
-    return ret_list
+    return ret_list, internal_bases
 
 
 def get_fields_list(record_entry: Entry, include_internals=False):
@@ -519,9 +446,9 @@ def get_fields(record_entry: Entry, include_internals=False):
     return ret_list
 
 
-def get_methods_list(class_name, record_entry: Entry, ancestors_dict):
+def get_methods_list(class_name, record_entry: Entry):
     method_list = []
-    entry_methods = get_methods(record_entry, ancestors_dict)
+    entry_methods = get_methods(record_entry)
     for item in entry_methods:
         meth_name, meth_type, meth_mod, meth_access, meth_args = item
         access = FIELD_ACCESS_CONVERT_DICT[meth_access]
@@ -542,7 +469,7 @@ def get_methods_list(class_name, record_entry: Entry, ancestors_dict):
     return method_list
 
 
-def get_methods(record_entry: Entry, ancestors_dict):
+def get_methods(record_entry: Entry):
     ret_list = []
 
     class_name = get_entry_name(record_entry)
@@ -574,7 +501,7 @@ def get_methods(record_entry: Entry, ancestors_dict):
             method_retn = method_type.get("retn")
             if method_retn is None:
                 continue
-            ret_type, ret_mod = get_type_name(method_retn, ancestors_dict)
+            ret_type, ret_mod = get_type_name(method_retn)
             method_return = ret_type
             if ret_mod:
                 method_return = f"{method_return} {ret_mod}"
@@ -625,7 +552,7 @@ def get_methods(record_entry: Entry, ancestors_dict):
                 arg_name = arg_entry.get("name")
                 arg_name = get_entry_name(arg_name)
                 arg_type_entry = arg_entry.get("type")
-                arg_type, arg_mod = get_type_name(arg_type_entry, ancestors_dict)
+                arg_type, arg_mod = get_type_name(arg_type_entry)
                 arg_type_full = arg_type
                 if arg_mod:
                     arg_type_full = f"{arg_type_full} {arg_mod}"
@@ -690,7 +617,7 @@ def get_this_modifier(parm_decl_entry: Entry):
     return ""
 
 
-def get_type_name(type_entry: Entry, ancestors_dict):
+def get_type_name(type_entry: Entry):
     parm_mod = None
     arg_qual = type_entry.get("qual")
     if arg_qual == "c":
@@ -698,7 +625,7 @@ def get_type_name(type_entry: Entry, ancestors_dict):
 
     if type_entry.get_type() == "pointer_type":
         ptd = type_entry.get("ptd")
-        ptd_name = get_full_name(ptd, ancestors_dict)
+        ptd_name = get_full_name(ptd)
         ptd_qual = ptd.get("qual")
         if ptd_qual == "c":
             ptd_name += " const"
@@ -707,7 +634,7 @@ def get_type_name(type_entry: Entry, ancestors_dict):
 
     if type_entry.get_type() == "reference_type":
         refd = type_entry.get("refd")
-        refd_name = get_full_name(refd, ancestors_dict)
+        refd_name = get_full_name(refd)
         refd_qual = refd.get("qual")
         if refd_qual == "c":
             refd_name += " const"
@@ -718,52 +645,11 @@ def get_type_name(type_entry: Entry, ancestors_dict):
     return (param_name, parm_mod)
 
 
-def get_full_name(entry: Entry, ancestors_dict) -> str:
+def get_full_name(entry: Entry) -> str:
     if entry.get_type() == "record_type":
-        ns_list = get_namespace_list(entry, ancestors_dict)
+        ns_list = get_record_namespace_list(entry)
         return "::".join(ns_list)
     return get_entry_name(entry)
-
-
-def get_namespace_list(record_entry: Entry, ancestors_dict, parent=None) -> List[str]:
-    unql_entry = record_entry.get("unql")
-    if unql_entry is not None:
-        record_entry = unql_entry
-        # return None
-
-    ret_list = None
-    entry_id = record_entry.get_id()
-    lists = ancestors_dict.get(entry_id)
-    for ancestors_list in lists:
-        if len(ancestors_list) < 2:
-            continue
-        # ancestors_list = ancestors_list.copy()
-        ancestor_data = ancestors_list[-1]
-        record_entry_prop, _rec_entry = ancestor_data
-        if record_entry_prop != "type":
-            continue
-        ancestor_data = ancestors_list[-2]
-        parent_entry_prop, parent_entry = ancestor_data
-        if parent_entry_prop != "dcls":
-            continue
-        if parent:
-            if parent_entry.get_id() != parent.get_id():
-                continue
-        else:
-            if parent_entry.get_type() != "type_decl":
-                continue
-
-        namespace_list = get_type_namespace_list(parent_entry, ancestors_dict)
-        if namespace_list is None:
-            continue
-
-        if ret_list is None:
-            ret_list = namespace_list
-        else:
-            if len(namespace_list) < len(ret_list):
-                ret_list = namespace_list
-
-    return ret_list
 
 
 def is_class_struct(entry: Entry):

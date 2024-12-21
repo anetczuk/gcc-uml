@@ -53,9 +53,8 @@ Installation for development:
 
 ## Issues
 
-- In case of multiple inheritance it is not possible to get accurate information about virtual inheritance, so 
-virtual property is not shown on the graphs (tested under *g++* version 13.2.0). Sample code is in 
-`examples/inherit/src/inherit2a.cpp` file.
+- In case of multiple inheritance it is not possible to get accurate information about virtual inheritance
+(tested under *g++* version 13.2.0). Sample code is in `examples/inheritgraph/src/inherit_virt.cpp` file.
 
 
 ## Development

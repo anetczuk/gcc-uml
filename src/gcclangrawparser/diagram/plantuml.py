@@ -180,9 +180,16 @@ class ClassDiagramGenerator:
             from_class = class_data.name
             from_id = name_dict[from_class]
             for base in class_data.bases:
-                to_id = name_dict[base.name]
-                content_list.append(f"""' {from_class} --|> {base.name}""")
-                content_list.append(f"""{from_id} --|> {to_id}: "{base.access}\"""")
+                to_id = name_dict.get(base.name)
+                if to_id is None:
+                    _LOGGER.error("unable to get id from class %s", base.name)
+                    continue
+                if base.access:
+                    content_list.append(f"""' {from_class} --|> {base.name}""")
+                    content_list.append(f"""{from_id} --|> {to_id}: "{base.access}\"""")
+                else:
+                    content_list.append(f"""' {from_class} ..> {base.name}""")
+                    content_list.append(f"""{from_id} ..> {to_id}""")
 
         ##
         ## close diagram

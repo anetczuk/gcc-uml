@@ -3,18 +3,25 @@
 namespace items1 {
 	class VAbc1 {
 	public:
-		int field1;
+		int fieldA;
 	};
 
 
 	class Abc2 {
 	public:
-		bool fieldA;
+		bool fieldB;
 	};
 
 
 	class Abc3: virtual public VAbc1, public Abc2 {
 	public:
+		char fieldC;
+	};
+
+
+	class Abc4: public Abc3 {
+	public:
+		char fieldD;
 	};
 }
 
@@ -22,18 +29,25 @@ namespace items1 {
 namespace items2 {
 	class Bbc1 {
 	public:
-		int field1;
+		int fieldA;
 	};
 
 
 	class VBbc2 {
 	public:
-		bool fieldA;
+		bool fieldB;
 	};
 
 
 	class Bbc3: Bbc1, virtual public VBbc2 {
 	public:
+		char fieldC;
+	};
+
+
+	class Bbc4: public Bbc3 {
+	public:
+		char fieldD;
 	};
 }
 

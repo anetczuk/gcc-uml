@@ -211,6 +211,15 @@ class LangContent:
     def get_root_entry(self):
         return list(self.content_objs.values())[0]
 
+    def get_entries(self, entry_property) -> List[Entry]:
+        ret_list = []
+        # entry: Entry
+        for entry in self.content_objs.values():
+            sub_entries = entry.get_sub_entries(entry_property)
+            for item in sub_entries:
+                ret_list.append(item[1])
+        return ret_list
+
     # returns dict: {entry_id: [(parent_entry, prop_in_parent)]}
     def get_parents_dict(self) -> Dict[str, List[Tuple[Entry, str]]]:
         if self.parents_dict is not None:
@@ -371,75 +380,6 @@ class LangContent:
     def print_entries(self):
         for entry in self.content_lines.values():
             print(entry)
-
-    def print_namespaces(self):
-        find_type = "namespace_decl"
-        print(f"{find_type}:")
-        print(f"    allowed props: {self.types_fields[find_type]}")
-        for entry in self.content_objs.values():
-            if entry.get_type() == find_type:
-                entry_name = get_entry_name(entry)
-                scope_obj = entry["scpe"]
-                scope_name = get_entry_name(scope_obj)
-                source_point = entry["srcp"]
-                lang = entry.get("lang", "<--no entry-->")
-                type_name = entry.get("type", "<--no entry-->")
-                type_name = get_entry_name(type_name)
-                print(f"{entry.get_id()}: {entry.get_type()}")
-                print(f"    name: {entry_name}")
-                print(f"    scpe: {scope_name}")
-                print(f"    lang: {lang}")
-                print(f"    srcp: {source_point}")
-                print(f"    type: {type_name}")
-                ## chain - not important?
-                ## dcls - not important? can be assumed from 'scpe' of other entries pointing to the namespace
-
-    def print_translation_units(self):
-        find_type = "translation_unit_decl"
-        print(f"{find_type}:")
-        print(f"    allowed props: {self.types_fields[find_type]}")
-        for entry in self.content_objs.values():
-            if entry.get_type() == find_type:
-                entry_name = get_entry_name(entry)
-                print(f"{entry.get_id()}: {entry_name}")
-
-    def print_functions(self):
-        find_type = "function_decl"
-        print(f"{find_type}:")
-        print(f"    allowed props: {self.types_fields[find_type]}")
-        for entry in self.content_objs.values():
-            if entry.get_type() == find_type:
-                entry_name = get_entry_name(entry)
-                mngl_name = entry.get("mngl", "<--no entry-->")
-                mngl_name = get_entry_name(mngl_name)
-                # type_name = entry.get("type", "<--no entry-->")
-                # type_name = get_entry_name(type_name)
-                print(f"{entry.get_id()} -> {entry.get_type()}")
-                print(f"    name: {entry_name}")
-                print(f"    mngl: {mngl_name}")
-                # print(f"    type: {type_name}")
-
-    # def get_name(self, entry_id, optional=False, default=None):
-    #     identifier_entry = self.content_lines[entry_id]
-    #     identifier_props = identifier_entry[2]
-    #     try:
-    #         if optional:
-    #             return identifier_props.get("strg", default)
-    #         return identifier_props["strg"]
-    #     except KeyError:
-    #         print(f"invalid props - key: {entry_id} props: {identifier_props}")
-    #         raise
-    #
-    # def get_scope_name(self, entry_id, optional=False, default=None):
-    #     identifier_entry = self.content_lines[entry_id]
-    #     identifier_props = identifier_entry[2]
-    #     try:
-    #         if optional:
-    #             return identifier_props.get("name", default)
-    #         return identifier_props["name"]
-    #     except KeyError:
-    #         print(f"invalid props - key: {entry_id} props: {identifier_props}")
-    #         raise
 
 
 def is_entry_prop_chain(prop: str):

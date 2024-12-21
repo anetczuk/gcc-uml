@@ -5,7 +5,8 @@ namespace items {
 	template<typename TTypeA, typename TTypeB>
 	class Abc1 {
 	public:
-		TTypeA field;
+		TTypeA fieldA;
+		TTypeB fieldB;
 	};
 
 
