@@ -17,8 +17,8 @@ from gcclangrawparser.langcontent import (
     get_entry_name,
     is_namespace_internal,
 )
-from gcclangrawparser.diagram.plantuml import ClassDiagramGenerator
 from gcclangrawparser.langanalyze import get_record_namespace_list, StructAnalyzer
+from gcclangrawparser.diagram.classdiagram import ClassDiagramGenerator
 
 
 _LOGGER = logging.getLogger(__name__)

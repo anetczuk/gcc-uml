@@ -59,6 +59,7 @@ COLOR_BG_TEMPLATE = "#cde6ff"  # light blue
 COLOR_BG_EMPTY = "lightgray"
 
 
+## Generator for Graphviz dot diagram
 class MemoryLayoutDiagramGenerator:
 
     def __init__(self, memlayout_dict=None):

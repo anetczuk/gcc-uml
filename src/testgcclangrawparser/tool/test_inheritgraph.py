@@ -11,8 +11,8 @@ from testgcclangrawparser.data import get_data_path
 
 from gcclangrawparser.langcontent import LangContent
 from gcclangrawparser.langparser import parse_raw
-from gcclangrawparser.diagram.plantuml import ClassDiagramGenerator
 from gcclangrawparser.tool.inheritgraph import InheritanceData
+from gcclangrawparser.diagram.classdiagram import ClassDiagramGenerator
 
 
 class GetClassesInfoTest(unittest.TestCase):
