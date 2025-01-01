@@ -17,7 +17,12 @@ from gcclangrawparser.langcontent import (
     get_entry_name,
     is_namespace_internal,
 )
-from gcclangrawparser.langanalyze import get_record_namespace_list, StructAnalyzer
+from gcclangrawparser.langanalyze import (
+    get_record_namespace_list,
+    StructAnalyzer,
+    get_function_args,
+    get_function_ret,
+)
 from gcclangrawparser.diagram.classdiagram import ClassDiagramGenerator
 
 
@@ -498,19 +503,7 @@ def get_methods(record_entry: Entry):
         method_return = ""
         method_note = item.get("note")
         if method_note not in ("constructor", "destructor"):
-            method_retn = method_type.get("retn")
-            if method_retn is None:
-                continue
-            ret_type, ret_mod = get_type_name(method_retn)
-            method_return = ret_type
-            if ret_mod:
-                method_return = f"{method_return} {ret_mod}"
-
-            method_mod = method_retn.get("qual")
-            if method_mod is not None:
-                method_mod = get_entry_name(method_mod)
-                if method_mod == "c":
-                    method_return = f"{method_return} const"
+            method_return = get_function_ret(method_type)
 
         method_mods: List[str] = []
 
@@ -548,16 +541,7 @@ def get_methods(record_entry: Entry):
         args_list = []
         if method_note != "destructor":
             ## destructor does not have any parameters
-            for _arg_prop, arg_entry in method_args:
-                arg_name = arg_entry.get("name")
-                arg_name = get_entry_name(arg_name)
-                arg_type_entry = arg_entry.get("type")
-                arg_type, arg_mod = get_type_name(arg_type_entry)
-                arg_type_full = arg_type
-                if arg_mod:
-                    arg_type_full = f"{arg_type_full} {arg_mod}"
-                args_list.append([arg_name, arg_type_full])
-
+            args_list = get_function_args(item)
         ret_list.append((method_name, method_return, method_mods_str, method_access, args_list))
 
     return ret_list
@@ -615,41 +599,6 @@ def get_this_modifier(parm_decl_entry: Entry):
     if ptd_qual == "c":
         return "const"
     return ""
-
-
-def get_type_name(type_entry: Entry):
-    parm_mod = None
-    arg_qual = type_entry.get("qual")
-    if arg_qual == "c":
-        parm_mod = "const"
-
-    if type_entry.get_type() == "pointer_type":
-        ptd = type_entry.get("ptd")
-        ptd_name = get_full_name(ptd)
-        ptd_qual = ptd.get("qual")
-        if ptd_qual == "c":
-            ptd_name += " const"
-        ptd_name += " *"
-        return (ptd_name, parm_mod)
-
-    if type_entry.get_type() == "reference_type":
-        refd = type_entry.get("refd")
-        refd_name = get_full_name(refd)
-        refd_qual = refd.get("qual")
-        if refd_qual == "c":
-            refd_name += " const"
-        refd_name += " &"
-        return (refd_name, parm_mod)
-
-    param_name = get_entry_name(type_entry)
-    return (param_name, parm_mod)
-
-
-def get_full_name(entry: Entry) -> str:
-    if entry.get_type() == "record_type":
-        ns_list = get_record_namespace_list(entry)
-        return "::".join(ns_list)
-    return get_entry_name(entry)
 
 
 def is_class_struct(entry: Entry):

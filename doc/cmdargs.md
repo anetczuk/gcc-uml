@@ -1,7 +1,7 @@
 ## <a name="main_help"></a> python3 -m gcclangrawparser.main --help
 ```
 usage: python3 -m gcclangrawparser.main [-h] [-la] [--listtools]
-                                        {tools,printhtml,inheritgraph,memlayout}
+                                        {tools,printhtml,inheritgraph,memlayout,ctrlflowgraph}
                                         ...
 
 parse gcc/g++ raw internal tree data
@@ -14,12 +14,13 @@ options:
 subcommands:
   use one of tools
 
-  {tools,printhtml,inheritgraph,memlayout}
+  {tools,printhtml,inheritgraph,memlayout,ctrlflowgraph}
                         one of tools
     tools               various tools
     printhtml           generate static HTML for lang file
     inheritgraph        generate inheritance graph
     memlayout           generate memory layout diagram
+    ctrlflowgraph       generate control flow diagram
 ```
 
 
@@ -124,5 +125,26 @@ options:
                         Prefix to remove from paths (default: )
   --graphnote GRAPHNOTE
                         Note to put on graph (default: )
+  --outpath OUTPATH     Output path for DOT representation (default: )
+```
+
+
+
+## <a name="ctrlflowgraph_help"></a> python3 -m gcclangrawparser.main ctrlflowgraph --help
+```
+usage: python3 -m gcclangrawparser.main ctrlflowgraph [-h] --rawfile RAWFILE
+                                                      [-ii [INCLUDEINTERNALS]]
+                                                      [--reducepaths REDUCEPATHS]
+                                                      --outpath OUTPATH
+
+generate control flow diagram
+
+options:
+  -h, --help            show this help message and exit
+  --rawfile RAWFILE     Path to raw file to analyze (default: )
+  -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
+                        Should include C++ internals? (default: False)
+  --reducepaths REDUCEPATHS
+                        Prefix to remove from paths (default: )
   --outpath OUTPATH     Output path for DOT representation (default: )
 ```

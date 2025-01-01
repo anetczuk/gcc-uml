@@ -88,6 +88,42 @@ class StructAnalyzer:
         return entry_name
 
 
+def get_function_args(function_decl: Entry):
+    func_args = function_decl.get_sub_entries("args")
+    if not func_args:
+        return []
+
+    args_list = []
+    for _arg_prop, arg_entry in func_args:
+        arg_name = arg_entry.get("name")
+        arg_name = get_entry_name(arg_name)
+        arg_type_entry = arg_entry.get("type")
+        arg_type, arg_mod = get_type_name(arg_type_entry)
+        arg_type_full = arg_type
+        if arg_mod:
+            arg_type_full = f"{arg_type_full} {arg_mod}"
+        args_list.append([arg_name, arg_type_full])
+    return args_list
+
+
+def get_function_ret(function_type: Entry):
+    function_retn = function_type.get("retn")
+    if function_retn is None:
+        return None
+    ret_type, ret_mod = get_type_name(function_retn)
+    function_return = ret_type
+    if ret_mod:
+        function_return = f"{function_return} {ret_mod}"
+
+    # func_mod = function_retn.get("qual")
+    # if func_mod is not None:
+    #     func_mod = get_entry_name(func_mod)
+    #     if func_mod == "c":
+    #         function_return = f"{function_return} const"
+
+    return function_return
+
+
 def get_template_parameters(template_decl: Entry):
     params: Entry = template_decl.get("prms")
     if params is None:
@@ -136,20 +172,61 @@ def get_vector_items(vector: Entry):
 ## ====================================================
 
 
+def get_type_name(type_entry: Entry):
+    parm_mod = None
+    arg_qual = type_entry.get("qual")
+    if arg_qual == "c":
+        parm_mod = "const"
+
+    if type_entry.get_type() == "pointer_type":
+        ptd = type_entry.get("ptd")
+        ptd_name = get_full_name(ptd)
+        ptd_qual = ptd.get("qual")
+        if ptd_qual == "c":
+            ptd_name += " const"
+        ptd_name += " *"
+        return (ptd_name, parm_mod)
+
+    if type_entry.get_type() == "reference_type":
+        refd = type_entry.get("refd")
+        refd_name = get_full_name(refd)
+        refd_qual = refd.get("qual")
+        if refd_qual == "c":
+            refd_name += " const"
+        refd_name += " &"
+        return (refd_name, parm_mod)
+
+    param_name = get_entry_name(type_entry)
+    return (param_name, parm_mod)
+
+
+def get_full_name(entry: Entry) -> str:
+    if entry.get_type() == "record_type":
+        ns_list = get_record_namespace_list(entry)
+        return "::".join(ns_list)
+    return get_entry_name(entry)
+
+
 def get_record_namespace_list(record_decl: Entry):
     if record_decl is None:
         return []
     field_type = record_decl.get("name")
-    ret_list = get_type_namespace_list(field_type)
+    ret_list = get_decl_namespace_list(field_type)
     return ret_list
 
 
+# decl_entry: record_type, function_type etc.
 def get_type_namespace_list(type_decl: Entry):
-    if type_decl is None:
+    return get_decl_namespace_list(type_decl)
+
+
+# decl_entry: type_decl, record_decl, function_decl etc.
+def get_decl_namespace_list(decl_entry: Entry):
+    if decl_entry is None:
         return []
 
     ret_list = []
-    item = type_decl
+    item = decl_entry
     while item:
         if item.get_type() == "translation_unit_decl":
             ret_list.append("")
@@ -161,3 +238,13 @@ def get_type_namespace_list(type_decl: Entry):
 
     ret_list.reverse()
     return ret_list
+
+
+def get_number_entry_value(value: Entry):
+    if value is None:
+        raise RuntimeError("None not supported")
+
+    value_type = value.get_type()
+    if value_type == "integer_cst":
+        return value.get("int")
+    raise RuntimeError("unhandled number entry: {value_type}, {value.get_id()}")

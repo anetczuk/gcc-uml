@@ -18,6 +18,8 @@ from multiprocessing import Pool as Pool1
 
 # from gcclangrawparser.multiprocessingmock import DummyPool as Pool1
 
+from showgraph.graphviz import Graph
+
 from gcclangrawparser.langcontent import (
     Entry,
     get_entry_name,
@@ -43,7 +45,7 @@ def print_html(entry_tree: EntryTree, out_dir, generate_page_graph=True, use_viz
     _LOGGER.info("writing completed")
 
 
-def generate_entry_local_graph(entry, depends_dict, include_internals=True):
+def generate_entry_local_graph(entry, depends_dict, include_internals=True) -> Graph:
     entry_graph = EntryDotGraph()
     entry_graph.get_base_graph().set_rankdir("LR")
     entry_graph.add_node(entry, "red")
@@ -213,10 +215,11 @@ class NodePageGenerator:
         }}
     </script>
 """
+        auto_load_graph = True
         graph_img_content = ""
 
         if self.generate_page_graph:
-            graph = generate_entry_local_graph(entry, depends_dict, include_internals=self.include_internals)
+            graph: Graph = generate_entry_local_graph(entry, depends_dict, include_internals=self.include_internals)
 
             if self.use_vizjs:
                 graph_text = graph.toString()
@@ -236,7 +239,13 @@ class NodePageGenerator:
         }}
     </script>
 """
-                graph_img_content = "<span>Refresh page to load graph.</span>"
+                if graph.getNodesCount() < 20:
+                    graph_img_content = "<span>Refresh page to load graph.</span>"
+                else:
+                    auto_load_graph = False
+                    graph_img_content = (
+                        """<a href="javascript:void(0)" onclick="load_graph()">Click here to load graph.</a>"""
+                    )
 
             else:
                 graph_img_content = get_graph_as_svg(graph)
@@ -248,6 +257,10 @@ class NodePageGenerator:
         entry_content = self.node_printer.print_node(node)
 
         main_node_label = f"{entry.get_id()} {entry.get_type()}"
+
+        auto_load_call = ""
+        if auto_load_graph:
+            auto_load_call = "load_graph()"
 
         content = f"""\
 <!DOCTYPE HTML>
@@ -326,7 +339,7 @@ function toggle_element(element) {{
 {graph_scripts}
 
 </head>
-<body onload="load_graph()">
+<body onload="{auto_load_call}">
     <div class="section"><a href="@1.html">back to @1</a></div>
     <div id="graph" class="graphsection section">
 {graph_img_content}

@@ -1,0 +1,100 @@
+@startuml
+
+card "::calc_val1() -> int" {
+    start
+    #orange:== statements ==;
+    :::time;
+    #orange:== statements ==;
+
+partition "switch" {
+    ' case: 0 fallthrough: True
+    if ( bbb == 0 ) then (yes)
+    endif
+    ' case: 1 fallthrough: True
+    if ( bbb == 1 ) then (yes)
+        #orange:== statements ==;
+        :::time;
+    endif
+    ' case: 2 fallthrough: False
+    if ( bbb == 2 ) then (yes)
+    else
+        ' case: 3 fallthrough: False
+        if ( bbb == 3 ) then (yes)
+            #orange:== statements ==;
+            stop
+        else
+            ' case: 4 fallthrough: False
+            if ( bbb == 4 ) then (yes)
+                #orange:== statements ==;
+                stop
+            else
+                ' case: 5 fallthrough: True
+                if ( bbb == 5 ) then (yes)
+                    #orange:== statements ==;
+                    :::time;
+                endif
+                ' case: None fallthrough: False
+                if ( default ) then (yes)
+                    #orange:== statements ==;
+                    stop
+                else
+                    -[hidden]->
+                endif
+            endif
+        endif
+    endif
+}
+    #orange:== statements ==;
+    stop
+}
+
+card "::calc_val2() -> int" {
+    start
+    #orange:== statements ==;
+    :::time;
+    #orange:== statements ==;
+
+partition "switch" {
+    ' case: 0 fallthrough: True
+    if ( bbb == 0 ) then (yes)
+    endif
+    ' case: 1 fallthrough: True
+    if ( bbb == 1 ) then (yes)
+        #orange:== statements ==;
+        :::time;
+    endif
+    ' case: None fallthrough: False
+    ' case: 2 fallthrough: False
+    if ( bbb == 2 ) then (yes)
+    else
+        ' case: 3 fallthrough: False
+        if ( bbb == 3 ) then (yes)
+            #orange:== statements ==;
+            stop
+        else
+            ' case: 4 fallthrough: False
+            if ( bbb == 4 ) then (yes)
+                #orange:== statements ==;
+                stop
+            else
+                ' case: 5 fallthrough: True
+                if ( bbb == 5 ) then (yes)
+                    #orange:== statements ==;
+                    :::time;
+                endif
+                if ( default ) then (yes)
+                    #orange:== statements ==;
+                    stop
+                else
+                    -[hidden]->
+                endif
+            endif
+        endif
+    endif
+}
+    #orange:== statements ==;
+    stop
+}
+
+
+@enduml

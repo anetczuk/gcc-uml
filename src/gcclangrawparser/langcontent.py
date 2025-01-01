@@ -504,6 +504,7 @@ def get_entry_name(entry: Entry) -> str:
     return "[--unknown--]"
 
 
+## recursive version
 def get_entry_name_rec(entry: Entry):
     if not isinstance(entry, Entry):
         return entry

@@ -1,0 +1,33 @@
+@startuml
+
+card "::main() -> int" {
+    start
+    #orange:== statements ==;
+    :::calc_valA;
+    #orange:== statements ==;
+    :::calc_valB;
+    stop
+}
+
+card "::calc_valB(int const value) -> long int const" {
+    start
+    #orange:== statements ==;
+    :::time;
+    #orange:== statements ==;
+    if (aaa?) then (true)
+        #orange:== statements ==;
+        stop
+    else (false)
+        #orange:== statements ==;
+        stop
+    endif
+}
+
+card "::calc_valA(int const value) -> int" {
+    start
+    #orange:== statements ==;
+    stop
+}
+
+
+@enduml

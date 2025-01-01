@@ -1,0 +1,97 @@
+@startuml
+
+card "::calc_switch1() -> int" {
+    start
+    #orange:== statements ==;
+    :::time;
+    #orange:== statements ==;
+
+partition "switch" {
+    ' case: 0 fallthrough: False
+    if ( bbb == 0 ) then (yes)
+        #orange:== statements ==;
+        stop
+    else
+    endif
+}
+    #orange:== statements ==;
+    stop
+}
+
+card "::calc_switch2() -> int" {
+    start
+    #orange:== statements ==;
+    :::time;
+    #orange:== statements ==;
+
+partition "switch" {
+    ' case: None fallthrough: False
+    if ( default ) then (yes)
+        #orange:== statements ==;
+        stop
+    else
+        -[hidden]->
+    endif
+}
+    #orange:== statements ==;
+    stop
+}
+
+card "::calc_switch3() -> int" {
+    start
+    #orange:== statements ==;
+    :::time;
+    #orange:== statements ==;
+
+partition "switch" {
+    ' case: None fallthrough: True
+    if ( default ) then (yes)
+        #orange:== statements ==;
+        :::time;
+    else
+        -[hidden]->
+    endif
+}
+    #orange:== statements ==;
+    stop
+}
+
+card "::calc_switch4() -> int" {
+    start
+    #orange:== statements ==;
+    :::time;
+    #orange:== statements ==;
+
+partition "switch" {
+    ' case: 0 fallthrough: False
+    if ( bbb == 0 ) then (yes)
+        #orange:== statements ==;
+        stop
+    else
+        ' case: 1 fallthrough: False
+        if ( bbb == 1 ) then (yes)
+            #orange:== statements ==;
+            stop
+        else
+            ' case: 2 fallthrough: False
+            if ( bbb == 2 ) then (yes)
+                #orange:== statements ==;
+                stop
+            else
+                ' case: None fallthrough: True
+                if ( default ) then (yes)
+                    #orange:== statements ==;
+                    :::time;
+                else
+                    -[hidden]->
+                endif
+            endif
+        endif
+    endif
+}
+    #orange:== statements ==;
+    stop
+}
+
+
+@enduml

@@ -68,6 +68,7 @@ Code linters can be run by `./tools/checkall.sh`.
 
 ## References
 
+- [GCC Internals Manual](https://gcc.gnu.org/onlinedocs/gccint/)
 - [G++ Developer Options](https://gcc.gnu.org/onlinedocs/gcc-13.1.0/gcc/Developer-Options.html#index-fdump-lang-all)
 - [Viz.js](https://github.com/mdaines/viz-js)
 
