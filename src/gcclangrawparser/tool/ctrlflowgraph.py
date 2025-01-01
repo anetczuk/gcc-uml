@@ -8,21 +8,18 @@
 
 import os
 import logging
-from typing import List
+from typing import List, Any, Dict
 
 from gcclangrawparser.langcontent import (
     LangContent,
     Entry,
     is_entry_language_internal,
     get_entry_name,
-)
-from gcclangrawparser.langanalyze import (
-    StructAnalyzer,
-    get_decl_namespace_list,
-    get_function_args,
-    get_function_ret,
     get_number_entry_value,
+    get_decl_namespace_list,
+    get_type_name_mod,
 )
+from gcclangrawparser.langanalyze import StructAnalyzer, get_function_args, get_function_ret
 from gcclangrawparser.diagram.activitydiagram import (
     ActivityDiagramGenerator,
     FuncData,
@@ -104,23 +101,39 @@ def handle_func_body(statement_entry: Entry) -> List[FuncStatement]:
     return analyzer.analyze(statement_entry)
 
 
+OP1_SET = {"addr_expr", "cleanup_point_expr", "convert_expr", "fix_trunc_expr", "float_expr", "nop_expr"}
+
+
+OP2_DICT = {
+    "eq_expr": "==",
+    "bit_and_expr": "&",
+    "trunc_mod_expr": "%",
+    "modify_expr": "=",
+    "plus_expr": "+",
+    "minus_expr": "-",
+    "mult_expr": "*",
+    "rdiv_expr": "/",
+    "trunc_div_expr": "/",
+}
+
+
 class ScopeAnalysis:
 
     def __init__(self):
         self.vars = []
+        self.var_defs: Dict[str, Any] = {}
         self.decl_expr_counter = -1
 
     def analyze(self, statement_entry: Entry):
+        stat_list: List[FuncStatement] = []
         type_name = statement_entry.get_type()
         if type_name != "bind_expr":
-            stat_list: List[FuncStatement] = []
             self._analyze_func(statement_entry, stat_list)
             return stat_list
 
         # new scope
         self._read_var_defs(statement_entry)
         body_entry = statement_entry.get("body")
-        stat_list: List[FuncStatement] = []
         self._analyze_func(body_entry, stat_list)
         return stat_list
 
@@ -130,30 +143,39 @@ class ScopeAnalysis:
             type_name = var_item.get_type()
             if type_name != "var_decl":
                 raise RuntimeError("invalid type")
+            var_name = get_entry_name(var_item)
+            var_type = var_item.get("type")
+            var_type_name, var_type_mod = get_type_name_mod(var_type)
+            type_label = var_type_name
+            if var_type_mod is not None:
+                type_label = f"{var_type_mod} {var_type_name}"
+            self.var_defs[var_name] = type_label
+
             init_entry = var_item.get("init")
             if not init_entry:
-                self.vars.append(None)
+                self.vars.append(None)  # append value to sync with "decl_expr"
                 continue
-            var_name = get_entry_name(var_item)
             init_expr = self._analyze_func(init_entry, [])
-            decl_expr = f"{var_name} = {init_expr}"
+            decl_expr = f"{type_label} {var_name} = {init_expr}"
             self.vars.append(decl_expr)
 
     def _analyze_func(self, statement_entry: Entry, stat_list: List[FuncStatement]) -> str:
+        op2_exp: str = self._handle_op2(statement_entry)
+        if op2_exp is not None:
+            return op2_exp
+
+        num_val = get_number_entry_value(statement_entry, fail_exception=False)
+        if num_val is not None:
+            return num_val
+
         type_name = statement_entry.get_type()
 
-        if type_name == "bind_expr":
-            # new scope
-            scope_analysis = ScopeAnalysis()
-            bind_list = scope_analysis.analyze(statement_entry)
-            stat_list.extend(bind_list)
-            return
+        if type_name in OP1_SET:
+            op_entry = statement_entry.get("op 0")
+            return self._analyze_func(op_entry, stat_list)
 
-        if type_name == "statement_list":
-            index_entries = get_index_entries(statement_entry)
-            for index_item in index_entries:
-                self._analyze_func(index_item, stat_list)
-            return
+        if type_name in ("parm_decl", "var_decl"):
+            return get_entry_name(statement_entry)
 
         if type_name == "decl_expr":
             self.decl_expr_counter += 1
@@ -161,93 +183,55 @@ class ScopeAnalysis:
             if decl_expr:
                 decl_node = FuncStatement(decl_expr, FuncStatType.NODE)
                 stat_list.append(decl_node)
-            return
+            return None
 
-        if type_name == "var_decl":
-            return get_entry_name(statement_entry)
+        if type_name == "cond_expr":
+            self._handle_if(statement_entry, stat_list)
+            return None
+
+        if type_name == "switch_expr":
+            self._handle_switch(statement_entry, stat_list)
+            return None
+
+        if type_name == "bind_expr":
+            # new scope
+            scope_analysis = ScopeAnalysis()
+            bind_list = scope_analysis.analyze(statement_entry)
+            stat_list.extend(bind_list)
+            return None
+
+        if type_name == "statement_list":
+            index_entries = get_index_entries(statement_entry)
+            for index_item in index_entries:
+                self._analyze_func(index_item, stat_list)
+            return None
 
         if type_name == "function_decl":
             note = statement_entry.get("note")
             if note == "artificial":
                 ## skip artificial elements
-                return
+                return None
             func_name = get_decl_namespace_list(statement_entry)
             func_name = "::".join(func_name)
             return func_name
 
-        if type_name == "parm_decl":
-            return get_entry_name(statement_entry)
-
-        if type_name == "cond_expr":
-            # if expression
-            op0_entry = statement_entry.get("op 0")
-            op0_expr = self._analyze_func(op0_entry, stat_list)
-            if_node = FuncStatement(op0_expr, FuncStatType.IF)
-
-            true_stats: List[FuncStatement] = []
-            op1_entry = statement_entry.get("op 1")  ## true branch
-            self._analyze_func(op1_entry, true_stats)
-            if_node.items.append(true_stats)
-
-            false_stats: List[FuncStatement] = []
-            op2_entry = statement_entry.get("op 2")  ## false branch
-            self._analyze_func(op2_entry, false_stats)
-            if_node.items.append(false_stats)
-
-            stat_list.append(if_node)
-            return
-
-        if type_name == "eq_expr":
-            op0_entry = statement_entry.get("op 0")
-            op0_expr = self._analyze_func(op0_entry, stat_list)
-            op1_entry = statement_entry.get("op 1")
-            op1_expr = self._analyze_func(op1_entry, stat_list)
-            return f"{op0_expr} == {op1_expr}"
-
-        if type_name == "bit_and_expr":
-            op0_entry = statement_entry.get("op 0")
-            op0_expr = self._analyze_func(op0_entry, stat_list)
-            op1_entry = statement_entry.get("op 1")
-            op1_expr = self._analyze_func(op1_entry, stat_list)
-            return f"{op0_expr} & {op1_expr}"
-
-        if type_name == "trunc_mod_expr":
-            op0_entry = statement_entry.get("op 0")
-            op0_expr = self._analyze_func(op0_entry, stat_list)
-            op1_entry = statement_entry.get("op 1")
-            op1_expr = self._analyze_func(op1_entry, stat_list)
-            return f"{op0_expr} % {op1_expr}"
-
-        if type_name == "switch_expr":
-            self._analyze_switch(statement_entry, stat_list)
-            return
-
         if type_name == "return_expr":
             if self._find_return_item(stat_list) > -1:
                 _LOGGER.error("return node already added to the list")
-                return
+                return None
             expr_entry = statement_entry.get("expr")
             expr_expr = self._analyze_func(expr_entry, stat_list)
             ret_expr = f"return {expr_expr}"
             stat_list.append(FuncStatement(ret_expr, FuncStatType.STOP))
-            return
-
-        if type_name == "nop_expr":
-            op_entry = statement_entry.get("op 0")
-            return self._analyze_func(op_entry, stat_list)
-
-        if type_name == "cleanup_point_expr":
-            op_entry = statement_entry.get("op 0")
-            self._analyze_func(op_entry, stat_list)
-            return
+            return None
 
         if type_name == "expr_stmt":
             expr_entry = statement_entry.get("expr")
             expr = self._analyze_func(expr_entry, stat_list)
-            if expr is None:
-                raise RuntimeError(f"invalid case for entry {expr_entry.get_id()}")
-            stat_list.append(FuncStatement(expr, FuncStatType.NODE))
-            return
+            if expr is not None:
+                ## happens when "[[fallthrough]];" is used explicit
+                stat_list.append(FuncStatement(expr, FuncStatType.NODE))
+            return None
 
         if type_name == "call_expr":
             params_list = []
@@ -257,8 +241,10 @@ class ScopeAnalysis:
                 params_list.append(arg_expr)
             params_str = ", ".join(params_list)
             expr_entry = statement_entry.get("fn")
+            if expr_entry is None:
+                ## happens when "[[fallthrough]];" is used explicit
+                return None
             call_expr = self._analyze_func(expr_entry, stat_list)
-            # TODO: handle passing parameters
             return f"{call_expr}({params_str})"
 
         if type_name == "init_expr":
@@ -268,51 +254,53 @@ class ScopeAnalysis:
             op1_expr = self._analyze_func(op1_entry, stat_list)
             if op0_expr is None:
                 return op1_expr
-            return f"{op0_expr} = {op1_expr}"
-
-        if type_name == "modify_expr":
-            op0_entry = statement_entry.get("op 0")
-            op0_expr = self._analyze_func(op0_entry, stat_list)
-            op1_entry = statement_entry.get("op 1")
-            op1_expr = self._analyze_func(op1_entry, stat_list)
-            return f"{op0_expr} = {op1_expr}"
-
-        if type_name == "convert_expr":
-            expr_entry = statement_entry.get("op 0")
-            return self._analyze_func(expr_entry, stat_list)
-
-        if type_name == "addr_expr":
-            expr_entry = statement_entry.get("op 0")
-            return self._analyze_func(expr_entry, stat_list)
-
-        if type_name == "plus_expr":
-            op0_entry = statement_entry.get("op 0")
-            op0_expr = self._analyze_func(op0_entry, stat_list)
-            op1_entry = statement_entry.get("op 1")
-            op1_expr = self._analyze_func(op1_entry, stat_list)
-            return f"{op0_expr} + {op1_expr}"
-
-        if type_name == "mult_expr":
-            op0_entry = statement_entry.get("op 0")
-            op0_expr = self._analyze_func(op0_entry, stat_list)
-            op1_entry = statement_entry.get("op 1")
-            op1_expr = self._analyze_func(op1_entry, stat_list)
-            return f"{op0_expr} * {op1_expr}"
+            var_type_label = self.var_defs.get(op0_expr)
+            if var_type_label:
+                var_type_label = f"{var_type_label} "
+            return f"{var_type_label}{op0_expr} = {op1_expr}"
 
         if type_name == "result_decl":
-            return
-
-        if type_name == "integer_cst":
-            return get_entry_name(statement_entry)
+            ## do nothing
+            return None
 
         _LOGGER.error("unhandled statement type %s", type_name)
 
         node = FuncStatement(f"== unhandled statement {statement_entry.get_id()} ==", FuncStatType.NODE)
         node.color = "#orange"
         stat_list.append(node)
-        return
+        return None
 
-    def _analyze_switch(self, statement_entry: Entry, stat_list: List[FuncStatement]):
+    def _handle_op2(self, statement_entry: Entry) -> str:
+        if statement_entry is None:
+            pass
+        type_name = statement_entry.get_type()
+        op_sign = OP2_DICT.get(type_name)
+        if op_sign is None:
+            return None
+        op0_entry = statement_entry.get("op 0")
+        op0_expr = self._analyze_func(op0_entry, [])
+        op1_entry = statement_entry.get("op 1")
+        op1_expr = self._analyze_func(op1_entry, [])
+        return f"{op0_expr} {op_sign} {op1_expr}"
+
+    def _handle_if(self, statement_entry: Entry, stat_list: List[FuncStatement]):
+        op0_entry = statement_entry.get("op 0")
+        op0_expr = self._analyze_func(op0_entry, stat_list)
+        if_node = FuncStatement(op0_expr, FuncStatType.IF)
+
+        true_stats: List[FuncStatement] = []
+        op1_entry = statement_entry.get("op 1")  ## true branch
+        self._analyze_func(op1_entry, true_stats)
+        if_node.items.append(true_stats)
+
+        false_stats: List[FuncStatement] = []
+        op2_entry = statement_entry.get("op 2")  ## false branch
+        self._analyze_func(op2_entry, false_stats)
+        if_node.items.append(false_stats)
+
+        stat_list.append(if_node)
+
+    def _handle_switch(self, statement_entry: Entry, stat_list: List[FuncStatement]):
         switch_node = FuncStatement("", FuncStatType.SWITCH)
 
         cond_entry = statement_entry.get("cond")

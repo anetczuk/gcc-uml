@@ -16,9 +16,9 @@ from gcclangrawparser.langcontent import (
     is_entry_language_internal,
     get_entry_name,
     is_namespace_internal,
+    get_record_namespace_list,
 )
 from gcclangrawparser.langanalyze import (
-    get_record_namespace_list,
     StructAnalyzer,
     get_function_args,
     get_function_ret,
@@ -326,56 +326,6 @@ def get_name_record_type(entry: Entry):
     type_entry = entry.get("name")
     identifier_entry = type_entry.get("name")
     return identifier_entry.get("strg")
-
-
-def get_type_namespace_list(type_decl: Entry, ancestors_dict):
-    ident_entry = type_decl.get("name")
-    if ident_entry is None:
-        return None
-
-    ident_name = ident_entry.get("strg")
-    if ident_name is None:
-        return None
-
-    ret_list = None
-    entry_id = ident_entry.get_id()
-    lists = ancestors_dict.get(entry_id)
-    for ancestors_list in lists:
-        if len(ancestors_list) < 2:
-            continue
-        # ancestors_list = ancestors_list.copy()
-        ancestor_data = ancestors_list[-1]
-        abcestor_prop, ancestor = ancestor_data
-        if abcestor_prop != "name":
-            continue
-        ancestor_data = ancestors_list[-2]
-        abcestor_prop, ancestor = ancestor_data
-        # if ancestor.get_type() != "type_decl":
-        #     continue
-
-        if abcestor_prop != "dcls":
-            continue
-
-        namespace_list = []
-        for _ancestor_prop, ancestor in ancestors_list:
-            if ancestor.get_type() == "namespace_decl":
-                ancestor_name = get_entry_name(ancestor)
-                if ancestor_name == "[--unknown--]":
-                    ancestor_name = "_anonymous_"
-                if ancestor_name == "::":
-                    ancestor_name = ""
-                namespace_list.append(ancestor_name)
-
-        if ret_list is None:
-            ret_list = namespace_list
-        else:
-            if len(namespace_list) < len(ret_list):
-                ret_list = namespace_list
-
-    if ret_list is not None:
-        ret_list.append(ident_name)
-
-    return ret_list
 
 
 def get_bases_from_binf(binf_item: Entry, include_internals=True):

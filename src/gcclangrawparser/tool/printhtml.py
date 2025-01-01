@@ -22,12 +22,12 @@ from showgraph.graphviz import Graph
 
 from gcclangrawparser.langcontent import (
     Entry,
-    get_entry_name,
     EntryTreeNode,
     EntryTreeDepthFirstTraversal,
     is_entry_language_internal,
     is_entry_prop_internal,
     EntryTree,
+    get_entry_repr,
 )
 from gcclangrawparser.io import write_file
 from gcclangrawparser.vizjs import DATA_DIR
@@ -492,7 +492,7 @@ def print_head(entry, prefix_content="", postfix_content="", print_label=False):
         return f"""<div class="entryhead">{prefix_content}{entry_value}{postfix_content}</div>\n"""
     label_content = ""
     if print_label:
-        label_content = " " + get_entry_name(entry)
+        label_content = " " + get_entry_repr(entry)
     return (
         f"""<div class="entryhead">{prefix_content}{get_entry_id_href(entry)} {entry.get_type()}"""
         f"""{label_content}{postfix_content}</div>\n"""

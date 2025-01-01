@@ -7,7 +7,9 @@ int calc_val2() {
 	int timestamp = time(nullptr);
 	const int value = timestamp % 3;
 	switch(value) {
-	case 0: /// do nothing -- fallthrough
+	case 0:
+		/// do nothing -- fallthrough
+		[[fallthrough]];
 	case 1: {
 		timestamp = time(nullptr);
 	}
@@ -17,7 +19,8 @@ int calc_val2() {
 	case 2: break;
 	case 3: return 2;
 	case 4: {
-		const int ret = timestamp + value;
+		int ret = timestamp + value;
+		ret -= value;
 		return ret;
 	}
 	case 5: {
@@ -39,7 +42,9 @@ int calc_val1() {
 	case 2: break;
 	case 3: return 2;
 	case 4: {
-		const int ret = timestamp + value;
+		int ret = timestamp + value;
+		ret /= value;
+		ret /= 5.2;
 		return ret;
 	}
 	case 5: {

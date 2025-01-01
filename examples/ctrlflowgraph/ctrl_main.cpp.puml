@@ -2,31 +2,31 @@
 
 card "::main() -> int" {
     start
-    :aaa = ::calc_valA(4);
+    :const int aaa = ::calc_valA(4);
     #lightgreen:return ::calc_valB(aaa);
     stop
 }
 
 card "::calc_valA(int const value) -> int" {
     start
-    :xxxA = value * 2 + 3;
-    :xxxB = xxxA * 3;
+    :int xxxA = value * 2.100000000000000088817842e+0 + 3.0e+0;
+    :const int xxxB = xxxA * 3;
     #lightgreen:return xxxB;
     stop
 }
 
 card "::calc_valB(int const value) -> long int const" {
     start
-    :timestamp = ::time(0);
+    :int timestamp = ::time(0);
     :timestamp = timestamp + 1;
     :timestamp = timestamp + 2 + timestamp;
-    :bbb = timestamp + 11;
+    :const int bbb = timestamp + 11;
     if (bbb & 1 == 0 ?) then (true)
-        :ccc = 0;
+        :const int ccc = 0;
         #lightgreen:return 0;
         stop
     else (false)
-        :ddd = value;
+        :const int ddd = value * 4;
         #lightgreen:return ddd;
         stop
     endif

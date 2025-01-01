@@ -2,17 +2,19 @@
 
 card "::calc_val1() -> int" {
     start
-    :timestamp = ::time(0);
-    :value = timestamp % 3;
+    :int timestamp = ::time(0);
+    :const int value = timestamp % 3;
 
 partition "switch:\nvalue" {
     ' case: 0 fallthrough: True
     if ( 0 ? ) then (yes)
     endif
+    note right: [fallthrough]
     ' case: 1 fallthrough: True
     if ( 1 ? ) then (yes)
         :timestamp = ::time(0);
     endif
+    note right: [fallthrough]
     ' case: 2 fallthrough: False
     if ( 2 ? ) then (yes)
     else
@@ -23,7 +25,9 @@ partition "switch:\nvalue" {
         else
             ' case: 4 fallthrough: False
             if ( 4 ? ) then (yes)
-                :ret = timestamp + value;
+                :int ret = timestamp + value;
+                :ret = ret / value;
+                :ret = ret / 5.2000000000000001776356839e+0;
                 #lightgreen:return ret;
                 stop
             else
@@ -31,6 +35,7 @@ partition "switch:\nvalue" {
                 if ( 5 ? ) then (yes)
                     :timestamp = ::time(0);
                 endif
+                note right: [fallthrough]
                 ' case: None fallthrough: False
                 if ( default ) then (yes)
                     #lightgreen:return -1;
@@ -48,17 +53,19 @@ partition "switch:\nvalue" {
 
 card "::calc_val2() -> int" {
     start
-    :timestamp = ::time(0);
-    :value = timestamp % 3;
+    :int timestamp = ::time(0);
+    :const int value = timestamp % 3;
 
 partition "switch:\nvalue" {
     ' case: 0 fallthrough: True
     if ( 0 ? ) then (yes)
     endif
+    note right: [fallthrough]
     ' case: 1 fallthrough: True
     if ( 1 ? ) then (yes)
         :timestamp = ::time(0);
     endif
+    note right: [fallthrough]
     ' case: None fallthrough: False
     ' case: 2 fallthrough: False
     if ( 2 ? ) then (yes)
@@ -70,7 +77,8 @@ partition "switch:\nvalue" {
         else
             ' case: 4 fallthrough: False
             if ( 4 ? ) then (yes)
-                :ret = timestamp + value;
+                :int ret = timestamp + value;
+                :ret = ret - value;
                 #lightgreen:return ret;
                 stop
             else
@@ -78,6 +86,7 @@ partition "switch:\nvalue" {
                 if ( 5 ? ) then (yes)
                     :timestamp = ::time(0);
                 endif
+                note right: [fallthrough]
                 if ( default ) then (yes)
                     #lightgreen:return -1;
                     stop

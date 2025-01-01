@@ -13,7 +13,7 @@ int calc_switch4() {
 		timestamp = time(nullptr);
 	}
 	}
-	timestamp = timestamp + 3;
+	timestamp *= 3;
 	return timestamp % 2;
 }
 

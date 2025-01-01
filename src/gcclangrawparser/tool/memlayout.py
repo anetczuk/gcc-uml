@@ -15,9 +15,10 @@ from gcclangrawparser.langcontent import (
     Entry,
     get_entry_name,
     is_namespace_internal,
+    get_record_namespace_list,
 )
 from gcclangrawparser.diagram.memlayoutdiagram import MemoryLayoutDiagramGenerator, StructData, StructField, FieldType
-from gcclangrawparser.langanalyze import get_record_namespace_list, StructAnalyzer
+from gcclangrawparser.langanalyze import StructAnalyzer
 
 
 _LOGGER = logging.getLogger(__name__)

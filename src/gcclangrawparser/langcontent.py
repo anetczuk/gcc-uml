@@ -476,88 +476,129 @@ def print_entry_graph(entry: Entry):
             print(f"{indent}{node_data}: {curr_item}")
 
 
-def get_entry_name(entry: Entry) -> str:
+## ======================================================================
+
+
+def get_entry_repr(entry: Entry) -> str:
     if not isinstance(entry, Entry):
         return entry
 
-    entry_type = entry.get_type()
+    type_name = get_type_entry_name(entry)
+    if type_name is not None:
+        return type_name
 
-    if entry_type == "identifier_node":
-        entry_value = entry.get("strg", "[--no entry--]")
-        return get_entry_name_rec(entry_value)
+    num_value = get_number_entry_value(entry, fail_exception=False)
+    if num_value is not None:
+        return num_value
 
-    if entry_type == "integer_cst":
-        return entry.get("int", "[--no entry--]")
+    return get_entry_name(entry)
+
+
+def get_type_entry_name(type_entry: Entry):
+    name, mod = get_type_name_mod(type_entry)
+    if name is None:
+        return None
+    if mod is None:
+        return name
+    return f"{mod} {name}"
+
+
+def get_type_name_mod(type_entry: Entry):
+    parm_mod = None
+    arg_qual = type_entry.get("qual")
+    if arg_qual == "c":
+        parm_mod = "const"
+
+    entry_type = type_entry.get_type()
 
     if entry_type == "pointer_type":
-        ptd_entry = entry.get("ptd")
-        return get_entry_name(ptd_entry) + "*"
+        ptd = type_entry.get("ptd")
+        ptd_name = get_full_name(ptd)
+        ptd_qual = ptd.get("qual")
+        if ptd_qual == "c":
+            ptd_name += " const"
+        ptd_name += " *"
+        return (ptd_name, parm_mod)
 
     if entry_type == "reference_type":
-        refd_entry = entry.get("refd")
-        return get_entry_name(refd_entry) + "&"
+        refd = type_entry.get("refd")
+        refd_name = get_full_name(refd)
+        refd_qual = refd.get("qual")
+        if refd_qual == "c":
+            refd_name += " const"
+        refd_name += " &"
+        return (refd_name, parm_mod)
+
+    param_name = get_entry_name(type_entry, default_ret=None)
+    return (param_name, parm_mod)
+
+
+def get_full_name(entry: Entry) -> str:
+    if entry.get_type() == "record_type":
+        ns_list = get_record_namespace_list(entry)
+        return "::".join(ns_list)
+    return get_entry_name(entry)
+
+
+def get_record_namespace_list(record_decl: Entry):
+    if record_decl is None:
+        return []
+    field_type = record_decl.get("name")
+    ret_list = get_decl_namespace_list(field_type)
+    return ret_list
+
+
+# decl_entry: type_decl, record_decl, function_decl etc.
+def get_decl_namespace_list(decl_entry: Entry):
+    if decl_entry is None:
+        return []
+
+    ret_list = []
+    item = decl_entry
+    while item:
+        if item.get_type() == "translation_unit_decl":
+            ret_list.append("")
+            break
+        item_name_entry = item.get("name")
+        item_name = get_entry_name(item_name_entry)
+        ret_list.append(item_name)
+        item = item.get("scpe")
+
+    ret_list.reverse()
+    return ret_list
+
+
+def get_entry_name(entry: Entry, default_ret="[--unknown--]") -> str:
+    if not isinstance(entry, Entry):
+        return entry
 
     entry_value = entry.get("name")
     if entry_value is not None:
         return get_entry_name(entry_value)
 
-    return "[--unknown--]"
-
-
-## recursive version
-def get_entry_name_rec(entry: Entry):
-    if not isinstance(entry, Entry):
-        return entry
-
     entry_type = entry.get_type()
-
-    if entry_type == "integer_type":
-        label = ""
-        entry_value = entry.get("name")
-        if entry_value is not None:
-            label = get_entry_name_rec(entry_value)
-
-        entry_qual = entry.get("qual")
-        qual_label = get_entry_name_rec(entry_qual)
-        if qual_label is not None:
-            if qual_label == "c":
-                label = "const " + label
-            else:
-                raise RuntimeError(f"unhandled case for {entry.get_id()}")
-        return label
-
-    entry_value = entry.get("name")
-    if entry_value is not None:
-        return get_entry_name_rec(entry_value)
-
-    if entry_type == "type_decl":
-        entry_value = entry["type"]
-        return get_entry_name_rec(entry_value)
-
     if entry_type == "identifier_node":
-        try:
-            entry_value = entry.get("strg", "[--no entry--]")
-            return get_entry_name_rec(entry_value)
-        except KeyError:
-            print(f"invalid props - {entry}")
-            raise
+        entry_value = entry.get("strg", "[--no entry--]")
+        return get_entry_name(entry_value)
 
-    if entry_type == "pointer_type":
-        entry_value = entry["ptd"]
-        return get_entry_name_rec(entry_value)
+    return default_ret
 
-    if entry_type == "function_type":
-        entry_value = entry["retn"]
-        return get_entry_name_rec(entry_value)
 
-    if entry_type == "integer_cst":
-        entry_value = entry["int"]
-        return get_entry_name_rec(entry_value)
+def get_number_entry_value(value: Entry, fail_exception=True):
+    if value is None:
+        raise RuntimeError("None not supported")
 
-    if entry_type == "complex_type":
-        return "[unknown]"
+    value_type = value.get_type()
 
-    return f"[unhandled entry type: {entry.get_id()} {entry_type}]"
+    if value_type == "integer_cst":
+        return value.get("int")
+
+    if value_type == "real_cst":
+        return value.get("valu")
+
+    if fail_exception:
+        raise RuntimeError("unhandled number entry: {value_type}, {value.get_id()}")
+    return None
 
 
 # ============================================

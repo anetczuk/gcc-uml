@@ -36,7 +36,7 @@ class FuncStatement:
     def __init__(self, statement_name: str, statement_type: FuncStatType):
         self.name: str = statement_name
         self.type: FuncStatType = statement_type
-        self.color = None
+        self.color: str = None
         self.items: List[Any] = []
 
 
@@ -123,7 +123,7 @@ card "{func_name}({args_string}) -> {ret_str}" {{
         self.content_list.append("\n@enduml\n")
         content = "\n".join(self.content_list)
 
-        print(f"\ndiagram:\n{content}")
+        # print(f"\ndiagram:\n{content}")
 
         _LOGGER.info("writing output to file %s", out_path)
         write_file(out_path, content)
@@ -220,6 +220,10 @@ partition "switch:\\n{stat.name}" {{"""
                         self.content_list.append(
                             f"""\
 {switch_indent_str}endif"""
+                        )
+                        self.content_list.append(
+                            f"""\
+{switch_indent_str}note right: [fallthrough]"""
                         )
                     else:
                         ## normal or default

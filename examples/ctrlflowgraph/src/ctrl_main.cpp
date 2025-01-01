@@ -12,15 +12,15 @@ const long calc_valB(const int value) {
 		const int ccc = 0;
 		return ccc;
 	} else {
-		const int ddd = 1 * value;
+		const int ddd = 4 * value;
 		return ddd;
 	}
 }
 
 
 int calc_valA(const int value) {
-	int xxxA = value * 2 + 3;
-	int xxxB = xxxA * 3;
+	int xxxA = value * 2.1 + 3;
+	const int xxxB = xxxA * 3;
 	return xxxB;
 }
 
