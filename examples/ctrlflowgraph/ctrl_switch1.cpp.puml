@@ -2,86 +2,76 @@
 
 card "::calc_switch1() -> int" {
     start
-    #orange:== statements ==;
-    :::time;
-    #orange:== statements ==;
+    :timestamp = ::time(0);
 
-partition "switch" {
+partition "switch:\ntimestamp % 3" {
     ' case: 0 fallthrough: False
-    if ( bbb == 0 ) then (yes)
-        #orange:== statements ==;
+    if ( 0 ? ) then (yes)
+        #lightgreen:return 0;
         stop
     else
     endif
 }
-    #orange:== statements ==;
+    #lightgreen:return -3;
     stop
 }
 
 card "::calc_switch2() -> int" {
     start
-    #orange:== statements ==;
-    :::time;
-    #orange:== statements ==;
+    :timestamp = ::time(0);
 
-partition "switch" {
+partition "switch:\ntimestamp % 3" {
     ' case: None fallthrough: False
     if ( default ) then (yes)
-        #orange:== statements ==;
+        #lightgreen:return 0;
         stop
     else
         -[hidden]->
     endif
 }
-    #orange:== statements ==;
+    #lightgreen:return -3;
     stop
 }
 
 card "::calc_switch3() -> int" {
     start
-    #orange:== statements ==;
-    :::time;
-    #orange:== statements ==;
+    :timestamp = ::time(0);
 
-partition "switch" {
+partition "switch:\ntimestamp % 3" {
     ' case: None fallthrough: True
     if ( default ) then (yes)
-        #orange:== statements ==;
-        :::time;
+        :timestamp = ::time(0);
     else
         -[hidden]->
     endif
 }
-    #orange:== statements ==;
+    #lightgreen:return -3;
     stop
 }
 
 card "::calc_switch4() -> int" {
     start
-    #orange:== statements ==;
-    :::time;
-    #orange:== statements ==;
+    :timestamp = ::time(0);
 
-partition "switch" {
+partition "switch:\ntimestamp % 3" {
     ' case: 0 fallthrough: False
-    if ( bbb == 0 ) then (yes)
-        #orange:== statements ==;
+    if ( 0 ? ) then (yes)
+        #lightgreen:return 0;
         stop
     else
         ' case: 1 fallthrough: False
-        if ( bbb == 1 ) then (yes)
-            #orange:== statements ==;
+        if ( 1 ? ) then (yes)
+            #lightgreen:return 1;
             stop
         else
             ' case: 2 fallthrough: False
-            if ( bbb == 2 ) then (yes)
-                #orange:== statements ==;
+            if ( 2 ? ) then (yes)
+                #lightgreen:return 2;
                 stop
             else
                 ' case: None fallthrough: True
                 if ( default ) then (yes)
-                    #orange:== statements ==;
-                    :::time;
+                    :timestamp = ::time(0);
                 else
                     -[hidden]->
                 endif
@@ -89,7 +79,8 @@ partition "switch" {
         endif
     endif
 }
-    #orange:== statements ==;
+    :timestamp = timestamp + 3;
+    #lightgreen:return timestamp % 2;
     stop
 }
 

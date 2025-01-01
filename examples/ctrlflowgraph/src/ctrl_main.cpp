@@ -3,13 +3,6 @@
 #include <time.h>       // time
 
 
-int calc_valA(const int value) {
-	int xxxA = value * 2 + 3;
-	int xxxB = xxxA * 3;
-	return xxxB;
-}
-
-
 const long calc_valB(const int value) {
 	int timestamp = time(nullptr);
 	timestamp = timestamp + 1;
@@ -22,6 +15,13 @@ const long calc_valB(const int value) {
 		const int ddd = 1 * value;
 		return ddd;
 	}
+}
+
+
+int calc_valA(const int value) {
+	int xxxA = value * 2 + 3;
+	int xxxB = xxxA * 3;
+	return xxxB;
 }
 
 

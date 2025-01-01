@@ -2,31 +2,34 @@
 
 card "::main() -> int" {
     start
-    #orange:== statements ==;
-    :::calc_valA;
-    #orange:== statements ==;
-    :::calc_valB;
+    :aaa = ::calc_valA(4);
+    #lightgreen:return ::calc_valB(aaa);
+    stop
+}
+
+card "::calc_valA(int const value) -> int" {
+    start
+    :xxxA = value * 2 + 3;
+    :xxxB = xxxA * 3;
+    #lightgreen:return xxxB;
     stop
 }
 
 card "::calc_valB(int const value) -> long int const" {
     start
-    #orange:== statements ==;
-    :::time;
-    #orange:== statements ==;
-    if (aaa?) then (true)
-        #orange:== statements ==;
+    :timestamp = ::time(0);
+    :timestamp = timestamp + 1;
+    :timestamp = timestamp + 2 + timestamp;
+    :bbb = timestamp + 11;
+    if (bbb & 1 == 0 ?) then (true)
+        :ccc = 0;
+        #lightgreen:return 0;
         stop
     else (false)
-        #orange:== statements ==;
+        :ddd = value;
+        #lightgreen:return ddd;
         stop
     endif
-}
-
-card "::calc_valA(int const value) -> int" {
-    start
-    #orange:== statements ==;
-    stop
 }
 
 

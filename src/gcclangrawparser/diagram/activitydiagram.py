@@ -142,6 +142,18 @@ card "{func_name}({args_string}) -> {ret_str}" {{
                 )
                 continue
 
+            if stat.type == FuncStatType.STOP:
+                if stat.name:
+                    self.content_list.append(
+                        f"""\
+{indent_str}#lightgreen:{stat.name};"""
+                    )
+                self.content_list.append(
+                    f"""\
+{indent_str}stop"""
+                )
+                continue
+
             if stat.type == FuncStatType.IF:
                 items_len = len(stat.items)
                 if items_len != 2:
@@ -150,7 +162,7 @@ card "{func_name}({args_string}) -> {ret_str}" {{
                 false_branch = stat.items[1]
                 self.content_list.append(
                     f"""\
-{indent_str}if (aaa?) then (true)"""
+{indent_str}if ({stat.name} ?) then (true)"""
                 )
                 self._handle_statement_list(true_branch, indent=indent + 1)
                 self.content_list.append(
@@ -172,8 +184,8 @@ card "{func_name}({args_string}) -> {ret_str}" {{
 
                 ## switch start
                 self.content_list.append(
-                    """
-partition "switch" {"""
+                    f"""
+partition "switch:\\n{stat.name}" {{"""
                 )
 
                 nest_level = 0
@@ -196,7 +208,7 @@ partition "switch" {"""
                         found_default = case_statements
                         continue
 
-                    label_str = f"bbb == {case_value}"
+                    label_str = f"{case_value} ?"
 
                     if case_fallthrough:
                         ## fallthrough
@@ -252,13 +264,6 @@ partition "switch" {"""
 }"""
                 )
 
-                continue
-
-            if stat.type == FuncStatType.STOP:
-                self.content_list.append(
-                    f"""\
-{indent_str}stop"""
-                )
                 continue
 
             raise RuntimeError(f"unhandled statement type: {stat.type}")

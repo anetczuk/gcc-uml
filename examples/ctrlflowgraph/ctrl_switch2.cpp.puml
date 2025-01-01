@@ -2,40 +2,38 @@
 
 card "::calc_val1() -> int" {
     start
-    #orange:== statements ==;
-    :::time;
-    #orange:== statements ==;
+    :timestamp = ::time(0);
+    :value = timestamp % 3;
 
-partition "switch" {
+partition "switch:\nvalue" {
     ' case: 0 fallthrough: True
-    if ( bbb == 0 ) then (yes)
+    if ( 0 ? ) then (yes)
     endif
     ' case: 1 fallthrough: True
-    if ( bbb == 1 ) then (yes)
-        #orange:== statements ==;
-        :::time;
+    if ( 1 ? ) then (yes)
+        :timestamp = ::time(0);
     endif
     ' case: 2 fallthrough: False
-    if ( bbb == 2 ) then (yes)
+    if ( 2 ? ) then (yes)
     else
         ' case: 3 fallthrough: False
-        if ( bbb == 3 ) then (yes)
-            #orange:== statements ==;
+        if ( 3 ? ) then (yes)
+            #lightgreen:return 2;
             stop
         else
             ' case: 4 fallthrough: False
-            if ( bbb == 4 ) then (yes)
-                #orange:== statements ==;
+            if ( 4 ? ) then (yes)
+                :ret = timestamp + value;
+                #lightgreen:return ret;
                 stop
             else
                 ' case: 5 fallthrough: True
-                if ( bbb == 5 ) then (yes)
-                    #orange:== statements ==;
-                    :::time;
+                if ( 5 ? ) then (yes)
+                    :timestamp = ::time(0);
                 endif
                 ' case: None fallthrough: False
                 if ( default ) then (yes)
-                    #orange:== statements ==;
+                    #lightgreen:return -1;
                     stop
                 else
                     -[hidden]->
@@ -44,46 +42,44 @@ partition "switch" {
         endif
     endif
 }
-    #orange:== statements ==;
+    #lightgreen:return -9;
     stop
 }
 
 card "::calc_val2() -> int" {
     start
-    #orange:== statements ==;
-    :::time;
-    #orange:== statements ==;
+    :timestamp = ::time(0);
+    :value = timestamp % 3;
 
-partition "switch" {
+partition "switch:\nvalue" {
     ' case: 0 fallthrough: True
-    if ( bbb == 0 ) then (yes)
+    if ( 0 ? ) then (yes)
     endif
     ' case: 1 fallthrough: True
-    if ( bbb == 1 ) then (yes)
-        #orange:== statements ==;
-        :::time;
+    if ( 1 ? ) then (yes)
+        :timestamp = ::time(0);
     endif
     ' case: None fallthrough: False
     ' case: 2 fallthrough: False
-    if ( bbb == 2 ) then (yes)
+    if ( 2 ? ) then (yes)
     else
         ' case: 3 fallthrough: False
-        if ( bbb == 3 ) then (yes)
-            #orange:== statements ==;
+        if ( 3 ? ) then (yes)
+            #lightgreen:return 2;
             stop
         else
             ' case: 4 fallthrough: False
-            if ( bbb == 4 ) then (yes)
-                #orange:== statements ==;
+            if ( 4 ? ) then (yes)
+                :ret = timestamp + value;
+                #lightgreen:return ret;
                 stop
             else
                 ' case: 5 fallthrough: True
-                if ( bbb == 5 ) then (yes)
-                    #orange:== statements ==;
-                    :::time;
+                if ( 5 ? ) then (yes)
+                    :timestamp = ::time(0);
                 endif
                 if ( default ) then (yes)
-                    #orange:== statements ==;
+                    #lightgreen:return -1;
                     stop
                 else
                     -[hidden]->
@@ -92,7 +88,7 @@ partition "switch" {
         endif
     endif
 }
-    #orange:== statements ==;
+    #lightgreen:return -9;
     stop
 }
 
