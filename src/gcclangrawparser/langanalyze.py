@@ -15,6 +15,7 @@ from gcclangrawparser.langcontent import (
     is_namespace_internal,
     get_record_namespace_list,
     get_type_name_mod,
+    get_decl_namespace_list,
 )
 
 
@@ -94,15 +95,89 @@ class StructAnalyzer:
         return entry_name
 
 
+def get_function_full_name(function_decl: Entry):
+    if function_decl is None:
+        return None
+    if function_decl.get_type() != "function_decl":
+        raise RuntimeError("case never occurred")
+
+    scope = function_decl.get("scpe")
+    if scope is None:
+        raise RuntimeError("case never occurred")
+
+    if scope.get_type() != "record_type":
+        ## regular function
+        name_prefix = get_decl_namespace_list(function_decl)
+        return "::".join(name_prefix)
+
+    ## class method
+    name_entry = function_decl.get("name")
+    method_name = get_entry_name(name_entry)
+    if method_name is None:
+        # proper field must have name
+        return None
+
+    method_note_list = function_decl.get_list("note")
+    if "constructor" in method_note_list:
+        method_name = get_entry_name(scope)
+    elif "destructor" in method_note_list:
+        class_name = get_entry_name(scope)
+        method_name = f"~{class_name}"
+
+    name_prefix = get_decl_namespace_list(function_decl)
+    name_prefix[-1] = method_name
+    return "::".join(name_prefix)
+
+
+def get_function_name(function_decl: Entry):
+    if function_decl is None:
+        return None
+    if function_decl.get_type() != "function_decl":
+        raise RuntimeError("case never occurred")
+
+    scope = function_decl.get("scpe")
+    if scope is None:
+        raise RuntimeError("case never occurred")
+
+    if scope.get_type() != "record_type":
+        ## regular function
+        name_prefix = get_decl_namespace_list(function_decl)
+        return "::".join(name_prefix)
+
+    ## class method
+    name_entry = function_decl.get("name")
+    method_name = get_entry_name(name_entry)
+    if method_name is None:
+        # proper field must have name
+        return None
+
+    method_note_list = function_decl.get_list("note")
+    if "constructor" in method_note_list:
+        method_name = get_entry_name(scope)
+    elif "destructor" in method_note_list:
+        class_name = get_entry_name(scope)
+        method_name = f"~{class_name}"
+
+    name_prefix = get_decl_namespace_list(function_decl)
+    name_prefix[-1] = method_name
+    return "::".join(name_prefix)
+
+
 def get_function_args(function_decl: Entry):
     func_args = function_decl.get_sub_entries("args")
     if not func_args:
         return []
 
+    is_meth = is_method(function_decl)
+
     args_list = []
-    for _arg_prop, arg_entry in func_args:
+    for arg_index, arg_data in enumerate(func_args):
+        _arg_prop, arg_entry = arg_data
         arg_name = arg_entry.get("name")
         arg_name = get_entry_name(arg_name)
+        if arg_index == 0 and is_meth and arg_name == "this":
+            # skip this parameter
+            continue
         arg_type_entry = arg_entry.get("type")
         arg_type, arg_mod = get_type_name_mod(arg_type_entry)
         arg_type_full = arg_type
@@ -173,3 +248,28 @@ def get_vector_items(vector: Entry):
             return []
         ret_list.append(param_item)
     return ret_list
+
+
+def is_method(func_decl: Entry) -> bool:
+    if func_decl is None:
+        raise RuntimeError("case never occurred")
+    if func_decl.get_type() != "function_decl":
+        raise RuntimeError("case never occurred")
+    scope = func_decl.get("scpe")
+    if scope is None:
+        raise RuntimeError("case never occurred")
+    if scope.get_type() != "record_type":
+        return False
+    return True
+
+
+# returns True if function is regular method, otherwise is a static method
+def is_method_of_instance(func_decl: Entry) -> bool:
+    if func_decl is None:
+        return False
+    args_list = func_decl.get_sub_entries("args")
+    if not args_list:
+        return False
+    _first_prop, first_arg = args_list[0]
+    first_name = get_entry_name(first_arg)
+    return first_name == "this"

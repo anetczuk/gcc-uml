@@ -9,8 +9,8 @@ import os
 import logging
 from enum import Enum, auto
 from typing import NamedTuple, Tuple
-
 from typing import List, Dict
+from dataclasses import dataclass
 
 from showgraph.io import write_file
 
@@ -49,9 +49,26 @@ class ClassDiagramGenerator:
 
     FunctionArg = NamedTuple("FunctionArg", [("name", str), ("type", str)])
     ClassBase = NamedTuple("ClassBase", [("name", str), ("access", str)])
-    ClassField = NamedTuple("ClassField", [("name", str), ("type", str), ("access", str)])
+
+    
+    @dataclass
+    class ClassField:
+        name: str
+        type: str
+        access: str
+        static: bool
+
+
     ClassMethod = NamedTuple(
-        "ClassMethod", [("name", str), ("type", str), ("modifier", str), ("access", str), ("args", List[FunctionArg])]
+        "ClassMethod",
+        [
+            ("name", str),
+            ("type", str),
+            ("modifier", str),
+            ("access", str),
+            ("args", List[FunctionArg]),
+            ("static", bool),
+        ],
     )
     Connection = NamedTuple("Connection", [("from_class", str), ("to_class", str), ("label", str)])
 
@@ -120,15 +137,24 @@ class ClassDiagramGenerator:
             content_list.append(f"""class "{actor}" as {actor_id} {gen_string}{struct_spot}{{""")
 
             for field_item in class_data.fields:
-                field_name, field_type, field_access = field_item
+                field_name = field_item.name
+                field_type = field_item.type
+                field_access = field_item.access
+                field_static = field_item.static
                 access_mark = self.FIELD_ACCESS_DICT.get(field_access)
                 if access_mark is None:
                     _LOGGER.error("unable to get access mark for access value: '%s'", field_access)
                     access_mark = ""
-                content_list.append(f"""    {{field}} {access_mark} {field_type} {field_name}""")
+
+                static_marker = ""
+                if field_static:
+                    # in UML static field is marked as underscored
+                    static_marker = "{static} "
+
+                content_list.append(f"""    {{field}} {static_marker}{access_mark} {field_type} {field_name}""")
 
             for method_item in class_data.methods:
-                method_name, method_type, method_mod, method_access, method_args = method_item
+                method_name, method_type, method_mod, method_access, method_args, method_static = method_item
                 access_mark = self.FIELD_ACCESS_DICT.get(method_access)
                 if access_mark is None:
                     _LOGGER.error("unable to get access mark for access value: '%s'", method_access)
@@ -147,17 +173,24 @@ class ClassDiagramGenerator:
                 if "virtual" in method_mod:
                     method_mod_prefix = "virt"
 
+                abstract_mark = ""
                 method_mod_suffix = []
                 if "const" in method_mod:
                     method_mod_suffix.append("const")
                 if "purevirt" in method_mod:
                     method_mod_suffix.append("=0")
+                    abstract_mark = "{abstract} "
                 if "default" in method_mod:
                     method_mod_suffix.append("=default")
                 method_mod_suffix = " ".join(method_mod_suffix)
 
+                static_marker = ""
+                if method_static:
+                    # in UML static method is marked as underscored
+                    static_marker = "{static} "
+
                 content_list.append(
-                    f"""    {{method}} {access_mark}{method_mod_prefix} {method_type}"""
+                    f"""    {{method}} {static_marker}{abstract_mark}{access_mark}{method_mod_prefix} {method_type}"""
                     f""" {method_name}({args_string}) {method_mod_suffix}"""
                 )
 
@@ -189,7 +222,7 @@ class ClassDiagramGenerator:
         content_list.append("\n@enduml\n")
         content = "\n".join(content_list)
 
-        print(f"\ndiagram:\n{content}")
+        # print(f"\ndiagram:\n{content}")
 
         _LOGGER.info("writing output to file %s", out_path)
         write_file(out_path, content)

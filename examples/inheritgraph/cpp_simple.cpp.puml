@@ -1,0 +1,19 @@
+@startuml
+
+class "::items::Abc1" as item_0 {
+    {field} {static} + __vtbl_ptr_type[] _ZTVN5items4Abc1E
+    {field} + __vtbl_ptr_type * _vptr.Abc1
+    {field} {static} + bool static1
+    {field} {static} + const int static2
+    {field} # int field1
+    {field} # double field2
+    {field} - const double field3
+    {method} +virt  ~Abc1() 
+    {method} + void call_param(int paramA, double const paramB, bool /*anonym*/) 
+    {method} +virt void call_virt(int paramA) 
+    {method} {abstract} +virt void call_pure(int paramA, double const paramB, bool /*anonym*/) =0
+    {method} {static} + void call_static(int paramA, double const paramB, bool /*anonym*/) 
+}
+
+
+@enduml

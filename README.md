@@ -53,9 +53,6 @@ Installation for development:
 
 ## Issues
 
-- In case of multiple inheritance it is not possible to get accurate information about virtual inheritance
-(tested under *g++* version 13.2.0). Sample code is in `examples/inheritgraph/src/inherit_virt.cpp` file.
-
 
 ## Development
 
@@ -64,6 +61,11 @@ All tests, linters and content generators can be executed by simple script `./pr
 Unit tests are executed by `./src/testgcclangrawparser/runtests.py`.
 
 Code linters can be run by `./tools/checkall.sh`.
+
+
+## Similar projects
+
+- [clang-uml](https://clang-uml.github.io/)
 
 
 ## References

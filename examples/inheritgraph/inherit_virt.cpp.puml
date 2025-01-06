@@ -8,13 +8,15 @@ class "::items3::Cbc3" as item_0 {
 class "::items3::Cbc2" as item_1 {
     {field} + int fieldB3
     {method} +virt int funcA() 
-    {method} +virt int funcB() =0
+    {method} {abstract} +virt int funcB() =0
 }
 class "::items3::Cbc1" as item_2 {
+    {field} + __vtbl_ptr_type * _vptr.Cbc1
     {field} + int fieldA3
-    {method} +virt int funcA() =0
+    {method} {abstract} +virt int funcA() =0
 }
 class "::items2::Bbc3" as item_3 {
+    {field} + __vtbl_ptr_type * _vptr.Bbc3
     {field} + char fieldC2
 }
 class "::items2::VBbc2" as item_4 {
@@ -24,6 +26,7 @@ class "::items2::Bbc1" as item_5 {
     {field} + int fieldA2
 }
 class "::items1::Abc3" as item_6 {
+    {field} + __vtbl_ptr_type * _vptr.Abc3
     {field} + char fieldC1
 }
 class "::items1::Abc2" as item_7 {
@@ -37,13 +40,13 @@ class "::items1::VAbc1" as item_8 {
 item_0 --|> item_1: "pub"
 ' ::items3::Cbc2 --|> ::items3::Cbc1
 item_1 --|> item_2: "pub"
-' ::items2::Bbc3 --|> ::items2::VBbc2
-item_3 --|> item_4: "virt pub"
 ' ::items2::Bbc3 --|> ::items2::Bbc1
 item_3 --|> item_5: "prot"
+' ::items2::Bbc3 --|> ::items2::VBbc2
+item_3 --|> item_4: "virt pub"
+' ::items1::Abc3 --|> ::items1::VAbc1
+item_6 --|> item_8: "virt pub"
 ' ::items1::Abc3 --|> ::items1::Abc2
 item_6 --|> item_7: "prot"
-' ::items1::Abc3 --|> ::items1::VAbc1
-item_6 --|> item_8: "virt ???"
 
 @enduml

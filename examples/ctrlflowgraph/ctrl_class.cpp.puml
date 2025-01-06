@@ -1,0 +1,39 @@
+@startuml
+
+card "::item::ExampleB::methodB1(int const param) -> int" {
+    start
+    :const float var1 = param * 3.2999999999999998223643161e+0;
+    :const float var2 = param * 3.2999999999999998223643161e+0;
+    :const int valA;;
+    :valA = (&objA)->methodA1();
+    :int retX;;
+    :retX = this->methodB2(var1) * valA;
+    :retX = retX + 7;
+    :int retY;;
+    :retY = ::item::ExampleB::methodB3(12);
+    #lightgreen:return retX + retY;
+    stop
+}
+
+card "::item::ExampleB::methodB3(int const val) -> int" {
+    start
+    #lightgreen:return val;
+    stop
+}
+
+card "::item::ExampleB::methodB2(float const param) -> int" {
+    start
+    :const float var = param * 6.5999999999999996447286321e+0;
+    #lightgreen:return var;
+    stop
+}
+
+card "::item::ExampleA::methodA1() -> int" {
+    start
+    :const int ret = 5;
+    #lightgreen:return 5;
+    stop
+}
+
+
+@enduml

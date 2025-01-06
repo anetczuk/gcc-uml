@@ -2,22 +2,26 @@
 
 card "::main() -> int" {
     start
-    :const int aaa = ::calc_valA(4);
-    #lightgreen:return ::calc_valB(aaa);
+    :const int aaa;;
+    :aaa = ::calc_valA(4);
+    :int bbb;;
+    :bbb = ::calc_valB(aaa);
+    #lightgreen:return ::calc_valC(bbb);
     stop
 }
 
-card "::calc_valA(int const value) -> int" {
+card "::calc_valA(int const valueA) -> int" {
     start
-    :int xxxA = value * 2.100000000000000088817842e+0 + 3.0e+0;
+    :int xxxA = valueA * 2.100000000000000088817842e+0 + 3.0e+0;
     :const int xxxB = xxxA * 3;
     #lightgreen:return xxxB;
     stop
 }
 
-card "::calc_valB(int const value) -> long int const" {
+card "::calc_valB(int const valueB) -> long int const" {
     start
-    :int timestamp = ::time(0);
+    :int timestamp;;
+    :timestamp = ::time(0);
     :timestamp = timestamp + 1;
     :timestamp = timestamp + 2 + timestamp;
     :const int bbb = timestamp + 11;
@@ -26,10 +30,21 @@ card "::calc_valB(int const value) -> long int const" {
         #lightgreen:return 0;
         stop
     else (false)
-        :const int ddd = value * 4;
+        :const int ddd = valueB * 4;
         #lightgreen:return ddd;
         stop
     endif
+}
+
+card "::calc_valC(int const valueC) -> int" {
+    start
+    :int[] arrY;;
+    :int[] arrX = {10, 20};
+    :arrX[0] = arrX[0] + valueC;
+    :arrX[1] = valueC / 2.100000000000000088817842e+0;
+    :const int xxxB = arrX[1] * 3 + arrX[0];
+    #lightgreen:return xxxB;
+    stop
 }
 
 

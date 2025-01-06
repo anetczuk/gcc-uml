@@ -93,6 +93,27 @@ prepare_sample() {
 											--outpath "$OUT_DIAG_PATH" \
 											"${ARGS[@]}"
 # 											-ii \
+
+# 		OUT_MEM_DIAG_PATH="$BUILD_DIR/../${SAMPLE_FILE}.memlayout.puml"
+# 		"$SRC_DIR"/gcclangrawparser/main.py memlayout \
+# 											--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+# 											--reducepaths "$SCRIPT_DIR/" \
+# 											--outpath "$OUT_MEM_DIAG_PATH" \
+# 											"${ARGS[@]}"
+# # 											-ii \
+# 
+# 		OUT_IMG_PATH="$BUILD_DIR/${SAMPLE_FILE}.memlayout.svg"
+# 		dot -Tsvg "$OUT_MEM_DIAG_PATH" -o "$OUT_IMG_PATH"
+# 
+# 		OUT_INH_DIAG_PATH="$BUILD_DIR/../${SAMPLE_FILE}.inherit.puml"
+# 		"$SRC_DIR"/gcclangrawparser/main.py inheritgraph \
+# 											--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+# 											--reducepaths "$SCRIPT_DIR/" \
+# 											--outpath "$OUT_INH_DIAG_PATH" \
+# 											"${ARGS[@]}"
+# # 											-ii \
+# 
+# 		plantuml -tsvg "$OUT_INH_DIAG_PATH" -o "$BUILD_DIR"
 	else
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
 		"$SRC_DIR"/gcclangrawparser/main.py ctrlflowgraph \

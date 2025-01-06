@@ -46,7 +46,8 @@ def convert_lines_to_dict(content_lines, reducepaths=None):
         # print(f"{line} -> >{found.group(1)}< >{found.group(2)}< >{found.group(3)}<")
         line_id = found.group(1)
         line_type = found.group(2)
-        line_props = converter.convert(found.group(3))
+        props_raw_data = found.group(3)
+        line_props = converter.convert(props_raw_data)
         if reducepaths:
             for prop_key, prop_val in list(line_props.items()):
                 if prop_val.startswith(reducepaths):
@@ -67,7 +68,25 @@ class ProprertiesConverter:
             next_key = self.consume_key()
             next_val = self.consume_value()
             # print(f"gggg: >{next_key}< >{next_val}<")
-            ret_dict[next_key] = next_val
+            sublist = ret_dict.get(next_key)
+            if sublist is None:
+                sublist = []
+                ret_dict[next_key] = sublist
+            sublist.append(next_val)
+
+        ## convert lists
+        for key, val_list in list(ret_dict.items()):
+            if len(val_list) < 2:
+                ## reduce list
+                val = val_list[0]
+                ret_dict[key] = val
+                continue
+            # for backward compatibility convert list to list of keys with index like "{prop}_0" etc
+            del ret_dict[key]
+            for index, item in enumerate(val_list):
+                new_key = f"{key}_{index}"
+                ret_dict[new_key] = item
+
         return ret_dict
 
     def consume_key(self):

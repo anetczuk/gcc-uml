@@ -104,7 +104,13 @@
         }
     },
     "binfo": {
-        "accs": {
+        "accs_0": {
+            "mandatory": false,
+            "values": [
+                "pub"
+            ]
+        },
+        "accs_1": {
             "mandatory": false,
             "values": [
                 "prot"
@@ -117,7 +123,16 @@
                 "2"
             ]
         },
-        "binf": {
+        "binf_0": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "binfo"
+            ]
+        },
+        "binf_1": {
             "mandatory": false,
             "values": [
                 "<entry-id>"
@@ -546,6 +561,21 @@
                 "statement_list"
             ]
         },
+        "body_0": {
+            "mandatory": false,
+            "values": [
+                "undefined"
+            ]
+        },
+        "body_1": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "statement_list"
+            ]
+        },
         "chain": {
             "mandatory": false,
             "values": [
@@ -592,10 +622,29 @@
             "mandatory": false,
             "values": [
                 "artificial",
+                "member"
+            ]
+        },
+        "note_0": {
+            "mandatory": false,
+            "values": [
+                "artificial",
+                "member"
+            ]
+        },
+        "note_1": {
+            "mandatory": false,
+            "values": [
                 "constructor",
-                "destructor",
                 "member",
                 "operator"
+            ]
+        },
+        "note_2": {
+            "mandatory": false,
+            "values": [
+                "constructor",
+                "destructor"
             ]
         },
         "orig": {
@@ -1304,7 +1353,13 @@
         }
     },
     "record_type": {
-        "accs": {
+        "accs_0": {
+            "mandatory": false,
+            "values": [
+                "priv"
+            ]
+        },
+        "accs_1": {
             "mandatory": false,
             "values": [
                 "pub"
@@ -1317,7 +1372,16 @@
                 "8"
             ]
         },
-        "base": {
+        "base_0": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
+            ],
+            "allowedtypes": [
+                "record_type"
+            ]
+        },
+        "base_1": {
             "mandatory": false,
             "values": [
                 "<entry-id>"

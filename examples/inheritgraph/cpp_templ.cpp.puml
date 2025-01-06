@@ -14,25 +14,25 @@ class "::items::Abc1" as item_4 <TTypeA, TTypeB> <<T,#FF7700>> {
 }
 class "::items::Abc1<double, double>" as item_5 {
     {field} + double fieldA
-    {field} + double fieldB
+    {field} {static} + double fieldB
 }
 class "::items::Abc1<int, int>" as item_6 {
     {field} + int fieldA
-    {field} + int fieldB
+    {field} {static} + int fieldB
 }
 class "::items::Abc1<float, char>" as item_7 {
     {field} + float fieldA
-    {field} + char fieldB
+    {field} {static} + char fieldB
 }
 class "::items::Abc1<int, bool>" as item_8 {
     {field} + int fieldA
-    {field} + bool fieldB
+    {field} {static} + bool fieldB
 }
 
-' ::items::Abc2C --|> ::items::Abc1<double, double>
-item_1 --|> item_5: "pub"
 ' ::items::Abc2C --|> ::items::Abc1<int, int>
 item_1 --|> item_6: "pub"
+' ::items::Abc2C --|> ::items::Abc1<double, double>
+item_1 --|> item_5: "pub"
 ' ::items::Abc2B --|> ::items::Abc1<float, char>
 item_2 --|> item_7: "pub"
 ' ::items::Abc2A --|> ::items::Abc1<int, bool>

@@ -144,7 +144,7 @@ ranksep = 2
         self.content_list.append("""}  # end of graph\n""")
         content = "\n".join(self.content_list)
 
-        print(f"\ndiagram:\n{content}")
+        # print(f"\ndiagram:\n{content}")
 
         _LOGGER.info("writing output to file %s", out_path)
         write_file(out_path, content)

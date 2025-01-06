@@ -49,7 +49,7 @@ class Entry(Munch):
 
     # prevents recursive error
     def __repr__(self) -> str:
-        return f"<Entry {self._id}>"
+        return f"<Entry {self._id} {self._type}>"
 
     def get_id(self):
         return self._id
@@ -62,6 +62,28 @@ class Entry(Munch):
 
     def set_chained(self, value: bool):
         self._chained = value
+
+    def get_list(self, prop):
+        prop_item = self.get(prop)
+        if prop_item is not None:
+            return [prop_item]
+
+        ret_list = []
+        item_index = 0
+        while True:
+            index_str = f"{prop}_{item_index}"
+            item_index += 1
+            item_entry = self.get(index_str)
+            if item_entry is None:
+                break
+            ret_list.append(item_entry)
+
+        if not ret_list:
+            entry_chains = self.get_chains()
+            prop_items = entry_chains.get(prop, [])
+            ret_list.extend(prop_items)
+
+        return ret_list
 
     def get_sub_entries(self, prop=None) -> List[Tuple[str, "Entry"]]:
         ret_list = []
@@ -210,6 +232,10 @@ class LangContent:
 
     def get_root_entry(self):
         return list(self.content_objs.values())[0]
+
+    # entry_id with "@" in front
+    def get_entry_by_id(self, entry_id):
+        return self.content_objs.get(entry_id)
 
     def get_entries(self, entry_property) -> List[Entry]:
         ret_list = []
@@ -403,11 +429,11 @@ def is_entry_language_internal(entry: Entry):
             return True
         return False
     if entry.get_type() == "function_decl":
-        entry_body = entry.get("body")
-        if entry_body is None:
+        entry_body_list = entry.get_list("body")
+        if entry_body_list is None:
             # no body - internal function
             return True
-        if entry_body == "undefined":
+        if "undefined" in entry_body_list and len(entry_body_list) == 1:
             # no body - internal function
             return True
         return False
@@ -491,6 +517,14 @@ def get_entry_repr(entry: Entry) -> str:
     if num_value is not None:
         return num_value
 
+    if entry.get_type() == "field_decl":
+        ## in case of base classes field_decls does not have any name
+        field_name = get_entry_name(entry, None)
+        if field_name:
+            return field_name
+        field_type = entry.get("type")
+        return get_entry_repr(field_type)
+
     return get_entry_name(entry)
 
 
@@ -529,6 +563,16 @@ def get_type_name_mod(type_entry: Entry):
         refd_name += " &"
         return (refd_name, parm_mod)
 
+    if entry_type == "array_type":
+        elms = type_entry.get("elts")
+        elms_name = get_full_name(elms)
+        return (f"{elms_name}[]", parm_mod)
+
+    name_list = get_decl_namespace_list(type_entry)
+    if name_list:
+        param_name = "::".join(name_list)
+        return (param_name, parm_mod)
+
     param_name = get_entry_name(type_entry, default_ret=None)
     return (param_name, parm_mod)
 
@@ -540,27 +584,43 @@ def get_full_name(entry: Entry) -> str:
     return get_entry_name(entry)
 
 
-def get_record_namespace_list(record_decl: Entry):
-    if record_decl is None:
+def get_record_namespace_list(record_type: Entry) -> List[str]:
+    if record_type is None:
         return []
-    field_type = record_decl.get("name")
+    field_type = record_type.get("name")
     ret_list = get_decl_namespace_list(field_type)
     return ret_list
 
 
 # decl_entry: type_decl, record_decl, function_decl etc.
-def get_decl_namespace_list(decl_entry: Entry):
+def get_decl_namespace_list(decl_entry: Entry) -> List[str]:
     if decl_entry is None:
         return []
 
     ret_list = []
     item = decl_entry
     while item:
-        if item.get_type() == "translation_unit_decl":
-            ret_list.append("")
+        item_type = item.get_type()
+        if item_type == "translation_unit_decl":
+            if not ret_list:
+                break
+            if ret_list[-1] == "::":
+                # top namespace found
+                break
+            ret_list.append("")  # required to append "::" at top level
             break
+        if item_type == "record_type":
+            # happens in case of method declaration
+            record_list = get_record_namespace_list(item)
+            record_list.reverse()
+            ret_list.extend(record_list)
+            break
+
         item_name_entry = item.get("name")
         item_name = get_entry_name(item_name_entry)
+        if item_name is None:
+            # not a type?
+            return None
         ret_list.append(item_name)
         item = item.get("scpe")
 
@@ -595,6 +655,9 @@ def get_number_entry_value(value: Entry, fail_exception=True):
 
     if value_type == "real_cst":
         return value.get("valu")
+
+    if value_type == "string_cst":
+        return value.get("strg")
 
     if fail_exception:
         raise RuntimeError("unhandled number entry: {value_type}, {value.get_id()}")

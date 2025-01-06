@@ -51,6 +51,8 @@ namespace itemsA {
 		Stu2** dataD2;
 		bool dataE;
 		Abc1& dataF;
+
+		static int stat1;
 	};
 
 }

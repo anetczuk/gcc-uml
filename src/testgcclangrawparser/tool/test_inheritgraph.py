@@ -89,7 +89,11 @@ class GetClassesInfoTest(unittest.TestCase):
         info: ClassDiagramGenerator.ClassData = classes_list[0]
         self.assertEqual("::items::Abc3", info.name)
         self.assertEqual([ClassDiagramGenerator.ClassBase(name="::items::Abc2", access="pub")], info.bases)
-        self.assertEqual([ClassDiagramGenerator.ClassField(name="field", type="int", access="public")], info.fields)
+
+        self.assertEqual(1, len(info.fields))
+        self.assertEqual(
+            ClassDiagramGenerator.ClassField(name="field", type="int", access="public", static=False), info.fields[0]
+        )
 
         method_list = info.methods
         self.assertEqual(7, len(method_list))
@@ -148,7 +152,8 @@ class GetClassesInfoTest(unittest.TestCase):
         info: ClassDiagramGenerator.ClassData = classes_list[1]
         self.assertEqual("::items::Abc2", info.name)
         self.assertEqual([ClassDiagramGenerator.ClassBase(name="::items::Abc1", access="pub")], info.bases)
-        self.assertEqual([], info.fields)
+        self.assertEqual(0, len(info.fields))
+        # self.assertEqual([], info.fields)
 
         method_list = info.methods
         self.assertEqual(1, len(method_list))
@@ -165,7 +170,8 @@ class GetClassesInfoTest(unittest.TestCase):
         info: ClassDiagramGenerator.ClassData = classes_list[2]
         self.assertEqual("::items::Abc1", info.name)
         self.assertEqual([], info.bases)
-        self.assertEqual([], info.fields)
+        self.assertEqual(2, len(info.fields))
+        # self.assertEqual([], info.fields)
 
         method_list = info.methods
         self.assertEqual(3, len(method_list))
@@ -207,7 +213,7 @@ class GetClassesInfoTest(unittest.TestCase):
         info: ClassDiagramGenerator.ClassData = classes_list[0]
         self.assertEqual("::items::Abc3D", info.name)
         self.assertEqual([], info.bases)
-        self.assertEqual([], info.fields)
+        self.assertEqual(2, len(info.fields))
 
         method_list = info.methods
         self.assertEqual(1, len(method_list))
@@ -241,7 +247,10 @@ class GetClassesInfoTest(unittest.TestCase):
         info: ClassDiagramGenerator.ClassData = classes_list[2]
         self.assertEqual("::items::Abc3B", info.name)
         self.assertEqual([], info.bases)
-        self.assertEqual([], info.fields)
+        self.assertEqual(1, len(info.fields))
+        self.assertEqual(
+            ClassDiagramGenerator.ClassField(name="_vptr.Abc3B", type="__vtbl_ptr_type *", access="public", static=False), info.fields[0]
+        )
 
         method_list = info.methods
         self.assertEqual(1, len(method_list))

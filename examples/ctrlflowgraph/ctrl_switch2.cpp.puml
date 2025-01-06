@@ -2,7 +2,8 @@
 
 card "::calc_val1() -> int" {
     start
-    :int timestamp = ::time(0);
+    :int timestamp;;
+    :timestamp = ::time(0);
     :const int value = timestamp % 3;
 
 partition "switch:\nvalue" {
@@ -53,7 +54,8 @@ partition "switch:\nvalue" {
 
 card "::calc_val2() -> int" {
     start
-    :int timestamp = ::time(0);
+    :int timestamp;;
+    :timestamp = ::time(0);
     :const int value = timestamp % 3;
 
 partition "switch:\nvalue" {

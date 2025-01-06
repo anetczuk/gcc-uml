@@ -2,7 +2,8 @@
 
 card "::calc_switch1() -> int" {
     start
-    :const int timestamp = ::time(0);
+    :const int timestamp;;
+    :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 3" {
     ' case: 0 fallthrough: False
@@ -18,7 +19,8 @@ partition "switch:\ntimestamp % 3" {
 
 card "::calc_switch2() -> int" {
     start
-    :const int timestamp = ::time(0);
+    :const int timestamp;;
+    :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 3" {
     ' case: None fallthrough: False
@@ -35,7 +37,8 @@ partition "switch:\ntimestamp % 3" {
 
 card "::calc_switch3() -> int" {
     start
-    :int timestamp = ::time(0);
+    :int timestamp;;
+    :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 3" {
     ' case: None fallthrough: True
@@ -51,7 +54,8 @@ partition "switch:\ntimestamp % 3" {
 
 card "::calc_switch4() -> int" {
     start
-    :int timestamp = ::time(0);
+    :int timestamp;;
+    :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 3" {
     ' case: 0 fallthrough: False

@@ -405,10 +405,25 @@
             ]
         },
         "body": {
-            "mandatory": true,
+            "mandatory": false,
             "values": [
                 "<entry-id>",
                 "undefined"
+            ],
+            "allowedtypes": [
+                "bind_expr"
+            ]
+        },
+        "body_0": {
+            "mandatory": false,
+            "values": [
+                "undefined"
+            ]
+        },
+        "body_1": {
+            "mandatory": false,
+            "values": [
+                "<entry-id>"
             ],
             "allowedtypes": [
                 "bind_expr"
@@ -457,7 +472,18 @@
         "note": {
             "mandatory": false,
             "values": [
-                "artificial",
+                "artificial"
+            ]
+        },
+        "note_0": {
+            "mandatory": false,
+            "values": [
+                "artificial"
+            ]
+        },
+        "note_1": {
+            "mandatory": false,
+            "values": [
                 "operator"
             ]
         },

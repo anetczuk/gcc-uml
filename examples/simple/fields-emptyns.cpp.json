@@ -287,9 +287,20 @@
             ]
         },
         "note": {
-            "mandatory": true,
+            "mandatory": false,
             "values": [
-                "artificial",
+                "artificial"
+            ]
+        },
+        "note_0": {
+            "mandatory": false,
+            "values": [
+                "artificial"
+            ]
+        },
+        "note_1": {
+            "mandatory": false,
+            "values": [
                 "operator"
             ]
         },

@@ -3,17 +3,19 @@
 class "::Abc3" as item_0 {
 }
 class "::items::Abc2B" as item_1 {
+    {field} + __vtbl_ptr_type * _vptr.Abc2B
 }
 class "::items::Abc2A" as item_2 {
+    {field} + __vtbl_ptr_type * _vptr.Abc2A
 }
 class "::items::Abc1" as item_3 {
     {field} + int field
 }
 
-' ::Abc3 --|> ::items::Abc2B
-item_0 --|> item_1: "pub"
 ' ::Abc3 --|> ::items::Abc2A
 item_0 --|> item_2: "pub"
+' ::Abc3 --|> ::items::Abc2B
+item_0 --|> item_1: "pub"
 ' ::items::Abc2B --|> ::items::Abc1
 item_1 --|> item_3: "virt pub"
 ' ::items::Abc2A --|> ::items::Abc1

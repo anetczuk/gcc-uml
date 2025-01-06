@@ -6,7 +6,7 @@ namespace items {
 	class Abc1 {
 	public:
 		TTypeA fieldA;
-		TTypeB fieldB;
+		static TTypeB fieldB;
 	};
 
 

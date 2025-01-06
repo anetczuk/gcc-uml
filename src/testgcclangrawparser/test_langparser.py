@@ -8,7 +8,7 @@
 
 import unittest
 
-from gcclangrawparser.langparser import ProprertiesConverter
+from gcclangrawparser.langparser import ProprertiesConverter, convert_lines_to_dict
 
 
 class ProprertiesConverterTest(unittest.TestCase):
@@ -47,3 +47,32 @@ class ProprertiesConverterTest(unittest.TestCase):
         converter = ProprertiesConverter()
         props_dict = converter.convert("type: @23      op 0: @49      op 1: @50     ")
         self.assertDictEqual({"type": "@23", "op 0": "@49", "op 1": "@50"}, props_dict)
+
+    def test_convert_list(self):
+        ## repeated props in data
+        converter = ProprertiesConverter()
+        props_dict = converter.convert(
+            "       lngt: 2        idx : @50      val : @51                          idx : @52      val : @53"
+        )
+        self.assertDictEqual({"idx_0": "@50", "idx_1": "@52", "lngt": "2", "val_0": "@51", "val_1": "@53"}, props_dict)
+
+
+class LangParserTest(unittest.TestCase):
+
+    def test_convert_lines_to_dict_repeated(self):
+        data_list = list(
+            [
+                "@36     constructor      lngt: 2        idx : @50      val : @51                          idx : @52      val : @53"
+            ]
+        )
+        ret_dict = convert_lines_to_dict(data_list)
+        self.assertDictEqual(
+            {
+                "@36": (
+                    "@36",
+                    "constructor",
+                    {"idx_0": "@50", "idx_1": "@52", "lngt": "2", "val_0": "@51", "val_1": "@53"},
+                )
+            },
+            ret_dict,
+        )
