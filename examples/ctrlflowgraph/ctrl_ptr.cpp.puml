@@ -3,7 +3,7 @@
 card "::funcA() -> int" {
     start
     :int retX = 0;
-    :::item::ExampleC objC = {{(&_ZTVN4item8ExampleCE) + 16}};
+    :::item::ExampleC objC = {[::item::ExampleB] = {[::item::ExampleB::_vptr.ExampleB] = (&_ZTVN4item8ExampleCE) + 16}};
     :::item::ExampleB * ptrB = (&objC);
     :retX = None + retX;
     #lightgreen:return retX;

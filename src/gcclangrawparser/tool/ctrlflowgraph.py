@@ -156,8 +156,6 @@ class ScopeAnalysis:
 
     def analyze(self, statement_entry: Entry):
         stat_list: List[FuncStatement] = []
-        if statement_entry is None:
-            pass
         type_name = statement_entry.get_type()
         if type_name != "bind_expr":
             self._analyze_func(statement_entry, stat_list)
@@ -333,21 +331,15 @@ class ScopeAnalysis:
             # array and object initialization
             init_list = []
             items_num = int(statement_entry.get("lngt"))
-            # idx_entry_list = statement_entry.get_list(f"idx")
-            val_entry_list = statement_entry.get_list("val")
-            if len(val_entry_list) != items_num:
+            data_list = statement_entry.get_ordered_tuples(["idx", "val"])
+            if len(data_list) != items_num:
                 raise RuntimeError("invalid number of values in entry: {statement_entry}")
-            for index in range(0, items_num):
-                # idx_expr = ""
-                # if index < len(idx_entry_list):
-                #     idx_entry = idx_entry_list[index]
-                #     idx_expr = self._analyze_func(idx_entry, stat_list)
-                # else:
-                #     idx_expr = f"{index}"
-                val_entry = val_entry_list[index]
-                val_expr = self._analyze_func(val_entry, stat_list)
-                item_expr = f"{val_expr}"
-                # item_expr = f"[{idx_expr}] = {val_expr}"
+            for data_item in data_list:
+                data_idx = data_item[0]
+                data_val = data_item[1]
+                idx_expr = self._analyze_func(data_idx, stat_list)
+                val_expr = self._analyze_func(data_val, stat_list)
+                item_expr = f"[{idx_expr}] = {val_expr}"
                 init_list.append(item_expr)
             whole_expr = ", ".join(init_list)
             return f"{{{whole_expr}}}"

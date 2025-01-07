@@ -1,62 +1,62 @@
-entry: {'_id': '@1', '_type': 'namespace_decl', '_chains': {'dcls': [<Entry @4 function_decl>, <Entry @8 function_decl>]}, '_chained': False, 'dcls': <Entry @4 function_decl>, 'name': <Entry @2 identifier_node>, 'scpe': <Entry @3 translation_unit_decl>, 'srcp': '<built-in>:0'} items num: 5
-  dcls: entry: {'_id': '@4', '_type': 'function_decl', '_chains': {}, '_chained': True, 'body': <Entry @9 statement_list>, 'chain': <Entry @8 function_decl>, 'link': 'extern', 'name': <Entry @6 identifier_node>, 'scpe': <Entry @3 translation_unit_decl>, 'srcp': 'empty2functs.cpp:7', 'type': <Entry @7 function_type>} items num: 6
-    body: entry: {'_id': '@9', '_type': 'statement_list', '_chains': {}, '_chained': False} items num: 0
+entry: {'_id': '@1', '_type': 'namespace_decl', '_raw': [('name', <Entry @2 identifier_node>), ('scpe', <Entry @3 translation_unit_decl>), ('srcp', '<built-in>:0'), ('dcls', <Entry @4 function_decl>)], '_chains': {'dcls': [<Entry @4 function_decl>, <Entry @8 function_decl>]}, '_chained': False, 'dcls': <Entry @4 function_decl>, 'name': <Entry @2 identifier_node>, 'scpe': <Entry @3 translation_unit_decl>, 'srcp': '<built-in>:0'} items num: 5
+  dcls: entry: {'_id': '@4', '_type': 'function_decl', '_raw': [('name', <Entry @6 identifier_node>), ('type', <Entry @7 function_type>), ('scpe', <Entry @3 translation_unit_decl>), ('srcp', 'empty2functs.cpp:7'), ('chain', <Entry @8 function_decl>), ('link', 'extern'), ('body', <Entry @9 statement_list>)], '_chains': {}, '_chained': True, 'body': <Entry @9 statement_list>, 'chain': <Entry @8 function_decl>, 'link': 'extern', 'name': <Entry @6 identifier_node>, 'scpe': <Entry @3 translation_unit_decl>, 'srcp': 'empty2functs.cpp:7', 'type': <Entry @7 function_type>} items num: 6
+    body: entry: {'_id': '@9', '_type': 'statement_list', '_raw': [], '_chains': {}, '_chained': False} items num: 0
     link: entry: extern items num: 0
-    name: entry: {'_id': '@6', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '7', 'strg': 'funct_b'} items num: 2
+    name: entry: {'_id': '@6', '_type': 'identifier_node', '_raw': [('strg', 'funct_b'), ('lngt', '7')], '_chains': {}, '_chained': False, 'lngt': '7', 'strg': 'funct_b'} items num: 2
       lngt: entry: 7 items num: 0
       strg: entry: funct_b items num: 0
-    scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', '_chains': {}, '_chained': False, 'name': <Entry @5 identifier_node>} items num: 0
+    scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', '_raw': [('name', <Entry @5 identifier_node>)], '_chains': {}, '_chained': False, 'name': <Entry @5 identifier_node>} items num: 0
     srcp: entry: empty2functs.cpp:7 items num: 0
-    type: entry: {'_id': '@7', '_type': 'function_type', '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @70 tree_vec>, 'retn': <Entry @11 void_type>, 'size': <Entry @10 integer_cst>} items num: 4
+    type: entry: {'_id': '@7', '_type': 'function_type', '_raw': [('size', <Entry @10 integer_cst>), ('algn', '8'), ('retn', <Entry @11 void_type>), ('prms', <Entry @12 tree_list>)], '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @70 tree_vec>, 'retn': <Entry @11 void_type>, 'size': <Entry @10 integer_cst>} items num: 4
       algn: entry: 8 items num: 0
-      prms: entry: {'_id': '@70', '_type': 'tree_vec', '_chains': {}, '_chained': False, 'lngt': '1', '0': <Entry @12 tree_list>} items num: 2
-        0: entry: {'_id': '@12', '_type': 'tree_list', '_chains': {}, '_chained': False, 'valu': <Entry @11 void_type>} items num: 1
-          valu: entry: {'_id': '@11', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18 type_decl>} items num: 0
+      prms: entry: {'_id': '@70', '_type': 'tree_vec', '_raw': None, '_chains': {}, '_chained': False, 'lngt': '1', '0': <Entry @12 tree_list>} items num: 2
+        0: entry: {'_id': '@12', '_type': 'tree_list', '_raw': [('valu', <Entry @11 void_type>)], '_chains': {}, '_chained': False, 'valu': <Entry @11 void_type>} items num: 1
+          valu: entry: {'_id': '@11', '_type': 'void_type', '_raw': [('name', <Entry @18 type_decl>), ('algn', '8')], '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18 type_decl>} items num: 0
         lngt: entry: 1 items num: 0
-      retn: entry: {'_id': '@11', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18 type_decl>} items num: 2
+      retn: entry: {'_id': '@11', '_type': 'void_type', '_raw': [('name', <Entry @18 type_decl>), ('algn', '8')], '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18 type_decl>} items num: 2
         algn: entry: 8 items num: 0
-        name: entry: {'_id': '@18', '_type': 'type_decl', '_chains': {}, '_chained': False, 'name': <Entry @26 identifier_node>, 'note': 'artificial', 'srcp': '<built-in>:0', 'type': <Entry @11 void_type>} items num: 4
-          name: entry: {'_id': '@26', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '4', 'strg': 'void'} items num: 2
+        name: entry: {'_id': '@18', '_type': 'type_decl', '_raw': [('name', <Entry @26 identifier_node>), ('type', <Entry @11 void_type>), ('srcp', '<built-in>:0'), ('note', 'artificial')], '_chains': {}, '_chained': False, 'name': <Entry @26 identifier_node>, 'note': 'artificial', 'srcp': '<built-in>:0', 'type': <Entry @11 void_type>} items num: 4
+          name: entry: {'_id': '@26', '_type': 'identifier_node', '_raw': [('strg', 'void'), ('lngt', '4')], '_chains': {}, '_chained': False, 'lngt': '4', 'strg': 'void'} items num: 2
             lngt: entry: 4 items num: 0
             strg: entry: void items num: 0
           note: entry: artificial items num: 0
           srcp: entry: <built-in>:0 items num: 0
-          type: entry: {'_id': '@11', '_type': 'void_type', '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18 type_decl>} items num: 0
-      size: entry: {'_id': '@10', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '8', 'type': <Entry @17 integer_type>} items num: 2
+          type: entry: {'_id': '@11', '_type': 'void_type', '_raw': [('name', <Entry @18 type_decl>), ('algn', '8')], '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18 type_decl>} items num: 0
+      size: entry: {'_id': '@10', '_type': 'integer_cst', '_raw': [('type', <Entry @17 integer_type>), ('int', '8')], '_chains': {}, '_chained': False, 'int': '8', 'type': <Entry @17 integer_type>} items num: 2
         int: entry: 8 items num: 0
-        type: entry: {'_id': '@17', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '128', 'max': <Entry @25 integer_cst>, 'min': <Entry @24 integer_cst>, 'name': <Entry @22 identifier_node>, 'prec': '128', 'sign': 'unsigned', 'size': <Entry @23 integer_cst>} items num: 7
+        type: entry: {'_id': '@17', '_type': 'integer_type', '_raw': [('name', <Entry @22 identifier_node>), ('size', <Entry @23 integer_cst>), ('algn', '128'), ('prec', '128'), ('sign', 'unsigned'), ('min', <Entry @24 integer_cst>), ('max', <Entry @25 integer_cst>)], '_chains': {}, '_chained': False, 'algn': '128', 'max': <Entry @25 integer_cst>, 'min': <Entry @24 integer_cst>, 'name': <Entry @22 identifier_node>, 'prec': '128', 'sign': 'unsigned', 'size': <Entry @23 integer_cst>} items num: 7
           algn: entry: 128 items num: 0
-          max: entry: {'_id': '@25', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '-1', 'type': <Entry @17 integer_type>} items num: 2
+          max: entry: {'_id': '@25', '_type': 'integer_cst', '_raw': [('type', <Entry @17 integer_type>), ('int', '-1')], '_chains': {}, '_chained': False, 'int': '-1', 'type': <Entry @17 integer_type>} items num: 2
             int: entry: -1 items num: 0
-            type: entry: {'_id': '@17', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '128', 'max': <Entry @25 integer_cst>, 'min': <Entry @24 integer_cst>, 'name': <Entry @22 identifier_node>, 'prec': '128', 'sign': 'unsigned', 'size': <Entry @23 integer_cst>} items num: 0
-          min: entry: {'_id': '@24', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '0', 'type': <Entry @17 integer_type>} items num: 2
+            type: entry: {'_id': '@17', '_type': 'integer_type', '_raw': [('name', <Entry @22 identifier_node>), ('size', <Entry @23 integer_cst>), ('algn', '128'), ('prec', '128'), ('sign', 'unsigned'), ('min', <Entry @24 integer_cst>), ('max', <Entry @25 integer_cst>)], '_chains': {}, '_chained': False, 'algn': '128', 'max': <Entry @25 integer_cst>, 'min': <Entry @24 integer_cst>, 'name': <Entry @22 identifier_node>, 'prec': '128', 'sign': 'unsigned', 'size': <Entry @23 integer_cst>} items num: 0
+          min: entry: {'_id': '@24', '_type': 'integer_cst', '_raw': [('type', <Entry @17 integer_type>), ('int', '0')], '_chains': {}, '_chained': False, 'int': '0', 'type': <Entry @17 integer_type>} items num: 2
             int: entry: 0 items num: 0
-            type: entry: {'_id': '@17', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '128', 'max': <Entry @25 integer_cst>, 'min': <Entry @24 integer_cst>, 'name': <Entry @22 identifier_node>, 'prec': '128', 'sign': 'unsigned', 'size': <Entry @23 integer_cst>} items num: 0
-          name: entry: {'_id': '@22', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '11', 'strg': 'bitsizetype'} items num: 2
+            type: entry: {'_id': '@17', '_type': 'integer_type', '_raw': [('name', <Entry @22 identifier_node>), ('size', <Entry @23 integer_cst>), ('algn', '128'), ('prec', '128'), ('sign', 'unsigned'), ('min', <Entry @24 integer_cst>), ('max', <Entry @25 integer_cst>)], '_chains': {}, '_chained': False, 'algn': '128', 'max': <Entry @25 integer_cst>, 'min': <Entry @24 integer_cst>, 'name': <Entry @22 identifier_node>, 'prec': '128', 'sign': 'unsigned', 'size': <Entry @23 integer_cst>} items num: 0
+          name: entry: {'_id': '@22', '_type': 'identifier_node', '_raw': [('strg', 'bitsizetype'), ('lngt', '11')], '_chains': {}, '_chained': False, 'lngt': '11', 'strg': 'bitsizetype'} items num: 2
             lngt: entry: 11 items num: 0
             strg: entry: bitsizetype items num: 0
           prec: entry: 128 items num: 0
           sign: entry: unsigned items num: 0
-          size: entry: {'_id': '@23', '_type': 'integer_cst', '_chains': {}, '_chained': False, 'int': '128', 'type': <Entry @17 integer_type>} items num: 2
+          size: entry: {'_id': '@23', '_type': 'integer_cst', '_raw': [('type', <Entry @17 integer_type>), ('int', '128')], '_chains': {}, '_chained': False, 'int': '128', 'type': <Entry @17 integer_type>} items num: 2
             int: entry: 128 items num: 0
-            type: entry: {'_id': '@17', '_type': 'integer_type', '_chains': {}, '_chained': False, 'algn': '128', 'max': <Entry @25 integer_cst>, 'min': <Entry @24 integer_cst>, 'name': <Entry @22 identifier_node>, 'prec': '128', 'sign': 'unsigned', 'size': <Entry @23 integer_cst>} items num: 0
-  dcls: entry: {'_id': '@8', '_type': 'function_decl', '_chains': {}, '_chained': True, 'body': <Entry @16 statement_list>, 'link': 'extern', 'mngl': <Entry @14 identifier_node>, 'name': <Entry @13 identifier_node>, 'scpe': <Entry @3 translation_unit_decl>, 'srcp': 'empty2functs.cpp:4', 'type': <Entry @7 function_type>} items num: 7
-    body: entry: {'_id': '@16', '_type': 'statement_list', '_chains': {}, '_chained': False} items num: 0
+            type: entry: {'_id': '@17', '_type': 'integer_type', '_raw': [('name', <Entry @22 identifier_node>), ('size', <Entry @23 integer_cst>), ('algn', '128'), ('prec', '128'), ('sign', 'unsigned'), ('min', <Entry @24 integer_cst>), ('max', <Entry @25 integer_cst>)], '_chains': {}, '_chained': False, 'algn': '128', 'max': <Entry @25 integer_cst>, 'min': <Entry @24 integer_cst>, 'name': <Entry @22 identifier_node>, 'prec': '128', 'sign': 'unsigned', 'size': <Entry @23 integer_cst>} items num: 0
+  dcls: entry: {'_id': '@8', '_type': 'function_decl', '_raw': [('name', <Entry @13 identifier_node>), ('mngl', <Entry @14 identifier_node>), ('type', <Entry @7 function_type>), ('scpe', <Entry @3 translation_unit_decl>), ('srcp', 'empty2functs.cpp:4'), ('link', 'extern'), ('body', <Entry @16 statement_list>)], '_chains': {}, '_chained': True, 'body': <Entry @16 statement_list>, 'link': 'extern', 'mngl': <Entry @14 identifier_node>, 'name': <Entry @13 identifier_node>, 'scpe': <Entry @3 translation_unit_decl>, 'srcp': 'empty2functs.cpp:4', 'type': <Entry @7 function_type>} items num: 7
+    body: entry: {'_id': '@16', '_type': 'statement_list', '_raw': [], '_chains': {}, '_chained': False} items num: 0
     link: entry: extern items num: 0
-    mngl: entry: {'_id': '@14', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '11', 'strg': '_Z7funct_av'} items num: 2
+    mngl: entry: {'_id': '@14', '_type': 'identifier_node', '_raw': [('strg', '_Z7funct_av'), ('lngt', '11')], '_chains': {}, '_chained': False, 'lngt': '11', 'strg': '_Z7funct_av'} items num: 2
       lngt: entry: 11 items num: 0
       strg: entry: _Z7funct_av items num: 0
-    name: entry: {'_id': '@13', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '7', 'strg': 'funct_a'} items num: 2
+    name: entry: {'_id': '@13', '_type': 'identifier_node', '_raw': [('strg', 'funct_a'), ('lngt', '7')], '_chains': {}, '_chained': False, 'lngt': '7', 'strg': 'funct_a'} items num: 2
       lngt: entry: 7 items num: 0
       strg: entry: funct_a items num: 0
-    scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', '_chains': {}, '_chained': False, 'name': <Entry @5 identifier_node>} items num: 0
+    scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', '_raw': [('name', <Entry @5 identifier_node>)], '_chains': {}, '_chained': False, 'name': <Entry @5 identifier_node>} items num: 0
     srcp: entry: empty2functs.cpp:4 items num: 0
-    type: entry: {'_id': '@7', '_type': 'function_type', '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @70 tree_vec>, 'retn': <Entry @11 void_type>, 'size': <Entry @10 integer_cst>} items num: 0
-  name: entry: {'_id': '@2', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '2', 'strg': '::'} items num: 2
+    type: entry: {'_id': '@7', '_type': 'function_type', '_raw': [('size', <Entry @10 integer_cst>), ('algn', '8'), ('retn', <Entry @11 void_type>), ('prms', <Entry @12 tree_list>)], '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @70 tree_vec>, 'retn': <Entry @11 void_type>, 'size': <Entry @10 integer_cst>} items num: 0
+  name: entry: {'_id': '@2', '_type': 'identifier_node', '_raw': [('strg', '::'), ('lngt', '2')], '_chains': {}, '_chained': False, 'lngt': '2', 'strg': '::'} items num: 2
     lngt: entry: 2 items num: 0
     strg: entry: :: items num: 0
-  scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', '_chains': {}, '_chained': False, 'name': <Entry @5 identifier_node>} items num: 1
-    name: entry: {'_id': '@5', '_type': 'identifier_node', '_chains': {}, '_chained': False, 'lngt': '95', 'strg': 'src/empty2functs.cpp'} items num: 2
+  scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', '_raw': [('name', <Entry @5 identifier_node>)], '_chains': {}, '_chained': False, 'name': <Entry @5 identifier_node>} items num: 1
+    name: entry: {'_id': '@5', '_type': 'identifier_node', '_raw': [('strg', 'src/empty2functs.cpp'), ('lngt', '95')], '_chains': {}, '_chained': False, 'lngt': '95', 'strg': 'src/empty2functs.cpp'} items num: 2
       lngt: entry: 95 items num: 0
       strg: entry: src/empty2functs.cpp items num: 0
   srcp: entry: <built-in>:0 items num: 0

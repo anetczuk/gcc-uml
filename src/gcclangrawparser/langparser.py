@@ -9,7 +9,7 @@
 import os
 import logging
 import re
-from typing import Dict
+from typing import Dict, Any, Tuple, List
 
 from gcclangrawparser.langcontent import LangContent
 
@@ -32,7 +32,7 @@ def parse_raw(input_path, reducepaths=None) -> LangContent:
 # =========================================
 
 
-def convert_lines_to_dict(content_lines, reducepaths=None):
+def convert_lines_to_dict(content_lines, reducepaths=None) -> Dict[str, Any]:
     reduce_len = 0
     if reducepaths:
         reduce_len = len(reducepaths)
@@ -47,12 +47,16 @@ def convert_lines_to_dict(content_lines, reducepaths=None):
         line_id = found.group(1)
         line_type = found.group(2)
         props_raw_data = found.group(3)
-        line_props = converter.convert(props_raw_data)
+        props_list = converter.convert(props_raw_data)
         if reducepaths:
-            for prop_key, prop_val in list(line_props.items()):
+            for index, prop_data in enumerate(props_list):
+                prop_val = prop_data[1]
                 if prop_val.startswith(reducepaths):
-                    line_props[prop_key] = prop_val[reduce_len:]
-        content_dict[line_id] = (line_id, line_type, line_props)
+                    prop_key = prop_data[0]
+                    reduced_val = prop_val[reduce_len:]
+                    props_list[index] = (prop_key, reduced_val)
+
+        content_dict[line_id] = (line_id, line_type, props_list)
     return content_dict
 
 
@@ -61,33 +65,16 @@ class ProprertiesConverter:
     def __init__(self):
         self.raw_properties = ""
 
-    def convert(self, properties_str) -> Dict[str, str]:
+    def convert(self, properties_str) -> List[Tuple[str, str]]:
         self.raw_properties = properties_str
-        ret_dict = {}
+
+        raw_list = []
         while self.raw_properties:
             next_key = self.consume_key()
             next_val = self.consume_value()
             # print(f"gggg: >{next_key}< >{next_val}<")
-            sublist = ret_dict.get(next_key)
-            if sublist is None:
-                sublist = []
-                ret_dict[next_key] = sublist
-            sublist.append(next_val)
-
-        ## convert lists
-        for key, val_list in list(ret_dict.items()):
-            if len(val_list) < 2:
-                ## reduce list
-                val = val_list[0]
-                ret_dict[key] = val
-                continue
-            # for backward compatibility convert list to list of keys with index like "{prop}_0" etc
-            del ret_dict[key]
-            for index, item in enumerate(val_list):
-                new_key = f"{key}_{index}"
-                ret_dict[new_key] = item
-
-        return ret_dict
+            raw_list.append((next_key, next_val))
+        return raw_list
 
     def consume_key(self):
         next_colon_pos = self.raw_properties.index(": ")

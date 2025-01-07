@@ -15,9 +15,13 @@ class GetEntryTeeTest(unittest.TestCase):
 
     def test_get_entry_tree_recursive(self):
         data_dict = {
-            "@1": ("@1", "void_type", {"name": "@9", "algn": "8"}),
-            "@9": ("@9", "type_decl", {"name": "@13", "type": "@1", "srcp": "<built-in>:0", "note": "artificial"}),
-            "@13": ("@13", "identifier_node", {"strg": "void", "lngt": "4"}),
+            "@1": ("@1", "void_type", [("name", "@9"), ("algn", "8")]),
+            "@9": (
+                "@9",
+                "type_decl",
+                [("name", "@13"), ("type", "@1"), ("srcp", "<built-in>:0"), ("note", "artificial")],
+            ),
+            "@13": ("@13", "identifier_node", [("strg", "void"), ("lngt", "4")]),
         }
         content = LangContent(data_dict)
         entry_tree = get_entry_tree(content)

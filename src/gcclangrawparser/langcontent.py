@@ -38,6 +38,7 @@ class Entry(Munch):
     def __init__(self, props_dict):
         self._id = None
         self._type = None
+        self._raw: List[Tuple(str, Any)] = []  # props list is needed in "constructor" entry type
         self._chains: Dict[str, List[Entry]] = {}
         self._chained = False  # is chain converted?
         super().__init__(props_dict)
@@ -85,6 +86,27 @@ class Entry(Munch):
 
         return ret_list
 
+    def get_ordered_tuples(self, props_list: List[str]) -> List[List[str]]:
+        if not self._raw:
+            return []
+        ret_list = []
+        tuple_size = len(props_list)
+        ret_tuple = [None] * tuple_size
+        found_list = [False] * tuple_size
+        for prop_key, prop_val in self._raw:
+            if prop_key not in props_list:
+                continue
+            prop_index = props_list.index(prop_key)
+            if found_list[prop_index]:
+                ret_list.append(ret_tuple)
+                ret_tuple = [None] * tuple_size
+                found_list = [False] * tuple_size
+            found_list[prop_index] = True
+            ret_tuple[prop_index] = prop_val
+        if True in found_list:
+            ret_list.append(ret_tuple)
+        return ret_list
+
     def get_sub_entries(self, prop=None) -> List[Tuple[str, "Entry"]]:
         ret_list = []
         if prop is not None:
@@ -119,7 +141,8 @@ class Entry(Munch):
 class LangContent:
 
     def __init__(self, content_dict):
-        self.content_lines: Dict[str, Tuple[str, str, Dict[str, str]]] = content_dict  # raw text lines
+        # id: ( id, type, list of (prop, val) )
+        self.content_lines: Dict[str, Tuple[str, str, List[Tuple[str, str]]]] = content_dict  # raw text lines
 
         self._entry_id_counter = None
 
@@ -137,18 +160,30 @@ class LangContent:
         ret_objs_dict = {}
         for key, entry in self.content_lines.items():
             entry_type = entry[1]
-            entry_data = entry[2]
-            obj_dict = {"_id": key, "_type": entry_type}
-            obj_dict.update(entry_data)
+            props_list = entry[2]
+            props_dict = props_list_to_dict(props_list)
+            obj_dict = {"_id": key, "_type": entry_type, "_raw": props_list.copy()}
+            obj_dict.update(props_dict)
             obj_dict = dict(sorted(obj_dict.items()))  # sort by keys
             ret_objs_dict[key] = Entry(obj_dict)
+
         ## convert entry ids to references
         for _key, object_item in ret_objs_dict.items():
             for field, value in object_item.items():
+                if field == "_raw":
+                    for prop_index, prop_data in enumerate(value):
+                        prop_val = prop_data[1]
+                        if prop_val.startswith("@"):
+                            prop_key = prop_data[0]
+                            prop_entry = ret_objs_dict[prop_val]
+                            value[prop_index] = (prop_key, prop_entry)
+                    continue
+
                 if is_entry_prop_internal(field):
                     continue
                 if value.startswith("@"):
                     object_item[field] = ret_objs_dict[value]
+
         return ret_objs_dict
 
     def _get_next_entry_id(self):
@@ -175,6 +210,7 @@ class LangContent:
         for _key, entry in self.content_lines.items():
             entry_type = entry[1]
             entry_data = entry[2]
+            entry_data = props_list_to_dict(entry_data)
 
             type_props = ret_types_dict.get(entry_type, {})
 
@@ -403,9 +439,34 @@ class LangContent:
     def print_types_fields(self):
         pprint.pprint(self.types_fields, indent=4)
 
-    def print_entries(self):
+    def print_lines(self):
         for entry in self.content_lines.values():
             print(entry)
+
+
+def props_list_to_dict(props_list: List[Tuple[str, str]]) -> Dict[str, Any]:
+    ret_dict = {}
+    for next_key, next_val in props_list:
+        sublist = ret_dict.get(next_key)
+        if sublist is None:
+            sublist = []
+            ret_dict[next_key] = sublist
+        sublist.append(next_val)
+
+    ## convert lists
+    for key, val_list in list(ret_dict.items()):
+        if len(val_list) < 2:
+            ## reduce list
+            val = val_list[0]
+            ret_dict[key] = val
+            continue
+        # for backward compatibility convert list to list of keys with index like "{prop}_0" etc
+        del ret_dict[key]
+        for index, item in enumerate(val_list):
+            new_key = f"{key}_{index}"
+            ret_dict[new_key] = item
+
+    return ret_dict
 
 
 def is_entry_prop_chain(prop: str):

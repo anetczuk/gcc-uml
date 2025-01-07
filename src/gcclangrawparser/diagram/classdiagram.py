@@ -50,14 +50,12 @@ class ClassDiagramGenerator:
     FunctionArg = NamedTuple("FunctionArg", [("name", str), ("type", str)])
     ClassBase = NamedTuple("ClassBase", [("name", str), ("access", str)])
 
-    
     @dataclass
     class ClassField:
         name: str
         type: str
         access: str
         static: bool
-
 
     ClassMethod = NamedTuple(
         "ClassMethod",
