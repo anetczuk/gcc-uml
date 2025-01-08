@@ -36,9 +36,9 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_raw': [('name', <Entry @2 iden
       strg: entry: main items num: 0
     scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', '_raw': [('name', <Entry @5 identifier_node>)], '_chains': {}, '_chained': False, 'name': <Entry @5 identifier_node>} items num: 0
     srcp: entry: emptymain.cpp:4 items num: 0
-    type: entry: {'_id': '@7', '_type': 'function_type', '_raw': [('size', <Entry @10 integer_cst>), ('algn', '8'), ('retn', <Entry @11 integer_type>), ('prms', <Entry @12 tree_list>)], '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @7021 tree_vec>, 'retn': <Entry @11 integer_type>, 'size': <Entry @10 integer_cst>} items num: 4
+    type: entry: {'_id': '@7', '_type': 'function_type', '_raw': [('size', <Entry @10 integer_cst>), ('algn', '8'), ('retn', <Entry @11 integer_type>), ('prms', <Entry @7021 tree_vec>)], '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @7021 tree_vec>, 'retn': <Entry @11 integer_type>, 'size': <Entry @10 integer_cst>} items num: 4
       algn: entry: 8 items num: 0
-      prms: entry: {'_id': '@7021', '_type': 'tree_vec', '_raw': None, '_chains': {}, '_chained': False, 'lngt': '1', '0': <Entry @12 tree_list>} items num: 2
+      prms: entry: {'_id': '@7021', '_type': 'tree_vec', '_raw': [], '_chains': {}, '_chained': False, 'lngt': '1', '0': <Entry @12 tree_list>} items num: 2
         0: entry: {'_id': '@12', '_type': 'tree_list', '_raw': [('valu', <Entry @23 void_type>)], '_chains': {}, '_chained': False, 'valu': <Entry @23 void_type>} items num: 1
           valu: entry: {'_id': '@23', '_type': 'void_type', '_raw': [('name', <Entry @35 type_decl>), ('algn', '8')], '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @35 type_decl>} items num: 0
         lngt: entry: 1 items num: 0

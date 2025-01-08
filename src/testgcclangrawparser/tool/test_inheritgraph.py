@@ -7,6 +7,8 @@
 #
 
 import unittest
+from typing import List, Dict
+
 from testgcclangrawparser.data import get_data_path
 
 from gcclangrawparser.langcontent import LangContent
@@ -18,7 +20,7 @@ from gcclangrawparser.diagram.classdiagram import ClassDiagramGenerator
 class GetClassesInfoTest(unittest.TestCase):
 
     def test_args(self):
-        inherit_raw_path = get_data_path("inherit_args.cpp.003l.raw")
+        inherit_raw_path: str = get_data_path("inherit_args.cpp.003l.raw")
         content: LangContent = parse_raw(inherit_raw_path)
         content.convert_entries()
 
@@ -149,7 +151,7 @@ class GetClassesInfoTest(unittest.TestCase):
 
         # ==========================================
 
-        info: ClassDiagramGenerator.ClassData = classes_list[1]
+        info = classes_list[1]
         self.assertEqual("::items::Abc2", info.name)
         self.assertEqual([ClassDiagramGenerator.ClassBase(name="::items::Abc1", access="pub")], info.bases)
         self.assertEqual(0, len(info.fields))
@@ -167,7 +169,7 @@ class GetClassesInfoTest(unittest.TestCase):
 
         # ==========================================
 
-        info: ClassDiagramGenerator.ClassData = classes_list[2]
+        info = classes_list[2]
         self.assertEqual("::items::Abc1", info.name)
         self.assertEqual([], info.bases)
         self.assertEqual(2, len(info.fields))
@@ -202,15 +204,15 @@ class GetClassesInfoTest(unittest.TestCase):
         content: LangContent = parse_raw(inherit_raw_path)
         content.convert_entries()
 
-        inherit_data = InheritanceData(content)
-        classes_info = inherit_data.generate_data()
+        inherit_data: InheritanceData = InheritanceData(content)
+        classes_info: Dict[str, ClassDiagramGenerator.ClassData] = inherit_data.generate_data()
 
-        classes_list = list(classes_info.values())
+        classes_list: List[ClassDiagramGenerator.ClassData] = list(classes_info.values())
         self.assertEqual(8, len(classes_list))
 
         # ==========================================
 
-        info: ClassDiagramGenerator.ClassData = classes_list[0]
+        info = classes_list[0]
         self.assertEqual("::items::Abc3D", info.name)
         self.assertEqual([], info.bases)
         self.assertEqual(2, len(info.fields))
@@ -227,7 +229,7 @@ class GetClassesInfoTest(unittest.TestCase):
 
         # ==========================================
 
-        info: ClassDiagramGenerator.ClassData = classes_list[1]
+        info = classes_list[1]
         self.assertEqual("::items::Abc3C", info.name)
         self.assertEqual([], info.bases)
         self.assertEqual([], info.fields)
@@ -244,7 +246,7 @@ class GetClassesInfoTest(unittest.TestCase):
 
         # ==========================================
 
-        info: ClassDiagramGenerator.ClassData = classes_list[2]
+        info = classes_list[2]
         self.assertEqual("::items::Abc3B", info.name)
         self.assertEqual([], info.bases)
         self.assertEqual(1, len(info.fields))
@@ -267,7 +269,7 @@ class GetClassesInfoTest(unittest.TestCase):
 
         # ==========================================
 
-        info: ClassDiagramGenerator.ClassData = classes_list[3]
+        info = classes_list[3]
         self.assertEqual("::items::Abc3A", info.name)
         self.assertEqual([], info.bases)
         self.assertEqual([], info.fields)
@@ -284,7 +286,7 @@ class GetClassesInfoTest(unittest.TestCase):
 
         # ==========================================
 
-        info: ClassDiagramGenerator.ClassData = classes_list[4]
+        info = classes_list[4]
         self.assertEqual("::items::Abc2", info.name)
         self.assertEqual([], info.bases)
         self.assertEqual([], info.fields)
@@ -301,7 +303,7 @@ class GetClassesInfoTest(unittest.TestCase):
 
         # ==========================================
 
-        info: ClassDiagramGenerator.ClassData = classes_list[5]
+        info = classes_list[5]
         self.assertEqual("::items::Abc1C", info.name)
         self.assertEqual([], info.bases)
         self.assertEqual([], info.fields)
@@ -318,7 +320,7 @@ class GetClassesInfoTest(unittest.TestCase):
 
         # ==========================================
 
-        info: ClassDiagramGenerator.ClassData = classes_list[6]
+        info = classes_list[6]
         self.assertEqual("::items::Abc1B", info.name)
         self.assertEqual([], info.bases)
         self.assertEqual([], info.fields)
@@ -335,7 +337,7 @@ class GetClassesInfoTest(unittest.TestCase):
 
         # ==========================================
 
-        info: ClassDiagramGenerator.ClassData = classes_list[7]
+        info = classes_list[7]
         self.assertEqual("::items::Abc1A", info.name)
         self.assertEqual([], info.bases)
         self.assertEqual([], info.fields)

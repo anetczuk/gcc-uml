@@ -7,6 +7,7 @@
 #
 
 import unittest
+from typing import Dict, Any
 
 from gcclangrawparser.abstracttraversal import (
     create_tree_from_dict,
@@ -37,7 +38,7 @@ class AbstractTraversalTest(unittest.TestCase):
         self.assertEqual(0, len(subnode.items))
 
     def test_create_tree_from_dict_recursive(self):
-        data = {1: {11: 101, 12: 102}, 2: {21: 201, 22: 202}, 3: None}
+        data: Dict[int, Any] = {1: {11: 101, 12: 102}, 2: {21: 201, 22: 202}, 3: None}
         data[3] = data  # make recursive
         tree = create_tree_from_dict(data)
 

@@ -38,7 +38,7 @@ class Entry(Munch):
     def __init__(self, props_dict):
         self._id = None
         self._type = None
-        self._raw: List[Tuple(str, Any)] = []  # props list is needed in "constructor" entry type
+        self._raw: List[Tuple[str, Any]] = []  # props list is needed in "constructor" entry type
         self._chains: Dict[str, List[Entry]] = {}
         self._chained = False  # is chain converted?
         super().__init__(props_dict)
@@ -86,9 +86,16 @@ class Entry(Munch):
 
         return ret_list
 
-    def get_ordered_tuples(self, props_list: List[str]) -> List[List[str]]:
+    def get_ordered_tuples(self, props_list: List[str]) -> List[List[Any]]:
         if not self._raw:
-            return []
+            # empty or extra added entry (during graph conversion)
+            ret_tuple = []
+            for prop in props_list:
+                prop_val = self.get(prop)
+                ret_tuple.append(prop_val)
+            return [ret_tuple]
+
+        # regular entry
         ret_list = []
         tuple_size = len(props_list)
         ret_tuple = [None] * tuple_size
@@ -136,6 +143,15 @@ class Entry(Munch):
                     continue
                 ret_list.append((subprop, subentry))
         return sorted(ret_list, key=lambda container: container[0])
+
+    def replace_data(self, prop, old_value, new_value):
+        self[prop] = new_value
+        for raw_index, raw_data in enumerate(self._raw.copy()):
+            if raw_data[0] != prop:
+                continue
+            if raw_data[1] != old_value:
+                continue
+            self._raw[raw_index] = (raw_data[0], new_value)
 
 
 class LangContent:
@@ -206,11 +222,11 @@ class LangContent:
         if self.types_fields is not None:
             return self.types_fields
 
-        ret_types_dict = {}
+        ret_types_dict: Dict[str, Dict[str, Any]] = {}
         for _key, entry in self.content_lines.items():
             entry_type = entry[1]
-            entry_data = entry[2]
-            entry_data = props_list_to_dict(entry_data)
+            entry_list = entry[2]
+            entry_data = props_list_to_dict(entry_list)
 
             type_props = ret_types_dict.get(entry_type, {})
 
@@ -415,7 +431,7 @@ class LangContent:
                     entry_data[index_str] = item
                 tree_vec_entry = Entry(entry_data)
                 self._add_entry(tree_vec_entry)
-                entry[prop] = tree_vec_entry
+                entry.replace_data(prop, value, tree_vec_entry)
 
     def _get_chain_entries(self, chain_start: Entry):
         ret_list = []
@@ -445,7 +461,7 @@ class LangContent:
 
 
 def props_list_to_dict(props_list: List[Tuple[str, str]]) -> Dict[str, Any]:
-    ret_dict = {}
+    ret_dict: Dict[str, Any] = {}
     for next_key, next_val in props_list:
         sublist = ret_dict.get(next_key)
         if sublist is None:
@@ -658,7 +674,7 @@ def get_decl_namespace_list(decl_entry: Entry) -> List[str]:
     if decl_entry is None:
         return []
 
-    ret_list = []
+    ret_list: List[str] = []
     item = decl_entry
     while item:
         item_type = item.get_type()
@@ -795,7 +811,7 @@ class EntryTree:
         return self.root
 
     def generate_tree(self, include_internals=False, depth_first=False):
-        self.include_internals: bool = include_internals
+        self.include_internals = include_internals
         self.depth_first = depth_first
         self.root = get_entry_tree(self.content, include_internals, depth_first)
         return self.root

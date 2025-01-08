@@ -8,6 +8,7 @@
 
 import io
 import logging
+from typing import Any
 
 from showgraph.graphviz import Graph, set_node_style
 
@@ -65,7 +66,7 @@ class EntryDotGraph:
         base_graph.set_name("use_graph")
         base_graph.set_type("digraph")
         # base_graph.set_rankdir("LR")
-        self._value_entry_counter = 0
+        self._value_entry_counter: int = 0
 
     def get_base_graph(self):
         return self.graph.base_graph
@@ -92,8 +93,8 @@ class EntryDotGraph:
             set_node_style(entry_node, style)
         return node_id
 
-    def add_node_value(self, entry, name_prefix=None) -> str:
-        node_id = self._value_entry_counter
+    def add_node_value(self, entry: Any, name_prefix: str = None) -> str:
+        node_id: str = str(self._value_entry_counter)
         if name_prefix:
             node_id = name_prefix + str(node_id)
         self._value_entry_counter += 1

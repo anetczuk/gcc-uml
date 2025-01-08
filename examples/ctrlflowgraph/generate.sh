@@ -138,6 +138,7 @@ if [ ${#SRC_FILES[@]} -ne 0 ]; then
 		prepare_sample "$file_name"
 	done
 
+	echo "completed"
 	exit 0
 fi
 
@@ -148,4 +149,5 @@ for src_file in "$SCRIPT_DIR"/src/*.cpp; do
 	prepare_sample "$file_name"
 done
 
+echo "completed"
 exit 0

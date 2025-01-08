@@ -7,9 +7,9 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_raw': [('name', <Entry @2 iden
       strg: entry: funct_b items num: 0
     scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', '_raw': [('name', <Entry @5 identifier_node>)], '_chains': {}, '_chained': False, 'name': <Entry @5 identifier_node>} items num: 0
     srcp: entry: emptyfunct.cpp:7 items num: 0
-    type: entry: {'_id': '@7', '_type': 'function_type', '_raw': [('size', <Entry @10 integer_cst>), ('algn', '8'), ('retn', <Entry @11 void_type>), ('prms', <Entry @12 tree_list>)], '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @7019 tree_vec>, 'retn': <Entry @11 void_type>, 'size': <Entry @10 integer_cst>} items num: 4
+    type: entry: {'_id': '@7', '_type': 'function_type', '_raw': [('size', <Entry @10 integer_cst>), ('algn', '8'), ('retn', <Entry @11 void_type>), ('prms', <Entry @7019 tree_vec>)], '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @7019 tree_vec>, 'retn': <Entry @11 void_type>, 'size': <Entry @10 integer_cst>} items num: 4
       algn: entry: 8 items num: 0
-      prms: entry: {'_id': '@7019', '_type': 'tree_vec', '_raw': None, '_chains': {}, '_chained': False, 'lngt': '1', '0': <Entry @12 tree_list>} items num: 2
+      prms: entry: {'_id': '@7019', '_type': 'tree_vec', '_raw': [], '_chains': {}, '_chained': False, 'lngt': '1', '0': <Entry @12 tree_list>} items num: 2
         0: entry: {'_id': '@12', '_type': 'tree_list', '_raw': [('valu', <Entry @11 void_type>)], '_chains': {}, '_chained': False, 'valu': <Entry @11 void_type>} items num: 1
           valu: entry: {'_id': '@11', '_type': 'void_type', '_raw': [('name', <Entry @18 type_decl>), ('algn', '8')], '_chains': {}, '_chained': False, 'algn': '8', 'name': <Entry @18 type_decl>} items num: 0
         lngt: entry: 1 items num: 0
@@ -49,7 +49,7 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_raw': [('name', <Entry @2 iden
       strg: entry: funct_a items num: 0
     scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', '_raw': [('name', <Entry @5 identifier_node>)], '_chains': {}, '_chained': False, 'name': <Entry @5 identifier_node>} items num: 0
     srcp: entry: emptyfunct.cpp:4 items num: 0
-    type: entry: {'_id': '@7', '_type': 'function_type', '_raw': [('size', <Entry @10 integer_cst>), ('algn', '8'), ('retn', <Entry @11 void_type>), ('prms', <Entry @12 tree_list>)], '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @7019 tree_vec>, 'retn': <Entry @11 void_type>, 'size': <Entry @10 integer_cst>} items num: 0
+    type: entry: {'_id': '@7', '_type': 'function_type', '_raw': [('size', <Entry @10 integer_cst>), ('algn', '8'), ('retn', <Entry @11 void_type>), ('prms', <Entry @7019 tree_vec>)], '_chains': {}, '_chained': False, 'algn': '8', 'prms': <Entry @7019 tree_vec>, 'retn': <Entry @11 void_type>, 'size': <Entry @10 integer_cst>} items num: 0
   dcls: entry: {'_id': '@124', '_type': 'type_decl', '_raw': [('name', <Entry @133 identifier_node>), ('type', <Entry @134 lang_type>), ('chain', <Entry @135 namespace_decl>)], '_chains': {}, '_chained': True, 'chain': <Entry @135 namespace_decl>, 'name': <Entry @133 identifier_node>, 'type': <Entry @134 lang_type>} items num: 2
     name: entry: {'_id': '@133', '_type': 'identifier_node', '_raw': [('strg', 'any type'), ('lngt', '8')], '_chains': {}, '_chained': False, 'lngt': '8', 'strg': 'any type'} items num: 2
       lngt: entry: 8 items num: 0

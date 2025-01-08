@@ -94,7 +94,7 @@ class AtpbarContext:
 
 class AtpbarStepper:
     def __init__(self, name, steps_num):
-        self.progress = Atpbar([], name, steps_num)
+        self.progress: Atpbar = Atpbar([], name, steps_num)
         self.progress.reporter = find_reporter()
 
     def start(self):

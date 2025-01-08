@@ -45,7 +45,7 @@ def print_html(entry_tree: EntryTree, out_dir, generate_page_graph=True, use_viz
     _LOGGER.info("writing completed")
 
 
-def generate_entry_local_graph(entry, depends_dict, include_internals=True) -> Graph:
+def generate_entry_local_graph(entry: Entry, depends_dict: Dict[str, List[Any]], include_internals=True) -> Graph:
     entry_graph = EntryDotGraph()
     entry_graph.get_base_graph().set_rankdir("LR")
     entry_graph.add_node(entry, "red")
@@ -153,15 +153,15 @@ def generate_content_list(
 
 
 def chunks_equal(nodes_list, chunks_num):
-    count_list = []
+    count_list: List[List[Any]] = []
     for _ in range(0, chunks_num):
         count_list.append([0, []])
 
     for ancestors_list in nodes_list:
         node = ancestors_list[-1]
         tree_list = EntryTreeDepthFirstTraversal.to_list(node)
-        items_count = len(tree_list)
-        data_pair = count_list[0]
+        items_count: int = len(tree_list)
+        data_pair: List[Any] = count_list[0]
         data_pair[0] += items_count
         data_pair[1].append(ancestors_list)
         count_list.sort(key=lambda data_pair: data_pair[0])  ## sort by count
@@ -204,7 +204,7 @@ class NodePageGenerator:
     #     for ancestors_list in node_list:
     #         self.generate_node_page(ancestors_list, None, gen_context)
 
-    def generate_node_page(self, ancestors_list, depends_dict, out_dir):
+    def generate_node_page(self, ancestors_list, depends_dict: Dict[str, List[Any]], out_dir):
         node = ancestors_list[-1]
         entry = node.entry
 

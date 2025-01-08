@@ -31,7 +31,8 @@ echo "ignore line warning using: # type: ignore"
 MYPY_ERR_PATH="/tmp/mypy.err.txt"
 FAILED=0
 # shellcheck disable=SC2086
-mypy --cache-dir "$CACHE_DIR" --no-strict-optional --ignore-missing-imports --pretty $src_examples $all_examples 2> "$MYPY_ERR_PATH" || FAILED=1
+mypy --cache-dir "$CACHE_DIR" --no-strict-optional --ignore-missing-imports --pretty --check-untyped-defs \
+     $src_examples $all_examples 2> "$MYPY_ERR_PATH" || FAILED=1
 
 if [ $FAILED -ne 0 ]; then
 	cat "$MYPY_ERR_PATH"

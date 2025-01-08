@@ -52,6 +52,8 @@ class ClassDiagramGenerator:
 
     @dataclass
     class ClassField:
+        """Field representation of class."""
+
         name: str
         type: str
         access: str
@@ -134,63 +136,9 @@ class ClassDiagramGenerator:
 
             content_list.append(f"""class "{actor}" as {actor_id} {gen_string}{struct_spot}{{""")
 
-            for field_item in class_data.fields:
-                field_name = field_item.name
-                field_type = field_item.type
-                field_access = field_item.access
-                field_static = field_item.static
-                access_mark = self.FIELD_ACCESS_DICT.get(field_access)
-                if access_mark is None:
-                    _LOGGER.error("unable to get access mark for access value: '%s'", field_access)
-                    access_mark = ""
+            self._generate_fields(class_data, content_list)
 
-                static_marker = ""
-                if field_static:
-                    # in UML static field is marked as underscored
-                    static_marker = "{static} "
-
-                content_list.append(f"""    {{field}} {static_marker}{access_mark} {field_type} {field_name}""")
-
-            for method_item in class_data.methods:
-                method_name, method_type, method_mod, method_access, method_args, method_static = method_item
-                access_mark = self.FIELD_ACCESS_DICT.get(method_access)
-                if access_mark is None:
-                    _LOGGER.error("unable to get access mark for access value: '%s'", method_access)
-                    access_mark = ""
-
-                args_list = []
-                for arg_item in method_args:
-                    if arg_item.name:
-                        args_list.append(f"{arg_item.type} {arg_item.name}")
-                    else:
-                        args_list.append(f"{arg_item.type} /*anonym*/")
-                        # args_list.append(arg_item.type)
-                args_string = ", ".join(args_list)
-
-                method_mod_prefix = ""
-                if "virtual" in method_mod:
-                    method_mod_prefix = "virt"
-
-                abstract_mark = ""
-                method_mod_suffix = []
-                if "const" in method_mod:
-                    method_mod_suffix.append("const")
-                if "purevirt" in method_mod:
-                    method_mod_suffix.append("=0")
-                    abstract_mark = "{abstract} "
-                if "default" in method_mod:
-                    method_mod_suffix.append("=default")
-                method_mod_suffix = " ".join(method_mod_suffix)
-
-                static_marker = ""
-                if method_static:
-                    # in UML static method is marked as underscored
-                    static_marker = "{static} "
-
-                content_list.append(
-                    f"""    {{method}} {static_marker}{abstract_mark}{access_mark}{method_mod_prefix} {method_type}"""
-                    f""" {method_name}({args_string}) {method_mod_suffix}"""
-                )
+            self._generate_methods(class_data, content_list)
 
             content_list.append("}")
 
@@ -224,6 +172,66 @@ class ClassDiagramGenerator:
 
         _LOGGER.info("writing output to file %s", out_path)
         write_file(out_path, content)
+
+    def _generate_fields(self, class_data, content_list):
+        for field_item in class_data.fields:
+            field_name = field_item.name
+            field_type = field_item.type
+            field_access = field_item.access
+            field_static = field_item.static
+            access_mark = self.FIELD_ACCESS_DICT.get(field_access)
+            if access_mark is None:
+                _LOGGER.error("unable to get access mark for access value: '%s'", field_access)
+                access_mark = ""
+
+            static_marker = ""
+            if field_static:
+                # in UML static field is marked as underscored
+                static_marker = "{static} "
+
+            content_list.append(f"""    {{field}} {static_marker}{access_mark} {field_type} {field_name}""")
+
+    def _generate_methods(self, class_data, content_list):
+        for method_item in class_data.methods:
+            method_name, method_type, method_mod, method_access, method_args, method_static = method_item
+            access_mark = self.FIELD_ACCESS_DICT.get(method_access)
+            if access_mark is None:
+                _LOGGER.error("unable to get access mark for access value: '%s'", method_access)
+                access_mark = ""
+
+            args_list = []
+            for arg_item in method_args:
+                if arg_item.name:
+                    args_list.append(f"{arg_item.type} {arg_item.name}")
+                else:
+                    args_list.append(f"{arg_item.type} /*anonym*/")
+                    # args_list.append(arg_item.type)
+            args_string = ", ".join(args_list)
+
+            method_mod_prefix = ""
+            if "virtual" in method_mod:
+                method_mod_prefix = "virt"
+
+            abstract_mark = ""
+            method_mod_list: List[str] = []
+            if "const" in method_mod:
+                method_mod_list.append("const")
+            if "purevirt" in method_mod:
+                method_mod_list.append("=0")
+                abstract_mark = "{abstract} "
+            if "default" in method_mod:
+                method_mod_list.append("=default")
+            method_mod_suffix = " ".join(method_mod_list)
+
+            static_marker = ""
+            if method_static:
+                # in UML static method is marked as underscored
+                static_marker = "{static} "
+
+            content_list.append(
+                f"""    {{method}} {static_marker}{abstract_mark}{access_mark}{method_mod_prefix} {method_type}"""
+                f""" {method_name}({args_string}) {method_mod_suffix}"""
+            )
 
     def _get_spot_value(self, class_data: "ClassDiagramGenerator.ClassData"):
         if class_data.spot:

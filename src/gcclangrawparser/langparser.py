@@ -19,7 +19,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _LOGGER = logging.getLogger(__name__)
 
 
-def parse_raw(input_path, reducepaths=None) -> LangContent:
+def parse_raw(input_path: str, reducepaths: str = None) -> LangContent:
     if not os.path.isfile(input_path):
         return None
     _LOGGER.debug("reading input file")
@@ -49,13 +49,12 @@ def convert_lines_to_dict(content_lines, reducepaths=None) -> Dict[str, Any]:
         props_raw_data = found.group(3)
         props_list = converter.convert(props_raw_data)
         if reducepaths:
-            for index, prop_data in enumerate(props_list):
+            for index, prop_data in enumerate(props_list.copy()):
                 prop_val = prop_data[1]
                 if prop_val.startswith(reducepaths):
                     prop_key = prop_data[0]
                     reduced_val = prop_val[reduce_len:]
                     props_list[index] = (prop_key, reduced_val)
-
         content_dict[line_id] = (line_id, line_type, props_list)
     return content_dict
 

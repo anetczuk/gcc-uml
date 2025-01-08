@@ -52,10 +52,10 @@ def generate_inherit_graph(content: LangContent, out_path, include_internals=Fal
 
 class InheritanceData:
 
-    def __init__(self, content, include_internals=False):
+    def __init__(self, content: LangContent, include_internals: bool = False):
         self.content: LangContent = content
-        self.include_internals = include_internals
-        self.analyzer = StructAnalyzer(content, include_internals)
+        self.include_internals: bool = include_internals
+        self.analyzer: StructAnalyzer = StructAnalyzer(content, include_internals)
 
     def generate_data(self) -> Dict[str, ClassDiagramGenerator.ClassData]:
         ret_dict = {}
