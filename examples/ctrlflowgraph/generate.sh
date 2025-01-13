@@ -58,6 +58,12 @@ BUILD_DIR="$SCRIPT_DIR/build"
 mkdir -p "$BUILD_DIR"
 
 
+CONFIG_PATH="$SRC_DIR/../config.bash"
+if [ -f "$CONFIG_PATH" ]; then
+	source "$CONFIG_PATH"
+fi
+
+
 prepare_sample() {
 	local SAMPLE_FILE="$1"
 
@@ -65,7 +71,10 @@ prepare_sample() {
 
 	local source_file="$SCRIPT_DIR/src/$SAMPLE_FILE"
 	echo "compiling file: $source_file"
-	g++ -fdump-lang-raw -c "$source_file"
+	$GCC_COMMAND -fdump-lang-raw -c "$source_file"
+	# $GCC_COMMAND -fdump-tree-original="${SAMPLE_FILE}.005t.original" -c "$source_file"
+	# $GCC_COMMAND -fdump-tree-original-raw="${SAMPLE_FILE}.005t.original.raw" -c "$source_file"
+	# $GCC_COMMAND -fdump-tree-all-raw -c "$source_file"
 
 	cd "$SCRIPT_DIR/../../src/"
 

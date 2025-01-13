@@ -1,47 +1,24 @@
 ///
 
-#include <time.h>       // time
-
-
 namespace item {
 	class ExampleA {
 	public:
-		int methodA1() {
-			return 5;
-		}
+		virtual void methodB1() {}
+		virtual void methodB2() {}
 	};
 
-	class ExampleB {
+	class ExampleB: public ExampleA {
 	public:
-		virtual int methodB1() {
-			return 6;
-		}
-		virtual int methodB2() {
-			return 7;
-		}
-	};
-
-	class ExampleC: public ExampleB {
-	public:
-		int methodB1() override {
-			return 16;
-		}
-		int methodB2() override {
-			return 17;
-		}
+		void methodB1() override {}
+		void methodB2() override {}
 	};
 }
 
-int funcA() {
-	int retX = 0;
 
-//	item::ExampleA objA;
-//	item::ExampleA *ptrA = &objA;
-//	ret = ret + ptrA->methodA1();
+void funcA() {
+	item::ExampleB objB;
+	item::ExampleA *ptrA = &objB;
 
-	item::ExampleC objC;
-	item::ExampleB *ptrB = &objC;
-	retX = retX + ptrB->methodB2();
-
-	return retX;
+	ptrA->methodB2();
+	ptrA->methodB1();
 }

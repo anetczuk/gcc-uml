@@ -18,12 +18,12 @@ from gcclangrawparser.langcontent import (
     is_namespace_internal,
     get_record_namespace_list,
     get_type_entry_name,
-    get_entry_repr,
 )
 from gcclangrawparser.langanalyze import (
     StructAnalyzer,
     get_function_args,
     get_function_ret,
+    find_class_vtable_var_decl,
 )
 from gcclangrawparser.diagram.classdiagram import ClassDiagramGenerator
 
@@ -215,27 +215,14 @@ class InheritanceData:
         return ret_list
 
     def _get_fields_list(self, record_entry: Entry, include_internals=False) -> List[ClassDiagramGenerator.ClassField]:
-        class_name = get_entry_repr(record_entry)
-
         field_list = []
         entry_fields = get_fields(record_entry, include_internals=include_internals)
 
-        for entry in self.content.content_objs.values():
-            scpe_entry = entry.get("scpe")
-            if scpe_entry is None:
-                continue
-            if entry.get_type() != "var_decl":
-                continue
-            entry_name = get_entry_name(entry)
-            if not entry_name.startswith("_ZTVN"):
-                continue
-            scpe_name = get_entry_repr(scpe_entry)
-            if scpe_name != class_name:
-                continue
-            field_data = get_field_data(entry, include_internals)
-            if field_data is None:
-                continue
-            entry_fields.insert(0, field_data)
+        vtable_var_decl = find_class_vtable_var_decl(self.content, record_entry)
+        if vtable_var_decl is not None:
+            field_data = get_field_data(vtable_var_decl, include_internals)
+            if field_data is not None:
+                entry_fields.insert(0, field_data)
 
         for item in entry_fields:
             field_name, field_type, field_access, field_static = item

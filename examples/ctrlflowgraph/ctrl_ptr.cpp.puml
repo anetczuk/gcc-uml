@@ -1,55 +1,41 @@
 @startuml
 
-card "::funcA() -> int" {
+card "::funcA() -> void" {
     start
-    :int retX = 0;
-    :::item::ExampleC objC = {[::item::ExampleB] = {[::item::ExampleB::_vptr.ExampleB] = (&_ZTVN4item8ExampleCE) + 16}};
-    :::item::ExampleB * ptrB = (&objC);
-    :retX = None + retX;
-    #lightgreen:return retX;
-    stop
-}
-
-card "::item::ExampleC::ExampleC() -> void" {
-    start
-    :(&(*this))->__ct_base();
-    :_vptr.ExampleB = (&_ZTVN4item8ExampleCE) + 16;
-    stop
-}
-
-card "::item::ExampleC::methodB1() -> int" {
-    start
-    #lightgreen:return 16;
-    stop
-}
-
-card "::item::ExampleC::methodB2() -> int" {
-    start
-    #lightgreen:return 17;
+    :::item::ExampleB objB = {[::item::ExampleA] = {[::item::ExampleA::_vptr.ExampleA] = (&_ZTVN4item8ExampleBE) + 16}};
+    :::item::ExampleA * ptrA = (&objB);
+    :ptrA->methodB2();
+    :ptrA->methodB1();
     stop
 }
 
 card "::item::ExampleB::ExampleB() -> void" {
     start
-    :_vptr.ExampleB = (&_ZTVN4item8ExampleBE) + 16;
     stop
 }
 
-card "::item::ExampleB::methodB1() -> int" {
+card "::item::ExampleB::methodB1() -> void" {
     start
-    #lightgreen:return 6;
     stop
 }
 
-card "::item::ExampleB::methodB2() -> int" {
+card "::item::ExampleB::methodB2() -> void" {
     start
-    #lightgreen:return 7;
     stop
 }
 
-card "::item::ExampleA::methodA1() -> int" {
+card "::item::ExampleA::ExampleA() -> void" {
     start
-    #lightgreen:return 5;
+    stop
+}
+
+card "::item::ExampleA::methodB1() -> void" {
+    start
+    stop
+}
+
+card "::item::ExampleA::methodB2() -> void" {
+    start
     stop
 }
 

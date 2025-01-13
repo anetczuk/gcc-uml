@@ -16,6 +16,8 @@ from gcclangrawparser.langcontent import (
     get_record_namespace_list,
     get_type_name_mod,
     get_decl_namespace_list,
+    get_entry_repr,
+    LangContent,
 )
 
 
@@ -273,3 +275,23 @@ def is_method_of_instance(func_decl: Entry) -> bool:
     _first_prop, first_arg = args_list[0]
     first_name = get_entry_name(first_arg)
     return first_name == "this"
+
+
+## find virtual methods table
+def find_class_vtable_var_decl(content: LangContent, record_entry: Entry):
+    class_name = get_entry_repr(record_entry)
+
+    for entry in content.content_objs.values():
+        if entry.get_type() != "var_decl":
+            continue
+        entry_name = get_entry_name(entry)
+        if not entry_name.startswith("_ZTV"):
+            continue
+        scpe_entry = entry.get("scpe")
+        if scpe_entry is None:
+            continue
+        scpe_name = get_entry_repr(scpe_entry)
+        if scpe_name != class_name:
+            continue
+        return entry
+    return None

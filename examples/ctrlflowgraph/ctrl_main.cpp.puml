@@ -34,6 +34,7 @@ card "::calc_valB(int const valueB) -> long int const" {
         #lightgreen:return ddd;
         stop
     endif
+    stop
 }
 
 card "::calc_valC(int const valueC) -> int" {

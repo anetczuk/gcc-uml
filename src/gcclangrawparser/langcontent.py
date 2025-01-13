@@ -104,13 +104,18 @@ class Entry(Munch):
             if prop_key not in props_list:
                 continue
             prop_index = props_list.index(prop_key)
-            if found_list[prop_index]:
+            last_index = get_last_index_of(found_list, True)
+            if last_index >= prop_index:
+                # if ret_tuple[0] is None:
+                #     ret_tuple[0] = len(ret_list)
                 ret_list.append(ret_tuple)
                 ret_tuple = [None] * tuple_size
                 found_list = [False] * tuple_size
             found_list[prop_index] = True
             ret_tuple[prop_index] = prop_val
         if True in found_list:
+            # if ret_tuple[0] is None:
+            #     ret_tuple[0] = len(ret_list)
             ret_list.append(ret_tuple)
         return ret_list
 
@@ -152,6 +157,13 @@ class Entry(Munch):
             if raw_data[1] != old_value:
                 continue
             self._raw[raw_index] = (raw_data[0], new_value)
+
+
+def get_last_index_of(container, value):
+    if value not in container:
+        return -1
+    index_of = container[::-1].index(value)
+    return len(container) - 1 - index_of
 
 
 class LangContent:
