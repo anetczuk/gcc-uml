@@ -7,7 +7,7 @@
                          note: artificial              chain: @8      
                          init: @9       size: @10      algn: 8       
                          used: 1       
-@5      identifier_node  strg: /media/hdd-stuff/home/bob/Stuff/python/gcc-lang-raw-parser/examples/inherit/src/inherit_meths.cpp 
+@5      identifier_node  strg: /gcc-uml/examples/inherit/src/inherit_meths.cpp 
                          lngt: 97      
 @6      identifier_node  strg: _ZTSN5items4Abc1E       lngt: 17      
 @7      array_type       qual: c        unql: @11      size: @10     

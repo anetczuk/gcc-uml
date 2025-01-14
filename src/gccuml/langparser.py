@@ -11,7 +11,7 @@ import logging
 import re
 from typing import Dict, Any, Tuple, List
 
-from gcclangrawparser.langcontent import LangContent
+from gccuml.langcontent import LangContent
 
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))

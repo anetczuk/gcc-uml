@@ -1033,7 +1033,7 @@ entry: {'_id': '@1', '_type': 'namespace_decl', '_raw': [('name', <Entry @2 iden
     lngt: entry: 2 items num: 0
     strg: entry: :: items num: 0
   scpe: entry: {'_id': '@3', '_type': 'translation_unit_decl', '_raw': [('name', <Entry @5 identifier_node>)], '_chains': {}, '_chained': False, 'name': <Entry @5 identifier_node>} items num: 1
-    name: entry: {'_id': '@5', '_type': 'identifier_node', '_raw': [('strg', 'src/source1.cpp'), ('lngt', '90')], '_chains': {}, '_chained': False, 'lngt': '90', 'strg': 'src/source1.cpp'} items num: 2
-      lngt: entry: 90 items num: 0
+    name: entry: {'_id': '@5', '_type': 'identifier_node', '_raw': [('strg', 'src/source1.cpp'), ('lngt', '78')], '_chains': {}, '_chained': False, 'lngt': '78', 'strg': 'src/source1.cpp'} items num: 2
+      lngt: entry: 78 items num: 0
       strg: entry: src/source1.cpp items num: 0
   srcp: entry: <built-in>:0 items num: 0

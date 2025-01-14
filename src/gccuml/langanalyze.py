@@ -9,7 +9,7 @@
 import os
 import logging
 
-from gcclangrawparser.langcontent import (
+from gccuml.langcontent import (
     Entry,
     get_entry_name,
     is_namespace_internal,

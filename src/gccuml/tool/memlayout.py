@@ -10,15 +10,15 @@ import os
 import logging
 from typing import List, Dict
 
-from gcclangrawparser.langcontent import (
+from gccuml.langcontent import (
     LangContent,
     Entry,
     get_entry_name,
     is_namespace_internal,
     get_record_namespace_list,
 )
-from gcclangrawparser.diagram.memlayoutdiagram import MemoryLayoutDiagramGenerator, StructData, StructField, FieldType
-from gcclangrawparser.langanalyze import StructAnalyzer
+from gccuml.diagram.memlayoutdiagram import MemoryLayoutDiagramGenerator, StructData, StructField, FieldType
+from gccuml.langanalyze import StructAnalyzer
 
 
 _LOGGER = logging.getLogger(__name__)

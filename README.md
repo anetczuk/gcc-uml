@@ -1,6 +1,6 @@
-# gcc-lang-raw-parser
+# gcc-uml
 
-Parse gcc/g++ raw internal tree data.
+Generate varius diagrams based on gcc/g++ internal tree data.
 
 
 ## Running
@@ -9,7 +9,7 @@ Parse gcc/g++ raw internal tree data.
 
 To run application simply execute followoing command:
 ```
-python3 -m gcclangrawparser.main --help
+python3 -m gccuml.main --help
 ```
 
 
@@ -41,9 +41,9 @@ to *dot* diagram.
 ## Installation
 
 Installation of package can be done by:
- - to install package from downloaded ZIP file execute: `pip3 install --user -I file:gcc-lang-raw-parser-master.zip#subdirectory=src`
- - to install package directly from GitHub execute: `pip3 install --user -I git+https://github.com/anetczuk/gcc-lang-raw-parser.git#subdirectory=src`
- - uninstall: `pip3 uninstall gcclangrawparser`
+ - to install package from downloaded ZIP file execute: `pip3 install --user -I file:gcc-uml-master.zip#subdirectory=src`
+ - to install package directly from GitHub execute: `pip3 install --user -I git+https://github.com/anetczuk/gcc-uml.git#subdirectory=src`
+ - uninstall: `pip3 uninstall gccuml`
 
 Installation for development:
  - `install-deps.sh` to install package dependencies only (`requirements.txt`)
@@ -53,12 +53,14 @@ Installation for development:
 
 ## Issues
 
+Pre `gcc-15` versions have bug that does not allow to detect call to virtual method.
+
 
 ## Development
 
 All tests, linters and content generators can be executed by simple script `./process-all.sh`.
 
-Unit tests are executed by `./src/testgcclangrawparser/runtests.py`.
+Unit tests are executed by `./src/testgccuml/runtests.py`.
 
 Code linters can be run by `./tools/checkall.sh`.
 

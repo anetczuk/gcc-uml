@@ -10,7 +10,7 @@ import os
 import logging
 from typing import List, Dict
 
-from gcclangrawparser.langcontent import (
+from gccuml.langcontent import (
     LangContent,
     Entry,
     is_entry_language_internal,
@@ -19,13 +19,13 @@ from gcclangrawparser.langcontent import (
     get_record_namespace_list,
     get_type_entry_name,
 )
-from gcclangrawparser.langanalyze import (
+from gccuml.langanalyze import (
     StructAnalyzer,
     get_function_args,
     get_function_ret,
     find_class_vtable_var_decl,
 )
-from gcclangrawparser.diagram.classdiagram import ClassDiagramGenerator
+from gccuml.diagram.classdiagram import ClassDiagramGenerator
 
 
 _LOGGER = logging.getLogger(__name__)

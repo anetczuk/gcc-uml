@@ -8,7 +8,7 @@
 
 import unittest
 
-from gcclangrawparser.langcontent import LangContent, get_entry_tree, EntryTreeDepthFirstTraversal
+from gccuml.langcontent import LangContent, get_entry_tree, EntryTreeDepthFirstTraversal
 
 
 class GetEntryTeeTest(unittest.TestCase):

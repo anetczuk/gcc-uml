@@ -12,14 +12,14 @@ from typing import Any
 
 from showgraph.graphviz import Graph, set_node_style
 
-from gcclangrawparser.langcontent import (
+from gccuml.langcontent import (
     Entry,
     get_entry_name,
     EntryTreeDepthFirstTraversal,
     print_entry_tree,
     EntryTree,
 )
-from gcclangrawparser.io import write_file, read_file
+from gccuml.io import write_file, read_file
 
 
 _LOGGER = logging.getLogger(__name__)

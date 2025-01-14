@@ -14,7 +14,7 @@ generate_tools_help() {
     HELP_MD_PATH="$SCRIPT_DIR/cmdargs.md"
     HELP_TXT_PATH="$SCRIPT_DIR/cmdargs.txt"
 
-    COMMAND="python3 -m gcclangrawparser.main"
+    COMMAND="python3 -m gccuml.main"
     COMMAND_TEXT="$COMMAND"
 
     echo "## <a name=\"main_help\"></a> $COMMAND_TEXT --help" > "${HELP_MD_PATH}"

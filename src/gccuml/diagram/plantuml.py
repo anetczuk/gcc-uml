@@ -15,7 +15,7 @@
 #
 # from showgraph.io import write_file, read_list
 #
-# from gcclangrawparser.diagram.seqgraph import SequenceGraph, SeqItems, MsgData, DiagramData, NodeData, NotesContainer
+# from gccuml.diagram.seqgraph import SequenceGraph, SeqItems, MsgData, DiagramData, NodeData, NotesContainer
 #
 #
 # SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))

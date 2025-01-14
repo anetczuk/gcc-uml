@@ -10,7 +10,7 @@ import os
 import logging
 from typing import List, Any, Dict, Tuple, Set
 
-from gcclangrawparser.langcontent import (
+from gccuml.langcontent import (
     LangContent,
     Entry,
     is_entry_language_internal,
@@ -20,7 +20,7 @@ from gcclangrawparser.langcontent import (
     get_type_name_mod,
     get_entry_repr,
 )
-from gcclangrawparser.langanalyze import (
+from gccuml.langanalyze import (
     StructAnalyzer,
     get_function_args,
     get_function_ret,
@@ -28,7 +28,7 @@ from gcclangrawparser.langanalyze import (
     get_function_full_name,
     find_class_vtable_var_decl,
 )
-from gcclangrawparser.diagram.activitydiagram import (
+from gccuml.diagram.activitydiagram import (
     ActivityDiagramGenerator,
     FuncData,
     FunctionArg,

@@ -8,7 +8,7 @@
 
 import unittest
 
-from gcclangrawparser.langparser import ProprertiesConverter, convert_lines_to_dict
+from gccuml.langparser import ProprertiesConverter, convert_lines_to_dict
 
 
 class ProprertiesConverterTest(unittest.TestCase):

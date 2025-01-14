@@ -1,10 +1,10 @@
-## <a name="main_help"></a> python3 -m gcclangrawparser.main --help
+## <a name="main_help"></a> python3 -m gccuml.main --help
 ```
-usage: python3 -m gcclangrawparser.main [-h] [-la] [--listtools]
-                                        {tools,printhtml,inheritgraph,memlayout,ctrlflowgraph}
-                                        ...
+usage: python3 -m gccuml.main [-h] [-la] [--listtools]
+                              {tools,printhtml,inheritgraph,memlayout,ctrlflowgraph}
+                              ...
 
-parse gcc/g++ raw internal tree data
+generate UML-like diagrams based on gcc/g++ internal tree
 
 options:
   -h, --help            show this help message and exit
@@ -25,14 +25,14 @@ subcommands:
 
 
 
-## <a name="tools_help"></a> python3 -m gcclangrawparser.main tools --help
+## <a name="tools_help"></a> python3 -m gccuml.main tools --help
 ```
-usage: python3 -m gcclangrawparser.main tools [-h] --rawfile RAWFILE
-                                              [--reducepaths REDUCEPATHS]
-                                              [-ii [INCLUDEINTERNALS]]
-                                              [--outtypefields OUTTYPEFIELDS]
-                                              [--outtreetxt OUTTREETXT]
-                                              [--outbiggraph OUTBIGGRAPH]
+usage: python3 -m gccuml.main tools [-h] --rawfile RAWFILE
+                                    [--reducepaths REDUCEPATHS]
+                                    [-ii [INCLUDEINTERNALS]]
+                                    [--outtypefields OUTTYPEFIELDS]
+                                    [--outtreetxt OUTTREETXT]
+                                    [--outbiggraph OUTBIGGRAPH]
 
 various tools
 
@@ -53,16 +53,15 @@ options:
 
 
 
-## <a name="printhtml_help"></a> python3 -m gcclangrawparser.main printhtml --help
+## <a name="printhtml_help"></a> python3 -m gccuml.main printhtml --help
 ```
-usage: python3 -m gcclangrawparser.main printhtml [-h] --rawfile RAWFILE
-                                                  [-j JOBS]
-                                                  [--progressbar [PROGRESSBAR]]
-                                                  [--reducepaths REDUCEPATHS]
-                                                  [--genentrygraphs [GENENTRYGRAPHS]]
-                                                  [--usevizjs [USEVIZJS]]
-                                                  [-ii [INCLUDEINTERNALS]]
-                                                  --outhtmldir OUTHTMLDIR
+usage: python3 -m gccuml.main printhtml [-h] --rawfile RAWFILE [-j JOBS]
+                                        [--progressbar [PROGRESSBAR]]
+                                        [--reducepaths REDUCEPATHS]
+                                        [--genentrygraphs [GENENTRYGRAPHS]]
+                                        [--usevizjs [USEVIZJS]]
+                                        [-ii [INCLUDEINTERNALS]] --outhtmldir
+                                        OUTHTMLDIR
 
 generate static HTML for lang file
 
@@ -88,11 +87,11 @@ options:
 
 
 
-## <a name="inheritgraph_help"></a> python3 -m gcclangrawparser.main inheritgraph --help
+## <a name="inheritgraph_help"></a> python3 -m gccuml.main inheritgraph --help
 ```
-usage: python3 -m gcclangrawparser.main inheritgraph [-h] --rawfile RAWFILE
-                                                     [--reducepaths REDUCEPATHS]
-                                                     --outpath OUTPATH
+usage: python3 -m gccuml.main inheritgraph [-h] --rawfile RAWFILE
+                                           [--reducepaths REDUCEPATHS]
+                                           --outpath OUTPATH
 
 generate inheritance graph
 
@@ -106,13 +105,13 @@ options:
 
 
 
-## <a name="memlayout_help"></a> python3 -m gcclangrawparser.main memlayout --help
+## <a name="memlayout_help"></a> python3 -m gccuml.main memlayout --help
 ```
-usage: python3 -m gcclangrawparser.main memlayout [-h] --rawfile RAWFILE
-                                                  [-ii [INCLUDEINTERNALS]]
-                                                  [--reducepaths REDUCEPATHS]
-                                                  [--graphnote GRAPHNOTE]
-                                                  --outpath OUTPATH
+usage: python3 -m gccuml.main memlayout [-h] --rawfile RAWFILE
+                                        [-ii [INCLUDEINTERNALS]]
+                                        [--reducepaths REDUCEPATHS]
+                                        [--graphnote GRAPHNOTE] --outpath
+                                        OUTPATH
 
 generate memory layout diagram
 
@@ -130,12 +129,12 @@ options:
 
 
 
-## <a name="ctrlflowgraph_help"></a> python3 -m gcclangrawparser.main ctrlflowgraph --help
+## <a name="ctrlflowgraph_help"></a> python3 -m gccuml.main ctrlflowgraph --help
 ```
-usage: python3 -m gcclangrawparser.main ctrlflowgraph [-h] --rawfile RAWFILE
-                                                      [-ii [INCLUDEINTERNALS]]
-                                                      [--reducepaths REDUCEPATHS]
-                                                      --outpath OUTPATH
+usage: python3 -m gccuml.main ctrlflowgraph [-h] --rawfile RAWFILE
+                                            [-ii [INCLUDEINTERNALS]]
+                                            [--reducepaths REDUCEPATHS]
+                                            --outpath OUTPATH
 
 generate control flow diagram
 

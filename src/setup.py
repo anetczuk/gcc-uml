@@ -22,10 +22,10 @@ def read_list(file_path):
     return ret_list
 
 
-packages_list = find_packages(include=["gcclangrawparser", "gcclangrawparser.*"])
+packages_list = find_packages(include=["gccuml", "gccuml.*"])
 
 ## additional data to install
-packages_data: Dict[str, Any] = {"gcclangrawparser": []}
+packages_data: Dict[str, Any] = {"gccuml": []}
 
 ## additional scripts to install
 additional_scripts: List[str] = []
@@ -36,10 +36,10 @@ install_reqs = read_list(requirements_path)
 ## every time setup info changes then version number should be increased
 
 setup(
-    name="gcclangrawparser",
+    name="gccuml",
     version="1.0.1",
-    description="parse gcc/g++ raw internal tree data",
-    url="https://github.com/anetczuk/gcc-lang-raw-parser",
+    description="Generate UML-like diagrams based on gcc/g++ internal tree.",
+    url="https://github.com/anetczuk/gcc-uml",
     author="Arkadiusz Netczuk",
     license="BSD 3-Clause",
     packages=packages_list,

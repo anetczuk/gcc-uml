@@ -9,12 +9,12 @@
 import unittest
 from typing import List, Dict
 
-from testgcclangrawparser.data import get_data_path
+from testgccuml.data import get_data_path
 
-from gcclangrawparser.langcontent import LangContent
-from gcclangrawparser.langparser import parse_raw
-from gcclangrawparser.tool.inheritgraph import InheritanceData
-from gcclangrawparser.diagram.classdiagram import ClassDiagramGenerator
+from gccuml.langcontent import LangContent
+from gccuml.langparser import parse_raw
+from gccuml.tool.inheritgraph import InheritanceData
+from gccuml.diagram.classdiagram import ClassDiagramGenerator
 
 
 class GetClassesInfoTest(unittest.TestCase):

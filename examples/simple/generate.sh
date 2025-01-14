@@ -83,28 +83,28 @@ prepare_sample() {
 	set -x
 
 	## generate various data
-	"$SRC_DIR"/gcclangrawparser/main.py tools \
-										--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-										--reducepaths "$SCRIPT_DIR/" \
-										--outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
-										--outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt"
-# 											--outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
+	"$SRC_DIR"/gccuml/main.py tools \
+							  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+							  --reducepaths "$SCRIPT_DIR/" \
+							  --outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
+							  --outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt"
+# 							  --outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
 
 	## print html
 	if [ "$USE_PROFILER" = false ]; then
-		"$SRC_DIR"/gcclangrawparser/main.py printhtml \
-											--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-											--reducepaths "$SCRIPT_DIR/" \
-											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
-											"${ARGS[@]}"
+		"$SRC_DIR"/gccuml/main.py printhtml \
+								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+								  --reducepaths "$SCRIPT_DIR/" \
+								  --outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
+								  "${ARGS[@]}"
 	else
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
-		"$SRC_DIR"/gcclangrawparser/main.py printhtml \
-											--progressbar=False \
-											--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-											--reducepaths "$SCRIPT_DIR/" \
-											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
-											"${ARGS[@]}"
+		"$SRC_DIR"/gccuml/main.py printhtml \
+								  --progressbar=False \
+								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+								  --reducepaths "$SCRIPT_DIR/" \
+								  --outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
+								  "${ARGS[@]}"
 	fi
 	set +x
 }

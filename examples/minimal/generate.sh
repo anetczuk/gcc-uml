@@ -35,23 +35,23 @@ prepare_sample() {
 
 	cd "$SCRIPT_DIR/../../src/"
 
-	"$SRC_DIR"/gcclangrawparser/main.py tools \
-										--rawfile "$SAMPLE_PATH" \
-										--outtypefields "$OUT_DIR/fields-$SAMPLE_FILE.json" \
-										--outtreetxt "$OUT_DIR/graph-$SAMPLE_FILE.txt"
+	"$SRC_DIR"/gccuml/main.py tools \
+							  --rawfile "$SAMPLE_PATH" \
+							  --outtypefields "$OUT_DIR/fields-$SAMPLE_FILE.json" \
+							  --outtreetxt "$OUT_DIR/graph-$SAMPLE_FILE.txt"
 
 	if [ $USE_PROFILER -eq 1 ]; then
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
-		"$SRC_DIR"/gcclangrawparser/main.py printhtml \
-											--progressbar=False \
-											--rawfile "$SAMPLE_PATH" \
-											--genentrygraphs=False \
-											--outhtmldir "$OUT_DIR/html-$SAMPLE_FILE"
+		"$SRC_DIR"/gccuml/main.py printhtml \
+								  --progressbar=False \
+								  --rawfile "$SAMPLE_PATH" \
+								  --genentrygraphs=False \
+								  --outhtmldir "$OUT_DIR/html-$SAMPLE_FILE"
 	else
-		"$SRC_DIR"/gcclangrawparser/main.py printhtml \
-											--rawfile "$SAMPLE_PATH" \
-											--genentrygraphs=False \
-											--outhtmldir "$OUT_DIR/html-$SAMPLE_FILE"
+		"$SRC_DIR"/gccuml/main.py printhtml \
+								  --rawfile "$SAMPLE_PATH" \
+								  --genentrygraphs=False \
+								  --outhtmldir "$OUT_DIR/html-$SAMPLE_FILE"
 	fi
 }
 

@@ -72,12 +72,12 @@ prepare_sample() {
 	set -x
 
 	if [ "$USE_PRINTHTML" = true ]; then
-		"$SRC_DIR"/gcclangrawparser/main.py printhtml \
-											--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-											--reducepaths "$SCRIPT_DIR/" \
-											-ii \
-											--outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
-											"${ARGS[@]}"
+		"$SRC_DIR"/gccuml/main.py printhtml \
+								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+								  --reducepaths "$SCRIPT_DIR/" \
+								  -ii \
+								  --outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
+								  "${ARGS[@]}"
 	fi
 
 	OUT_DIAG_PATH="$BUILD_DIR/../${SAMPLE_FILE}.dot"
@@ -87,20 +87,20 @@ prepare_sample() {
 # 		FILE_CONTENT=$(cat "$source_file")
 # 		FILE_CONTENT=$(echo "$FILE_CONTENT" | sed 's/\t/    /g')
 		
-		"$SRC_DIR"/gcclangrawparser/main.py memlayout \
-											--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-											--reducepaths "$SCRIPT_DIR/" \
-											--outpath "$OUT_DIAG_PATH" \
-											--graphnote "$FILE_CONTENT" \
-											"${ARGS[@]}"
-# 											-ii \
+		"$SRC_DIR"/gccuml/main.py memlayout \
+								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+								  --reducepaths "$SCRIPT_DIR/" \
+								  --outpath "$OUT_DIAG_PATH" \
+								  --graphnote "$FILE_CONTENT" \
+								  "${ARGS[@]}"
+# 								  -ii \
 	else
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
-		"$SRC_DIR"/gcclangrawparser/main.py memlayout \
-											--rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-											--reducepaths "$SCRIPT_DIR/" \
-											--outpath "$OUT_DIAG_PATH" \
-											"${ARGS[@]}"
+		"$SRC_DIR"/gccuml/main.py memlayout \
+								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+								  --reducepaths "$SCRIPT_DIR/" \
+								  --outpath "$OUT_DIAG_PATH" \
+								  "${ARGS[@]}"
 	fi
 	set +x
 	

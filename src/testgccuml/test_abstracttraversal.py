@@ -9,7 +9,7 @@
 import unittest
 from typing import Dict, Any
 
-from gcclangrawparser.abstracttraversal import (
+from gccuml.abstracttraversal import (
     create_tree_from_dict,
     NodeTreeDepthFirstTraversal,
     NodeTreeBreadthFirstTraversal,

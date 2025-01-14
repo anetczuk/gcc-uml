@@ -22,16 +22,16 @@ import argparse
 import logging
 import json
 
-from gcclangrawparser import logger
-from gcclangrawparser.langparser import parse_raw
-from gcclangrawparser.io import write_file
-from gcclangrawparser.progressbar import disable_progressar
-from gcclangrawparser.langcontent import LangContent, EntryTree
-from gcclangrawparser.tool.tools import write_entry_tree, generate_big_graph
-from gcclangrawparser.tool.printhtml import print_html
-from gcclangrawparser.tool.inheritgraph import generate_inherit_graph
-from gcclangrawparser.tool.memlayout import generate_memory_layout_graph
-from gcclangrawparser.tool.ctrlflowgraph import generate_control_flow_graph
+from gccuml import logger
+from gccuml.langparser import parse_raw
+from gccuml.io import write_file
+from gccuml.progressbar import disable_progressar
+from gccuml.langcontent import LangContent, EntryTree
+from gccuml.tool.tools import write_entry_tree, generate_big_graph
+from gccuml.tool.printhtml import print_html
+from gccuml.tool.inheritgraph import generate_inherit_graph
+from gccuml.tool.memlayout import generate_memory_layout_graph
+from gccuml.tool.ctrlflowgraph import generate_control_flow_graph
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -122,8 +122,8 @@ def process_ctrlflowgraph(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="python3 -m gcclangrawparser.main",
-        description="parse gcc/g++ raw internal tree data",
+        prog="python3 -m gccuml.main",
+        description="generate UML-like diagrams based on gcc/g++ internal tree",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("-la", "--logall", action="store_true", help="Log all messages")

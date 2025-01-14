@@ -1,8 +1,8 @@
-usage: python3 -m gcclangrawparser.main [-h] [-la] [--listtools]
-                                        {tools,printhtml,inheritgraph,memlayout,ctrlflowgraph}
-                                        ...
+usage: python3 -m gccuml.main [-h] [-la] [--listtools]
+                              {tools,printhtml,inheritgraph,memlayout,ctrlflowgraph}
+                              ...
 
-parse gcc/g++ raw internal tree data
+generate UML-like diagrams based on gcc/g++ internal tree
 
 options:
   -h, --help            show this help message and exit

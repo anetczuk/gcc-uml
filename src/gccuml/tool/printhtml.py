@@ -16,11 +16,11 @@ from multiprocessing import Pool as Pool1
 
 # from multiprocessing.pool import ThreadPool as Pool1
 
-# from gcclangrawparser.multiprocessingmock import DummyPool as Pool1
+# from gccuml.multiprocessingmock import DummyPool as Pool1
 
 from showgraph.graphviz import Graph
 
-from gcclangrawparser.langcontent import (
+from gccuml.langcontent import (
     Entry,
     EntryTreeNode,
     EntryTreeDepthFirstTraversal,
@@ -29,10 +29,10 @@ from gcclangrawparser.langcontent import (
     EntryTree,
     get_entry_repr,
 )
-from gcclangrawparser.io import write_file
-from gcclangrawparser.vizjs import DATA_DIR
-from gcclangrawparser.tool.tools import EntryDotGraph, get_graph_as_svg
-from gcclangrawparser.progressbar import get_processbar_pool, iterate_progressar, end_progressbar
+from gccuml.io import write_file
+from gccuml.vizjs import DATA_DIR
+from gccuml.tool.tools import EntryDotGraph, get_graph_as_svg
+from gccuml.progressbar import get_processbar_pool, iterate_progressar, end_progressbar
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -265,7 +265,7 @@ class NodePageGenerator:
         content = f"""\
 <!DOCTYPE HTML>
 <!--
-File was automatically generated using 'gcc-lang-raw-parser' project.
+File was automatically generated using 'gcc-uml' project.
 Project is distributed under the BSD 3-Clause license.
 -->
 <html>

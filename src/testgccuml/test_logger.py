@@ -11,7 +11,7 @@ import unittest
 import logging
 import io
 
-from gcclangrawparser import logger
+from gccuml import logger
 
 
 class LoggerTest(unittest.TestCase):

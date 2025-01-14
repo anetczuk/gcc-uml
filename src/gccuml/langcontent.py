@@ -13,7 +13,7 @@ import pprint
 
 from munch import Munch
 
-from gcclangrawparser.abstracttraversal import (
+from gccuml.abstracttraversal import (
     GraphAbstractTraversal,
     get_nodes_from_tree,
     get_nodes_from_graph,
