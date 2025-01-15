@@ -10,9 +10,6 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 echo "generating docs"
 "$SCRIPT_DIR"/doc/generate-doc.sh
 
-echo "checking markdown files"
-"$SCRIPT_DIR"/tools/mdpreproc.py "$SCRIPT_DIR/README.md"
-
 "$SCRIPT_DIR"/tools/installvenv.sh --no-prompt
 
 echo "running tests"

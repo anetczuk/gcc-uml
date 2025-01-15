@@ -50,3 +50,7 @@ generate_tools_help
 
 
 "$SCRIPT_DIR"/generate_small.sh
+
+
+echo "process markdown files"
+"$SCRIPT_DIR"/../tools/mdpreproc.py "$SCRIPT_DIR/../README.md"
