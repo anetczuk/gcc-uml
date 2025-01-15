@@ -14,17 +14,20 @@ generate_tools_help() {
     HELP_MD_PATH="$SCRIPT_DIR/cmdargs.md"
     HELP_TXT_PATH="$SCRIPT_DIR/cmdargs.txt"
 
+	cd "$SRC_DIR"
+
     COMMAND="python3 -m gccuml.main"
     COMMAND_TEXT="$COMMAND"
 
     echo "## <a name=\"main_help\"></a> $COMMAND_TEXT --help" > "${HELP_MD_PATH}"
     echo -e "\`\`\`" >> "${HELP_MD_PATH}"
-
-    cd "$SRC_DIR"
     $COMMAND --help >> "${HELP_MD_PATH}"
-    $COMMAND --help > "${HELP_TXT_PATH}"
-
     echo -e "\`\`\`" >> "${HELP_MD_PATH}"
+
+	echo -e "\`\`\`" > "${HELP_TXT_PATH}"
+    $COMMAND --help >> "${HELP_TXT_PATH}"
+    echo -e "\`\`\`" >> "${HELP_TXT_PATH}"
+
 
     FAILED=0
     tools=$($COMMAND --listtools 2> /dev/null) || FAILED=1
@@ -39,6 +42,11 @@ generate_tools_help() {
 	    echo -e "\`\`\`" >> "${HELP_MD_PATH}"
 	    $COMMAND "$item" --help >> "${HELP_MD_PATH}"
 	    echo -e "\`\`\`"  >> "${HELP_MD_PATH}"
+
+	    echo -e "\n\n" >> "${HELP_TXT_PATH}"
+		echo -e "\`\`\`" >> "${HELP_TXT_PATH}"
+	    $COMMAND "$item" --help >> "${HELP_TXT_PATH}"
+	    echo -e "\`\`\`" >> "${HELP_TXT_PATH}"
 	done
     else
         echo "no --listtools found"
@@ -49,7 +57,8 @@ generate_tools_help() {
 generate_tools_help
 
 
-"$SCRIPT_DIR"/generate_small.sh
+echo "generate samples"
+"$SCRIPT_DIR"/generate-samples.sh
 
 
 echo "process markdown files"

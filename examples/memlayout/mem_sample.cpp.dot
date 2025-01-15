@@ -1,0 +1,177 @@
+digraph memory_layout {
+
+fontname="Helvetica,Arial,sans-serif"
+node [fontname="Helvetica,Arial,sans-serif"]
+edge [fontname="Helvetica,Arial,sans-serif"]
+
+graph [
+    rankdir = "LR"
+];
+node [
+    fontsize = "16"
+    shape = "record"
+];
+
+ranksep = 2
+
+
+# items subgraph
+{
+
+    "-templatens-TemplInheritDouble" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::templatens::TemplInheritDouble</b>  (384b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">96</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::templatens::AbcTempl&lt;int, int&gt;</td> </tr>
+            <tr> <td align="right" port='in_1'>96</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_1'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>128</td> <td align="right">192</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::templatens::AbcTempl&lt;double, double&gt;</td> </tr>
+            <tr> <td align="right" port='in_3'>320</td> <td align="right">8</td> <td align="left" port='out_3'>dataA: bool</td> </tr>
+            <tr> <td align="right" port='in_4'>328</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_4'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-templatens-TemplInherit" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::templatens::TemplInherit</b>  (96b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::templatens::AbcTempl&lt;int, bool&gt;</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">32</td> <td align="left" port='out_1'>fieldA: int</td> </tr>
+        </table>>
+    ]
+
+    "-templatens-TemplField" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::templatens::TemplField</b>  (96b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>fieldA: int</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">64</td> <td align="left" port='out_1'>fieldB: ::templatens::AbcTempl&lt;float, char&gt;</td> </tr>
+        </table>>
+    ]
+
+    "-templatens-AbcTempl" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="#cde6ff" port='-1'> <b>::templatens::AbcTempl</b>  (0b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">0</td> <td align="left" port='out_0'>field1: TTypeA</td> </tr>
+            <tr> <td align="right" port='in_1'>0</td> <td align="right">0</td> <td align="left" port='out_1'>field2: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>0</td> <td align="right">0</td> <td align="left" port='out_2'>field3: TTypeB</td> </tr>
+        </table>>
+    ]
+
+    "-templatens-AbcTempl&lt;double, double&gt;" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::templatens::AbcTempl&lt;double, double&gt;</b>  (192b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" port='out_0'>field1: double</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>72</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>128</td> <td align="right">64</td> <td align="left" port='out_3'>field3: double</td> </tr>
+        </table>>
+    ]
+
+    "-templatens-AbcTempl&lt;int, int&gt;" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::templatens::AbcTempl&lt;int, int&gt;</b>  (96b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: int</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>64</td> <td align="right">32</td> <td align="left" port='out_3'>field3: int</td> </tr>
+        </table>>
+    ]
+
+    "-templatens-AbcTempl&lt;int, bool&gt;" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::templatens::AbcTempl&lt;int, bool&gt;</b>  (64b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: int</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">8</td> <td align="left" port='out_2'>field3: bool</td> </tr>
+            <tr> <td align="right" port='in_3'>48</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-templatens-AbcTempl&lt;float, char&gt;" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::templatens::AbcTempl&lt;float, char&gt;</b>  (64b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: float</td> </tr>
+            <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">8</td> <td align="left" port='out_2'>field3: char</td> </tr>
+            <tr> <td align="right" port='in_3'>48</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+        </table>>
+    ]
+
+    "-diamondns-Cbc1" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::diamondns::Cbc1</b>  (256b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">72</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::diamondns::Bbc1</td> </tr>
+            <tr> <td align="right" port='in_1'>72</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_1'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>128</td> <td align="right">72</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::diamondns::Bbc2</td> </tr>
+            <tr> <td align="right" port='in_3'>200</td> <td align="right">8</td> <td align="left" port='out_3'>fieldD: char</td> </tr>
+            <tr> <td align="right" port='in_4'>208</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_4'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_5'>224</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_5'>::diamondns::Abc1</td> </tr>
+        </table>>
+    ]
+
+    "-diamondns-Bbc2" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::diamondns::Bbc2</b>  (128b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.Bbc2</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">8</td> <td align="left" port='out_1'>fieldC: char</td> </tr>
+            <tr> <td align="right" port='in_2'>72</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>96</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_3'>::diamondns::Abc1</td> </tr>
+        </table>>
+    ]
+
+    "-diamondns-Bbc1" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::diamondns::Bbc1</b>  (128b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.Bbc1</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">8</td> <td align="left" port='out_1'>fieldB: bool</td> </tr>
+            <tr> <td align="right" port='in_2'>72</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>96</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_3'>::diamondns::Abc1</td> </tr>
+        </table>>
+    ]
+
+    "-diamondns-Abc1" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::diamondns::Abc1</b>  (32b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>fieldA: int</td> </tr>
+        </table>>
+    ]
+
+
+    "-templatens-TemplInheritDouble":"out_0" -> "-templatens-AbcTempl&lt;int, int&gt;":"-1"
+    "-templatens-TemplInheritDouble":"out_2" -> "-templatens-AbcTempl&lt;double, double&gt;":"-1"
+    "-templatens-TemplInherit":"out_0" -> "-templatens-AbcTempl&lt;int, bool&gt;":"-1"
+    "-templatens-TemplField":"out_1" -> "-templatens-AbcTempl&lt;float, char&gt;":"-1"
+    "-templatens-AbcTempl&lt;double, double&gt;":"-1" -> "-templatens-AbcTempl":"-1"
+    "-templatens-AbcTempl&lt;int, int&gt;":"-1" -> "-templatens-AbcTempl":"-1"
+    "-templatens-AbcTempl&lt;int, bool&gt;":"-1" -> "-templatens-AbcTempl":"-1"
+    "-templatens-AbcTempl&lt;float, char&gt;":"-1" -> "-templatens-AbcTempl":"-1"
+    "-diamondns-Cbc1":"out_0" -> "-diamondns-Bbc1":"-1"
+    "-diamondns-Cbc1":"out_2" -> "-diamondns-Bbc2":"-1"
+    "-diamondns-Cbc1":"out_5" -> "-diamondns-Abc1":"-1"
+    "-diamondns-Bbc2":"out_3" -> "-diamondns-Abc1":"-1"
+    "-diamondns-Bbc1":"out_3" -> "-diamondns-Abc1":"-1"
+
+}  # end of items subgraph
+
+}  # end of graph

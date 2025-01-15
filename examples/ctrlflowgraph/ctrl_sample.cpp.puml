@@ -1,0 +1,46 @@
+@startuml
+
+card "::main() -> int" {
+    start
+    :::ExampleClass obj1;;
+    #lightgreen:return (&obj1)->switchExample(3);
+    stop
+}
+
+card "::ExampleClass::switchExample(int const paramA) -> int" {
+    start
+    :int timestamp;;
+    :timestamp = ::time(0);
+    :timestamp = timestamp + paramA;
+
+partition "switch:\ntimestamp % 3" {
+    ' case: 0 fallthrough: False
+    if ( 0 ? ) then (yes)
+        #lightgreen:return 0;
+        stop
+    else
+        ' case: 1 fallthrough: True
+        if ( 1 ? ) then (yes)
+        endif
+        note right: [fallthrough]
+        ' case: 2 fallthrough: False
+        if ( 2 ? ) then (yes)
+            #lightgreen:return 2;
+            stop
+        else
+            ' case: None fallthrough: True
+            if ( default ) then (yes)
+                :timestamp = ::time(0);
+            else
+                -[hidden]->
+            endif
+        endif
+    endif
+}
+    :timestamp = timestamp * 3;
+    #lightgreen:return timestamp % 2;
+    stop
+}
+
+
+@enduml

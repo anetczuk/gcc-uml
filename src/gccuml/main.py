@@ -134,38 +134,15 @@ def main():
 
     ## =================================================
 
-    description = "various tools"
-    subparser = subparsers.add_parser("tools", help=description, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    subparser.description = description
-    subparser.set_defaults(func=process_tools)
-    subparser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
-    subparser.add_argument(
-        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"
-    )
-    subparser.add_argument(
-        "-ii",
-        "--includeinternals",
-        type=str2bool,
-        nargs="?",
-        const=True,
-        default=False,
-        help="Should include C++ internals?",
-    )
-    subparser.add_argument(
-        "--outtypefields", action="store", required=False, default="", help="Output path to types and fields"
-    )
-    subparser.add_argument("--outtreetxt", action="store", required=False, default="", help="Output path to tree print")
-    subparser.add_argument("--outbiggraph", action="store", required=False, default="", help="Output path to big graph")
-
-    ## =================================================
-
-    description = "generate static HTML for lang file"
+    description = "generate static HTML for internal tree file"
     subparser = subparsers.add_parser(
         "printhtml", help=description, formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     subparser.description = description
     subparser.set_defaults(func=process_printhtml)
-    subparser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
+    subparser.add_argument(
+        "--rawfile", action="store", required=True, default="", help="Path to internal tree file (.003l.raw) to analyze"
+    )
     subparser.add_argument(
         "-j",
         "--jobs",
@@ -183,7 +160,7 @@ def main():
         help="Show progress bar",
     )
     subparser.add_argument(
-        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"
+        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
     )
     subparser.add_argument(
         "--genentrygraphs",
@@ -191,7 +168,7 @@ def main():
         nargs="?",
         const=True,
         default=True,
-        help="Should generate graph for each entry?",
+        help="Should graph be generated for each entry?",
     )
     subparser.add_argument(
         "--usevizjs",
@@ -208,10 +185,10 @@ def main():
         nargs="?",
         const=True,
         default=False,
-        help="Should include C++ internals?",
+        help="Should include compiler internals?",
     )
     subparser.add_argument(
-        "--outhtmldir", action="store", required=True, default="", help="Output directory for HTML representation"
+        "--outhtmldir", action="store", required=True, default="", help="Output directory of HTML representation"
     )
 
     ## =================================================
@@ -222,12 +199,14 @@ def main():
     )
     subparser.description = description
     subparser.set_defaults(func=process_inheritgraph)
-    subparser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
     subparser.add_argument(
-        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"
+        "--rawfile", action="store", required=True, default="", help="Path to internal tree file (.003l.raw) to analyze"
     )
     subparser.add_argument(
-        "--outpath", action="store", required=True, default="", help="Output for for PUML representation"
+        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
+    )
+    subparser.add_argument(
+        "--outpath", action="store", required=True, default="", help="Output path of PlantUML representation"
     )
 
     ## =================================================
@@ -246,14 +225,14 @@ def main():
         nargs="?",
         const=True,
         default=False,
-        help="Should include C++ internals?",
+        help="Should include compiler internals?",
     )
     subparser.add_argument(
-        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"
+        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
     )
     subparser.add_argument("--graphnote", action="store", required=False, default="", help="Note to put on graph")
     subparser.add_argument(
-        "--outpath", action="store", required=True, default="", help="Output path for DOT representation"
+        "--outpath", action="store", required=True, default="", help="Output path of DOT representation"
     )
 
     ## =================================================
@@ -264,7 +243,9 @@ def main():
     )
     subparser.description = description
     subparser.set_defaults(func=process_ctrlflowgraph)
-    subparser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
+    subparser.add_argument(
+        "--rawfile", action="store", required=True, default="", help="Path to internal tree file (.003l.raw) to analyze"
+    )
     subparser.add_argument(
         "-ii",
         "--includeinternals",
@@ -272,14 +253,45 @@ def main():
         nargs="?",
         const=True,
         default=False,
-        help="Should include C++ internals?",
+        help="Should include compiler internals?",
     )
     subparser.add_argument(
-        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths"
+        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
     )
     subparser.add_argument(
         "--outpath", action="store", required=True, default="", help="Output path for DOT representation"
     )
+
+    ## =================================================
+
+    description = "various tools"
+    subparser = subparsers.add_parser("tools", help=description, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    subparser.description = description
+    subparser.set_defaults(func=process_tools)
+    subparser.add_argument(
+        "--rawfile",
+        action="store",
+        required=True,
+        default="",
+        help="Path to internal tree file (.003l.raw)e to analyze",
+    )
+    subparser.add_argument(
+        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
+    )
+    subparser.add_argument(
+        "-ii",
+        "--includeinternals",
+        type=str2bool,
+        nargs="?",
+        const=True,
+        default=False,
+        help="Should include compiler internals?",
+    )
+    subparser.add_argument(
+        "--outtypefields", action="store", required=False, default="", help="Output path to types and fields"
+    )
+    subparser.add_argument("--outtreetxt", action="store", required=False, default="", help="Output path to tree print")
+    subparser.add_argument("--outbiggraph", action="store", required=False, default="", help="Output path to big graph")
 
     ## =================================================
 

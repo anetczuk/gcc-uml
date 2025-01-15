@@ -1,7 +1,7 @@
 ## <a name="main_help"></a> python3 -m gccuml.main --help
 ```
 usage: python3 -m gccuml.main [-h] [-la] [--listtools]
-                              {tools,printhtml,inheritgraph,memlayout,ctrlflowgraph}
+                              {printhtml,inheritgraph,memlayout,ctrlflowgraph,tools}
                               ...
 
 generate UML-like diagrams based on gcc/g++ internal tree
@@ -14,41 +14,13 @@ options:
 subcommands:
   use one of tools
 
-  {tools,printhtml,inheritgraph,memlayout,ctrlflowgraph}
+  {printhtml,inheritgraph,memlayout,ctrlflowgraph,tools}
                         one of tools
-    tools               various tools
-    printhtml           generate static HTML for lang file
+    printhtml           generate static HTML for internal tree file
     inheritgraph        generate inheritance graph
     memlayout           generate memory layout diagram
     ctrlflowgraph       generate control flow diagram
-```
-
-
-
-## <a name="tools_help"></a> python3 -m gccuml.main tools --help
-```
-usage: python3 -m gccuml.main tools [-h] --rawfile RAWFILE
-                                    [--reducepaths REDUCEPATHS]
-                                    [-ii [INCLUDEINTERNALS]]
-                                    [--outtypefields OUTTYPEFIELDS]
-                                    [--outtreetxt OUTTREETXT]
-                                    [--outbiggraph OUTBIGGRAPH]
-
-various tools
-
-options:
-  -h, --help            show this help message and exit
-  --rawfile RAWFILE     Path to raw file to analyze (default: )
-  --reducepaths REDUCEPATHS
-                        Prefix to remove from paths (default: )
-  -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
-                        Should include C++ internals? (default: False)
-  --outtypefields OUTTYPEFIELDS
-                        Output path to types and fields (default: )
-  --outtreetxt OUTTREETXT
-                        Output path to tree print (default: )
-  --outbiggraph OUTBIGGRAPH
-                        Output path to big graph (default: )
+    tools               various tools
 ```
 
 
@@ -63,26 +35,28 @@ usage: python3 -m gccuml.main printhtml [-h] --rawfile RAWFILE [-j JOBS]
                                         [-ii [INCLUDEINTERNALS]] --outhtmldir
                                         OUTHTMLDIR
 
-generate static HTML for lang file
+generate static HTML for internal tree file
 
 options:
   -h, --help            show this help message and exit
-  --rawfile RAWFILE     Path to raw file to analyze (default: )
+  --rawfile RAWFILE     Path to internal tree file (.003l.raw) to analyze
+                        (default: )
   -j JOBS, --jobs JOBS  Number to subprocesses to execute. Auto means to spawn
                         job per CPU core. (default: auto)
   --progressbar [PROGRESSBAR]
                         Show progress bar (default: True)
   --reducepaths REDUCEPATHS
-                        Prefix to remove from paths (default: )
+                        Prefix to remove from paths inside tree (default: )
   --genentrygraphs [GENENTRYGRAPHS]
-                        Should generate graph for each entry? (default: True)
+                        Should graph be generated for each entry? (default:
+                        True)
   --usevizjs [USEVIZJS]
                         Use viz.js standalone for graph rendering. (default:
                         True)
   -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
-                        Should include C++ internals? (default: False)
+                        Should include compiler internals? (default: False)
   --outhtmldir OUTHTMLDIR
-                        Output directory for HTML representation (default: )
+                        Output directory of HTML representation (default: )
 ```
 
 
@@ -97,10 +71,11 @@ generate inheritance graph
 
 options:
   -h, --help            show this help message and exit
-  --rawfile RAWFILE     Path to raw file to analyze (default: )
+  --rawfile RAWFILE     Path to internal tree file (.003l.raw) to analyze
+                        (default: )
   --reducepaths REDUCEPATHS
-                        Prefix to remove from paths (default: )
-  --outpath OUTPATH     Output for for PUML representation (default: )
+                        Prefix to remove from paths inside tree (default: )
+  --outpath OUTPATH     Output path of PlantUML representation (default: )
 ```
 
 
@@ -119,12 +94,12 @@ options:
   -h, --help            show this help message and exit
   --rawfile RAWFILE     Path to raw file to analyze (default: )
   -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
-                        Should include C++ internals? (default: False)
+                        Should include compiler internals? (default: False)
   --reducepaths REDUCEPATHS
-                        Prefix to remove from paths (default: )
+                        Prefix to remove from paths inside tree (default: )
   --graphnote GRAPHNOTE
                         Note to put on graph (default: )
-  --outpath OUTPATH     Output path for DOT representation (default: )
+  --outpath OUTPATH     Output path of DOT representation (default: )
 ```
 
 
@@ -140,10 +115,40 @@ generate control flow diagram
 
 options:
   -h, --help            show this help message and exit
-  --rawfile RAWFILE     Path to raw file to analyze (default: )
+  --rawfile RAWFILE     Path to internal tree file (.003l.raw) to analyze
+                        (default: )
   -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
-                        Should include C++ internals? (default: False)
+                        Should include compiler internals? (default: False)
   --reducepaths REDUCEPATHS
-                        Prefix to remove from paths (default: )
+                        Prefix to remove from paths inside tree (default: )
   --outpath OUTPATH     Output path for DOT representation (default: )
+```
+
+
+
+## <a name="tools_help"></a> python3 -m gccuml.main tools --help
+```
+usage: python3 -m gccuml.main tools [-h] --rawfile RAWFILE
+                                    [--reducepaths REDUCEPATHS]
+                                    [-ii [INCLUDEINTERNALS]]
+                                    [--outtypefields OUTTYPEFIELDS]
+                                    [--outtreetxt OUTTREETXT]
+                                    [--outbiggraph OUTBIGGRAPH]
+
+various tools
+
+options:
+  -h, --help            show this help message and exit
+  --rawfile RAWFILE     Path to internal tree file (.003l.raw)e to analyze
+                        (default: )
+  --reducepaths REDUCEPATHS
+                        Prefix to remove from paths inside tree (default: )
+  -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
+                        Should include compiler internals? (default: False)
+  --outtypefields OUTTYPEFIELDS
+                        Output path to types and fields (default: )
+  --outtreetxt OUTTREETXT
+                        Output path to tree print (default: )
+  --outbiggraph OUTBIGGRAPH
+                        Output path to big graph (default: )
 ```
