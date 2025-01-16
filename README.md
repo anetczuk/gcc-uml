@@ -44,10 +44,12 @@ Example consists of switch and method call.
 
 ### printhtml
 
-*printhtml* tool prints *g++* internal tree in form of HTML pages. This form is slightly transformed:
+*printhtml* tool prints *g++* internal tree in form of HTML pages. By default this form is slightly transformed:
 
 - *chain* elements are convert to list of attributes,
 - *tree_list* and *chan* elements are converted to list.
+
+Transformations can be disabled through command line argument.
 
 All expanded elements (by default) can be collapsed.
 
@@ -123,6 +125,7 @@ subcommands:
 usage: python3 -m gccuml.main printhtml [-h] --rawfile RAWFILE [-j JOBS]
                                         [--progressbar [PROGRESSBAR]]
                                         [--reducepaths REDUCEPATHS]
+                                        [--notransform [NOTRANSFORM]]
                                         [--genentrygraphs [GENENTRYGRAPHS]]
                                         [--usevizjs [USEVIZJS]]
                                         [-ii [INCLUDEINTERNALS]] --outhtmldir
@@ -140,6 +143,9 @@ options:
                         Show progress bar (default: True)
   --reducepaths REDUCEPATHS
                         Prefix to remove from paths inside tree (default: )
+  --notransform [NOTRANSFORM]
+                        Should prevent transforming internal tree before
+                        printing? (default: False)
   --genentrygraphs [GENENTRYGRAPHS]
                         Should graph be generated for each entry? (default:
                         True)

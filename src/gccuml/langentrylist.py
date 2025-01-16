@@ -7,7 +7,7 @@
 
 
 ## list of entries defined in gcc/tree.def
-## fields: symbol, name (used in dump-lang-raw), type, number of argument-words 
+## fields: symbol, name (used in dump-lang-raw), type, number of argument-words
 ENTRY_DEF_LIST = [
     ("ERROR_MARK", "error_mark", "tcc_exceptional", 0),
     ("IDENTIFIER_NODE", "identifier_node", "tcc_exceptional", 0),

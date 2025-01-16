@@ -77,8 +77,9 @@ def process_printhtml(args):
 
     _LOGGER.info("generating entry tree")
     include_internals = args.includeinternals
+    transform = not args.notransform
     entry_tree: EntryTree = EntryTree(content)
-    entry_tree.generate_tree(include_internals=include_internals, depth_first=False)
+    entry_tree.generate_tree(include_internals=include_internals, depth_first=False, transform=transform)
 
     if args.outhtmldir:
         generate_page_graph = args.genentrygraphs
@@ -161,6 +162,14 @@ def main():
     )
     subparser.add_argument(
         "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
+    )
+    subparser.add_argument(
+        "--notransform",
+        type=str2bool,
+        nargs="?",
+        const=False,
+        default=False,
+        help="Should prevent transforming internal tree before printing?",
     )
     subparser.add_argument(
         "--genentrygraphs",

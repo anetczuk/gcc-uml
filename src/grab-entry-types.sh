@@ -40,7 +40,7 @@ cat > "$OUT_PATH" <<EOL
 ENTRY_DEF_LIST = [
 EOL
 
-cat /tmp/tree3 | while read line; do 
+cat /tmp/tree3 | while read -r line; do 
    echo "    ${line}," >> "$OUT_PATH"
 done
 

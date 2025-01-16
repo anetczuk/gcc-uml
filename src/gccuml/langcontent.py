@@ -822,18 +822,19 @@ class EntryTree:
     def get_tree_root(self) -> EntryTreeNode:
         return self.root
 
-    def generate_tree(self, include_internals=False, depth_first=False):
+    def generate_tree(self, include_internals=False, depth_first=False, transform=True):
         self.include_internals = include_internals
         self.depth_first = depth_first
-        self.root = get_entry_tree(self.content, include_internals, depth_first)
+        self.root = get_entry_tree(self.content, include_internals, depth_first, transform)
         return self.root
 
     def get_filtered_nodes(self):
         return filter_repeated_entries(self.root, self.depth_first)
 
 
-def get_entry_tree(content: LangContent, include_internals=False, depth_first=False) -> EntryTreeNode:
-    content.convert_entries()
+def get_entry_tree(content: LangContent, include_internals=False, depth_first=False, transform=True) -> EntryTreeNode:
+    if transform:
+        content.convert_entries()
     first_entry = content.get_root_entry()
 
     traversal: EntryGraphAbstractTraversal = None

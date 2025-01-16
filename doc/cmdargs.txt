@@ -28,6 +28,7 @@ subcommands:
 usage: python3 -m gccuml.main printhtml [-h] --rawfile RAWFILE [-j JOBS]
                                         [--progressbar [PROGRESSBAR]]
                                         [--reducepaths REDUCEPATHS]
+                                        [--notransform [NOTRANSFORM]]
                                         [--genentrygraphs [GENENTRYGRAPHS]]
                                         [--usevizjs [USEVIZJS]]
                                         [-ii [INCLUDEINTERNALS]] --outhtmldir
@@ -45,6 +46,9 @@ options:
                         Show progress bar (default: True)
   --reducepaths REDUCEPATHS
                         Prefix to remove from paths inside tree (default: )
+  --notransform [NOTRANSFORM]
+                        Should prevent transforming internal tree before
+                        printing? (default: False)
   --genentrygraphs [GENENTRYGRAPHS]
                         Should graph be generated for each entry? (default:
                         True)

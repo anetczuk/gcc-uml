@@ -126,8 +126,9 @@ fi
 found_files=$(find "$src_dir/../" -not -path "*/venv/*" -not -path "*/tmp/*" -type f -name '*.sh' -o -name '*.bash')
 echo "founs sh files to check: $found_files"
 
+## SC2002 (style): Useless cat. Consider 'cmd < file | ..' or 'cmd file | ..' instead.
 ## SC2129: Consider using { cmd1; cmd2; } >> file instead of individual redirects.
-EXCLUDE_LIST="SC2129"
+EXCLUDE_LIST="SC2002,SC2129"
 
 echo "to suppress line warning add before the line: # shellcheck disable=<code>"
 # shellcheck disable=SC2068
