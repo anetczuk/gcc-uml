@@ -14,19 +14,20 @@ EXAMPLES_DIR="$SCRIPT_DIR/../examples"
 mkdir -p "$SAMPLES_DIR"
 
 
-## printhtml sample
-TOOL_DIR="$EXAMPLES_DIR/ctrlflowgraph"
-"$TOOL_DIR"/generate.sh --ctrl_sample --printhtml
-
-PAGE_PATH="$TOOL_DIR/build/html-ctrl_sample.cpp/@8.html"
-if [ -f "$PAGE_PATH" ]; then
-	OUT_IMG_PATH="$SAMPLES_DIR/printhtml-page.png"
-	chromium --headless --window-size=1920,1080 "file://$PAGE_PATH" --screenshot="$OUT_IMG_PATH"
-	mogrify -trim "$OUT_IMG_PATH"
-	convert -bordercolor \#EBEDEF -border 20 "$OUT_IMG_PATH" "$OUT_IMG_PATH"
-	convert "$OUT_IMG_PATH" -strip "$OUT_IMG_PATH"
-	exiftool -overwrite_original -all= "$OUT_IMG_PATH"
-fi
+### output is non-deterministic
+# ## printhtml sample
+# TOOL_DIR="$EXAMPLES_DIR/ctrlflowgraph"
+# "$TOOL_DIR"/generate.sh --ctrl_sample --printhtml
+# 
+# PAGE_PATH="$TOOL_DIR/build/html-ctrl_sample.cpp/@8.html"
+# if [ -f "$PAGE_PATH" ]; then
+# 	OUT_IMG_PATH="$SAMPLES_DIR/printhtml-page.png"
+# 	chromium --headless --window-size=1920,1080 "file://$PAGE_PATH" --screenshot="$OUT_IMG_PATH"
+# 	mogrify -trim "$OUT_IMG_PATH"
+# 	convert -bordercolor \#EBEDEF -border 20 "$OUT_IMG_PATH" "$OUT_IMG_PATH"
+# 	convert "$OUT_IMG_PATH" -strip "$OUT_IMG_PATH"
+# 	exiftool -overwrite_original -all= "$OUT_IMG_PATH"
+# fi
 
 
 ## inheritgraph sample

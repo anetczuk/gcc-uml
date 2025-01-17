@@ -1,10 +1,13 @@
 # gcc-uml
 
-Generate varius outputs based on gcc/g++ internal tree data. Program, among others, produces following artifacts:
+Generate varius outputs based on gcc internal tree data. Program, among others, produces following artifacts:
 - [inheritance diagram](#inheritgraph),
 - [memory layout diagram](#memlayout),
 - [activity diagram](#ctrlflowgraph),
 - [HTML version of compiler internal tree](#printhtml) (more human-friendly).
+
+To generate include graph using gcc or clang use project 
+[cpp-include-graph](https://github.com/anetczuk/cpp-include-graph).
 
 Project is inspired by *clang-uml* tool.
 
@@ -136,13 +139,14 @@ generate static HTML for internal tree file
 options:
   -h, --help            show this help message and exit
   --rawfile RAWFILE     Path to internal tree file (.003l.raw) to analyze
-                        (default: )
+                        (default: None)
   -j JOBS, --jobs JOBS  Number to subprocesses to execute. Auto means to spawn
                         job per CPU core. (default: auto)
   --progressbar [PROGRESSBAR]
                         Show progress bar (default: True)
   --reducepaths REDUCEPATHS
-                        Prefix to remove from paths inside tree (default: )
+                        Prefix to remove from paths inside tree (default:
+                        None)
   --notransform [NOTRANSFORM]
                         Should prevent transforming internal tree before
                         printing? (default: False)
@@ -155,7 +159,8 @@ options:
   -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
                         Should include compiler internals? (default: False)
   --outhtmldir OUTHTMLDIR
-                        Output directory of HTML representation (default: )
+                        Output directory of HTML representation (default:
+                        None)
 ```
 
 
@@ -170,10 +175,11 @@ generate inheritance graph
 options:
   -h, --help            show this help message and exit
   --rawfile RAWFILE     Path to internal tree file (.003l.raw) to analyze
-                        (default: )
+                        (default: None)
   --reducepaths REDUCEPATHS
-                        Prefix to remove from paths inside tree (default: )
-  --outpath OUTPATH     Output path of PlantUML representation (default: )
+                        Prefix to remove from paths inside tree (default:
+                        None)
+  --outpath OUTPATH     Output path of PlantUML representation (default: None)
 ```
 
 
@@ -189,14 +195,15 @@ generate memory layout diagram
 
 options:
   -h, --help            show this help message and exit
-  --rawfile RAWFILE     Path to raw file to analyze (default: )
+  --rawfile RAWFILE     Path to raw file to analyze (default: None)
   -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
                         Should include compiler internals? (default: False)
   --reducepaths REDUCEPATHS
-                        Prefix to remove from paths inside tree (default: )
+                        Prefix to remove from paths inside tree (default:
+                        None)
   --graphnote GRAPHNOTE
-                        Note to put on graph (default: )
-  --outpath OUTPATH     Output path of DOT representation (default: )
+                        Note to put on graph (default: None)
+  --outpath OUTPATH     Output path of DOT representation (default: None)
 ```
 
 
@@ -212,12 +219,13 @@ generate control flow diagram
 options:
   -h, --help            show this help message and exit
   --rawfile RAWFILE     Path to internal tree file (.003l.raw) to analyze
-                        (default: )
+                        (default: None)
   -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
                         Should include compiler internals? (default: False)
   --reducepaths REDUCEPATHS
-                        Prefix to remove from paths inside tree (default: )
-  --outpath OUTPATH     Output path for DOT representation (default: )
+                        Prefix to remove from paths inside tree (default:
+                        None)
+  --outpath OUTPATH     Output path for DOT representation (default: None)
 ```
 
 
@@ -235,17 +243,18 @@ various tools
 options:
   -h, --help            show this help message and exit
   --rawfile RAWFILE     Path to internal tree file (.003l.raw)e to analyze
-                        (default: )
+                        (default: None)
   --reducepaths REDUCEPATHS
-                        Prefix to remove from paths inside tree (default: )
+                        Prefix to remove from paths inside tree (default:
+                        None)
   -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
                         Should include compiler internals? (default: False)
   --outtypefields OUTTYPEFIELDS
-                        Output path to types and fields (default: )
+                        Output path to types and fields (default: None)
   --outtreetxt OUTTREETXT
-                        Output path to tree print (default: )
+                        Output path to tree print (default: None)
   --outbiggraph OUTBIGGRAPH
-                        Output path to big graph (default: )
+                        Output path to big graph (default: None)
 ```
 
 <!-- insertend -->

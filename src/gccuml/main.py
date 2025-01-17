@@ -142,7 +142,11 @@ def main():
     subparser.description = description
     subparser.set_defaults(func=process_printhtml)
     subparser.add_argument(
-        "--rawfile", action="store", required=True, default="", help="Path to internal tree file (.003l.raw) to analyze"
+        "--rawfile",
+        action="store",
+        required=True,
+        default=None,
+        help="Path to internal tree file (.003l.raw) to analyze",
     )
     subparser.add_argument(
         "-j",
@@ -161,7 +165,7 @@ def main():
         help="Show progress bar",
     )
     subparser.add_argument(
-        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
+        "--reducepaths", action="store", required=False, default=None, help="Prefix to remove from paths inside tree"
     )
     subparser.add_argument(
         "--notransform",
@@ -197,7 +201,7 @@ def main():
         help="Should include compiler internals?",
     )
     subparser.add_argument(
-        "--outhtmldir", action="store", required=True, default="", help="Output directory of HTML representation"
+        "--outhtmldir", action="store", required=True, default=None, help="Output directory of HTML representation"
     )
 
     ## =================================================
@@ -209,13 +213,17 @@ def main():
     subparser.description = description
     subparser.set_defaults(func=process_inheritgraph)
     subparser.add_argument(
-        "--rawfile", action="store", required=True, default="", help="Path to internal tree file (.003l.raw) to analyze"
+        "--rawfile",
+        action="store",
+        required=True,
+        default=None,
+        help="Path to internal tree file (.003l.raw) to analyze",
     )
     subparser.add_argument(
-        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
+        "--reducepaths", action="store", required=False, default=None, help="Prefix to remove from paths inside tree"
     )
     subparser.add_argument(
-        "--outpath", action="store", required=True, default="", help="Output path of PlantUML representation"
+        "--outpath", action="store", required=True, default=None, help="Output path of PlantUML representation"
     )
 
     ## =================================================
@@ -226,7 +234,7 @@ def main():
     )
     subparser.description = description
     subparser.set_defaults(func=process_memlayout)
-    subparser.add_argument("--rawfile", action="store", required=True, default="", help="Path to raw file to analyze")
+    subparser.add_argument("--rawfile", action="store", required=True, default=None, help="Path to raw file to analyze")
     subparser.add_argument(
         "-ii",
         "--includeinternals",
@@ -237,11 +245,11 @@ def main():
         help="Should include compiler internals?",
     )
     subparser.add_argument(
-        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
+        "--reducepaths", action="store", required=False, default=None, help="Prefix to remove from paths inside tree"
     )
-    subparser.add_argument("--graphnote", action="store", required=False, default="", help="Note to put on graph")
+    subparser.add_argument("--graphnote", action="store", required=False, default=None, help="Note to put on graph")
     subparser.add_argument(
-        "--outpath", action="store", required=True, default="", help="Output path of DOT representation"
+        "--outpath", action="store", required=True, default=None, help="Output path of DOT representation"
     )
 
     ## =================================================
@@ -253,7 +261,11 @@ def main():
     subparser.description = description
     subparser.set_defaults(func=process_ctrlflowgraph)
     subparser.add_argument(
-        "--rawfile", action="store", required=True, default="", help="Path to internal tree file (.003l.raw) to analyze"
+        "--rawfile",
+        action="store",
+        required=True,
+        default=None,
+        help="Path to internal tree file (.003l.raw) to analyze",
     )
     subparser.add_argument(
         "-ii",
@@ -265,10 +277,10 @@ def main():
         help="Should include compiler internals?",
     )
     subparser.add_argument(
-        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
+        "--reducepaths", action="store", required=False, default=None, help="Prefix to remove from paths inside tree"
     )
     subparser.add_argument(
-        "--outpath", action="store", required=True, default="", help="Output path for DOT representation"
+        "--outpath", action="store", required=True, default=None, help="Output path for DOT representation"
     )
 
     ## =================================================
@@ -281,11 +293,11 @@ def main():
         "--rawfile",
         action="store",
         required=True,
-        default="",
+        default=None,
         help="Path to internal tree file (.003l.raw)e to analyze",
     )
     subparser.add_argument(
-        "--reducepaths", action="store", required=False, default="", help="Prefix to remove from paths inside tree"
+        "--reducepaths", action="store", required=False, default=None, help="Prefix to remove from paths inside tree"
     )
     subparser.add_argument(
         "-ii",
@@ -297,10 +309,14 @@ def main():
         help="Should include compiler internals?",
     )
     subparser.add_argument(
-        "--outtypefields", action="store", required=False, default="", help="Output path to types and fields"
+        "--outtypefields", action="store", required=False, default=None, help="Output path to types and fields"
     )
-    subparser.add_argument("--outtreetxt", action="store", required=False, default="", help="Output path to tree print")
-    subparser.add_argument("--outbiggraph", action="store", required=False, default="", help="Output path to big graph")
+    subparser.add_argument(
+        "--outtreetxt", action="store", required=False, default=None, help="Output path to tree print"
+    )
+    subparser.add_argument(
+        "--outbiggraph", action="store", required=False, default=None, help="Output path to big graph"
+    )
 
     ## =================================================
 
