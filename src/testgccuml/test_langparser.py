@@ -85,6 +85,85 @@ class ProprertiesConverterTest(unittest.TestCase):
         value = converter.consume_word_right()
         self.assertEqual(b"aaa", value)
 
+    def test_consume_type_field_decl_001(self):
+        converter = ProprertiesConverter()
+        props_dict = converter.convert_type_bytes(
+            "field_decl",
+            b"""name: @44      type: @45      scpe: @15
+                         srcp: 20191015-2.c:5          chain: @46
+                         accs: pub      bitfield       size: @47
+                         algn: 1        bpos: @39     """,
+        )
+        self.assertListEqual(
+            [
+                ("name", "@44"),
+                ("type", "@45"),
+                ("scpe", "@15"),
+                ("srcp", "20191015-2.c:5"),
+                ("chain", "@46"),
+                ("accs", "pub"),
+                ("size", "@47"),
+                ("algn", "1"),
+                ("bpos", "@39"),
+                ("bitfield", "1"),
+            ],
+            props_dict,
+        )
+
+    def test_consume_type_field_decl_002(self):
+        converter = ProprertiesConverter()
+        props_dict = converter.convert_type_bytes(
+            "field_decl",
+            b"""name: @344     type: @345     scpe: @176
+                         srcp: inherit_sample.cpp:24
+                         chain: @346     accs: pub      spec: mutable
+                         bitfield      size: @347     algn: 1
+                         bpos: @348    """,
+        )
+        self.assertListEqual(
+            [
+                ("name", "@344"),
+                ("type", "@345"),
+                ("scpe", "@176"),
+                ("srcp", "inherit_sample.cpp:24"),
+                ("chain", "@346"),
+                ("accs", "pub"),
+                ("spec", "mutable"),
+                ("size", "@347"),
+                ("algn", "1"),
+                ("bpos", "@348"),
+                ("bitfield", "1"),
+            ],
+            props_dict,
+        )
+
+    def test_consume_type_field_decl_003(self):
+        converter = ProprertiesConverter()
+        props_dict = converter.convert_type_bytes(
+            "field_decl",
+            b"""name: @344     type: @345     scpe: @176
+                         srcp: inherit_sample.cpp:24
+                         chain: @346     accs: pub      spec: mutable
+                         bitfield: 1     size: @347     algn: 1
+                         bpos: @348    """,
+        )
+        self.assertListEqual(
+            [
+                ("name", "@344"),
+                ("type", "@345"),
+                ("scpe", "@176"),
+                ("srcp", "inherit_sample.cpp:24"),
+                ("chain", "@346"),
+                ("accs", "pub"),
+                ("spec", "mutable"),
+                ("bitfield", "1"),
+                ("size", "@347"),
+                ("algn", "1"),
+                ("bpos", "@348"),
+            ],
+            props_dict,
+        )
+
 
 class LangParserTest(unittest.TestCase):
 

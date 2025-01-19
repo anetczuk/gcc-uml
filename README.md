@@ -276,7 +276,8 @@ Installation for development:
 
 ## Limitations
 
-Pre `gcc-15` versions have bug that does not allow to detect call to virtual method.
+- pre `gcc-15` versions have bug that does not allow to detect call to virtual method
+- in case of bitfields there is no information about bitfield type
 
 
 ## Callgraph info

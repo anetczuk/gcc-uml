@@ -114,13 +114,18 @@ ranksep = 2
         shape=plain
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::diamondns::Cbc1</b>  (256b)</td> </tr>
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::diamondns::Cbc1</b>  (320b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">72</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::diamondns::Bbc1</td> </tr>
             <tr> <td align="right" port='in_1'>72</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_1'>[empty]</td> </tr>
             <tr> <td align="right" port='in_2'>128</td> <td align="right">72</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::diamondns::Bbc2</td> </tr>
-            <tr> <td align="right" port='in_3'>200</td> <td align="right">8</td> <td align="left" port='out_3'>fieldD: char</td> </tr>
-            <tr> <td align="right" port='in_4'>208</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_4'>[empty]</td> </tr>
-            <tr> <td align="right" port='in_5'>224</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_5'>::diamondns::Abc1</td> </tr>
+            <tr> <td align="right" port='in_3'>200</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_4'>224</td> <td align="right">32</td> <td align="left" port='out_4'>fieldD1: int</td> </tr>
+            <tr> <td align="right" port='in_5'>256</td> <td align="right">5</td> <td align="left" port='out_5'>fieldD2</td> </tr>
+            <tr> <td align="right" port='in_6'>261</td> <td align="right">2</td> <td align="left" bgcolor='#FEFECE' port='out_6'></td> </tr>
+            <tr> <td align="right" port='in_7'>263</td> <td align="right">1</td> <td align="left" bgcolor='lightgray' port='out_7'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_8'>264</td> <td align="right">5</td> <td align="left" port='out_8'>fieldD3</td> </tr>
+            <tr> <td align="right" port='in_9'>269</td> <td align="right">19</td> <td align="left" bgcolor='lightgray' port='out_9'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_10'>288</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_10'>::diamondns::Abc1</td> </tr>
         </table>>
     ]
 
@@ -168,7 +173,7 @@ ranksep = 2
     "-templatens-AbcTempl&lt;float, char&gt;":"-1" -> "-templatens-AbcTempl":"-1"
     "-diamondns-Cbc1":"out_0" -> "-diamondns-Bbc1":"-1"
     "-diamondns-Cbc1":"out_2" -> "-diamondns-Bbc2":"-1"
-    "-diamondns-Cbc1":"out_5" -> "-diamondns-Abc1":"-1"
+    "-diamondns-Cbc1":"out_10" -> "-diamondns-Abc1":"-1"
     "-diamondns-Bbc2":"out_3" -> "-diamondns-Abc1":"-1"
     "-diamondns-Bbc1":"out_3" -> "-diamondns-Abc1":"-1"
 

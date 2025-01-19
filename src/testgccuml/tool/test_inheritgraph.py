@@ -94,7 +94,10 @@ class GetClassesInfoTest(unittest.TestCase):
 
         self.assertEqual(1, len(info.fields))
         self.assertEqual(
-            ClassDiagramGenerator.ClassField(name="field", type="int", access="public", static=False), info.fields[0]
+            ClassDiagramGenerator.ClassField(
+                name="field", type="int", access="public", static=False, bitfield_size=None
+            ),
+            info.fields[0],
         )
 
         method_list = info.methods
@@ -252,7 +255,7 @@ class GetClassesInfoTest(unittest.TestCase):
         self.assertEqual(1, len(info.fields))
         self.assertEqual(
             ClassDiagramGenerator.ClassField(
-                name="_vptr.Abc3B", type="__vtbl_ptr_type *", access="public", static=False
+                name="_vptr.Abc3B", type="__vtbl_ptr_type *", access="public", static=False, bitfield_size=None
             ),
             info.fields[0],
         )

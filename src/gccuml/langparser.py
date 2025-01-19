@@ -55,14 +55,7 @@ def convert_bytes_to_dict(content_bytes, reducepaths=None) -> Dict[str, Any]:
 
         line_id = line_id.decode("utf-8")
         line_type = line_type.decode("utf-8")
-
-        props_list = []
-        if line_type == "string_cst":
-            ## "strg" field of "string_cst" in special case can be any value including field name itself
-            ## so it needs to be handled in special way
-            props_list = converter.convert_bytes_string_cst(props_raw_data)
-        else:
-            props_list = converter.convert_bytes(props_raw_data)
+        props_list = converter.convert_type_bytes(line_type, props_raw_data)
 
         if reducepaths:
             for index, prop_data in enumerate(props_list.copy()):
@@ -79,6 +72,29 @@ class ProprertiesConverter:
 
     def __init__(self, properties_str=""):
         self.raw_properties = properties_str.encode(encoding="utf-8")
+
+    def convert_type_bytes(self, type_name, properties_bytes) -> List[Tuple[str, str]]:
+        if type_name == "string_cst":
+            ## "strg" field of "string_cst" in special case can be any value including field name itself
+            ## so it needs to be handled in special way
+            return self.convert_bytes_string_cst(properties_bytes)
+
+        if type_name == "field_decl":
+            ## compatibility with old gcc versions where "bitfield" string is appended to
+            ## one of field values
+            props_list = self.convert_bytes(properties_bytes)
+            for index, item in enumerate(props_list.copy()):
+                field, value = item
+                if "bitfield" in value:
+                    bitfield_pos = value.index("bitfield")
+                    value = value[:bitfield_pos]
+                    value = value.rstrip()
+                    props_list[index] = (field, value)
+                    props_list.append(("bitfield", "1"))
+            return props_list
+
+        ## general solution
+        return self.convert_bytes(properties_bytes)
 
     def convert(self, properties_str: str) -> List[Tuple[str, str]]:
         properties_bytes = properties_str.encode(encoding="utf-8")

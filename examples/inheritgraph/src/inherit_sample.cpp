@@ -1,5 +1,7 @@
 ///
 
+#include <cstdint>
+
 namespace diamondns {
 	class Abc1 {
 	public:
@@ -20,7 +22,10 @@ namespace diamondns {
 
 	class Cbc1: public Bbc1, public Bbc2 {
 	public:
-		char fieldD;
+		int fieldD1;
+		int fieldD2: 5;
+		uint8_t : 2;					/// unnamed bitfield
+		mutable uint8_t fieldD3: 5;
 	};
 }
 
@@ -38,7 +43,7 @@ namespace templatens {
 
 	class TemplInherit: public AbcTempl<int, bool> {
 	public:
-		int fieldA;
+		int fieldA :3;
 	};
 
 

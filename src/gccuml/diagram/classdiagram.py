@@ -58,6 +58,7 @@ class ClassDiagramGenerator:
         type: str
         access: str
         static: bool
+        bitfield_size: int
 
     ClassMethod = NamedTuple(
         "ClassMethod",
@@ -179,6 +180,7 @@ class ClassDiagramGenerator:
             field_type = field_item.type
             field_access = field_item.access
             field_static = field_item.static
+            bitfield_size = field_item.bitfield_size
             access_mark = self.FIELD_ACCESS_DICT.get(field_access)
             if access_mark is None:
                 _LOGGER.error("unable to get access mark for access value: '%s'", field_access)
@@ -189,7 +191,12 @@ class ClassDiagramGenerator:
                 # in UML static field is marked as underscored
                 static_marker = "{static} "
 
-            content_list.append(f"""    {{field}} {static_marker}{access_mark} {field_type} {field_name}""")
+            bitfield_string = ""
+            if bitfield_size:
+                bitfield_string = f" :{bitfield_size}"
+            content_list.append(
+                f"""    {{field}} {static_marker}{access_mark} {field_type} {field_name}{bitfield_string}"""
+            )
 
     def _generate_methods(self, class_data, content_list):
         for method_item in class_data.methods:

@@ -18,6 +18,7 @@ from gccuml.langcontent import (
     is_namespace_internal,
     get_record_namespace_list,
     get_type_entry_name,
+    get_number_entry_value,
 )
 from gccuml.langanalyze import (
     StructAnalyzer,
@@ -225,9 +226,9 @@ class InheritanceData:
                 entry_fields.insert(0, field_data)
 
         for item in entry_fields:
-            field_name, field_type, field_access, field_static = item
+            field_name, field_type, field_access, field_static, bitfield_size = item
             access = FIELD_ACCESS_CONVERT_DICT[field_access]
-            field = ClassDiagramGenerator.ClassField(field_name, field_type, access, field_static)
+            field = ClassDiagramGenerator.ClassField(field_name, field_type, access, field_static, bitfield_size)
             field_list.append(field)
 
         return field_list
@@ -314,18 +315,28 @@ def get_field_data(item: Entry, include_internals=False):
     if field_access is None:
         return None
 
+    bitfield_size = None
+    field_bitfield = item.get("bitfield")
+    if field_bitfield and field_bitfield != "0":
+        field_size_entry = item.get("size")
+        if field_size_entry:
+            bitfield_size = get_number_entry_value(field_size_entry)
+
     field_type = item.get("type")
     field_type = get_type_entry_name(field_type)
     # field_type = get_entry_name(field_type)
     if field_type is None:
-        return None
+        if bitfield_size:
+            field_type = "???"
+        else:
+            return None
     if not include_internals and is_entry_language_internal(field_type):
         return None
 
     bpos_entry = item.get("bpos")
     is_static = bpos_entry is None
 
-    return (field_name, field_type, field_access, is_static)
+    return (field_name, field_type, field_access, is_static, bitfield_size)
 
 
 def get_methods_list(class_name, record_entry: Entry):
