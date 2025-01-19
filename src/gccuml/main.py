@@ -127,6 +127,7 @@ def main():
         description="generate UML-like diagrams based on gcc/g++ internal tree",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+    parser.add_argument("--loglevel", action="store", default=None, help="Set log level")
     parser.add_argument("-la", "--logall", action="store_true", help="Log all messages")
     parser.add_argument("--listtools", action="store_true", help="List tools")
     parser.set_defaults(func=None)
@@ -327,9 +328,20 @@ def main():
         print(", ".join(tools_list))
         return 0
 
+    loglevelname = args.loglevel
+
     if args.logall is True:
         logger.configure(logLevel=logging.DEBUG)
+    elif loglevelname is not None:
+        loglevel_map = logging.getLevelNamesMapping()
+        loglevel = loglevel_map.get(loglevelname)
+        if loglevel is not None:
+            logger.configure(logLevel=loglevel)
+        else:
+            logger.configure(logLevel=logging.INFO)
+            _LOGGER.info("loglevel not found - invalid loglevel name: %s", loglevelname)
     else:
+        # default log level
         logger.configure(logLevel=logging.INFO)
 
     if "func" not in args or args.func is None:

@@ -7,8 +7,10 @@
 #
 
 import unittest
+from testgccuml.data import get_data_path
 
-from gccuml.langparser import ProprertiesConverter, convert_lines_to_dict
+from gccuml.langparser import ProprertiesConverter, convert_lines_to_dict, parse_raw
+from gccuml.langcontent import LangContent, Entry
 
 
 class ProprertiesConverterTest(unittest.TestCase):
@@ -58,6 +60,31 @@ class ProprertiesConverterTest(unittest.TestCase):
             [("lngt", "2"), ("idx", "@50"), ("val", "@51"), ("idx", "@52"), ("val", "@53")], props_dict
         )
 
+    def test_consume_key_right_001(self):
+        converter = ProprertiesConverter("aaa: ")
+        value = converter.consume_key_right()
+        self.assertEqual(b"aaa", value)
+
+    def test_consume_key_right_002(self):
+        converter = ProprertiesConverter("fld1: bbb  fld2:     ")
+        value = converter.consume_key_right()
+        self.assertEqual(b"fld2", value)
+
+    def test_consume_key_right_003(self):
+        converter = ProprertiesConverter("fld1: bbb  fld :     ")
+        value = converter.consume_key_right()
+        self.assertEqual(b"fld", value)
+
+    def test_consume_word_right_001(self):
+        converter = ProprertiesConverter("aaa     ")
+        value = converter.consume_word_right()
+        self.assertEqual(b"aaa", value)
+
+    def test_consume_word_right_002(self):
+        converter = ProprertiesConverter(" bbb aaa     ")
+        value = converter.consume_word_right()
+        self.assertEqual(b"aaa", value)
+
 
 class LangParserTest(unittest.TestCase):
 
@@ -79,3 +106,41 @@ class LangParserTest(unittest.TestCase):
             },
             ret_dict,
         )
+
+    def test_convert_lines_to_dict_string_cst_inject_001(self):
+        # test for injected field name in "strg"
+        data_list = list(["@79     string_cst       type: @86     strg: lngt: 1  lngt: 8       "])
+        ret_dict = convert_lines_to_dict(data_list)
+        self.assertDictEqual(
+            {"@79": ("@79", "string_cst", [("type", "@86"), ("strg", "lngt: 1"), ("lngt", "8")])},
+            ret_dict,
+        )
+
+    def test_convert_lines_to_dict_string_cst_inject_002(self):
+        # test for injected field name in "strg"
+        data_list = list(["@73     string_cst       type: @78     strg: lngt: 1 lngt: 2  lngt: 16      "])
+        ret_dict = convert_lines_to_dict(data_list)
+        self.assertDictEqual(
+            {"@73": ("@73", "string_cst", [("type", "@78"), ("strg", "lngt: 1 lngt: 2"), ("lngt", "16")])},
+            ret_dict,
+        )
+
+    def test_convert_lines_to_dict_string_cst_injected(self):
+        # test for injected field name in "strg"
+        data_list = list(["@79     string_cst       type: @86     strg: lngt: 1  lngt: 8       "])
+        ret_dict = convert_lines_to_dict(data_list)
+        self.assertDictEqual(
+            {"@79": ("@79", "string_cst", [("type", "@86"), ("strg", "lngt: 1"), ("lngt", "8")])},
+            ret_dict,
+        )
+
+    def test_parse_raw_string_cst_invalid_char(self):
+        # invalid character
+        invalid_char_raw_path: str = get_data_path("string_cst_invalidchar.003l.raw")
+        content: LangContent = parse_raw(invalid_char_raw_path)
+        string_cst_entry: Entry = content.get_entry_by_id("@65")
+        self.assertTrue(string_cst_entry)
+        length = string_cst_entry.get("lngt")
+        self.assertEqual(length, "3")
+        value = string_cst_entry.get("strg")
+        self.assertEqual(value, "0xFF41FF")

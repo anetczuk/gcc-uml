@@ -99,7 +99,7 @@ Application accepts following arguments:
 
 <!-- insertstart include="doc/cmdargs.txt" pre="\n" post="\n" -->
 ```
-usage: python3 -m gccuml.main [-h] [-la] [--listtools]
+usage: python3 -m gccuml.main [-h] [--loglevel LOGLEVEL] [-la] [--listtools]
                               {printhtml,inheritgraph,memlayout,ctrlflowgraph,tools}
                               ...
 
@@ -107,6 +107,7 @@ generate UML-like diagrams based on gcc/g++ internal tree
 
 options:
   -h, --help            show this help message and exit
+  --loglevel LOGLEVEL   Set log level (default: None)
   -la, --logall         Log all messages (default: False)
   --listtools           List tools (default: False)
 
