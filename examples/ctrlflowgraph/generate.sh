@@ -88,7 +88,7 @@ prepare_sample() {
 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 								  --reducepaths "$SCRIPT_DIR/" \
 								  -ii \
-								  --outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
+								  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
 								  "${ARGS[@]}"
 	fi
 

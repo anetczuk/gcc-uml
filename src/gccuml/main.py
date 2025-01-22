@@ -34,7 +34,10 @@ from gccuml.tool.memlayout import generate_memory_layout_graph
 from gccuml.tool.ctrlflowgraph import generate_control_flow_graph
 
 
-_LOGGER = logging.getLogger(__name__)
+if __name__ == "__main__":
+    _LOGGER = logging.getLogger("gccuml.main")
+else:
+    _LOGGER = logging.getLogger(__name__)
 
 
 # =======================================================================
@@ -81,7 +84,7 @@ def process_printhtml(args):
     entry_tree: EntryTree = EntryTree(content)
     entry_tree.generate_tree(include_internals=include_internals, depth_first=False, transform=transform)
 
-    if args.outhtmldir:
+    if args.outpath:
         generate_page_graph = args.genentrygraphs
         use_vizjs = args.usevizjs
         jobs = args.jobs
@@ -89,7 +92,7 @@ def process_printhtml(args):
             jobs = None
         if jobs is not None:
             jobs = int(jobs)
-        print_html(entry_tree, args.outhtmldir, generate_page_graph, use_vizjs, jobs)
+        print_html(entry_tree, args.outpath, generate_page_graph, use_vizjs, jobs)
 
 
 def process_inheritgraph(args):
@@ -203,7 +206,7 @@ def main():
         help="Should include compiler internals?",
     )
     subparser.add_argument(
-        "--outhtmldir", action="store", required=True, default=None, help="Output directory of HTML representation"
+        "--outpath", action="store", required=True, default=None, help="Output directory of HTML representation"
     )
 
     ## =================================================

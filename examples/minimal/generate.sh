@@ -46,12 +46,12 @@ prepare_sample() {
 								  --progressbar=False \
 								  --rawfile "$SAMPLE_PATH" \
 								  --genentrygraphs=False \
-								  --outhtmldir "$OUT_DIR/html-$SAMPLE_FILE"
+								  --outpath "$OUT_DIR/html-$SAMPLE_FILE"
 	else
 		"$SRC_DIR"/gccuml/main.py printhtml \
 								  --rawfile "$SAMPLE_PATH" \
 								  --genentrygraphs=False \
-								  --outhtmldir "$OUT_DIR/html-$SAMPLE_FILE"
+								  --outpath "$OUT_DIR/html-$SAMPLE_FILE"
 	fi
 }
 

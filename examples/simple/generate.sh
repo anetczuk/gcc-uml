@@ -95,7 +95,7 @@ prepare_sample() {
 		"$SRC_DIR"/gccuml/main.py printhtml \
 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 								  --reducepaths "$SCRIPT_DIR/" \
-								  --outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
+								  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
 								  "${ARGS[@]}"
 	else
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
@@ -103,7 +103,7 @@ prepare_sample() {
 								  --progressbar=False \
 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 								  --reducepaths "$SCRIPT_DIR/" \
-								  --outhtmldir "$BUILD_DIR/html-$SAMPLE_FILE" \
+								  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
 								  "${ARGS[@]}"
 	fi
 	set +x

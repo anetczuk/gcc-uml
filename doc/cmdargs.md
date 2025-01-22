@@ -37,8 +37,8 @@ usage: python3 -m gccuml.main printhtml [-h] --rawfile RAWFILE [-j JOBS]
                                         [--notransform [NOTRANSFORM]]
                                         [--genentrygraphs [GENENTRYGRAPHS]]
                                         [--usevizjs [USEVIZJS]]
-                                        [-ii [INCLUDEINTERNALS]] --outhtmldir
-                                        OUTHTMLDIR
+                                        [-ii [INCLUDEINTERNALS]] --outpath
+                                        OUTPATH
 
 generate static HTML for internal tree file
 
@@ -64,8 +64,7 @@ options:
                         True)
   -ii [INCLUDEINTERNALS], --includeinternals [INCLUDEINTERNALS]
                         Should include compiler internals? (default: False)
-  --outhtmldir OUTHTMLDIR
-                        Output directory of HTML representation (default:
+  --outpath OUTPATH     Output directory of HTML representation (default:
                         None)
 ```
 
