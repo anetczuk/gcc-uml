@@ -204,12 +204,29 @@ class LangParserTest(unittest.TestCase):
             ret_dict,
         )
 
-    def test_convert_lines_to_dict_string_cst_injected(self):
+    def test_convert_lines_to_dict_string_cst_inject_003(self):
         # test for injected field name in "strg"
         data_list = list(["@79     string_cst       type: @86     strg: lngt: 1  lngt: 8       "])
         ret_dict = convert_lines_to_dict(data_list)
         self.assertDictEqual(
             {"@79": ("@79", "string_cst", [("type", "@86"), ("strg", "lngt: 1"), ("lngt", "8")])},
+            ret_dict,
+        )
+
+    def test_convert_lines_to_dict_string_cst_inject_004(self):
+        # test for injected field name in "strg"
+        data_list = list(
+            ["""@48     string_cst       type: @46     strg: @?>=<;:9876543210/.-,+*)('&%$#" lngt: 32      """]
+        )
+        ret_dict = convert_lines_to_dict(data_list)
+        self.assertDictEqual(
+            {
+                "@48": (
+                    "@48",
+                    "string_cst",
+                    [("type", "@46"), ("strg", "@?>=<;:9876543210/.-,+*)('&%$#\""), ("lngt", "32")],
+                )
+            },
             ret_dict,
         )
 

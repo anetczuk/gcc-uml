@@ -185,6 +185,7 @@ class LangContent:
         self.ancestors_dict: Dict[str, List[List[Tuple[Entry, str]]]] = None
 
     def _objectify(self):
+        # dict: {entry_id}: Entry
         ret_objs_dict = {}
         for key, entry in self.content_lines.items():
             entry_type = entry[1]
@@ -196,21 +197,32 @@ class LangContent:
             ret_objs_dict[key] = Entry(obj_dict)
 
         ## convert entry ids to references
-        for _key, object_item in ret_objs_dict.items():
-            for field, value in object_item.items():
+        for _key, entry_item in ret_objs_dict.items():
+            for field, value in entry_item.items():
                 if field == "_raw":
                     for prop_index, prop_data in enumerate(value):
                         prop_val = prop_data[1]
-                        if prop_val.startswith("@"):
-                            prop_key = prop_data[0]
-                            prop_entry = ret_objs_dict[prop_val]
-                            value[prop_index] = (prop_key, prop_entry)
+                        if not prop_val.startswith("@"):
+                            continue
+                        prop_name = prop_data[0]
+                        entry_type = entry_item.get_type()
+                        if prop_name == "strg" and entry_type == "string_cst":
+                            ## skip particular field
+                            continue
+                        prop_key = prop_data[0]
+                        prop_entry = ret_objs_dict[prop_val]
+                        value[prop_index] = (prop_key, prop_entry)
                     continue
 
                 if is_entry_prop_internal(field):
                     continue
                 if value.startswith("@"):
-                    object_item[field] = ret_objs_dict[value]
+                    if field == "strg":
+                        entry_type = entry_item.get_type()
+                        if entry_type == "string_cst":
+                            ## skip particular field
+                            continue
+                    entry_item[field] = ret_objs_dict[value]
 
         return ret_objs_dict
 

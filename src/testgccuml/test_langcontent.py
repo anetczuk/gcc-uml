@@ -28,3 +28,14 @@ class GetEntryTeeTest(unittest.TestCase):
         nodes_list = EntryTreeDepthFirstTraversal.to_list(entry_tree)
 
         self.assertEqual(9, len(nodes_list))
+
+    def test_get_entry_tree_string_cst(self):
+        data_dict = {
+            "@1": ("@1", "void_type", [("name", "@2"), ("algn", "8")]),
+            "@2": ("@2", "string_cst", [("type", "@1"), ("strg", "@qwerasdf"), ("lngt", "10")]),
+        }
+        content = LangContent(data_dict)
+        entry_tree = get_entry_tree(content)
+        nodes_list = EntryTreeDepthFirstTraversal.to_list(entry_tree)
+
+        self.assertEqual(6, len(nodes_list))
