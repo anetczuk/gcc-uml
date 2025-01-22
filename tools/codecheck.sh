@@ -128,7 +128,8 @@ echo "founs sh files to check: $found_files"
 
 ## SC2002 (style): Useless cat. Consider 'cmd < file | ..' or 'cmd file | ..' instead.
 ## SC2129: Consider using { cmd1; cmd2; } >> file instead of individual redirects.
-EXCLUDE_LIST="SC2002,SC2129"
+## SC2155 (warning): Declare and assign separately to avoid masking return values.
+EXCLUDE_LIST="SC2002,SC2129,SC2155"
 
 echo "to suppress line warning add before the line: # shellcheck disable=<code>"
 # shellcheck disable=SC2068

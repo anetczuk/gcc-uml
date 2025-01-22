@@ -296,6 +296,15 @@ Code linters can be run by `./tools/checkall.sh`.
 
 In case of pull requests please run `process-all.sh` before the request.
 
+#### Validation
+
+In `validate` directory are two scripts `run-local-sources.sh` and `run-gcc-tests.sh`. They serve to run 
+tools against various sources. In first case sources are taken from `examples` and in the other case 
+sources are taken from `testsuite` in gcc source code (the source code is downloaded if needed).
+
+The purpose of the scripts is to check tools agains runtime errors. It is very usefull in case of `ctrlflowgraph` 
+to find unhandled lang tree elements.
+
 
 ## Similar projects
 
