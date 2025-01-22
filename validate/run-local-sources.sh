@@ -13,10 +13,14 @@ set -eu
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/_parallelwork.sh"
 
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/_task.sh"
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/_taskscan.sh"
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/_taskverify.sh"
 
 
@@ -28,22 +32,22 @@ export PROJECT_COMMAND="${SCRIPT_DIR}/../src/gccuml/main.py"
 export GCC_COMMAND
 
 
+WORK_DIR="$SCRIPT_DIR/tmp/ws-local"
+mkdir -p "$WORK_DIR"
+cd "$WORK_DIR"
+
+
 if [ $# -gt 0 ]; then
 	## single file mode
 	srcfile="$1"
-	process_file "$srcfile" "1 of 1"
+	verify_source "$srcfile" "1 of 1"
 	exit 0
 fi
 
 
 SOURCES_ROOT_DIR="${SCRIPT_DIR}/../examples"
 JOBS_NUM=6
-WORK_DIR="$SCRIPT_DIR/tmp/ws-local"
 OUTPUT_FILE_PATH="${WORK_DIR}/sources-valid.txt"
-
-
-mkdir -p "$WORK_DIR"
-cd "$WORK_DIR"
 
 
 run_scan "$SOURCES_ROOT_DIR" "$JOBS_NUM" "$OUTPUT_FILE_PATH"

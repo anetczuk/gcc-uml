@@ -99,7 +99,8 @@ Application accepts following arguments:
 
 <!-- insertstart include="doc/cmdargs.txt" pre="\n" post="\n" -->
 ```
-usage: python3 -m gccuml.main [-h] [--loglevel LOGLEVEL] [-la] [--listtools]
+usage: python3 -m gccuml.main [-h] [--loglevel LOGLEVEL] [-la]
+                              [--exitloglevel EXITLOGLEVEL] [--listtools]
                               {printhtml,inheritgraph,memlayout,ctrlflowgraph,tools}
                               ...
 
@@ -109,6 +110,8 @@ options:
   -h, --help            show this help message and exit
   --loglevel LOGLEVEL   Set log level (default: None)
   -la, --logall         Log all messages (default: False)
+  --exitloglevel EXITLOGLEVEL
+                        Set exit log level (default: None)
   --listtools           List tools (default: False)
 
 subcommands:

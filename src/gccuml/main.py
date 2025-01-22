@@ -129,6 +129,7 @@ def main():
     )
     parser.add_argument("--loglevel", action="store", default=None, help="Set log level")
     parser.add_argument("-la", "--logall", action="store_true", help="Log all messages")
+    parser.add_argument("--exitloglevel", action="store", default=None, help="Set exit log level")
     parser.add_argument("--listtools", action="store_true", help="List tools")
     parser.set_defaults(func=None)
 
@@ -328,21 +329,27 @@ def main():
         print(", ".join(tools_list))
         return 0
 
-    loglevelname = args.loglevel
-
     if args.logall is True:
         logger.configure(logLevel=logging.DEBUG)
-    elif loglevelname is not None:
+    elif args.loglevel is not None:
         loglevel_map = logging.getLevelNamesMapping()
-        loglevel = loglevel_map.get(loglevelname)
+        loglevel = loglevel_map.get(args.loglevel)
         if loglevel is not None:
             logger.configure(logLevel=loglevel)
         else:
             logger.configure(logLevel=logging.INFO)
-            _LOGGER.info("loglevel not found - invalid loglevel name: %s", loglevelname)
+            _LOGGER.info("loglevel not found - invalid loglevel name: %s", args.loglevel)
     else:
         # default log level
         logger.configure(logLevel=logging.INFO)
+
+    if args.exitloglevel:
+        loglevel_map = logging.getLevelNamesMapping()
+        loglevel = loglevel_map.get(args.exitloglevel)
+        if loglevel is not None:
+            logger.add_exit_handler(loglevel)
+        else:
+            _LOGGER.info("loglevel not found - invalid loglevel name: %s", args.exitloglevel)
 
     if "func" not in args or args.func is None:
         ## no command given -- print help message

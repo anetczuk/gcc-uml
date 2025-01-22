@@ -118,3 +118,21 @@ class EmptyLineFormatter(logging.Formatter):
 
 def print_log_tree():
     print(logging.root.manager.loggerDict.keys())  # pylint: disable=no-member
+
+
+class ExitHandler(logging.Handler):
+    def __init__(self, level=logging.NOTSET, message=None):
+        super().__init__(level)
+        self.raiselevel = level
+        self.message = message
+        if self.message is None:
+            self.message = "exiting program because exit log threshold reached"
+
+    def emit(self, record):
+        if record.levelno >= self.raiselevel:
+            raise SystemExit(self.message)
+
+
+def add_exit_handler(exit_log_level=logging.FATAL, message=None):
+    handler = ExitHandler(exit_log_level, message)
+    logging.root.addHandler(handler)

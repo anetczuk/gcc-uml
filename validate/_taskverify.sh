@@ -46,6 +46,7 @@ verify_source() {
 
 # # 	"$PROJECT_COMMAND" -la \
 # 	"$PROJECT_COMMAND" --loglevel WARNING \
+# 					   --exitloglevel ERROR \
 # 					   memlayout \
 # 				       --rawfile "$LANG_FILE_PATH" \
 # 					   --outpath "$out_dir/test.puml" \
@@ -60,6 +61,7 @@ verify_source() {
 # 
 # # 	"$PROJECT_COMMAND" -la \
 # 	"$PROJECT_COMMAND" --loglevel WARNING \
+# 					   --exitloglevel ERROR \
 # 					   inheritgraph \
 # 				       --rawfile "$LANG_FILE_PATH" \
 # 					   --outpath "$out_dir/test.puml" \
@@ -73,6 +75,7 @@ verify_source() {
 
 # 	"$PROJECT_COMMAND" -la \
 	"$PROJECT_COMMAND" --loglevel WARNING \
+					   --exitloglevel ERROR \
 					   ctrlflowgraph \
 				       --rawfile "$LANG_FILE_PATH" \
 					   --outpath "$out_dir/test.puml" \
