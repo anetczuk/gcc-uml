@@ -61,13 +61,15 @@ export -f parallel_work
 
 ## run in parallel
 ## $1 - worker function to call
-## $2 - list of files to pass to worker
-## $3 - results file
+## $2 - maximal number of workers
+## $3 - list of files to pass to worker
+## $4 - results file
 ##
 run_in_parallel() {
 	local worker_function="$1"
-	local scan_parts="$2"
-	local results_file="$3"
+	local jobs_num="$2"
+	local scan_parts="$3"
+	local results_file="$4"
 
-	time parallel --halt-on-error 2 -u ::: parallel_work ::: "$worker_function" ::: "$(pwd)" ::: "$scan_parts" ::: "$results_file"
+	time parallel -j "$jobs_num" --halt-on-error 2 -u ::: parallel_work ::: "$worker_function" ::: "$(pwd)" ::: "$scan_parts" ::: "$results_file"
 }

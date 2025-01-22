@@ -81,8 +81,11 @@ verify_source() {
 					   --outpath "$out_dir/test.puml" \
 					   || RUN_ERROR="1"
 
+
 	if [ "$RUN_ERROR" -eq "1" ]; then
 		echo -e "\nerror while processing file: ${source_path}"
+		LANG_FULL_PATH="$(realpath "${LANG_FILE_PATH}")"
+		echo "source lang file: ${LANG_FULL_PATH}"
 		return 1
 	fi
 }
@@ -165,7 +168,7 @@ run_verify() {
 
 	scan_parts=$(ls "$scan_parts_prefix"*)
 
-	run_in_parallel process_work_verify "$scan_parts" "$output_file_path"
+	run_in_parallel process_work_verify "$jobs_num" "$scan_parts" "$output_file_path"
 	
 	for item in $scan_parts; do
 		rm "$item"

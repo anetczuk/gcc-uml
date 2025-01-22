@@ -37,17 +37,36 @@ mkdir -p "$WORK_DIR"
 cd "$WORK_DIR"
 
 
-if [ $# -gt 0 ]; then
+JOBS_NUM=6
+SOURCES_ROOT_DIR="${SCRIPT_DIR}/../examples"
+OUTPUT_FILE_PATH="${WORK_DIR}/sources-valid.txt"
+
+
+ARGS=()
+
+while :; do
+    if [ -z "${1+x}" ]; then
+        ## end of arguments (prevents unbound argument error)
+        break
+    fi
+
+    case "$1" in
+      -j=*)			JOBS_NUM="${1#*=}"
+      				shift # past argument=value
+      				;;
+
+      *)  ARGS+=("$1")
+          shift ;;
+    esac
+done
+
+
+if [ ${#ARGS[@]} -gt 0 ]; then
 	## single file mode
-	srcfile="$1"
+	srcfile="${ARGS[0]}"
 	verify_source "$srcfile" "1 of 1"
 	exit 0
 fi
-
-
-SOURCES_ROOT_DIR="${SCRIPT_DIR}/../examples"
-JOBS_NUM=6
-OUTPUT_FILE_PATH="${WORK_DIR}/sources-valid.txt"
 
 
 run_scan "$SOURCES_ROOT_DIR" "$JOBS_NUM" "$OUTPUT_FILE_PATH"

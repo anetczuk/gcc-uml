@@ -126,7 +126,7 @@ run_scan() {
 	
 	scan_parts=$(ls "$scan_parts_prefix"*)
 		
-	run_in_parallel process_work_compile "$scan_parts" "$output_file_path"
+	run_in_parallel process_work_compile "$jobs_num" "$scan_parts" "$output_file_path"
 	
 	for item in $scan_parts; do
 		rm "$item"
