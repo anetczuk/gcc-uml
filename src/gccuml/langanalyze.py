@@ -279,7 +279,10 @@ def is_method_of_instance(func_decl: Entry) -> bool:
 
 ## find virtual methods table
 def find_class_vtable_var_decl(content: LangContent, record_entry: Entry):
-    class_name = get_entry_repr(record_entry)
+    ## example name of vtable: _ZTVN4item8ExampleBE
+
+    class_full_name = get_entry_repr(record_entry)
+    class_name = get_entry_name(record_entry)
 
     for entry in content.content_objs.values():
         if entry.get_type() != "var_decl":
@@ -287,11 +290,13 @@ def find_class_vtable_var_decl(content: LangContent, record_entry: Entry):
         entry_name = get_entry_name(entry)
         if not entry_name.startswith("_ZTV"):
             continue
+        if not class_name in entry_name:
+            continue
         scpe_entry = entry.get("scpe")
         if scpe_entry is None:
             continue
         scpe_name = get_entry_repr(scpe_entry)
-        if scpe_name != class_name:
+        if scpe_name != class_full_name:
             continue
         return entry
     return None

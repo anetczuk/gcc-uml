@@ -1,23 +1,22 @@
 @startuml
 
 card "::main() -> int" {
-    start
     :char const * bad_char = (&0xFF20);
     :uint8_t[] bad_char_array = 0xFF41FF;
     #lightgreen:return 0;
     stop
+    -[hidden]->
 }
 
 card "::std::__is_constant_evaluated() -> bool" {
-    start
-    #orange:== unhandled statement @509 must_not_throw_expr ==;
+    #lightgreen:return 0;
     stop
+    -[hidden]->
 }
 
 card "::std::__terminate() -> void" {
-    start
-    #orange:== unhandled statement @559 must_not_throw_expr ==;
-    stop
+    :::std::terminate();
+    -[hidden]->
 }
 
 

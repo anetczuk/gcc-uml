@@ -43,6 +43,7 @@ def print_html(entry_tree: EntryTree, out_dir, generate_page_graph=True, use_viz
     os.makedirs(out_dir, exist_ok=True)
     print_html_pages(entry_tree, out_dir, generate_page_graph, use_vizjs, jobs=jobs)
     _LOGGER.info("writing completed")
+    _LOGGER.info("main page: file://%s/@1.html", out_dir)
 
 
 def generate_entry_local_graph(entry: Entry, depends_dict: Dict[str, List[Any]], include_internals=True) -> Graph:

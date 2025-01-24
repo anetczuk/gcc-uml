@@ -1,42 +1,35 @@
 @startuml
 
 card "::funcA() -> void" {
-    start
     :::item::ExampleB objB = {[::item::ExampleA] = {[::item::ExampleA::_vptr.ExampleA] = (&_ZTVN4item8ExampleBE) + 16}};
     :::item::ExampleA * ptrA = (&objB);
     :ptrA->methodB2();
     :ptrA->methodB1();
-    stop
+    -[hidden]->
 }
 
 card "::item::ExampleB::ExampleB() -> void" {
-    start
-    stop
+    -[hidden]->
 }
 
 card "::item::ExampleB::methodB1() -> void" {
-    start
-    stop
+    -[hidden]->
 }
 
 card "::item::ExampleB::methodB2() -> void" {
-    start
-    stop
+    -[hidden]->
 }
 
 card "::item::ExampleA::ExampleA() -> void" {
-    start
-    stop
+    -[hidden]->
 }
 
 card "::item::ExampleA::methodB1() -> void" {
-    start
-    stop
+    -[hidden]->
 }
 
 card "::item::ExampleA::methodB2() -> void" {
-    start
-    stop
+    -[hidden]->
 }
 
 

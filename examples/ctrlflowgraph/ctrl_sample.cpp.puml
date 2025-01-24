@@ -1,14 +1,13 @@
 @startuml
 
 card "::main() -> int" {
-    start
     :::ExampleClass obj1;;
     #lightgreen:return (&obj1)->switchExample(3);
     stop
+    -[hidden]->
 }
 
 card "::ExampleClass::switchExample(int const paramA) -> int" {
-    start
     :int timestamp;;
     :timestamp = ::time(0);
     :timestamp = timestamp + paramA;
@@ -40,6 +39,7 @@ partition "switch:\ntimestamp % 3" {
     :timestamp = timestamp * 3;
     #lightgreen:return timestamp % 2;
     stop
+    -[hidden]->
 }
 
 

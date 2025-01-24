@@ -173,4 +173,6 @@ run_verify() {
 	for item in $scan_parts; do
 		rm "$item"
 	done
+
+	echo -e "\nall completed"
 }

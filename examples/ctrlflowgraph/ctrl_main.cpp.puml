@@ -1,25 +1,24 @@
 @startuml
 
 card "::main() -> int" {
-    start
     :const int aaa;;
     :aaa = ::calc_valA(4);
     :int bbb;;
     :bbb = ::calc_valB(aaa);
     #lightgreen:return ::calc_valC(bbb);
     stop
+    -[hidden]->
 }
 
 card "::calc_valA(int const valueA) -> int" {
-    start
     :int xxxA = valueA * 2.100000000000000088817842e+0 + 3.0e+0;
     :const int xxxB = xxxA * 3;
     #lightgreen:return xxxB;
     stop
+    -[hidden]->
 }
 
 card "::calc_valB(int const valueB) -> long int const" {
-    start
     :int timestamp;;
     :timestamp = ::time(0);
     :timestamp = timestamp + 1;
@@ -34,11 +33,10 @@ card "::calc_valB(int const valueB) -> long int const" {
         #lightgreen:return ddd;
         stop
     endif
-    stop
+    -[hidden]->
 }
 
 card "::calc_valC(int const valueC) -> int" {
-    start
     :int[] arrY;;
     :int[] arrX = {[0] = 10, [1] = 20};
     :arrX[0] = arrX[0] + valueC;
@@ -46,6 +44,7 @@ card "::calc_valC(int const valueC) -> int" {
     :const int xxxB = arrX[1] * 3 + arrX[0];
     #lightgreen:return xxxB;
     stop
+    -[hidden]->
 }
 
 

@@ -6,6 +6,9 @@
 namespace item {
 	class ExampleA {
 	public:
+		virtual ~ExampleA() {
+		}
+
 		virtual int methodA1() {
 			const int ret = 5;
 			return ret;

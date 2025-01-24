@@ -1,7 +1,6 @@
 @startuml
 
 card "::item::ExampleB::methodB1(int const param) -> int" {
-    start
     :const float var1 = param * 3.2999999999999998223643161e+0;
     :const float var2 = param * 3.2999999999999998223643161e+0;
     :const int valA;;
@@ -13,26 +12,43 @@ card "::item::ExampleB::methodB1(int const param) -> int" {
     :retY = ::item::ExampleB::methodB3(12);
     #lightgreen:return retX + retY;
     stop
+    -[hidden]->
 }
 
 card "::item::ExampleB::methodB3(int const val) -> int" {
-    start
     #lightgreen:return val;
     stop
+    -[hidden]->
 }
 
 card "::item::ExampleB::methodB2(float const param) -> int" {
-    start
     :const float var = param * 6.5999999999999996447286321e+0;
     #lightgreen:return var;
     stop
+    -[hidden]->
+}
+
+card "::item::ExampleA::~ExampleA() -> void" {
+    :
+        {{
+            mainframe try
+            -[hidden]->
+            :this->__dt_comp();
+        }}
+        {{
+            mainframe finally
+            -[hidden]->
+            :::[--no entry--](this, 8);
+        }}
+    ;
+    -[hidden]->
 }
 
 card "::item::ExampleA::methodA1() -> int" {
-    start
     :const int ret = 5;
     #lightgreen:return 5;
     stop
+    -[hidden]->
 }
 
 
