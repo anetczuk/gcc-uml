@@ -220,10 +220,15 @@ OP1_SET = {
 }
 
 
-OP1_LEFT_SET = {
-    "negate_expr": "-",
-    "truth_not_expr": "!",
-    "bit_not_expr": "~",
+OP1_DICT = {
+    "negate_expr": ("-", None),
+    "truth_not_expr": ("!", None),
+    "bit_not_expr": ("~", None),
+    "preincrement_expr": ("++", None),
+    "predecrement_expr": ("--", None),
+    "postincrement_expr": (None, "++"),
+    "postdecrement_expr": (None, "--"),
+    "abs_expr": ("|", "|"),
 }
 
 
@@ -519,9 +524,9 @@ class ScopeAnalysis:
         return (False, None)
 
     def _handle_01(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
-        op1_left_exp: str = self._handle_op1_left(statement_entry, stat_list)
-        if op1_left_exp is not None:
-            return (True, op1_left_exp)
+        valid_op1, op1_exp = self._handle_op1(statement_entry, stat_list)
+        if valid_op1:
+            return (True, op1_exp)
 
         op2_exp: str = self._handle_op2(statement_entry, stat_list)
         if op2_exp is not None:
@@ -532,10 +537,6 @@ class ScopeAnalysis:
             return (True, num_val)
 
         type_name = statement_entry.get_type()
-
-        if type_name in OP1_SET:
-            op_entry = statement_entry.get("op 0")
-            return self._analyze_func(op_entry, stat_list)
 
         if type_name in ("field_decl"):
             name = get_entry_repr(statement_entry)
@@ -554,41 +555,26 @@ class ScopeAnalysis:
             #     stat_list.append(var_node)
             return (True, var_name)
 
-        if type_name in ("preincrement_expr"):
-            var_entry = statement_entry.get("op 0")
-            var_name = get_entry_name(var_entry)
-            return (True, f"++{var_name}")
-
-        if type_name in ("postincrement_expr"):
-            var_entry = statement_entry.get("op 0")
-            var_name = get_entry_name(var_entry)
-            return (True, f"{var_name}++")
-
-        if type_name in ("predecrement_expr"):
-            var_entry = statement_entry.get("op 0")
-            var_name = get_entry_name(var_entry)
-            return (True, f"--{var_name}")
-
-        if type_name in ("postdecrement_expr"):
-            var_entry = statement_entry.get("op 0")
-            var_name = get_entry_name(var_entry)
-            return (True, f"{var_name}--")
-
-        if type_name in ("abs_expr"):
-            var_entry = statement_entry.get("op 0")
-            var_name = get_entry_name(var_entry)
-            return (True, f"|{var_name}|")
-
         return (False, None)
 
-    def _handle_op1_left(self, statement_entry: Entry, stat_list: List[Statement]) -> str:
+    def _handle_op1(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
         type_name = statement_entry.get_type()
-        op_sign = OP1_LEFT_SET.get(type_name)
-        if op_sign is None:
-            return None
-        op0_entry = statement_entry.get("op 0")
-        _valid, op0_expr = self._analyze_func(op0_entry, stat_list)
-        return f"{op_sign}{op0_expr}"
+
+        if type_name in OP1_SET:
+            op_entry = statement_entry.get("op 0")
+            return self._analyze_func(op_entry, stat_list)
+
+        if type_name in OP1_DICT:
+            op_sign_left, op_sign_right = OP1_DICT.get(type_name)
+            if not op_sign_left:
+                op_sign_left = ""
+            if not op_sign_right:
+                op_sign_right = ""
+            op0_entry = statement_entry.get("op 0")
+            _valid, op0_expr = self._analyze_func(op0_entry, stat_list)
+            return (True, f"{op_sign_left}{op0_expr}{op_sign_right}")
+
+        return (False, None)
 
     def _handle_op2(self, statement_entry: Entry, stat_list: List[Statement]) -> str:
         type_name = statement_entry.get_type()
