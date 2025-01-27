@@ -17,7 +17,6 @@ from gccuml.langcontent import (
     get_entry_name,
     is_namespace_internal,
     get_record_namespace_list,
-    get_type_entry_name,
     get_number_entry_value,
 )
 from gccuml.langanalyze import (
@@ -25,6 +24,8 @@ from gccuml.langanalyze import (
     get_function_args,
     get_function_ret,
     find_class_vtable_var_decl,
+    get_template_parameters,
+    get_type_entry_name,
 )
 from gccuml.diagram.classdiagram import ClassDiagramGenerator
 
@@ -232,51 +233,6 @@ class InheritanceData:
             field_list.append(field)
 
         return field_list
-
-
-def get_template_parameters(template_decl: Entry):
-    params: Entry = template_decl.get("prms")
-    if params is None:
-        return []
-    items_num = params.get("lngt")
-    if items_num is None:
-        return []
-    items_num = str(items_num)
-
-    ret_list = []
-    params_list = get_vector_items(params)
-    for param_item in params_list:
-        valu: Entry = param_item.get("valu")
-        if valu is None:
-            return []
-
-        sub_list = get_vector_items(valu)
-        for sub_item in sub_list:
-            if not isinstance(sub_item, Entry):
-                continue
-            sub_valu = sub_item.get("valu")
-            if sub_valu is None:
-                continue
-            param_name = get_entry_name(sub_valu)
-            if param_name is None:
-                continue
-            ret_list.append(param_name)
-    return ret_list
-
-
-def get_vector_items(vector: Entry):
-    items_num = vector.get("lngt")
-    if items_num is None:
-        return []
-    ret_list = []
-    items_num = int(items_num)
-    for index in range(0, items_num):
-        param_item = vector.get(f"{index}")
-        if param_item is None:
-            _LOGGER.error("invalid data")
-            return []
-        ret_list.append(param_item)
-    return ret_list
 
 
 def get_name_record_type(entry: Entry):

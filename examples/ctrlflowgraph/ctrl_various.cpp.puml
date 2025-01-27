@@ -1,0 +1,173 @@
+@startuml
+
+card "::shift_func(int iter) -> void" {
+    :int b = iter << 1;
+    :int c = iter >> 2;
+    -[hidden]->
+}
+
+card "::while_func(int iter) -> void" {
+    #orange:goto [--unknown--];
+    note right: not supported
+    #orange:label [--unknown--];
+    note right: not supported
+    :iter = iter + -2;
+    #orange:label [--unknown--];
+    note right: not supported
+    if (iter > 0 ?) then (true)
+        #orange:goto [--unknown--];
+        note right: not supported
+    else (false)
+        #orange:goto [--unknown--];
+        note right: not supported
+    endif
+    #orange:label [--unknown--];
+    note right: not supported
+    -[hidden]->
+}
+
+card "::try_func() -> void" {
+    :int asd = 0;
+    group try
+        :asd = 1;
+    end group
+
+    group catch: char const *
+        group try
+            :char const * exc = [--unknown--];
+            :[--unknown--] = ::__cxa_begin_catch(::__builtin_eh_pointer(0));
+            :asd = 2;
+        end group
+
+        group finally
+            :::__cxa_end_catch();
+        end group
+
+    end group
+
+    group catch: int
+        group try
+            :int [--unknown--] = (*[--unknown--]);
+            :[--unknown--] = ::__cxa_begin_catch(::__builtin_eh_pointer(0));
+            :asd = 3;
+        end group
+
+        group finally
+            :::__cxa_end_catch();
+        end group
+
+    end group
+
+    group catch: ...
+        group try
+            :::__cxa_begin_catch(::__builtin_eh_pointer(0));
+            :asd = 4;
+        end group
+
+        group finally
+            :::__cxa_end_catch();
+        end group
+
+    end group
+
+    -[hidden]->
+}
+
+card "::staticcast(int aaa) -> void" {
+    :int res = 0;
+    :bool val = res != 0;
+    -[hidden]->
+}
+
+card "::over::func3() -> void" {
+    :void (void) * fptr;;
+    :fptr = ::over::func_over();
+    :fptr();
+    -[hidden]->
+}
+
+card "::staticcast() -> void" {
+    :int res = 0;
+    :bool val = res != 0;
+    -[hidden]->
+}
+
+card "::asm001() -> int" {
+    :int res;;
+    #orange:asm expression;
+    note right: not supported
+    #lightgreen:return res;
+    stop
+    -[hidden]->
+}
+
+card "::compare001() -> void" {
+    :int www1 = 0;
+    if (www1 <= 10 ?) then (true)
+        :www1++;
+    else (false)
+    endif
+    if (www1 > 9 ?) then (true)
+        :www1++;
+    else (false)
+    endif
+    -[hidden]->
+}
+
+card "::increment001() -> void" {
+    :int www1 = 0;
+    :++www1;
+    :--www1;
+    :www1++;
+    :www1--;
+    -[hidden]->
+}
+
+card "::goto001() -> int" {
+    :int ggg1 = 0;
+    if (ggg1 != 0 ?) then (true)
+        #orange:goto err_not_found;
+        note right: not supported
+    else (false)
+    endif
+    #lightgreen:return 1;
+    stop
+    #orange:label err_not_found;
+    note right: not supported
+    #lightgreen:return 2;
+    stop
+    -[hidden]->
+}
+
+card "::truth_if001() -> void" {
+    :int a = 0;
+    :int b = 0;
+    :int c = a != 0 && b != 0;
+    -[hidden]->
+}
+
+card "::compound001() -> void" {
+    :short int aaa1 = 0;
+    :aaa1 = ::foo(2);
+    :aaa1 = ::foo(::foo(4));
+    :::foo(5);
+    :aaa1 = ::foo(6);
+    :::foo(7);
+    :aaa1 = ::foo(::foo(8));
+    -[hidden]->
+}
+
+card "::foo(short int p2) -> short int" {
+    #lightgreen:return p2 + 1;
+    stop
+    -[hidden]->
+}
+
+card "::over::func_over() -> void (void) *" {
+    #lightgreen:return (&::over::func1);
+    stop
+    -[hidden]->
+}
+
+
+@enduml

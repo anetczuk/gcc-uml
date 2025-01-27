@@ -8,7 +8,7 @@ card "::funcA() -> void" {
     -[hidden]->
 }
 
-card "::item::ExampleB::ExampleB() -> void" {
+card "::item::ExampleA::methodB1() -> void" {
     -[hidden]->
 }
 
@@ -16,19 +16,19 @@ card "::item::ExampleB::methodB1() -> void" {
     -[hidden]->
 }
 
+card "::item::ExampleA::methodB2() -> void" {
+    -[hidden]->
+}
+
 card "::item::ExampleB::methodB2() -> void" {
     -[hidden]->
 }
 
+card "::item::ExampleB::ExampleB() -> void" {
+    -[hidden]->
+}
+
 card "::item::ExampleA::ExampleA() -> void" {
-    -[hidden]->
-}
-
-card "::item::ExampleA::methodB1() -> void" {
-    -[hidden]->
-}
-
-card "::item::ExampleA::methodB2() -> void" {
     -[hidden]->
 }
 

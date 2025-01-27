@@ -14,10 +14,9 @@ from gccuml.langcontent import (
     get_entry_name,
     is_namespace_internal,
     get_record_namespace_list,
-    get_type_name_mod,
     get_decl_namespace_list,
-    get_entry_repr,
     LangContent,
+    get_number_entry_value,
 )
 
 
@@ -165,6 +164,91 @@ def get_function_name(function_decl: Entry):
     return "::".join(name_prefix)
 
 
+def get_entry_repr(entry: Entry) -> str:
+    if not isinstance(entry, Entry):
+        return entry
+
+    type_name = get_type_entry_name(entry)
+    if type_name is not None:
+        return type_name
+
+    num_value = get_number_entry_value(entry, fail_exception=False)
+    if num_value is not None:
+        return num_value
+
+    if entry.get_type() == "field_decl":
+        ## in case of base classes field_decls does not have any name
+        field_name = get_entry_name(entry, None)
+        if field_name:
+            return field_name
+        field_type = entry.get("type")
+        return get_entry_repr(field_type)
+
+    return get_entry_name(entry)
+
+
+def get_type_entry_name(type_entry: Entry):
+    name, mod = get_type_name_mod(type_entry)
+    if name is None:
+        return None
+    if mod is None:
+        return name
+    return f"{mod} {name}"
+
+
+def get_type_name_mod(type_entry: Entry):
+    parm_mod = None
+    arg_qual = type_entry.get("qual")
+    if arg_qual == "c":
+        parm_mod = "const"
+
+    entry_type = type_entry.get_type()
+
+    if entry_type == "pointer_type":
+        ptd = type_entry.get("ptd")
+        ptd_name = get_full_name(ptd)
+        ptd_qual = ptd.get("qual")
+        if ptd_qual == "c":
+            ptd_name += " const"
+        ptd_name += " *"
+        return (ptd_name, parm_mod)
+
+    if entry_type == "reference_type":
+        refd = type_entry.get("refd")
+        refd_name = get_full_name(refd)
+        refd_qual = refd.get("qual")
+        if refd_qual == "c":
+            refd_name += " const"
+        refd_name += " &"
+        return (refd_name, parm_mod)
+
+    if entry_type == "array_type":
+        elms = type_entry.get("elts")
+        elms_name = get_full_name(elms)
+        return (f"{elms_name}[]", parm_mod)
+
+    name_list = get_decl_namespace_list(type_entry)
+    if name_list:
+        param_name = "::".join(name_list)
+        return (param_name, parm_mod)
+
+    param_name = get_entry_name(type_entry, default_ret=None)
+    return (param_name, parm_mod)
+
+
+def get_full_name(entry: Entry) -> str:
+    entry_type = entry.get_type()
+    if entry_type == "record_type":
+        ns_list = get_record_namespace_list(entry)
+        return "::".join(ns_list)
+    if entry_type == "function_type":
+        ret_type = get_function_ret(entry)
+        params_list = get_func_type_parameters(entry)
+        params_str = ", ".join(params_list)
+        return f"{ret_type} ({params_str})"
+    return get_entry_name(entry)
+
+
 def get_function_args(function_decl: Entry):
     func_args = function_decl.get_sub_entries("args")
     if not func_args:
@@ -207,6 +291,10 @@ def get_function_ret(function_type: Entry):
     return function_return
 
 
+def get_func_type_parameters(function_type: Entry):
+    return get_template_parameters(function_type)
+
+
 def get_template_parameters(template_decl: Entry):
     params: Entry = template_decl.get("prms")
     if params is None:
@@ -224,6 +312,12 @@ def get_template_parameters(template_decl: Entry):
             return []
 
         sub_list = get_vector_items(valu)
+        if not sub_list:
+            # example case: 'void func1(void);'
+            valu_name = get_entry_name(valu)
+            ret_list.append(valu_name)
+            continue
+
         for sub_item in sub_list:
             if not isinstance(sub_item, Entry):
                 continue
@@ -290,7 +384,7 @@ def find_class_vtable_var_decl(content: LangContent, record_entry: Entry):
         entry_name = get_entry_name(entry)
         if not entry_name.startswith("_ZTV"):
             continue
-        if not class_name in entry_name:
+        if class_name not in entry_name:
             continue
         scpe_entry = entry.get("scpe")
         if scpe_entry is None:

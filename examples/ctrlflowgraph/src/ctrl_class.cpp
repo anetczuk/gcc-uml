@@ -6,6 +6,12 @@
 namespace item {
 	class ExampleA {
 	public:
+
+		int fieldA;
+
+		ExampleA(): fieldA(5) {
+		}
+
 		virtual ~ExampleA() {
 		}
 

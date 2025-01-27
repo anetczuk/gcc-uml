@@ -28,19 +28,19 @@ card "::item::ExampleB::methodB2(float const param) -> int" {
     -[hidden]->
 }
 
+card "::item::ExampleA::ExampleA() -> void" {
+    -[hidden]->
+}
+
 card "::item::ExampleA::~ExampleA() -> void" {
-    :
-        {{
-            mainframe try
-            -[hidden]->
-            :this->__dt_comp();
-        }}
-        {{
-            mainframe finally
-            -[hidden]->
-            :::[--no entry--](this, 8);
-        }}
-    ;
+    group try
+        :this->__dt_comp();
+    end group
+
+    group finally
+        :::[--no entry--](this, 16);
+    end group
+
     -[hidden]->
 }
 

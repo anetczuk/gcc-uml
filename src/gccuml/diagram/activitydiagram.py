@@ -24,16 +24,19 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class StatementType(Enum):
+    UNSUPPORTED = auto()
     NODE = auto()
     IF = auto()
     SWITCH = auto()
+    GOTO = auto()
+    GOTOLABEL = auto()
     STOP = auto()
 
 
 class Statement:
     """Container for function data to be presented on graph.
-    
-    Depending on 'type' it can be 
+
+    Depending on 'type' it can be
     """
 
     def __init__(self, statement_name: str, statement_type: StatementType = StatementType.NODE):
@@ -44,9 +47,12 @@ class Statement:
 
 
 class StatementList:
-    
+
     def __init__(self):
         self.items: List[Any] = []
+
+    def append(self, item):
+        self.items.append(item)
 
 
 FunctionArg = NamedTuple("FunctionArg", [("name", str), ("type", str)])
@@ -54,7 +60,7 @@ FunctionArg = NamedTuple("FunctionArg", [("name", str), ("type", str)])
 
 class LabeledCard:
     """Container for function data to be presented on graph.
-    
+
     Item is presented as group/card.
     """
 
@@ -83,6 +89,9 @@ class LabeledGroup:
         if self.subitems is None:
             self.subitems = []
 
+    def append(self, item):
+        self.subitems.append(item)
+
 
 class SubNodeList:
 
@@ -93,6 +102,7 @@ class SubNodeList:
         self.subitems.append(item)
 
 
+## does not work is subgraphs are nested
 class SubGraph:
 
     def __init__(self, label=None, items_list=None):
@@ -187,10 +197,10 @@ stop
     def _handle_subgraph(self, node: SubGraph, indent=1):
         indent_str = "    " * indent
         self.content_list.append(
-                f"""\
+            f"""\
 {indent_str}{{{{
 {indent_str}    mainframe {node.label}"""
-            )
+        )
 
         for subitem in node.subitems:
             self.content_list.append(f"{indent_str}    -[hidden]->")
@@ -201,12 +211,12 @@ stop
 {indent_str}}}}}"""
         )
 
-    def _handle_subnodelist(self, node: SubGraph, indent=1):
+    def _handle_subnodelist(self, node: SubNodeList, indent=1):
         indent_str = "    " * indent
         self.content_list.append(
-                f"""\
+            f"""\
 {indent_str}:"""
-            )
+        )
 
         for subitem in node.subitems:
             self._handle_item(subitem, indent + 1)
@@ -224,11 +234,11 @@ stop
             f"""\
 {indent_str}card "{func_label}" {{"""
         )
-#         self.content_list.append(
-#             f"""\
-# {indent_str}card "{func_label}" {{
-# {indent_str}    start"""
-#         )
+        #         self.content_list.append(
+        #             f"""\
+        # {indent_str}card "{func_label}" {{
+        # {indent_str}    start"""
+        #         )
 
         func_statements = node.subitems
         self._handle_list(func_statements, indent + 1)
@@ -260,6 +270,18 @@ stop
 
     def _handle_statement(self, statement: Statement, indent=1):
         indent_str = "    " * indent
+
+        if statement.type == StatementType.UNSUPPORTED:
+            self.content_list.append(
+                f"""\
+{indent_str}#orange:{statement.name};"""
+            )
+            self.content_list.append(
+                f"""\
+{indent_str}note right: not supported"""
+            )
+            return
+
         if statement.type == StatementType.NODE:
             color = statement.color
             if color is None:
@@ -268,7 +290,7 @@ stop
             self.content_list.append(
                 f"""\
 {indent_str}{color}:{statement.name};"""
-                )
+            )
             return
 
         if statement.type == StatementType.STOP:
@@ -276,11 +298,25 @@ stop
                 self.content_list.append(
                     f"""\
 {indent_str}#lightgreen:{statement.name};"""
-                    )
+                )
             self.content_list.append(
                 f"""\
 {indent_str}stop"""
-                )
+            )
+            return
+
+        if statement.type == StatementType.GOTO:
+            self.content_list.append(
+                f"""\
+{indent_str}goto {statement.name}"""
+            )
+            return
+
+        if statement.type == StatementType.GOTOLABEL:
+            self.content_list.append(
+                f"""\
+{indent_str}label {statement.name}"""
+            )
             return
 
         if statement.type == StatementType.IF:

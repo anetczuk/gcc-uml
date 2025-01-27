@@ -27,12 +27,12 @@ from gccuml.langcontent import (
     is_entry_language_internal,
     is_entry_prop_internal,
     EntryTree,
-    get_entry_repr,
 )
 from gccuml.io import write_file
 from gccuml.vizjs import DATA_DIR
 from gccuml.tool.tools import EntryDotGraph, get_graph_as_svg
 from gccuml.progressbar import get_processbar_pool, iterate_progressar, end_progressbar
+from gccuml.langanalyze import get_entry_repr
 
 
 _LOGGER = logging.getLogger(__name__)

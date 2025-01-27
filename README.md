@@ -316,6 +316,7 @@ to find unhandled lang tree elements.
 ## References
 
 - [GCC tree codes documentation](https://github.com/gcc-mirror/gcc/blob/master/gcc/tree.def)
+- [GCC C++ tree codes documentation](https://github.com/gcc-mirror/gcc/blob/master/gcc/cp/cp-tree.def)
 - [Itanium C++ ABI](https://itanium-cxx-abi.github.io/cxx-abi/abi.html)
 - [GCC Internals Manual](https://gcc.gnu.org/onlinedocs/gccint/)
 - [G++ Developer Options](https://gcc.gnu.org/onlinedocs/gcc-13.1.0/gcc/Developer-Options.html#index-fdump-lang-all)

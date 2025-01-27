@@ -313,6 +313,9 @@ class LangContent:
     def get_entry_by_id(self, entry_id):
         return self.content_objs.get(entry_id)
 
+    def get_entries_all(self):
+        return self.content_objs.values()
+
     def get_entries(self, entry_property) -> List[Entry]:
         ret_list = []
         # entry: Entry
@@ -604,85 +607,6 @@ def print_entry_graph(entry: Entry):
 
 
 ## ======================================================================
-
-
-def get_entry_repr(entry: Entry) -> str:
-    if not isinstance(entry, Entry):
-        return entry
-
-    type_name = get_type_entry_name(entry)
-    if type_name is not None:
-        return type_name
-
-    num_value = get_number_entry_value(entry, fail_exception=False)
-    if num_value is not None:
-        return num_value
-
-    if entry.get_type() == "field_decl":
-        ## in case of base classes field_decls does not have any name
-        field_name = get_entry_name(entry, None)
-        if field_name:
-            return field_name
-        field_type = entry.get("type")
-        return get_entry_repr(field_type)
-
-    return get_entry_name(entry)
-
-
-def get_type_entry_name(type_entry: Entry):
-    name, mod = get_type_name_mod(type_entry)
-    if name is None:
-        return None
-    if mod is None:
-        return name
-    return f"{mod} {name}"
-
-
-def get_type_name_mod(type_entry: Entry):
-    parm_mod = None
-    arg_qual = type_entry.get("qual")
-    if arg_qual == "c":
-        parm_mod = "const"
-
-    entry_type = type_entry.get_type()
-
-    if entry_type == "pointer_type":
-        ptd = type_entry.get("ptd")
-        ptd_name = get_full_name(ptd)
-        ptd_qual = ptd.get("qual")
-        if ptd_qual == "c":
-            ptd_name += " const"
-        ptd_name += " *"
-        return (ptd_name, parm_mod)
-
-    if entry_type == "reference_type":
-        refd = type_entry.get("refd")
-        refd_name = get_full_name(refd)
-        refd_qual = refd.get("qual")
-        if refd_qual == "c":
-            refd_name += " const"
-        refd_name += " &"
-        return (refd_name, parm_mod)
-
-    if entry_type == "array_type":
-        elms = type_entry.get("elts")
-        elms_name = get_full_name(elms)
-        return (f"{elms_name}[]", parm_mod)
-
-    name_list = get_decl_namespace_list(type_entry)
-    if name_list:
-        param_name = "::".join(name_list)
-        return (param_name, parm_mod)
-
-    param_name = get_entry_name(type_entry, default_ret=None)
-    return (param_name, parm_mod)
-
-
-def get_full_name(entry: Entry) -> str:
-    if entry.get_type() == "record_type":
-        ns_list = get_record_namespace_list(entry)
-        return "::".join(ns_list)
-    return get_entry_name(entry)
 
 
 def get_record_namespace_list(record_type: Entry) -> List[str]:

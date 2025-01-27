@@ -17,8 +17,6 @@ from gccuml.langcontent import (
     get_entry_name,
     get_number_entry_value,
     get_decl_namespace_list,
-    get_type_name_mod,
-    get_entry_repr,
 )
 from gccuml.langanalyze import (
     StructAnalyzer,
@@ -27,13 +25,17 @@ from gccuml.langanalyze import (
     is_method_of_instance,
     get_function_full_name,
     find_class_vtable_var_decl,
+    get_type_name_mod,
+    get_entry_repr,
 )
 from gccuml.diagram.activitydiagram import (
     ActivityDiagramGenerator,
     LabeledCard,
     FunctionArg,
     Statement,
-    StatementType, SubGraph, LabeledGroup, SubNodeList,
+    StatementType,
+    LabeledGroup,
+    StatementList,
 )
 
 
@@ -66,23 +68,32 @@ class ControlFlowData:
     def generate_data(self):
         ret_dict = {}
 
-        dcls_list = self.content.get_entries("dcls")
-        for dcls_entry in dcls_list:
-            info_list: List[LabeledCard] = self.get_function_info(dcls_entry)
+        all_entries = self.content.get_entries_all()
+        for entry in all_entries:
+            info_list: List[LabeledCard] = self.get_function_info(entry)
             if info_list:
                 func_names = [item.label for item in info_list]
-                _LOGGER.info("found items %s for entry %s", func_names, dcls_entry.get_id())
+                _LOGGER.info("found items %s for entry %s", func_names, entry.get_id())
                 for info in info_list:
                     ret_dict[info.label] = info
 
-        flds_list = self.content.get_entries("flds")
-        for flds_entry in flds_list:
-            info_list: List[LabeledCard] = self.get_function_info(flds_entry)
-            if info_list:
-                func_names = [item.label for item in info_list]
-                _LOGGER.info("found items %s for entry %s", func_names, flds_entry.get_id())
-                for info in info_list:
-                    ret_dict[info.label] = info
+        # dcls_list = self.content.get_entries("dcls")
+        # for dcls_entry in dcls_list:
+        #     info_list: List[LabeledCard] = self.get_function_info(dcls_entry)
+        #     if info_list:
+        #         func_names = [item.label for item in info_list]
+        #         _LOGGER.info("found items %s for entry %s", func_names, dcls_entry.get_id())
+        #         for info in info_list:
+        #             ret_dict[info.label] = info
+        #
+        # flds_list = self.content.get_entries("flds")
+        # for flds_entry in flds_list:
+        #     info_list: List[LabeledCard] = self.get_function_info(flds_entry)
+        #     if info_list:
+        #         func_names = [item.label for item in info_list]
+        #         _LOGGER.info("found items %s for entry %s", func_names, flds_entry.get_id())
+        #         for info in info_list:
+        #             ret_dict[info.label] = info
 
         return ret_dict
 
@@ -91,6 +102,11 @@ class ControlFlowData:
             return None
         if is_entry_language_internal(dcls_entry):
             return None
+
+        note_entry = dcls_entry.get("note")
+        if note_entry:
+            if "pseudo tmpl" in note_entry:
+                return None
 
         ret_list = []
 
@@ -117,9 +133,11 @@ class ControlFlowData:
         analyzer = ScopeAnalysis(self.content)
         statements = analyzer.analyze(func_body)
 
-        # statements.append( Statement("", StatementType.STOP) )
+        if func_name == "::main":
+            ## remove last element - it's repeated "return" statement
+            del statements[-1]
 
-        #TODO: resolve
+        # TODO: resolve
         # if statements is not None:
         #     if statements:
         #         last_item = statements[-1]
@@ -145,12 +163,76 @@ class ControlFlowData:
         return ret_list
 
 
-OP1_SET = {"cleanup_point_expr", "convert_expr", "fix_trunc_expr", "float_expr", "non_lvalue_expr", "nop_expr"}
+IGNORE_SET = {"predict_expr"}
+
+
+UNSUPPORTED_SET = {
+    "truth_and_expr",
+    "unle_expr",
+    "ungt_expr",
+    "uneq_expr",
+    "unge_expr",
+    "unlt_expr",
+    "target_expr",
+    "static_cast_expr",
+    "view_convert_expr",
+    "ctor_initializer",
+    "cast_expr",
+    "scope_ref",
+    "modop_expr",
+    "sizeof_expr",
+    "while_stmt",
+    "if_stmt",
+    "for_stmt",
+    "realpart_expr",
+    "imagpart_expr",
+    "vector_cst",
+    "vec_perm_expr",
+    "annotate_expr",
+    "vec_cond_expr",
+    "lrotate_expr",
+    "rrotate_expr",
+    "min_expr",
+    "max_expr",
+    "label_decl",
+    "va_arg_expr",
+}
+
+
+EXPR_UNSUPPORTED_SET = {
+    "template_id_expr",
+    "component_ref",
+    "overload",
+    "function_decl",
+    "baselink",
+    "scope_ref",
+}
+
+
+OP1_SET = {
+    "cleanup_point_expr",
+    "convert_expr",
+    "fix_trunc_expr",
+    "float_expr",
+    "non_lvalue_expr",
+    "nop_expr",
+    "save_expr",
+}
+
+
+OP1_LEFT_SET = {
+    "negate_expr": "-",
+    "truth_not_expr": "!",
+    "bit_not_expr": "~",
+}
 
 
 OP2_DICT = {
     "eq_expr": "==",
+    "ne_expr": "!=",
     "bit_and_expr": "&",
+    "bit_ior_expr": "|",
+    "bit_xor_expr": "^",
     "trunc_mod_expr": "%",
     "modify_expr": "=",
     "plus_expr": "+",
@@ -159,6 +241,14 @@ OP2_DICT = {
     "mult_expr": "*",
     "rdiv_expr": "/",
     "trunc_div_expr": "/",
+    "truth_andif_expr": "&&",
+    "truth_orif_expr": "||",
+    "lt_expr": "<",
+    "le_expr": "<=",
+    "gt_expr": ">",
+    "ge_expr": ">=",
+    "lshift_expr": "<<",
+    "rshift_expr": ">>",
 }
 
 
@@ -208,6 +298,16 @@ class ScopeAnalysis:
         return decl_expr
 
     def _analyze_func(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
+        type_name = statement_entry.get_type()
+
+        if type_name in UNSUPPORTED_SET:
+            statement = Statement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            stat_list.append(statement)
+            return (True, None)
+
+        if type_name in IGNORE_SET:
+            return (True, None)
+
         valid_expr, name_exp = self._handle_01(statement_entry, stat_list)
         if valid_expr:
             return (True, name_exp)
@@ -216,20 +316,56 @@ class ScopeAnalysis:
         if other_valid_expr:
             return (True, other_name_exp)
 
-        type_name = statement_entry.get_type()
-
-        if type_name == "void_cst":
-            ## do nothing
+        if type_name == "cond_expr":
+            self._handle_if(statement_entry, stat_list)
             return (True, None)
+
+        if type_name == "switch_expr":
+            self._handle_switch(statement_entry, stat_list)
+            return (True, None)
+
+        if type_name == "function_decl":
+            return self._handle_function(statement_entry, stat_list)
+
+        if type_name == "return_expr":
+            return self._handle_return(statement_entry, stat_list)
+
+        if type_name == "call_expr":
+            return self._handle_call(statement_entry, stat_list)
+
+        if type_name == "init_expr":
+            return self._handle_init(statement_entry, stat_list)
+
+        if type_name == "constructor":
+            # array and object initialization
+            return self._handle_constructor(statement_entry, stat_list)
 
         if type_name == "decl_expr":
             self.decl_expr_counter += 1
+            if self.decl_expr_counter >= len(self.vars):
+                return (True, None)
             var_name, decl_expr = self.vars[self.decl_expr_counter]
             if decl_expr:
                 decl_node = Statement(decl_expr, StatementType.NODE)
                 stat_list.append(decl_node)
             self.scope_vars.add(var_name)
             return (True, None)
+
+        if type_name == "compound_expr":
+            op0_entry = statement_entry.get("op 0")
+            _valid, op0_expr = self._analyze_func(op0_entry, stat_list)
+            if op0_expr:
+                stat_list.append(Statement(op0_expr))
+            op1_entry = statement_entry.get("op 1")
+            _valid, op1_expr = self._analyze_func(op1_entry, stat_list)
+            return (True, f"{op1_expr}")
+
+        # if type_name == "target_expr":
+        #     decl_entry = statement_entry.get("decl")
+        #     _valid, decl_expr = self._analyze_func(decl_entry, stat_list)
+        #     init_entry = statement_entry.get("init")
+        #     _valid, init_expr = self._analyze_func(init_entry, stat_list)
+        #     return (True, f"{decl_expr}{init_expr}")
 
         if type_name == "component_ref":
             op1_entry = statement_entry.get("op 1")
@@ -248,7 +384,9 @@ class ScopeAnalysis:
         if type_name == "addr_expr":
             op_entry = statement_entry.get("op 0")
             _valid, item_expr = self._analyze_func(op_entry, stat_list)
-            return (True, "(&" + item_expr + ")")
+            if item_expr is not None:
+                return (True, "(&" + item_expr + ")")
+            return (True, None)
 
         if type_name == "array_ref":
             op0_entry = statement_entry.get("op 0")  ## element
@@ -257,14 +395,6 @@ class ScopeAnalysis:
             _valid, op1_expr = self._analyze_func(op1_entry, stat_list)
             return (True, f"{op0_expr}[{op1_expr}]")
 
-        if type_name == "cond_expr":
-            self._handle_if(statement_entry, stat_list)
-            return (True, None)
-
-        if type_name == "switch_expr":
-            self._handle_switch(statement_entry, stat_list)
-            return (True, None)
-
         if type_name == "bind_expr":
             # new scope
             scope_analysis = ScopeAnalysis(self.content)
@@ -272,17 +402,27 @@ class ScopeAnalysis:
             stat_list.extend(bind_list)
             return (True, None)
 
+        if type_name == "must_not_throw_expr":
+            body_entry = statement_entry.get("body")
+            return self._analyze_func(body_entry, stat_list)
+
+        _LOGGER.error("unhandled statement type %s %s", statement_entry.get_id(), type_name)
+
+        node = Statement(
+            f"+++ unhandled statement {statement_entry.get_id()} {statement_entry.get_type()} +++", StatementType.NODE
+        )
+        node.color = "#orange"
+        stat_list.append(node)
+        return (False, None)
+
+    def _handle_other(self, statement_entry: Entry, stat_list: List[Any]) -> Tuple[bool, str]:
+        type_name = statement_entry.get_type()
+
         if type_name == "statement_list":
             index_entries = get_index_entries(statement_entry)
             for index_item in index_entries:
                 self._analyze_func(index_item, stat_list)
             return (True, None)
-
-        if type_name == "function_decl":
-            return self._handle_function(statement_entry, stat_list)
-
-        if type_name == "return_expr":
-            return self._handle_return(statement_entry, stat_list)
 
         if type_name == "expr_stmt":
             expr_entry = statement_entry.get("expr")
@@ -292,85 +432,97 @@ class ScopeAnalysis:
             ## None happens when "[[fallthrough]];" is used explicit
             return (True, None)
 
-        if type_name == "must_not_throw_expr":
-            body_entry = statement_entry.get("body")
-            return self._analyze_func(body_entry, stat_list)
-
-        if type_name == "call_expr":
-            return self._handle_call(statement_entry, stat_list)
-
-        # if type_name == "compound_expr":
-        #     op0_entry = statement_entry.get("op 0")
-        #     _valid, op0_expr = self._analyze_func(op0_entry, stat_list)
-        #     op1_entry = statement_entry.get("op 1")
-        #     _valid, op1_expr = self._analyze_func(op1_entry, stat_list)
-        #     return (True, f"{op0_expr}{op1_expr}")
-        #
-        # if type_name == "target_expr":
-        #     decl_entry = statement_entry.get("decl")
-        #     _valid, decl_expr = self._analyze_func(decl_entry, stat_list)
-        #     init_entry = statement_entry.get("init")
-        #     _valid, init_expr = self._analyze_func(init_entry, stat_list)
-        #     return (True, f"{decl_expr}{init_expr}")
-
-        if type_name == "init_expr":
-            return self._handle_init(statement_entry, stat_list)
-
-        if type_name == "constructor":
-            # array and object initialization
-            return self._handle_constructor(statement_entry, stat_list)
+        if type_name == "void_cst":
+            ## do nothing
+            return (True, None)
 
         if type_name == "result_decl":
             ## do nothing
             return (True, None)
 
-        _LOGGER.error("unhandled statement type %s %s", statement_entry.get_id(), type_name)
-
-        node = Statement(
-            f"== unhandled statement {statement_entry.get_id()} {statement_entry.get_type()} ==", StatementType.NODE
-        )
-        node.color = "#orange"
-        stat_list.append(node)
-        return (False, None)
-
-    def _handle_other(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
-        type_name = statement_entry.get_type()
-
         if type_name in ("try_finally_expr"):
-            # try_entry = statement_entry.get("op 1")
-            # scope_analysis = ScopeAnalysis(self.content)
-            # try_list = scope_analysis.analyze(try_entry)
-            #
-            # finally_entry = statement_entry.get("op 2")
-            # scope_analysis = ScopeAnalysis(self.content)
-            # finally_list = scope_analysis.analyze(finally_entry)
-
             try_entry = statement_entry.get("op 0")
-            try_list = []
+            try_list: List[Statement] = []
             _valid, op0_expr = self._analyze_func(try_entry, try_list)
             if not try_list:
                 try_list.append(Statement(op0_expr))
 
             finally_entry = statement_entry.get("op 1")
-            finally_list = []
+            finally_list: List[Statement] = []
             _valid, op1_expr = self._analyze_func(finally_entry, finally_list)
             if not finally_list:
                 finally_list.append(Statement(op1_expr))
 
-            sublist_node = SubNodeList()
+            try_fin_grp = StatementList()
+            # try_fin_grp = LabeledGroup("try_finally")
 
-            try_group = SubGraph("try", try_list)
-            sublist_node.append(try_group)
+            try_group = LabeledGroup("try", try_list)
+            try_fin_grp.append(try_group)
 
-            finally_group = SubGraph("finally", finally_list)
-            sublist_node.append(finally_group)
+            finally_group = LabeledGroup("finally", finally_list)
+            try_fin_grp.append(finally_group)
 
-            stat_list.append(sublist_node)
+            stat_list.append(try_fin_grp)
+            return (True, None)
+
+        if type_name in ("goto_expr"):
+            labl_entry = statement_entry.get("labl")
+            label_name = get_entry_name(labl_entry)
+            statement = Statement(f"goto {label_name}", StatementType.UNSUPPORTED)
+            stat_list.append(statement)
+            return (True, None)
+
+        if type_name in ("label_expr"):
+            label_name = get_entry_name(statement_entry)
+            statement = Statement(f"label {label_name}", StatementType.UNSUPPORTED)
+            stat_list.append(statement)
+            return (True, None)
+
+        if type_name in ("asm_expr"):
+            label_name = get_entry_name(statement_entry)
+            statement = Statement("asm expression", StatementType.UNSUPPORTED)
+            stat_list.append(statement)
+            return (True, None)
+
+        if type_name in ("unordered_expr"):
+            statement = Statement(f"unordered_expr {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            stat_list.append(statement)
+            return (True, None)
+
+        if type_name == "try_block":
+            body_entry = statement_entry.get("body")
+            try_stat_list: List[Any] = []
+            self._analyze_func(body_entry, try_stat_list)
+
+            try_fin_grp = StatementList()
+            # try_fin_grp = LabeledGroup("try_block")
+
+            try_group = LabeledGroup("try", try_stat_list)
+            try_fin_grp.append(try_group)
+
+            hand_entry = statement_entry.get("hdlr")
+            entries_list = get_index_entries(hand_entry)
+            for hand_item in entries_list:
+                catch_name = "..."
+                hand_type_entry = hand_item.get("type")
+                if hand_type_entry is not None:
+                    catch_name = get_entry_repr(hand_type_entry)
+                hand_body_entry = hand_item.get("body")
+                hand_stat_list: List[Any] = []
+                self._analyze_func(hand_body_entry, hand_stat_list)
+                catch_group = LabeledGroup(f"catch: {catch_name}", hand_stat_list)
+                try_fin_grp.append(catch_group)
+
+            stat_list.append(try_fin_grp)
             return (True, None)
 
         return (False, None)
 
     def _handle_01(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
+        op1_left_exp: str = self._handle_op1_left(statement_entry, stat_list)
+        if op1_left_exp is not None:
+            return (True, op1_left_exp)
+
         op2_exp: str = self._handle_op2(statement_entry, stat_list)
         if op2_exp is not None:
             return (True, op2_exp)
@@ -388,9 +540,11 @@ class ScopeAnalysis:
         if type_name in ("field_decl"):
             name = get_entry_repr(statement_entry)
             return (True, name)
+
         if type_name in ("parm_decl"):
             name = get_entry_name(statement_entry)
             return (True, name)
+
         if type_name in ("var_decl"):
             var_name = get_entry_name(statement_entry)
             # if var_name not in self.scope_vars:
@@ -400,7 +554,41 @@ class ScopeAnalysis:
             #     stat_list.append(var_node)
             return (True, var_name)
 
+        if type_name in ("preincrement_expr"):
+            var_entry = statement_entry.get("op 0")
+            var_name = get_entry_name(var_entry)
+            return (True, f"++{var_name}")
+
+        if type_name in ("postincrement_expr"):
+            var_entry = statement_entry.get("op 0")
+            var_name = get_entry_name(var_entry)
+            return (True, f"{var_name}++")
+
+        if type_name in ("predecrement_expr"):
+            var_entry = statement_entry.get("op 0")
+            var_name = get_entry_name(var_entry)
+            return (True, f"--{var_name}")
+
+        if type_name in ("postdecrement_expr"):
+            var_entry = statement_entry.get("op 0")
+            var_name = get_entry_name(var_entry)
+            return (True, f"{var_name}--")
+
+        if type_name in ("abs_expr"):
+            var_entry = statement_entry.get("op 0")
+            var_name = get_entry_name(var_entry)
+            return (True, f"|{var_name}|")
+
         return (False, None)
+
+    def _handle_op1_left(self, statement_entry: Entry, stat_list: List[Statement]) -> str:
+        type_name = statement_entry.get_type()
+        op_sign = OP1_LEFT_SET.get(type_name)
+        if op_sign is None:
+            return None
+        op0_entry = statement_entry.get("op 0")
+        _valid, op0_expr = self._analyze_func(op0_entry, stat_list)
+        return f"{op_sign}{op0_expr}"
 
     def _handle_op2(self, statement_entry: Entry, stat_list: List[Statement]) -> str:
         type_name = statement_entry.get_type()
@@ -423,10 +611,10 @@ class ScopeAnalysis:
         return (True, f"{op0_expr} = {op1_expr}")
 
     def _handle_return(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
-        if self._find_return_item(stat_list) > -1:
-            _LOGGER.warning("return node already added to the list")
-            return (True, None)
         expr_entry = statement_entry.get("expr")
+        if expr_entry is None:
+            stat_list.append(Statement(None, StatementType.STOP))
+            return (True, None)
         _valid, expr_expr = self._analyze_func(expr_entry, stat_list)
         ret_expr = f"return {expr_expr}"
         stat_list.append(Statement(ret_expr, StatementType.STOP))
@@ -443,18 +631,9 @@ class ScopeAnalysis:
 
     def _handle_call(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
         func_name = "???"
-        is_meth = False
-        func_decl = self._get_function_decl(statement_entry)
-        if func_decl is not None:
-            func_decl_type = func_decl.get_type()
-            if func_decl_type not in ("function_decl"):
-                _LOGGER.error("unhandled entry type: %s", func_decl_type)
-                return (True, None)
-            is_meth = is_method_of_instance(func_decl)
-            if is_meth:
-                func_name = get_entry_name(func_decl)
-            else:
-                func_name = get_entry_repr(func_decl)
+        call_name, is_meth = self._get_call_expr_name(statement_entry)
+        if call_name is not None:
+            func_name = call_name
         else:
             fn_entry = statement_entry.get("fn")
             if fn_entry is not None:
@@ -468,7 +647,8 @@ class ScopeAnalysis:
         arg_entries = get_index_entries(statement_entry)
         for arg_item in arg_entries:
             _valid, arg_expr = self._analyze_func(arg_item, stat_list)
-            params_list.append(arg_expr)
+            if arg_expr is not None:
+                params_list.append(arg_expr)
         obj_name = ""
         if is_meth:
             # in case of method first parameter is object
@@ -476,6 +656,21 @@ class ScopeAnalysis:
             obj_name = f"{first_param}->"
         params_str = ", ".join(params_list)
         return (True, f"{obj_name}{func_name}({params_str})")
+
+    def _get_call_expr_name(self, call_expr_entry: Entry):
+        func_decl = self._get_function_decl(call_expr_entry)
+        if func_decl is None:
+            return (None, False)
+        fn_type = func_decl.get_type()
+        if fn_type == "function_decl":
+            return self._get_function_info(func_decl)
+
+        if fn_type == "var_decl":
+            var_name = get_entry_name(func_decl)
+            return (var_name, False)
+
+        _LOGGER.error("unhandled call type: %s %s in %s", fn_type, func_decl.get_id(), call_expr_entry.get_id())
+        return (None, False)
 
     def _get_function_decl(self, call_expr_entry: Entry):
         expr_entry = call_expr_entry.get("fn")
@@ -513,8 +708,29 @@ class ScopeAnalysis:
             vtable_entries = get_vtable_entries(vtable_var)
             vfunc_decl = vtable_entries[vtable_index]
             return vfunc_decl
-        _LOGGER.error("unhandled expr type: %s", expr_type)
+        if expr_type == "var_decl":
+            return expr_entry
+
+        if expr_type in EXPR_UNSUPPORTED_SET:
+            # TODO: implement
+            return None
+
+        _LOGGER.error("unhandled expr type: %s %s in %s", expr_type, expr_entry.get_id(), call_expr_entry.get_id())
         return None
+
+    def _get_function_info(self, func_decl: Entry):
+        if func_decl is None:
+            return (None, False)
+        func_decl_type = func_decl.get_type()
+        if func_decl_type not in ("function_decl"):
+            _LOGGER.error("unhandled entry type: %s", func_decl_type)
+            return (None, False)
+        is_meth = is_method_of_instance(func_decl)
+        if is_meth:
+            func_name = get_entry_name(func_decl)
+        else:
+            func_name = get_entry_repr(func_decl)
+        return (func_name, is_meth)
 
     def _handle_constructor(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
         init_list = []
@@ -573,7 +789,7 @@ class ScopeAnalysis:
         # for index in range(0, entries_num, 2):
 
         recent_case_value = None  # list of one element
-        recent_case_fallthrough = True  # bool
+        recent_case_fallthrough: bool = True
         recent_case_stats: List[Statement] = None
 
         for case_entry in index_entries:
@@ -586,7 +802,7 @@ class ScopeAnalysis:
                     if case_data:
                         switch_node.items.append(case_data)
                         recent_case_value = None
-                        recent_case_fallthrough = True  ## can happen two case_label_expr in row
+                        recent_case_fallthrough = True  ## can happen - two case_label_expr in row
                         recent_case_stats = None
 
                 case_value_entry = case_entry.get("low")
@@ -626,6 +842,10 @@ class ScopeAnalysis:
                 recent_case_fallthrough = False
                 continue
 
+            if case_entry_type == "label_expr":
+                recent_case_fallthrough = True
+                continue
+
             raise RuntimeError(f"unhandled switch case type: {case_entry_type}")
 
             # expr_entry = index_entries[index + 1]
@@ -659,7 +879,6 @@ class ScopeAnalysis:
 
 def get_vtable_entries(vtable_var_decl: Entry):
     tab_dict = {}
-    print("xxxx:", vtable_var_decl)
     var_init = vtable_var_decl.get("init")
     items_num = int(var_init.get("lngt"))
     data_list = var_init.get_ordered_tuples(["idx", "val"])
