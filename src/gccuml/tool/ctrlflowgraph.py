@@ -800,31 +800,8 @@ class ScopeAnalysis:
                     recent_case_value = [None]
                 continue
 
-            if case_entry_type in ("return_expr"):
-                if recent_case_value is None:
-                    raise RuntimeError("invalid switch case data")
-                recent_case_fallthrough = False
-                recent_case_stats = []
-                self._analyze_func(case_entry, recent_case_stats)
-                continue
-
-            if case_entry_type in ("bind_expr"):
-                if recent_case_value is None:
-                    raise RuntimeError("invalid switch case data")
-                recent_case_fallthrough = False
-                recent_case_stats = []
-                self._analyze_func(case_entry, recent_case_stats)
-                continue
-
-            if case_entry_type in ("cleanup_point_expr"):
-                if recent_case_value is None:
-                    raise RuntimeError("invalid switch case data")
-                recent_case_fallthrough = True
-                recent_case_stats = []
-                self._analyze_func(case_entry, recent_case_stats)
-                continue
-
             if case_entry_type == "goto_expr":
+                # break instruction
                 recent_case_fallthrough = False
                 continue
 
@@ -832,12 +809,37 @@ class ScopeAnalysis:
                 recent_case_fallthrough = True
                 continue
 
-            raise RuntimeError(f"unhandled switch case type: {case_entry_type}")
+            ## add regular branch
+            recent_case_fallthrough = True
+            recent_case_stats = []
+            self._analyze_func(case_entry, recent_case_stats)
 
-            # expr_entry = index_entries[index + 1]
-            # case_stats = []
-            # self._analyze_func(expr_entry, case_stats)
-            # switch_node.items.append( (case_value, case_stats) )
+            # if case_entry_type in ("return_expr"):
+            #     if recent_case_value is None:
+            #         raise RuntimeError("invalid switch case data")
+            #     recent_case_fallthrough = True
+            #     recent_case_stats = []
+            #     self._analyze_func(case_entry, recent_case_stats)
+            #     continue
+            #
+            # if case_entry_type in ("bind_expr"):
+            #     if recent_case_value is None:
+            #         raise RuntimeError("invalid switch case data")
+            #     # recent_case_fallthrough = False
+            #     recent_case_fallthrough = True
+            #     recent_case_stats = []
+            #     self._analyze_func(case_entry, recent_case_stats)
+            #     continue
+            #
+            # if case_entry_type in ("cleanup_point_expr"):
+            #     if recent_case_value is None:
+            #         raise RuntimeError("invalid switch case data")
+            #     recent_case_fallthrough = True
+            #     recent_case_stats = []
+            #     self._analyze_func(case_entry, recent_case_stats)
+            #     continue
+            #
+            # raise RuntimeError(f"unhandled switch case type: {case_entry_type}")
 
         if recent_case_value is None:
             raise RuntimeError("invalid switch case data")
@@ -855,6 +857,7 @@ class ScopeAnalysis:
         if case_statements is None:
             case_statements = []
         return (case_value, is_fallthrough, case_statements)
+        # return (case_value, is_fallthrough, case_statements)
 
     def _find_return_item(self, statements_list):
         for index, item in enumerate(statements_list):

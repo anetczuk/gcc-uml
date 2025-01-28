@@ -8,7 +8,12 @@ public:
 		int timestamp = time(nullptr);
 		timestamp += paramA;
 		switch(timestamp % 3) {
-		case 0: return 0;
+		case 0:
+			if (timestamp) {
+				return 0;
+			} else {
+				return 1;
+			}
 		case 1:
 		case 2: return 2;
 		default: {

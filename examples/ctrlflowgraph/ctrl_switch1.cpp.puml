@@ -5,11 +5,10 @@ card "::calc_switch1() -> int" {
     :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 3" {
-    ' case: 0 fallthrough: False
+    ' case: 0 fallthrough: True
     if ( 0 ? ) then (yes)
         #lightgreen:return 0;
         stop
-    else
     endif
 }
     #lightgreen:return -3;
@@ -22,7 +21,7 @@ card "::calc_switch2() -> int" {
     :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 3" {
-    ' case: None fallthrough: False
+    ' case: None fallthrough: True
     if ( default ) then (yes)
         #lightgreen:return 0;
         stop
@@ -57,29 +56,26 @@ card "::calc_switch4() -> int" {
     :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 3" {
-    ' case: 0 fallthrough: False
+    ' case: 0 fallthrough: True
     if ( 0 ? ) then (yes)
         #lightgreen:return 0;
         stop
+    endif
+    ' case: 1 fallthrough: True
+    if ( 1 ? ) then (yes)
+        #lightgreen:return 1;
+        stop
+    endif
+    ' case: 2 fallthrough: True
+    if ( 2 ? ) then (yes)
+        #lightgreen:return 2;
+        stop
+    endif
+    ' case: None fallthrough: True
+    if ( default ) then (yes)
+        :timestamp = ::time(0);
     else
-        ' case: 1 fallthrough: False
-        if ( 1 ? ) then (yes)
-            #lightgreen:return 1;
-            stop
-        else
-            ' case: 2 fallthrough: False
-            if ( 2 ? ) then (yes)
-                #lightgreen:return 2;
-                stop
-            else
-                ' case: None fallthrough: True
-                if ( default ) then (yes)
-                    :timestamp = ::time(0);
-                else
-                    -[hidden]->
-                endif
-            endif
-        endif
+        -[hidden]->
     endif
 }
     :timestamp = timestamp * 3;

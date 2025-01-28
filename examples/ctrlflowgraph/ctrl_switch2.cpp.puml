@@ -9,41 +9,36 @@ partition "switch:\nvalue" {
     ' case: 0 fallthrough: True
     if ( 0 ? ) then (yes)
     endif
-    note right: [fallthrough]
     ' case: 1 fallthrough: True
     if ( 1 ? ) then (yes)
         :timestamp = ::time(0);
     endif
-    note right: [fallthrough]
     ' case: 2 fallthrough: False
     if ( 2 ? ) then (yes)
     else
-        ' case: 3 fallthrough: False
+        ' case: 3 fallthrough: True
         if ( 3 ? ) then (yes)
             #lightgreen:return 2;
             stop
+        endif
+        ' case: 4 fallthrough: True
+        if ( 4 ? ) then (yes)
+            :int ret = timestamp + value;
+            :ret = ret / value;
+            :ret = ret / 5.2000000000000001776356839e+0;
+            #lightgreen:return ret;
+            stop
+        endif
+        ' case: 5 fallthrough: True
+        if ( 5 ? ) then (yes)
+            :timestamp = ::time(0);
+        endif
+        ' case: None fallthrough: True
+        if ( default ) then (yes)
+            #lightgreen:return -1;
+            stop
         else
-            ' case: 4 fallthrough: False
-            if ( 4 ? ) then (yes)
-                :int ret = timestamp + value;
-                :ret = ret / value;
-                :ret = ret / 5.2000000000000001776356839e+0;
-                #lightgreen:return ret;
-                stop
-            else
-                ' case: 5 fallthrough: True
-                if ( 5 ? ) then (yes)
-                    :timestamp = ::time(0);
-                endif
-                note right: [fallthrough]
-                ' case: None fallthrough: False
-                if ( default ) then (yes)
-                    #lightgreen:return -1;
-                    stop
-                else
-                    -[hidden]->
-                endif
-            endif
+            -[hidden]->
         endif
     endif
 }
@@ -61,40 +56,35 @@ partition "switch:\nvalue" {
     ' case: 0 fallthrough: True
     if ( 0 ? ) then (yes)
     endif
-    note right: [fallthrough]
     ' case: 1 fallthrough: True
     if ( 1 ? ) then (yes)
         :timestamp = ::time(0);
     endif
-    note right: [fallthrough]
-    ' case: None fallthrough: False
+    ' case: None fallthrough: True
     ' case: 2 fallthrough: False
     if ( 2 ? ) then (yes)
     else
-        ' case: 3 fallthrough: False
+        ' case: 3 fallthrough: True
         if ( 3 ? ) then (yes)
             #lightgreen:return 2;
             stop
+        endif
+        ' case: 4 fallthrough: True
+        if ( 4 ? ) then (yes)
+            :int ret = timestamp + value;
+            :ret = ret - value;
+            #lightgreen:return ret;
+            stop
+        endif
+        ' case: 5 fallthrough: True
+        if ( 5 ? ) then (yes)
+            :timestamp = ::time(0);
+        endif
+        if ( default ) then (yes)
+            #lightgreen:return -1;
+            stop
         else
-            ' case: 4 fallthrough: False
-            if ( 4 ? ) then (yes)
-                :int ret = timestamp + value;
-                :ret = ret - value;
-                #lightgreen:return ret;
-                stop
-            else
-                ' case: 5 fallthrough: True
-                if ( 5 ? ) then (yes)
-                    :timestamp = ::time(0);
-                endif
-                note right: [fallthrough]
-                if ( default ) then (yes)
-                    #lightgreen:return -1;
-                    stop
-                else
-                    -[hidden]->
-                endif
-            endif
+            -[hidden]->
         endif
     endif
 }

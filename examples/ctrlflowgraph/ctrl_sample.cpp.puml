@@ -13,27 +13,29 @@ card "::ExampleClass::switchExample(int const paramA) -> int" {
     :timestamp = timestamp + paramA;
 
 partition "switch:\ntimestamp % 3" {
-    ' case: 0 fallthrough: False
+    ' case: 0 fallthrough: True
     if ( 0 ? ) then (yes)
-        #lightgreen:return 0;
-        stop
-    else
-        ' case: 1 fallthrough: True
-        if ( 1 ? ) then (yes)
-        endif
-        note right: [fallthrough]
-        ' case: 2 fallthrough: False
-        if ( 2 ? ) then (yes)
-            #lightgreen:return 2;
+        if (timestamp != 0 ?) then (true)
+            #lightgreen:return 0;
             stop
-        else
-            ' case: None fallthrough: True
-            if ( default ) then (yes)
-                :timestamp = ::time(0);
-            else
-                -[hidden]->
-            endif
+        else (false)
+            #lightgreen:return 1;
+            stop
         endif
+    endif
+    ' case: 1 fallthrough: True
+    if ( 1 ? ) then (yes)
+    endif
+    ' case: 2 fallthrough: True
+    if ( 2 ? ) then (yes)
+        #lightgreen:return 2;
+        stop
+    endif
+    ' case: None fallthrough: True
+    if ( default ) then (yes)
+        :timestamp = ::time(0);
+    else
+        -[hidden]->
     endif
 }
     :timestamp = timestamp * 3;

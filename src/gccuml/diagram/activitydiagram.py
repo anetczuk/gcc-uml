@@ -386,10 +386,10 @@ partition "switch:\\n{statement.name}" {{"""
                         f"""\
 {switch_indent_str}endif"""
                     )
-                    self.content_list.append(
-                        f"""\
-{switch_indent_str}note right: [fallthrough]"""
-                    )
+                #                     self.content_list.append(
+                #                         f"""\
+                # {switch_indent_str}note right: [fallthrough]"""
+                #                     )
                 else:
                     ## normal or default
                     self.content_list.append(
