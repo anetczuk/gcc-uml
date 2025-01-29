@@ -104,7 +104,9 @@ def get_function_full_name(function_decl: Entry):
 
     scope = function_decl.get("scpe")
     if scope is None:
-        raise RuntimeError("case never occurred")
+        ## compiler generated function
+        name_prefix = get_decl_namespace_list(function_decl)
+        return "::".join(name_prefix)
 
     if scope.get_type() != "record_type":
         ## regular function

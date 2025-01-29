@@ -45,6 +45,7 @@ card "::item::ExampleA::~ExampleA() -> void" {
 }
 
 card "::item::ExampleA::methodA1() -> int" {
+    :::item::EmptyExamle emptyObj;;
     :const int ret = 5;
     #lightgreen:return 5;
     stop

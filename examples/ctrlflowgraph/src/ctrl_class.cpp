@@ -4,6 +4,9 @@
 
 
 namespace item {
+	class EmptyExamle {
+	};
+
 	class ExampleA {
 	public:
 
@@ -16,6 +19,7 @@ namespace item {
 		}
 
 		virtual int methodA1() {
+			EmptyExamle emptyObj;
 			const int ret = 5;
 			return ret;
 		}

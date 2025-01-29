@@ -196,16 +196,53 @@ UNSUPPORTED_SET = {
     "max_expr",
     "label_decl",
     "va_arg_expr",
+    "bit_field_ref",
+    "mem_ref",
+    "complex_expr",
+    "pointer_diff_expr",
+    "complex_cst",
+    "absu_expr",
+    "paren_expr",
+    "exact_div_expr",
+    "conj_expr",
+    "empty_class_expr",
+    "case_label_expr",  # case from switch inside code block
+    "try_catch_expr",
+    "expr_pack_expansion",
+    "reinterpret_cast_expr",
+    "alignof_expr",
+    "nw_expr",
+    "dl_expr",
+    "static_assert",
+    "do_stmt",
+    "tag_defn",
+    "const_cast_expr",
+    "addressof_expr",
+    "raw_data_cst",
 }
 
 
 EXPR_UNSUPPORTED_SET = {
     "template_id_expr",
     "component_ref",
+    "compound_expr",
     "overload",
     "function_decl",
     "baselink",
     "scope_ref",
+    "nop_expr",
+    "non_lvalue_expr",
+    "parm_decl",
+    "array_ref",
+    "indirect_ref",
+    "cond_expr",
+    "call_expr",
+    "pointer_plus_expr",
+    "convert_expr",
+    "dotstar_expr",
+    "member_ref",
+    "constructor",
+    "cast_expr",
 }
 
 
@@ -248,6 +285,7 @@ OP2_DICT = {
     "trunc_div_expr": "/",
     "truth_andif_expr": "&&",
     "truth_orif_expr": "||",
+    "truth_or_expr": "||",
     "lt_expr": "<",
     "le_expr": "<=",
     "gt_expr": ">",
@@ -303,6 +341,8 @@ class ScopeAnalysis:
         return decl_expr
 
     def _analyze_func(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
+        if statement_entry is None:
+            return (False, None)
         type_name = statement_entry.get_type()
 
         if type_name in UNSUPPORTED_SET:
@@ -407,10 +447,6 @@ class ScopeAnalysis:
             stat_list.extend(bind_list)
             return (True, None)
 
-        if type_name == "must_not_throw_expr":
-            body_entry = statement_entry.get("body")
-            return self._analyze_func(body_entry, stat_list)
-
         _LOGGER.error("unhandled statement type %s %s", statement_entry.get_id(), type_name)
 
         node = Statement(
@@ -442,7 +478,32 @@ class ScopeAnalysis:
             return (True, None)
 
         if type_name == "result_decl":
-            ## do nothing
+            ### do nothing
+            ##result_value = get_entry_name(statement_entry)
+            return (True, None)
+
+        if type_name in ("goto_expr"):
+            labl_entry = statement_entry.get("labl")
+            label_name = get_entry_name(labl_entry)
+            statement = Statement(f"goto {label_name}", StatementType.UNSUPPORTED)
+            stat_list.append(statement)
+            return (True, None)
+
+        if type_name in ("label_expr"):
+            label_name = get_entry_name(statement_entry)
+            statement = Statement(f"label {label_name}", StatementType.UNSUPPORTED)
+            stat_list.append(statement)
+            return (True, None)
+
+        if type_name in ("asm_expr"):
+            label_name = get_entry_name(statement_entry)
+            statement = Statement("asm expression", StatementType.UNSUPPORTED)
+            stat_list.append(statement)
+            return (True, None)
+
+        if type_name in ("unordered_expr"):
+            statement = Statement(f"unordered_expr {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            stat_list.append(statement)
             return (True, None)
 
         if type_name in ("try_finally_expr"):
@@ -468,30 +529,6 @@ class ScopeAnalysis:
             try_fin_grp.append(finally_group)
 
             stat_list.append(try_fin_grp)
-            return (True, None)
-
-        if type_name in ("goto_expr"):
-            labl_entry = statement_entry.get("labl")
-            label_name = get_entry_name(labl_entry)
-            statement = Statement(f"goto {label_name}", StatementType.UNSUPPORTED)
-            stat_list.append(statement)
-            return (True, None)
-
-        if type_name in ("label_expr"):
-            label_name = get_entry_name(statement_entry)
-            statement = Statement(f"label {label_name}", StatementType.UNSUPPORTED)
-            stat_list.append(statement)
-            return (True, None)
-
-        if type_name in ("asm_expr"):
-            label_name = get_entry_name(statement_entry)
-            statement = Statement("asm expression", StatementType.UNSUPPORTED)
-            stat_list.append(statement)
-            return (True, None)
-
-        if type_name in ("unordered_expr"):
-            statement = Statement(f"unordered_expr {statement_entry.get_id()}", StatementType.UNSUPPORTED)
-            stat_list.append(statement)
             return (True, None)
 
         if type_name == "try_block":
@@ -520,6 +557,10 @@ class ScopeAnalysis:
 
             stat_list.append(try_fin_grp)
             return (True, None)
+
+        if type_name == "must_not_throw_expr":
+            body_entry = statement_entry.get("body")
+            return self._analyze_func(body_entry, stat_list)
 
         return (False, None)
 
@@ -638,8 +679,13 @@ class ScopeAnalysis:
         obj_name = ""
         if is_meth:
             # in case of method first parameter is object
-            first_param = params_list.pop(0)
-            obj_name = f"{first_param}->"
+            # if not params_list:
+            #     pass
+            if params_list:
+                first_param = params_list.pop(0)
+                obj_name = f"{first_param}->"
+            else:
+                obj_name = "???->"
         params_str = ", ".join(params_list)
         return (True, f"{obj_name}{func_name}({params_str})")
 
@@ -654,6 +700,11 @@ class ScopeAnalysis:
         if fn_type == "var_decl":
             var_name = get_entry_name(func_decl)
             return (var_name, False)
+
+        if fn_type == "va_arg_expr":
+            # happens when function pointer is taken by va_arg macro
+            # and then when it's called
+            return ("va_arg", False)
 
         _LOGGER.error("unhandled call type: %s %s in %s", fn_type, func_decl.get_id(), call_expr_entry.get_id())
         return (None, False)
@@ -756,14 +807,18 @@ class ScopeAnalysis:
         stat_list.append(if_node)
 
     def _handle_switch(self, statement_entry: Entry, stat_list: List[Statement]):
+        body_entry = statement_entry.get("body")
+        subbody_entry = body_entry.get("0")
+        if subbody_entry is None:
+            # switch without any case and default
+            return
+
         switch_node = Statement("", StatementType.SWITCH)
 
         cond_entry = statement_entry.get("cond")
         _valid, cond_expr = self._analyze_func(cond_entry, [])
         switch_node.name = cond_expr
 
-        body_entry = statement_entry.get("body")
-        subbody_entry = body_entry.get("0")
         if subbody_entry.get_type() == "bind_expr":
             body_entry = subbody_entry.get("body")
 
@@ -810,46 +865,19 @@ class ScopeAnalysis:
                 continue
 
             ## add regular branch
+            # TODO: is should be fixed, because "while" from ctrl_switch1.cpp" is missing
             recent_case_fallthrough = True
             recent_case_stats = []
             self._analyze_func(case_entry, recent_case_stats)
 
-            # if case_entry_type in ("return_expr"):
-            #     if recent_case_value is None:
-            #         raise RuntimeError("invalid switch case data")
-            #     recent_case_fallthrough = True
-            #     recent_case_stats = []
-            #     self._analyze_func(case_entry, recent_case_stats)
-            #     continue
-            #
-            # if case_entry_type in ("bind_expr"):
-            #     if recent_case_value is None:
-            #         raise RuntimeError("invalid switch case data")
-            #     # recent_case_fallthrough = False
-            #     recent_case_fallthrough = True
-            #     recent_case_stats = []
-            #     self._analyze_func(case_entry, recent_case_stats)
-            #     continue
-            #
-            # if case_entry_type in ("cleanup_point_expr"):
-            #     if recent_case_value is None:
-            #         raise RuntimeError("invalid switch case data")
-            #     recent_case_fallthrough = True
-            #     recent_case_stats = []
-            #     self._analyze_func(case_entry, recent_case_stats)
-            #     continue
-            #
-            # raise RuntimeError(f"unhandled switch case type: {case_entry_type}")
-
-        if recent_case_value is None:
-            raise RuntimeError("invalid switch case data")
-        case_value = recent_case_value[0]
-        case_data = self._get_switch_case(case_value, recent_case_fallthrough, recent_case_stats)
-        if case_data:
-            switch_node.items.append(case_data)
-            recent_case_value = None
-            recent_case_fallthrough = None
-            recent_case_stats = None
+        if recent_case_value is not None:
+            case_value = recent_case_value[0]
+            case_data = self._get_switch_case(case_value, recent_case_fallthrough, recent_case_stats)
+            if case_data:
+                switch_node.items.append(case_data)
+                recent_case_value = None
+                recent_case_fallthrough = None
+                recent_case_stats = None
 
         stat_list.append(switch_node)
 
