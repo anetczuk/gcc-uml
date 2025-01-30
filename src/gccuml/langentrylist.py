@@ -1,14 +1,31 @@
 ##
 ## File automatically generated using grab-entry-types.sh script
 ##
-## Source file taken to generate this file is gcc/tree.def
-## from GCC compiler project.
+## Source files taken from GCC compiler project to generate this file are:
+##	  gcc/tree.def
+##	  gcc/cp/cp-tree.def
 ##
 
 
-## list of entries defined in gcc/tree.def
-## fields: symbol, name (used in dump-lang-raw), type, number of argument-words
+##
+## list of entries
+## fields: symbol, name (used in dump-lang-raw), tree code class, number of argument-words
+##
+## tree code class meaning (taken from gcc/tree-core.h):
+##     tcc_exceptional  -- An exceptional code (fits no category)
+##     tcc_constant     -- A constant.
+##     tcc_type         -- A type object code.
+##     tcc_declaration  -- A declaration (also serving as variable refs).
+##     tcc_reference    -- A reference to storage.
+##     tcc_comparison   -- A comparison expression.
+##     tcc_unary        -- A unary arithmetic expression.
+##     tcc_binary       -- A binary arithmetic expression.
+##     tcc_statement    -- A statement expression, which have side effects, but usually no interesting value.
+##     tcc_vl_exp       -- A function call or other expression with a variable-length operand vector.
+##     tcc_expression   -- Any other expression.
+##
 ENTRY_DEF_LIST = [
+    ## gcc/tree.def
     ("ERROR_MARK", "error_mark", "tcc_exceptional", 0),
     ("IDENTIFIER_NODE", "identifier_node", "tcc_exceptional", 0),
     ("TREE_LIST", "tree_list", "tcc_exceptional", 0),
@@ -253,4 +270,101 @@ ENTRY_DEF_LIST = [
     ("OPTIMIZATION_NODE", "optimization_node", "tcc_exceptional", 0),
     ("TARGET_OPTION_NODE", "target_option_node", "tcc_exceptional", 0),
     ("ANNOTATE_EXPR", "annotate_expr", "tcc_expression", 3),
+
+    ## gcc/cp/cp-tree.def
+    ("OFFSET_REF", "offset_ref", "tcc_reference", 2),
+    ("PTRMEM_CST", "ptrmem_cst", "tcc_constant", 0),
+    ("NEW_EXPR", "nw_expr", "tcc_expression", 4),
+    ("VEC_NEW_EXPR", "vec_nw_expr", "tcc_expression", 3),
+    ("DELETE_EXPR", "dl_expr", "tcc_expression", 2),
+    ("VEC_DELETE_EXPR", "vec_dl_expr", "tcc_expression", 2),
+    ("SCOPE_REF", "scope_ref", "tcc_reference", 2),
+    ("MEMBER_REF", "member_ref", "tcc_reference", 2),
+    ("TYPE_EXPR", "type_expr", "tcc_expression", 1),
+    ("AGGR_INIT_EXPR", "aggr_init_expr", "tcc_vl_exp", 3),
+    ("VEC_INIT_EXPR", "vec_init_expr", "tcc_expression", 2),
+    ("THROW_EXPR", "throw_expr", "tcc_expression", 1),
+    ("EMPTY_CLASS_EXPR", "empty_class_expr", "tcc_expression", 0),
+    ("BASELINK", "baselink", "tcc_exceptional", 0),
+    ("TEMPLATE_DECL", "template_decl", "tcc_declaration", 0),
+    ("TEMPLATE_PARM_INDEX", "template_parm_index", "tcc_exceptional", 0),
+    ("TEMPLATE_TEMPLATE_PARM", "template_template_parm", "tcc_type", 0),
+    ("TEMPLATE_TYPE_PARM", "template_type_parm", "tcc_type", 0),
+    ("TYPENAME_TYPE", "typename_type", "tcc_type", 0),
+    ("TYPEOF_TYPE", "typeof_type", "tcc_type", 0),
+    ("BOUND_TEMPLATE_TEMPLATE_PARM", "bound_template_template_parm", "tcc_type", 0),
+    ("UNBOUND_CLASS_TEMPLATE", "unbound_class_template", "tcc_type", 0),
+    ("USING_DECL", "using_decl", "tcc_declaration", 0),
+    ("USING_STMT", "using_stmt", "tcc_statement", 1),
+    ("DEFERRED_PARSE", "deferred_parse", "tcc_exceptional", 0),
+    ("DEFERRED_NOEXCEPT", "deferred_noexcept", "tcc_exceptional", 0),
+    ("TEMPLATE_ID_EXPR", "template_id_expr", "tcc_expression", 2),
+    ("OVERLOAD", "overload", "tcc_exceptional", 0),
+    ("BINDING_VECTOR", "binding_vector", "tcc_exceptional", 0),
+    ("PSEUDO_DTOR_EXPR", "pseudo_dtor_expr", "tcc_expression", 3),
+    ("MODOP_EXPR", "modop_expr", "tcc_expression", 3),
+    ("CAST_EXPR", "cast_expr", "tcc_unary", 1),
+    ("REINTERPRET_CAST_EXPR", "reinterpret_cast_expr", "tcc_unary", 1),
+    ("CONST_CAST_EXPR", "const_cast_expr", "tcc_unary", 1),
+    ("STATIC_CAST_EXPR", "static_cast_expr", "tcc_unary", 1),
+    ("DYNAMIC_CAST_EXPR", "dynamic_cast_expr", "tcc_unary", 1),
+    ("IMPLICIT_CONV_EXPR", "implicit_conv_expr", "tcc_unary", 1),
+    ("DOTSTAR_EXPR", "dotstar_expr", "tcc_expression", 2),
+    ("TYPEID_EXPR", "typeid_expr", "tcc_expression", 1),
+    ("NOEXCEPT_EXPR", "noexcept_expr", "tcc_unary", 1),
+    ("SPACESHIP_EXPR", "spaceship_expr", "tcc_expression", 2),
+    ("CTOR_INITIALIZER", "ctor_initializer", "tcc_expression", 1),
+    ("TRY_BLOCK", "try_block", "tcc_statement", 2),
+    ("EH_SPEC_BLOCK", "eh_spec_block", "tcc_statement", 2),
+    ("HANDLER", "handler", "tcc_statement", 2),
+    ("MUST_NOT_THROW_EXPR", "must_not_throw_expr", "tcc_expression", 2),
+    ("CLEANUP_STMT", "cleanup_stmt", "tcc_statement", 3),
+    ("IF_STMT", "if_stmt", "tcc_statement", 4),
+    ("RANGE_FOR_STMT", "range_for_stmt", "tcc_statement", 6),
+    ("EXPR_STMT", "expr_stmt", "tcc_expression", 1),
+    ("TAG_DEFN", "tag_defn", "tcc_expression", 0),
+    ("OFFSETOF_EXPR", "offsetof_expr", "tcc_expression", 2),
+    ("ADDRESSOF_EXPR", "addressof_expr", "tcc_expression", 1),
+    ("ARROW_EXPR", "arrow_expr", "tcc_expression", 1),
+    ("ALIGNOF_EXPR", "alignof_expr", "tcc_expression", 1),
+    ("AT_ENCODE_EXPR", "at_encode_expr", "tcc_expression", 1),
+    ("STMT_EXPR", "stmt_expr", "tcc_expression", 1),
+    ("UNARY_PLUS_EXPR", "unary_plus_expr", "tcc_unary", 1),
+    ("STATIC_ASSERT", "static_assert", "tcc_exceptional", 0),
+    ("TYPE_ARGUMENT_PACK", "type_argument_pack", "tcc_type", 0),
+    ("NONTYPE_ARGUMENT_PACK", "nontype_argument_pack", "tcc_expression", 1),
+    ("TYPE_PACK_EXPANSION", "type_pack_expansion", "tcc_type", 0),
+    ("EXPR_PACK_EXPANSION", "expr_pack_expansion", "tcc_expression", 3),
+    ("PACK_INDEX_TYPE", "pack_index_type", "tcc_type", 0),
+    ("PACK_INDEX_EXPR", "pack_index_expr", "tcc_expression", 2),
+    ("ARGUMENT_PACK_SELECT", "argument_pack_select", "tcc_exceptional", 0),
+    ("UNARY_LEFT_FOLD_EXPR", "unary_left_fold_expr", "tcc_expression", 2),
+    ("UNARY_RIGHT_FOLD_EXPR", "unary_right_fold_expr", "tcc_expression", 2),
+    ("BINARY_LEFT_FOLD_EXPR", "binary_left_fold_expr", "tcc_expression", 3),
+    ("BINARY_RIGHT_FOLD_EXPR", "binary_right_fold_expr", "tcc_expression", 3),
+    ("BIT_CAST_EXPR", "bit_cast_expr", "tcc_expression", 1),
+    ("TRAIT_EXPR", "trait_expr", "tcc_exceptional", 0),
+    ("TRAIT_TYPE", "trait_type", "tcc_type", 0),
+    ("LAMBDA_EXPR", "lambda_expr", "tcc_exceptional", 0),
+    ("DECLTYPE_TYPE", "decltype_type", "tcc_type", 0),
+    ("BASES", "bases", "tcc_type", 0),
+    ("DEPENDENT_OPERATOR_TYPE", "dependent_operator_type", "tcc_type", 0),
+    ("TEMPLATE_INFO", "template_info", "tcc_exceptional", 0),
+    ("OMP_DEPOBJ", "omp_depobj", "tcc_statement", 2),
+    ("CONSTRAINT_INFO", "constraint_info", "tcc_exceptional", 0),
+    ("REQUIRES_EXPR", "requires_expr", "tcc_expression", 3),
+    ("SIMPLE_REQ", "simple_req", "tcc_expression", 1),
+    ("TYPE_REQ", "type_req", "tcc_expression", 1),
+    ("COMPOUND_REQ", "compound_req", "tcc_expression", 2),
+    ("NESTED_REQ", "nested_req", "tcc_expression", 1),
+    ("ATOMIC_CONSTR", "atomic_constr", "tcc_expression", 1),
+    ("CONJ_CONSTR", "conj_constr", "tcc_expression", 2),
+    ("DISJ_CONSTR", "disj_constr", "tcc_expression", 2),
+    ("CO_AWAIT_EXPR", "co_await", "tcc_expression", 5),
+    ("CO_YIELD_EXPR", "co_yield", "tcc_expression", 2),
+    ("CO_RETURN_EXPR", "co_return", "tcc_statement", 2),
+    ("ASSERTION_STMT", "assertion_stmt", "tcc_statement", 3),
+    ("PRECONDITION_STMT", "precondition_stmt", "tcc_statement", 3),
+    ("POSTCONDITION_STMT", "postcondition_stmt", "tcc_statement", 4),
+    ("TU_LOCAL_ENTITY", "tu_local_entity", "tcc_exceptional", 0),
 ]
