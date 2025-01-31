@@ -11,7 +11,7 @@ card "::main() -> int" {
 }
 
 card "::calc_valA(int const valueA) -> int" {
-    :int xxxA = valueA * 2.100000000000000088817842e+0 + 3.0e+0;
+    :int xxxA = (valueA * 2.100000000000000088817842e+0) + 3.0e+0;
     :const int xxxB = xxxA * 3;
     #lightgreen:return xxxB;
     stop
@@ -22,7 +22,7 @@ card "::calc_valB(int const valueB) -> long int const" {
     :int timestamp;;
     :timestamp = ::time(0);
     :timestamp = timestamp + 1;
-    :timestamp = timestamp + 2 + timestamp;
+    :timestamp = (timestamp + 2) + timestamp;
     :const int bbb = timestamp + 11;
     if (bbb & 1 == 0 ?) then (true)
         :const int ccc = 0;
@@ -41,7 +41,7 @@ card "::calc_valC(int const valueC) -> int" {
     :int[] arrX = {[0] = 10, [1] = 20};
     :arrX[0] = arrX[0] + valueC;
     :arrX[1] = valueC / 2.100000000000000088817842e+0;
-    :const int xxxB = arrX[1] * 3 + arrX[0];
+    :const int xxxB = (arrX[1] * 3) + arrX[0];
     #lightgreen:return xxxB;
     stop
     -[hidden]->

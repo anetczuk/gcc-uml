@@ -270,7 +270,6 @@ ENTRY_DEF_LIST = [
     ("OPTIMIZATION_NODE", "optimization_node", "tcc_exceptional", 0),
     ("TARGET_OPTION_NODE", "target_option_node", "tcc_exceptional", 0),
     ("ANNOTATE_EXPR", "annotate_expr", "tcc_expression", 3),
-
     ## gcc/cp/cp-tree.def
     ("OFFSET_REF", "offset_ref", "tcc_reference", 2),
     ("PTRMEM_CST", "ptrmem_cst", "tcc_constant", 0),

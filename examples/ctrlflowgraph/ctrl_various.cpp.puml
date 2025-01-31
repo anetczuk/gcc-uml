@@ -148,6 +148,7 @@ card "::truth_if001() -> void" {
 
 card "::compound001() -> void" {
     :short int aaa1 = 0;
+    :[--unknown--];
     :aaa1 = ::foo(2);
     :aaa1 = ::foo(::foo(4));
     :::foo(5);

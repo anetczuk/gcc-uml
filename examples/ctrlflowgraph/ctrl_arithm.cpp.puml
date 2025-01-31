@@ -1,0 +1,10 @@
+@startuml
+
+card "::foo(unsigned int n1, unsigned int n2, unsigned int n3) -> unsigned int" {
+    #lightgreen:return (((n2 + 3) * n1) + n3) + n3 & 3;
+    stop
+    -[hidden]->
+}
+
+
+@enduml

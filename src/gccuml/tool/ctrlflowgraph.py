@@ -27,6 +27,7 @@ from gccuml.langanalyze import (
     find_class_vtable_var_decl,
     get_type_name_mod,
     get_entry_repr,
+    is_entry_code_class,
 )
 from gccuml.diagram.activitydiagram import (
     ActivityDiagramGenerator,
@@ -343,6 +344,15 @@ class ScopeAnalysis:
     def _analyze_func(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
         if statement_entry is None:
             return (False, None)
+
+        stat_valid, stat_name = self._handle_const(statement_entry, stat_list)
+        if stat_valid:
+            return (True, stat_name)
+
+        stat_valid, stat_name = self._handle_binary_op(statement_entry, stat_list)
+        if stat_valid:
+            return (True, stat_name)
+
         type_name = statement_entry.get_type()
 
         if type_name in UNSUPPORTED_SET:
@@ -385,17 +395,6 @@ class ScopeAnalysis:
             # array and object initialization
             return self._handle_constructor(statement_entry, stat_list)
 
-        if type_name == "decl_expr":
-            self.decl_expr_counter += 1
-            if self.decl_expr_counter >= len(self.vars):
-                return (True, None)
-            var_name, decl_expr = self.vars[self.decl_expr_counter]
-            if decl_expr:
-                decl_node = Statement(decl_expr, StatementType.NODE)
-                stat_list.append(decl_node)
-            self.scope_vars.add(var_name)
-            return (True, None)
-
         if type_name == "compound_expr":
             op0_entry = statement_entry.get("op 0")
             _valid, op0_expr = self._analyze_func(op0_entry, stat_list)
@@ -432,13 +431,6 @@ class ScopeAnalysis:
             if item_expr is not None:
                 return (True, "(&" + item_expr + ")")
             return (True, None)
-
-        if type_name == "array_ref":
-            op0_entry = statement_entry.get("op 0")  ## element
-            _valid, op0_expr = self._analyze_func(op0_entry, stat_list)
-            op1_entry = statement_entry.get("op 1")  ## index
-            _valid, op1_expr = self._analyze_func(op1_entry, stat_list)
-            return (True, f"{op0_expr}[{op1_expr}]")
 
         if type_name == "bind_expr":
             # new scope
@@ -564,6 +556,111 @@ class ScopeAnalysis:
 
         return (False, None)
 
+    def _handle_const(self, statement_entry: Entry, _stat_list: List[Statement]) -> Tuple[bool, str]:
+        is_code_class = is_entry_code_class(statement_entry, "tcc_constant")
+        if not is_code_class:
+            return (False, None)
+
+        entry_repr = get_entry_repr(statement_entry)
+        return (True, entry_repr)
+
+    def _handle_binary_op(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
+        is_code_class = is_entry_code_class(statement_entry, "tcc_binary")
+        if not is_code_class:
+            return (False, None)
+
+        stat_entry_type_name = statement_entry.get_type()
+        stat_entry_sign = OP2_DICT.get(stat_entry_type_name)
+        if stat_entry_sign is None:
+            return (False, None)
+
+        ## convert binary tree into Reverse Polish Notation
+        op_queue = []
+        left_visited = set()
+        ret_seq = []
+        # prev_sign = None
+        op_queue.append(statement_entry)
+        while op_queue:
+            curr_item = op_queue[0]
+
+            curr_type_name = curr_item.get_type()
+            op_sign = OP2_DICT.get(curr_type_name)
+            if op_sign is None:
+                op_queue.pop(0)
+                _valid, op0_expr = self._analyze_func(curr_item, stat_list)
+                continue
+
+            curr_id = curr_item.get_id()
+            if curr_id not in left_visited:
+                left_visited.add(curr_id)
+                op0_entry = curr_item.get("op 0")
+                op0_binary = is_entry_code_class(op0_entry, "tcc_binary")
+                if op0_binary:
+                    op_queue.insert(0, op0_entry)
+                    continue
+
+                _valid, op0_expr = self._analyze_func(op0_entry, stat_list)
+                if op0_expr is None:
+                    #TODO: implement
+                    _LOGGER.warning("unhandled entry: %s %s", op0_entry.get_type(), op0_entry.get_id())
+                    op0_expr = f"?!?{op0_entry.get_type()}{op0_entry.get_id()}"
+                ret_seq.append(op0_expr)
+
+            ret_seq.append(f" {op_sign} ")
+            op_queue.pop(0)
+
+            op1_entry = curr_item.get("op 1")
+            op1_binary = is_entry_code_class(op1_entry, "tcc_binary")
+            if op1_binary:
+                op_queue.insert(0, op1_entry)
+                continue
+
+            # is_stronger = self._is_stronger(op_sign, prev_sign)
+            # op_sign = prev_sign
+
+            _valid, op1_expr = self._analyze_func(op1_entry, stat_list)
+            if op1_expr is None:
+                #TODO: implement
+                _LOGGER.warning("unhandled entry: %s %s", op1_entry.get_type(), op1_entry.get_id())
+                op1_expr = f"?!?{op1_entry.get_type()}{op1_entry.get_id()}"
+
+            # if is_stronger:
+            #     ret_seq.append(op1_expr)
+            # else:
+            #     ret_seq.insert(0, "(")
+            #     ret_seq.append(op1_expr)
+            #     ret_seq.append(")")
+            ret_seq.insert(0, "(")
+            ret_seq.append(op1_expr)
+            ret_seq.append(")")
+
+        if ret_seq:
+            ## remove unnecessary parenthesis
+            ret_seq = ret_seq[1:]
+            ret_seq = ret_seq[:-1]
+
+        expr_str = "".join(ret_seq)
+        return (True, expr_str)
+
+    # SIGN_RANK = {"+": 1, "-": 1, "*": 2, "/": 2}
+    # def _is_stronger(self, curr_op, prev_op):
+    #     if prev_op is None:
+    #         # skip parenthesis
+    #         return True
+    #     curr_rank = self.SIGN_RANK.get(curr_op)
+    #     if curr_rank is None:
+    #         # add parenthesis
+    #         return False
+    #     prev_rank = self.SIGN_RANK.get(prev_op)
+    #     if prev_rank is None:
+    #         # add parenthesis
+    #         return False
+    #     if curr_rank < prev_rank:
+    #         # add parenthesis
+    #         return False
+    #     # skip parenthesis
+    #     return True
+
     def _handle_01(self, statement_entry: Entry, stat_list: List[Statement]) -> Tuple[bool, str]:
         valid_op1, op1_exp = self._handle_op1(statement_entry, stat_list)
         if valid_op1:
@@ -578,6 +675,24 @@ class ScopeAnalysis:
             return (True, num_val)
 
         type_name = statement_entry.get_type()
+
+        if type_name == "array_ref":
+            op0_entry = statement_entry.get("op 0")  ## element
+            _valid, op0_expr = self._analyze_func(op0_entry, stat_list)
+            op1_entry = statement_entry.get("op 1")  ## index
+            _valid, op1_expr = self._analyze_func(op1_entry, stat_list)
+            return (True, f"{op0_expr}[{op1_expr}]")
+
+        if type_name == "decl_expr":
+            self.decl_expr_counter += 1
+            if self.decl_expr_counter >= len(self.vars):
+                return (True, None)
+            var_name, decl_expr = self.vars[self.decl_expr_counter]
+            if decl_expr:
+                decl_node = Statement(decl_expr, StatementType.NODE)
+                stat_list.append(decl_node)
+            self.scope_vars.add(var_name)
+            return (True, None)
 
         if type_name in ("field_decl"):
             name = get_entry_repr(statement_entry)

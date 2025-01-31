@@ -684,6 +684,10 @@ def get_number_entry_value(value: Entry, fail_exception=True):
     if value_type == "string_cst":
         return value.get("strg")
 
+    if value_type == "vector_cst":
+        # TODO: fix GCC to dump data
+        return "{????}"
+
     if fail_exception:
         raise RuntimeError("unhandled number entry: {value_type}, {value.get_id()}")
     return None

@@ -8,6 +8,7 @@
 
 import os
 import logging
+from typing import Dict
 
 from gccuml.langcontent import (
     Entry,
@@ -18,6 +19,7 @@ from gccuml.langcontent import (
     LangContent,
     get_number_entry_value,
 )
+from gccuml.langentrylist import ENTRY_DEF_LIST
 
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -396,3 +398,28 @@ def find_class_vtable_var_decl(content: LangContent, record_entry: Entry):
             continue
         return entry
     return None
+
+
+## ==================================================
+
+
+_TYPE_TO_CODE_CLASS_DICT: Dict[str, str] = None
+
+
+def get_entry_type_code_class(entry_tye: str) -> str:
+    # pylint: disable=W0603
+    global _TYPE_TO_CODE_CLASS_DICT
+    if _TYPE_TO_CODE_CLASS_DICT is None:
+        ## build dict
+        _TYPE_TO_CODE_CLASS_DICT = {}
+        for item in ENTRY_DEF_LIST:
+            item_name = item[1]
+            code_class = item[2]
+            _TYPE_TO_CODE_CLASS_DICT[item_name] = code_class
+    return _TYPE_TO_CODE_CLASS_DICT.get(entry_tye)
+
+
+def is_entry_code_class(entry: Entry, code_class):
+    type_name = entry.get_type()
+    entry_code_class = get_entry_type_code_class(type_name)
+    return entry_code_class == code_class
