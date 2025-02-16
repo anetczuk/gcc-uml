@@ -29,8 +29,7 @@ from gccuml.langanalyze import (
     get_entry_repr,
     is_entry_code_class,
 )
-from gccuml.diagram.plantuml.activitydiagram import (
-    ActivityDiagramGenerator,
+from gccuml.diagram.activitydata import (
     LabeledCard,
     FunctionArg,
     Statement,
@@ -38,6 +37,7 @@ from gccuml.diagram.plantuml.activitydiagram import (
     LabeledGroup,
     StatementList,
 )
+from gccuml.diagram.plantuml.activitydiagram import ActivityDiagramGenerator
 
 
 _LOGGER = logging.getLogger(__name__)

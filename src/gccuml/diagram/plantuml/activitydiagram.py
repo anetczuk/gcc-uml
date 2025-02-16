@@ -7,12 +7,13 @@
 
 import os
 import logging
-from enum import Enum, auto
-from typing import NamedTuple, Any
+from typing import Any
 
 from typing import List, Dict
 
 from showgraph.io import write_file
+import gccuml.diagram.activitydata as activitydata
+from gccuml.diagram.activitydata import StatementType
 
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -21,9 +22,6 @@ _LOGGER = logging.getLogger(__name__)
 
 
 ## ===========================================================
-
-
-FunctionArg = NamedTuple("FunctionArg", [("name", str), ("type", str)])
 
 
 class ActivityItem:
@@ -41,28 +39,27 @@ class ActivityItem:
         return content_list
 
 
-class StatementType(Enum):
-    UNSUPPORTED = auto()
-    NODE = auto()
-    IF = auto()
-    SWITCH = auto()
-    GOTO = auto()
-    GOTOLABEL = auto()
-    STOP = auto()
-
-
 class Statement(ActivityItem):
     """Container for function data to be presented on graph.
 
     Depending on 'type' it can be
     """
 
-    def __init__(self, statement_name: str, statement_type: StatementType = StatementType.NODE):
+    def __init__(self, statement_name: str = "", statement_type: StatementType = StatementType.NODE, data=None):
         super().__init__()
         self.name: str = statement_name
         self.type: StatementType = statement_type
         self.color: str = None
         self.items: List[Any] = []
+
+    @staticmethod
+    def convert(data: activitydata.Statement):
+        item = Statement()
+        item.name = data.name
+        item.type = data.type
+        item.color = data.color
+        item.items = convert_list(data.items)
+        return item
 
     def generate(self, indent) -> str:
         content_list = self._generate(indent)
@@ -250,6 +247,12 @@ class StatementList(ActivityItem):
         super().__init__()
         self.items: List[ActivityItem] = []
 
+    @staticmethod
+    def convert(data: activitydata.StatementList):
+        item = StatementList()
+        item.items = convert_list(data.items)
+        return item
+
     def append(self, item):
         self.items.append(item)
 
@@ -270,7 +273,14 @@ class LabeledCard(ActivityItem):
         self.label = label
         self.subitems: List[ActivityItem] = None
 
-    def set_label(self, func_name: str, args_list: List[FunctionArg], returntype: str):
+    @staticmethod
+    def convert(data: activitydata.LabeledCard):
+        item = LabeledCard()
+        item.label = data.label
+        item.subitems = convert_list(data.subitems)
+        return item
+
+    def set_label(self, func_name: str, args_list: List[activitydata.FunctionArg], returntype: str):
         join_list = []
         for arg_item in args_list:
             if arg_item.name:
@@ -321,6 +331,13 @@ class LabeledGroup(ActivityItem):
         if self.subitems is None:
             self.subitems = []
 
+    @staticmethod
+    def convert(data: activitydata.LabeledGroup):
+        item = LabeledGroup()
+        item.label = data.label
+        item.subitems = convert_list(data.subitems)
+        return item
+
     def append(self, item):
         self.subitems.append(item)
 
@@ -350,6 +367,10 @@ class SubNodeList(ActivityItem):
     def __init__(self):
         super().__init__()
         self.subitems: List[ActivityItem] = []
+
+    @staticmethod
+    def convert(data: activitydata.SubNodeList):
+        return None
 
     def append(self, item):
         self.subitems.append(item)
@@ -381,6 +402,10 @@ class SubGraph(ActivityItem):
         if self.subitems is None:
             self.subitems = []
 
+    @staticmethod
+    def convert(data: activitydata.SubGraph):
+        return None
+
     def append(self, item):
         self.subitems.append(item)
 
@@ -410,11 +435,72 @@ class SubGraph(ActivityItem):
 ## ===========================================================
 
 
+CONVERT_DICT = {
+        activitydata.Statement: Statement,
+        activitydata.StatementList: StatementList,
+        activitydata.LabeledCard: LabeledCard,
+        activitydata.LabeledGroup: LabeledGroup,
+        activitydata.SubNodeList: SubNodeList,
+        activitydata.SubGraph: SubGraph,
+    }
+
+
+def convert_data(data: Any) -> ActivityItem:
+    # if isinstance(data, ActivityItem):
+    #     ## backward compatibility
+    #     return data
+    if isinstance(data, tuple):
+        ## backward compatibility
+        return convert_tuple(data)
+    if isinstance(data, list):
+        ## backward compatibility
+        return convert_list(data)
+    if isinstance(data, dict):
+        ## backward compatibility
+        return convert_dict(data)
+
+    data_type = type(data)
+    converter = CONVERT_DICT.get(data_type)
+    if converter is not None:
+        # raise RuntimeError(f"unable to find converter for type {data_type}")
+        converted = converter.convert(data)
+        if converted is None:
+            raise RuntimeError(f"unable to convert data type {data_type}")
+        return converted
+
+    # no conversion
+    return data
+
+
+def convert_tuple(data_tuple):
+    ret_list = convert_list(data_tuple)
+    return tuple(ret_list)
+
+
+def convert_list(data_list: List[activitydata.ActivityData]) -> List[ActivityItem]:
+    ret_list = []
+    for data in data_list:
+        converted = convert_data(data)
+        ret_list.append(converted)
+    return ret_list
+
+
+def convert_dict(data_dict: Dict[str, activitydata.ActivityData]) -> Dict[str, ActivityItem]:
+    ret_dict = {}
+    for key, data in data_dict.items():
+        converted = convert_data(data)
+        ret_dict[key] = converted
+    return ret_dict
+
+
+## ===========================================================
+
+
 ## Generator for PlantUml activity diagrams
 class ActivityDiagramGenerator:
 
-    def __init__(self, data_dict=None):
-        self.data: Dict[str, ActivityItem] = data_dict
+    def __init__(self, data_dict: Dict[str, activitydata.ActivityData]=None):
+        self.data: Dict[str, ActivityItem] = convert_dict(data_dict)
         if self.data is None:
             self.data = {}
         self.content_list: List[str] = []
