@@ -187,7 +187,6 @@ UNSUPPORTED_SET = {
     "for_stmt",
     "realpart_expr",
     "imagpart_expr",
-    "vector_cst",
     "vec_perm_expr",
     "annotate_expr",
     "vec_cond_expr",

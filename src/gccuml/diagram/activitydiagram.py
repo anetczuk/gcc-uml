@@ -285,9 +285,12 @@ class LabeledCard(ActivityItem):
         indent_str = "    " * indent
         content_list = []
 
+        label = self.label
+        label = label.replace('"', "'")     ## workaround for PlantUML problem
+
         content_list.append(
             f"""\
-{indent_str}card "{self.label}" {{"""
+{indent_str}card "{label}" {{"""
         )
         #         content_list.append(
         #             f"""\
