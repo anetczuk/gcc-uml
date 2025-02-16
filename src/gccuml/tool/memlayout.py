@@ -17,7 +17,7 @@ from gccuml.langcontent import (
     is_namespace_internal,
     get_record_namespace_list,
 )
-from gccuml.diagram.memlayoutdiagram import MemoryLayoutDiagramGenerator, StructData, StructField, FieldType
+from gccuml.diagram.graphviz.memlayoutdiagram import MemoryLayoutDiagramGenerator, StructData, StructField, FieldType
 from gccuml.langanalyze import StructAnalyzer
 
 

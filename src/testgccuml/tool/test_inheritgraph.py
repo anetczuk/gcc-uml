@@ -14,7 +14,7 @@ from testgccuml.data import get_data_path
 from gccuml.langcontent import LangContent
 from gccuml.langparser import parse_raw
 from gccuml.tool.inheritgraph import InheritanceData
-from gccuml.diagram.classdiagram import ClassDiagramGenerator
+from gccuml.diagram.plantuml.classdiagram import ClassDiagramGenerator
 
 
 class GetClassesInfoTest(unittest.TestCase):

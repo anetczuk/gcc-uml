@@ -27,7 +27,7 @@ from gccuml.langanalyze import (
     get_template_parameters,
     get_type_entry_name,
 )
-from gccuml.diagram.classdiagram import ClassDiagramGenerator
+from gccuml.diagram.plantuml.classdiagram import ClassDiagramGenerator
 
 
 _LOGGER = logging.getLogger(__name__)

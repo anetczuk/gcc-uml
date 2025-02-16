@@ -29,7 +29,7 @@ from gccuml.langanalyze import (
     get_entry_repr,
     is_entry_code_class,
 )
-from gccuml.diagram.activitydiagram import (
+from gccuml.diagram.plantuml.activitydiagram import (
     ActivityDiagramGenerator,
     LabeledCard,
     FunctionArg,
@@ -600,7 +600,7 @@ class ScopeAnalysis:
 
                 _valid, op0_expr = self._analyze_func(op0_entry, stat_list)
                 if op0_expr is None:
-                    #TODO: implement
+                    # TODO: implement
                     _LOGGER.warning("unhandled entry: %s %s", op0_entry.get_type(), op0_entry.get_id())
                     op0_expr = f"?!?{op0_entry.get_type()}{op0_entry.get_id()}"
                 ret_seq.append(op0_expr)
@@ -619,7 +619,7 @@ class ScopeAnalysis:
 
             _valid, op1_expr = self._analyze_func(op1_entry, stat_list)
             if op1_expr is None:
-                #TODO: implement
+                # TODO: implement
                 _LOGGER.warning("unhandled entry: %s %s", op1_entry.get_type(), op1_entry.get_id())
                 op1_expr = f"?!?{op1_entry.get_type()}{op1_entry.get_id()}"
 

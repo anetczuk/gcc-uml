@@ -12,16 +12,12 @@ from typing import NamedTuple
 from typing import List, Dict
 import html
 
-from showgraph.io import write_file, read_list
+from showgraph.io import write_file
 
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 _LOGGER = logging.getLogger(__name__)
-
-
-BG_COLORS_PATH = os.path.join(SCRIPT_DIR, "plantuml_bg_colors.txt")
-BG_COLORS_LIST = read_list(BG_COLORS_PATH)
 
 
 ## ===========================================================

@@ -286,7 +286,7 @@ class LabeledCard(ActivityItem):
         content_list = []
 
         label = self.label
-        label = label.replace('"', "'")     ## workaround for PlantUML problem
+        label = label.replace('"', "'")  ## workaround for PlantUML problem
 
         content_list.append(
             f"""\
