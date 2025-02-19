@@ -1,0 +1,32 @@
+digraph {
+	fontname="SansSerif,sans-serif" labeljust=l nojustify=true ranksep=0.35
+	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
+	subgraph cluster_item_0 {
+		graph [label="::funcA() -> void"]
+		item_1 [label="::item::ExampleB objB = {[::item::ExampleA] = {[::item::ExampleA::_vptr.ExampleA] = (&_ZTVN4item8ExampleBE) + 16}}"]
+		item_2 [label="::item::ExampleA * ptrA = (&objB)"]
+		item_1 -> item_2
+		item_3 [label="ptrA->methodB2()"]
+		item_2 -> item_3
+		item_4 [label="ptrA->methodB1()"]
+		item_3 -> item_4
+	}
+	subgraph cluster_item_5 {
+		graph [label="::item::ExampleA::methodB1() -> void"]
+	}
+	subgraph cluster_item_6 {
+		graph [label="::item::ExampleB::methodB1() -> void"]
+	}
+	subgraph cluster_item_7 {
+		graph [label="::item::ExampleA::methodB2() -> void"]
+	}
+	subgraph cluster_item_8 {
+		graph [label="::item::ExampleB::methodB2() -> void"]
+	}
+	subgraph cluster_item_9 {
+		graph [label="::item::ExampleB::ExampleB() -> void"]
+	}
+	subgraph cluster_item_10 {
+		graph [label="::item::ExampleA::ExampleA() -> void"]
+	}
+}

@@ -92,56 +92,44 @@ prepare_sample() {
 								  "${ARGS[@]}"
 	fi
 
-	OUT_DIAG_PATH="$BUILD_DIR/../${SAMPLE_FILE}.puml"
 
-	if [ "$USE_PROFILER" = false ]; then
-# 		FILE_CONTENT=""
-# 		FILE_CONTENT=$(cat "$source_file")
-# 		FILE_CONTENT=$(echo "$FILE_CONTENT" | sed 's/\t/    /g')
-		
-		"$SRC_DIR"/gccuml/main.py ctrlflowgraph \
-								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-								  --reducepaths "$SCRIPT_DIR/" \
-								  --outpath "$OUT_DIAG_PATH" \
-								  "${ARGS[@]}"
-# 								  -ii \
-
-# 		OUT_MEM_DIAG_PATH="$BUILD_DIR/../${SAMPLE_FILE}.memlayout.puml"
-# 		"$SRC_DIR"/gccuml/main.py memlayout \
-# 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-# 								  --reducepaths "$SCRIPT_DIR/" \
-# 								  --outpath "$OUT_MEM_DIAG_PATH" \
-# 								  "${ARGS[@]}"
-# # 							  -ii \
-# 
-# 		OUT_IMG_PATH="$BUILD_DIR/${SAMPLE_FILE}.memlayout.svg"
-# 		dot -Tsvg "$OUT_MEM_DIAG_PATH" -o "$OUT_IMG_PATH"
-# 
-# 		OUT_INH_DIAG_PATH="$BUILD_DIR/../${SAMPLE_FILE}.inherit.puml"
-# 		"$SRC_DIR"/gccuml/main.py inheritgraph \
-# 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-# 								  --reducepaths "$SCRIPT_DIR/" \
-# 								  --outpath "$OUT_INH_DIAG_PATH" \
-# 								  "${ARGS[@]}"
-# # 							  -ii \
-# 
-# 		plantuml -tsvg "$OUT_INH_DIAG_PATH" -o "$BUILD_DIR"
+	COMMAND=""
+	if [ "$USE_PROFILER" = false ]; then	
+		COMMAND="$SRC_DIR/gccuml/main.py ctrlflowgraph"
 	else
-		"$SRC_DIR"/../tools/profiler.sh --cprofile \
-		"$SRC_DIR"/gccuml/main.py ctrlflowgraph \
-								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-								  --reducepaths "$SCRIPT_DIR/" \
-								  --outpath "$OUT_DIAG_PATH" \
-								  "${ARGS[@]}"
+		COMMAND="$SRC_DIR/../tools/profiler.sh --cprofile $SRC_DIR/gccuml/main.py ctrlflowgraph"
 	fi
+
+	OUT_PUML_PATH="$BUILD_DIR/../${SAMPLE_FILE}.puml"
+	$COMMAND \
+			  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+			  --reducepaths "$SCRIPT_DIR/" \
+			  --engine "plantuml" \
+			  --outpath "$OUT_PUML_PATH" \
+			  "${ARGS[@]}"
+# 			  -ii \
+
+	OUT_DOT_PATH="$BUILD_DIR/../${SAMPLE_FILE}.dot"
+	$COMMAND \
+			  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+			  --reducepaths "$SCRIPT_DIR/" \
+			  --engine "dot" \
+			  --outpath "$OUT_DOT_PATH" \
+			  "${ARGS[@]}"
+# 			  -ii \
+
 	set +x
 
-	plantuml -tsvg "$OUT_DIAG_PATH" -o "$BUILD_DIR"
-# 	OUT_IMG_PATH="$BUILD_DIR/${SAMPLE_FILE}.svg"
-# 	dot -Tsvg "$OUT_DIAG_PATH" -o "$OUT_IMG_PATH"
+ 	OUT_PUML_DIAG="$BUILD_DIR/${SAMPLE_FILE}.puml.svg"
+ 	TMP_DIAG="/tmp/${SAMPLE_FILE}.svg"
+ 	plantuml -tsvg "$OUT_PUML_PATH" -o "/tmp" || true
+ 	cp "$TMP_DIAG" "$OUT_PUML_DIAG"
 
-	OUT_DIAG="$BUILD_DIR"/$(basename "${OUT_DIAG_PATH/puml/svg}")
-	echo "diagram output: file://${OUT_DIAG}"
+	OUT_DOT_DIAG="$BUILD_DIR/${SAMPLE_FILE}.dot.svg"
+	dot -Tsvg "$OUT_DOT_PATH" -o "$OUT_DOT_DIAG"
+
+	echo "diagram output: file://${OUT_PUML_DIAG}"
+	echo "diagram output: file://${OUT_DOT_DIAG}"
 }
 
 

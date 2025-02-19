@@ -12,7 +12,7 @@ from typing import Any
 from typing import List, Dict
 
 from showgraph.io import write_file
-import gccuml.diagram.activitydata as activitydata
+from gccuml.diagram import activitydata
 from gccuml.diagram.activitydata import StatementType
 
 
@@ -25,6 +25,10 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class ActivityItem:
+
+    @staticmethod
+    def convert(data: Any):
+        raise NotImplementedError("not implemented")
 
     def generate(self, indent) -> str:
         raise NotImplementedError("not implemented")
@@ -45,7 +49,7 @@ class Statement(ActivityItem):
     Depending on 'type' it can be
     """
 
-    def __init__(self, statement_name: str = "", statement_type: StatementType = StatementType.NODE, data=None):
+    def __init__(self, statement_name: str = "", statement_type: StatementType = StatementType.NODE):
         super().__init__()
         self.name: str = statement_name
         self.type: StatementType = statement_type
@@ -56,9 +60,12 @@ class Statement(ActivityItem):
     def convert(data: activitydata.Statement):
         item = Statement()
         item.name = data.name
-        item.type = data.type
         item.color = data.color
-        item.items = convert_list(data.items)
+        if isinstance(data, activitydata.TypedStatement):
+            item.type = data.type
+            item.items = convert_list(data.items)
+        elif isinstance(data, activitydata.Statement):
+            item.type = StatementType.NODE
         return item
 
     def generate(self, indent) -> str:
@@ -71,9 +78,10 @@ class Statement(ActivityItem):
         content_list = []
 
         if self.type == StatementType.UNSUPPORTED:
+            node_color = convert_color_attribute(activitydata.UNSUPPORTED_COLOR)
             content_list.append(
                 f"""\
-{indent_str}#orange:{self.name};"""
+{indent_str}{node_color}:{self.name};"""
             )
             content_list.append(
                 f"""\
@@ -82,21 +90,21 @@ class Statement(ActivityItem):
             return content_list
 
         if self.type == StatementType.NODE:
-            color = self.color
-            if color is None:
-                color = ""
+            node_color = convert_color_attribute(self.color)
 
             content_list.append(
                 f"""\
-{indent_str}{color}:{self.name};"""
+{indent_str}{node_color}:{self.name};"""
             )
             return content_list
 
         if self.type == StatementType.STOP:
+            node_color = convert_color_attribute(activitydata.LAST_NODE_COLOR)
+
             if self.name:
                 content_list.append(
                     f"""\
-{indent_str}#lightgreen:{self.name};"""
+{indent_str}{node_color}:{self.name};"""
                 )
             content_list.append(
                 f"""\
@@ -142,103 +150,126 @@ class Statement(ActivityItem):
             )
             return content_list
 
-        if self.type == StatementType.SWITCH:
-            items_num = len(self.items)
-            if items_num < 1:
-                # no cases
-                return content_list
+        raise RuntimeError(f"unhandled statement type: {self.type}")
 
-            ## switch start
-            content_list.append(
-                f"""
+
+class SwitchStatement(ActivityItem):
+
+    def __init__(self, statement_name: str = ""):
+        super().__init__()
+        self.name: str = statement_name
+        self.color: str = None
+        self.items: List[Any] = []
+
+    @staticmethod
+    def convert(data: activitydata.SwitchStatement):
+        item = SwitchStatement()
+        item.name = data.name
+        item.color = data.color
+        item.items = convert_list(data.items)
+        return item
+
+    def generate(self, indent) -> str:
+        # indent_str = "    " * indent
+
+        items_num = len(self.items)
+        if items_num < 1:
+            # no cases
+            return ""
+
+        content_list: List[str] = []
+
+        ## switch start
+        content_list.append(
+            f"""
 partition "switch:\\n{self.name}" {{"""
+        )
+
+        nest_level = 0
+        found_default = None
+
+        for case_item in self.items:
+            case_value = case_item[0]
+            case_fallthrough = case_item[1]
+            case_statements = case_item[2]
+
+            switch_indent_level = indent + nest_level
+            switch_indent_str = "    " * switch_indent_level
+
+            content_list.append(
+                f"""\
+{switch_indent_str}' case: {case_value} fallthrough: {case_fallthrough}"""
             )
 
-            nest_level = 0
-            found_default = None
+            if case_value is None:
+                found_default = case_statements
+                continue
 
-            for case_item in self.items:
-                case_value = case_item[0]
-                case_fallthrough = case_item[1]
-                case_statements = case_item[2]
+            label_str = f"{case_value} ?"
 
-                switch_indent_level = indent + nest_level
-                switch_indent_str = "    " * switch_indent_level
-
-                content_list.append(
-                    f"""\
-{switch_indent_str}' case: {case_value} fallthrough: {case_fallthrough}"""
-                )
-
-                if case_value is None:
-                    found_default = case_statements
-                    continue
-
-                label_str = f"{case_value} ?"
-
-                if case_fallthrough:
-                    ## fallthrough
-                    content_list.append(
-                        f"""\
-{switch_indent_str}if ( {label_str} ) then (yes)"""
-                    )
-                    sub_content = self._handle_list(case_statements, indent=switch_indent_level + 1)
-                    content_list.extend(sub_content)
-                    content_list.append(
-                        f"""\
-{switch_indent_str}endif"""
-                    )
-                #                     content_list.append(
-                #                         f"""\
-                # {switch_indent_str}note right: [fallthrough]"""
-                #                     )
-                else:
-                    ## normal or default
-                    content_list.append(
-                        f"""\
-{switch_indent_str}if ( {label_str} ) then (yes)"""
-                    )
-                    sub_content = self._handle_list(case_statements, indent=switch_indent_level + 1)
-                    content_list.extend(sub_content)
-                    content_list.append(
-                        f"""\
-{switch_indent_str}else"""
-                    )
-                    nest_level += 1
-
-            if found_default:
-                ## default case
-                label_str = "default"
+            if case_fallthrough:
+                ## fallthrough
                 content_list.append(
                     f"""\
 {switch_indent_str}if ( {label_str} ) then (yes)"""
                 )
-                sub_content = self._handle_list(found_default, indent=switch_indent_level + 1)
+                sub_content = self._handle_list(case_statements, indent=switch_indent_level + 1)
                 content_list.extend(sub_content)
                 content_list.append(
                     f"""\
+{switch_indent_str}endif"""
+                )
+            #                     content_list.append(
+            #                         f"""\
+            # {switch_indent_str}note right: [fallthrough]"""
+            #                     )
+            else:
+                ## normal or default
+                content_list.append(
+                    f"""\
+{switch_indent_str}if ( {label_str} ) then (yes)"""
+                )
+                sub_content = self._handle_list(case_statements, indent=switch_indent_level + 1)
+                content_list.extend(sub_content)
+                content_list.append(
+                    f"""\
+{switch_indent_str}else"""
+                )
+                nest_level += 1
+
+        if found_default:
+            ## default case
+            label_str = "default"
+            content_list.append(
+                f"""\
+{switch_indent_str}if ( {label_str} ) then (yes)"""
+            )
+            sub_content = self._handle_list(found_default, indent=switch_indent_level + 1)
+            content_list.extend(sub_content)
+            content_list.append(
+                f"""\
 {switch_indent_str}else
 {switch_indent_str}    -[hidden]->
 {switch_indent_str}endif"""
-                )
-
-            for _ in range(0, nest_level):
-                nest_level -= 1
-                switch_indent_level = indent + nest_level
-                switch_indent_str = "    " * switch_indent_level
-                content_list.append(
-                    f"""\
-{switch_indent_str}endif"""
-                )
-
-            ## switch end
-            content_list.append(
-                """\
-}"""
             )
-            return content_list
 
-        raise RuntimeError(f"unhandled statement type: {self.type}")
+        for _ in range(0, nest_level):
+            nest_level -= 1
+            switch_indent_level = indent + nest_level
+            switch_indent_str = "    " * switch_indent_level
+            content_list.append(
+                f"""\
+{switch_indent_str}endif"""
+            )
+
+        ## switch end
+        content_list.append(
+            """\
+}"""
+        )
+
+        content = "\n".join(content_list)
+        return content
 
 
 class StatementList(ActivityItem):
@@ -369,8 +400,9 @@ class SubNodeList(ActivityItem):
         self.subitems: List[ActivityItem] = []
 
     @staticmethod
-    def convert(data: activitydata.SubNodeList):
-        return None
+    def convert(_data: activitydata.SubNodeList):
+        raise NotImplementedError("not implemented")
+        # return None
 
     def append(self, item):
         self.subitems.append(item)
@@ -403,8 +435,9 @@ class SubGraph(ActivityItem):
             self.subitems = []
 
     @staticmethod
-    def convert(data: activitydata.SubGraph):
-        return None
+    def convert(_data: activitydata.SubGraph):
+        raise NotImplementedError("not implemented")
+        # return None
 
     def append(self, item):
         self.subitems.append(item)
@@ -432,20 +465,30 @@ class SubGraph(ActivityItem):
         return content
 
 
+def convert_color_attribute(node_color):
+    if node_color is None:
+        return ""
+    if not node_color.startswith("#"):
+        return f"#{node_color}"
+    return node_color
+
+
 ## ===========================================================
 
 
 CONVERT_DICT = {
-        activitydata.Statement: Statement,
-        activitydata.StatementList: StatementList,
-        activitydata.LabeledCard: LabeledCard,
-        activitydata.LabeledGroup: LabeledGroup,
-        activitydata.SubNodeList: SubNodeList,
-        activitydata.SubGraph: SubGraph,
-    }
+    activitydata.SwitchStatement: SwitchStatement,
+    activitydata.TypedStatement: Statement,
+    activitydata.Statement: Statement,
+    activitydata.StatementList: StatementList,
+    activitydata.LabeledCard: LabeledCard,
+    activitydata.LabeledGroup: LabeledGroup,
+    activitydata.SubNodeList: SubNodeList,
+    activitydata.SubGraph: SubGraph,
+}
 
 
-def convert_data(data: Any) -> ActivityItem:
+def convert_data(data: Any) -> Any:
     # if isinstance(data, ActivityItem):
     #     ## backward compatibility
     #     return data
@@ -460,7 +503,7 @@ def convert_data(data: Any) -> ActivityItem:
         return convert_dict(data)
 
     data_type = type(data)
-    converter = CONVERT_DICT.get(data_type)
+    converter: Any = CONVERT_DICT.get(data_type)
     if converter is not None:
         # raise RuntimeError(f"unable to find converter for type {data_type}")
         converted = converter.convert(data)
@@ -499,7 +542,7 @@ def convert_dict(data_dict: Dict[str, activitydata.ActivityData]) -> Dict[str, A
 ## Generator for PlantUml activity diagrams
 class ActivityDiagramGenerator:
 
-    def __init__(self, data_dict: Dict[str, activitydata.ActivityData]=None):
+    def __init__(self, data_dict: Dict[str, activitydata.ActivityData] = None):
         self.data: Dict[str, ActivityItem] = convert_dict(data_dict)
         if self.data is None:
             self.data = {}

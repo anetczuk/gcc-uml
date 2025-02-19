@@ -1,0 +1,70 @@
+digraph {
+	fontname="SansSerif,sans-serif" labeljust=l nojustify=true ranksep=0.35
+	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
+	subgraph cluster_item_0 {
+		graph [label="::main() -> int"]
+		item_1 [label="::ExampleClass obj1;"]
+		item_2 [label="return (&obj1)->switchExample(3)" fillcolor=lightgreen]
+		item_3 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_2 -> item_3
+		item_1 -> item_2
+	}
+	subgraph cluster_item_4 {
+		graph [label="::ExampleClass::switchExample(int const paramA) -> int"]
+		item_5 [label="int timestamp;"]
+		item_6 [label="timestamp = ::time(0)"]
+		item_5 -> item_6
+		item_7 [label="timestamp & 1 == 0" shape=diamond style=filled]
+		item_8 [label="timestamp = timestamp + paramA"]
+		item_7 -> item_8 [label=true]
+		item_8 -> item_9
+		item_7 -> item_9 [label=false]
+		item_9 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		item_6 -> item_7
+		subgraph cluster_item_10 {
+			graph [label="switch:\ltimestamp % 3"]
+			item_12 [label=0 shape=diamond style=filled]
+			item_13 [label=1 shape=diamond style=filled]
+			item_12 -> item_13
+			item_14 [label=2 shape=diamond style=filled]
+			item_13 -> item_14
+			item_15 [label="default:" shape=diamond style=filled]
+			item_14 -> item_15
+			item_16 [label="timestamp != 0" shape=diamond style=filled]
+			item_17 [label="return 0" fillcolor=lightgreen]
+			item_18 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_17 -> item_18
+			item_19 [label="return 1" fillcolor=lightgreen]
+			item_20 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_19 -> item_20
+			item_16 -> item_17 [label=true]
+			item_16 -> item_19 [label=false]
+			item_12 -> item_16 [label=yes]
+			item_22 [label="return 2" fillcolor=lightgreen]
+			item_23 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_22 -> item_23
+			item_14 -> item_22 [label=yes]
+			item_24 [label="timestamp = ::time(0)"]
+			item_15 -> item_24
+			item_24 -> item_11
+			item_11 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		}
+		item_9 -> item_12
+		item_25 [label="timestamp = timestamp * 3"]
+		item_11 -> item_25
+		item_26 [label="timestamp & 1 == 0" shape=diamond style=filled]
+		item_27 [label="timestamp = timestamp + 1"]
+		item_28 [label="timestamp = timestamp + 2"]
+		item_26 -> item_27 [label=true]
+		item_27 -> item_29
+		item_26 -> item_28 [label=false]
+		item_28 -> item_29
+		item_29 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		item_25 -> item_26
+		item_30 [label="return timestamp % 2" fillcolor=lightgreen]
+		item_31 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_30 -> item_31
+		item_29 -> item_30
+	}
+	item_3 -> item_5 [style=invis]
+}

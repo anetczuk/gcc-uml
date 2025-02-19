@@ -10,7 +10,10 @@ card "::main() -> int" {
 card "::ExampleClass::switchExample(int const paramA) -> int" {
     :int timestamp;;
     :timestamp = ::time(0);
-    :timestamp = timestamp + paramA;
+    if (timestamp & 1 == 0 ?) then (true)
+        :timestamp = timestamp + paramA;
+    else (false)
+    endif
 
 partition "switch:\ntimestamp % 3" {
     ' case: 0 fallthrough: True
@@ -39,6 +42,11 @@ partition "switch:\ntimestamp % 3" {
     endif
 }
     :timestamp = timestamp * 3;
+    if (timestamp & 1 == 0 ?) then (true)
+        :timestamp = timestamp + 1;
+    else (false)
+        :timestamp = timestamp + 2;
+    endif
     #lightgreen:return timestamp % 2;
     stop
     -[hidden]->

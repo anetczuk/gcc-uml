@@ -1,0 +1,117 @@
+digraph {
+	fontname="SansSerif,sans-serif" labeljust=l nojustify=true ranksep=0.35
+	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
+	subgraph cluster_item_0 {
+		graph [label="::calc_switch0() -> int"]
+		item_1 [label="const int timestamp;"]
+		item_2 [label="timestamp = ::time(0)"]
+		item_1 -> item_2
+		subgraph cluster_item_3 {
+			graph [label="switch:\ltimestamp"]
+		}
+		item_5 [label="return -3" fillcolor=lightgreen]
+		item_6 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_5 -> item_6
+		item_2 -> item_5 [style=invis]
+	}
+	subgraph cluster_item_7 {
+		graph [label="::calc_switch1() -> int"]
+		item_8 [label="const int timestamp;"]
+		item_9 [label="timestamp = ::time(0)"]
+		item_8 -> item_9
+		subgraph cluster_item_10 {
+			graph [label="switch:\ltimestamp % 4"]
+			item_12 [label=0 shape=diamond style=filled]
+			item_13 [label="return 0" fillcolor=lightgreen]
+			item_14 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_13 -> item_14
+			item_12 -> item_13 [label=yes]
+		}
+		item_9 -> item_12
+		item_15 [label="return -3" fillcolor=lightgreen]
+		item_16 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_15 -> item_16
+		item_12 -> item_15 [style=invis]
+	}
+	item_6 -> item_8 [style=invis]
+	subgraph cluster_item_17 {
+		graph [label="::calc_switch2() -> int"]
+		item_18 [label="const int timestamp;"]
+		item_19 [label="timestamp = ::time(0)"]
+		item_18 -> item_19
+		subgraph cluster_item_20 {
+			graph [label="switch:\ltimestamp % 5"]
+			item_22 [label="default:" shape=diamond style=filled]
+			item_23 [label="return 0" fillcolor=lightgreen]
+			item_24 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_23 -> item_24
+			item_22 -> item_23
+		}
+		item_19 -> item_22
+		item_25 [label="return -3" fillcolor=lightgreen]
+		item_26 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_25 -> item_26
+		item_22 -> item_25 [style=invis]
+	}
+	item_16 -> item_18 [style=invis]
+	subgraph cluster_item_27 {
+		graph [label="::calc_switch3() -> int"]
+		item_28 [label="int timestamp;"]
+		item_29 [label="timestamp = ::time(0)"]
+		item_28 -> item_29
+		subgraph cluster_item_30 {
+			graph [label="switch:\ltimestamp % 6"]
+			item_32 [label="default:" shape=diamond style=filled]
+			item_33 [label="timestamp = ::time(0)"]
+			item_32 -> item_33
+			item_33 -> item_31
+			item_31 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		}
+		item_29 -> item_32
+		item_34 [label="return -3" fillcolor=lightgreen]
+		item_35 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_34 -> item_35
+		item_31 -> item_34
+	}
+	item_26 -> item_28 [style=invis]
+	subgraph cluster_item_36 {
+		graph [label="::calc_switch4() -> int"]
+		item_37 [label="int timestamp;"]
+		item_38 [label="timestamp = ::time(0)"]
+		item_37 -> item_38
+		subgraph cluster_item_39 {
+			graph [label="switch:\ltimestamp % 7"]
+			item_41 [label=0 shape=diamond style=filled]
+			item_42 [label=1 shape=diamond style=filled]
+			item_41 -> item_42
+			item_43 [label=2 shape=diamond style=filled]
+			item_42 -> item_43
+			item_44 [label="default:" shape=diamond style=filled]
+			item_43 -> item_44
+			item_45 [label="return 0" fillcolor=lightgreen]
+			item_46 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_45 -> item_46
+			item_41 -> item_45 [label=yes]
+			item_47 [label="return 1" fillcolor=lightgreen]
+			item_48 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_47 -> item_48
+			item_42 -> item_47 [label=yes]
+			item_49 [label="return 2" fillcolor=lightgreen]
+			item_50 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_49 -> item_50
+			item_43 -> item_49 [label=yes]
+			item_51 [label="timestamp = ::time(0)"]
+			item_44 -> item_51
+			item_51 -> item_40
+			item_40 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		}
+		item_38 -> item_41
+		item_52 [label="timestamp = timestamp * 3"]
+		item_40 -> item_52
+		item_53 [label="return timestamp % 2" fillcolor=lightgreen]
+		item_54 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_53 -> item_54
+		item_52 -> item_53
+	}
+	item_35 -> item_37 [style=invis]
+}

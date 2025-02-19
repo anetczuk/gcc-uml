@@ -1,0 +1,73 @@
+digraph {
+	fontname="SansSerif,sans-serif" labeljust=l nojustify=true ranksep=0.35
+	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
+	subgraph cluster_item_0 {
+		graph [label="::main() -> int"]
+		item_1 [label="const int aaa;"]
+		item_2 [label="aaa = ::calc_valA(4)"]
+		item_1 -> item_2
+		item_3 [label="int bbb;"]
+		item_2 -> item_3
+		item_4 [label="bbb = ::calc_valB(aaa)"]
+		item_3 -> item_4
+		item_5 [label="return ::calc_valC(bbb)" fillcolor=lightgreen]
+		item_6 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_5 -> item_6
+		item_4 -> item_5
+	}
+	subgraph cluster_item_7 {
+		graph [label="::calc_valA(int const valueA) -> int"]
+		item_8 [label="int xxxA = (valueA * 2.100000000000000088817842e+0) + 3.0e+0"]
+		item_9 [label="const int xxxB = xxxA * 3"]
+		item_8 -> item_9
+		item_10 [label="return xxxB" fillcolor=lightgreen]
+		item_11 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_10 -> item_11
+		item_9 -> item_10
+	}
+	item_6 -> item_8 [style=invis]
+	subgraph cluster_item_12 {
+		graph [label="::calc_valB(int const valueB) -> long int const"]
+		item_13 [label="int timestamp;"]
+		item_14 [label="timestamp = ::time(0)"]
+		item_13 -> item_14
+		item_15 [label="timestamp = timestamp + 1"]
+		item_14 -> item_15
+		item_16 [label="timestamp = (timestamp + 2) + timestamp"]
+		item_15 -> item_16
+		item_17 [label="const int bbb = timestamp + 11"]
+		item_16 -> item_17
+		item_18 [label="bbb & 1 == 0" shape=diamond style=filled]
+		item_19 [label="const int ccc = 0"]
+		item_20 [label="return 0" fillcolor=lightgreen]
+		item_21 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_20 -> item_21
+		item_19 -> item_20
+		item_22 [label="const int ddd = valueB * 4"]
+		item_23 [label="return ddd" fillcolor=lightgreen]
+		item_24 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_23 -> item_24
+		item_22 -> item_23
+		item_18 -> item_19 [label=true]
+		item_18 -> item_22 [label=false]
+		item_17 -> item_18
+	}
+	item_11 -> item_13 [style=invis]
+	subgraph cluster_item_26 {
+		graph [label="::calc_valC(int const valueC) -> int"]
+		item_27 [label="int[] arrY;"]
+		item_28 [label="int[] arrX = {[0] = 10, [1] = 20}"]
+		item_27 -> item_28
+		item_29 [label="arrX[0] = arrX[0] + valueC"]
+		item_28 -> item_29
+		item_30 [label="arrX[1] = valueC / 2.100000000000000088817842e+0"]
+		item_29 -> item_30
+		item_31 [label="const int xxxB = (arrX[1] * 3) + arrX[0]"]
+		item_30 -> item_31
+		item_32 [label="return xxxB" fillcolor=lightgreen]
+		item_33 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_32 -> item_33
+		item_31 -> item_32
+	}
+	item_18 -> item_27 [style=invis]
+}

@@ -120,7 +120,8 @@ options:
 usage: python3 -m gccuml.main ctrlflowgraph [-h] --rawfile RAWFILE
                                             [-ii [INCLUDEINTERNALS]]
                                             [--reducepaths REDUCEPATHS]
-                                            --outpath OUTPATH
+                                            [--engine ENGINE] --outpath
+                                            OUTPATH
 
 generate control flow diagram
 
@@ -133,6 +134,7 @@ options:
   --reducepaths REDUCEPATHS
                         Prefix to remove from paths inside tree (default:
                         None)
+  --engine ENGINE       Diagram engine: dot, plantuml (default: dot)
   --outpath OUTPATH     Output path for DOT representation (default: None)
 ```
 

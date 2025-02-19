@@ -4,4 +4,7 @@ munch
 # worked on version 2.0.5
 atpbar
 
+# worked on version 0.20.3
+graphviz
+
 showgraph @ git+https://github.com/anetczuk/showgraph-py#subdirectory=src

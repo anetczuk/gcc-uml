@@ -1,0 +1,71 @@
+digraph {
+	fontname="SansSerif,sans-serif" labeljust=l nojustify=true ranksep=0.35
+	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
+	subgraph cluster_item_0 {
+		graph [label="::item::ExampleB::methodB1(int const param) -> int"]
+		item_1 [label="const float var1 = param * 3.2999999999999998223643161e+0"]
+		item_2 [label="const float var2 = param * 3.2999999999999998223643161e+0"]
+		item_1 -> item_2
+		item_3 [label="const int valA;"]
+		item_2 -> item_3
+		item_4 [label="valA = (&objA)->methodA1()"]
+		item_3 -> item_4
+		item_5 [label="int retX;"]
+		item_4 -> item_5
+		item_6 [label="retX = this->methodB2(var1) * valA"]
+		item_5 -> item_6
+		item_7 [label="retX = retX + 7"]
+		item_6 -> item_7
+		item_8 [label="int retY;"]
+		item_7 -> item_8
+		item_9 [label="retY = ::item::ExampleB::methodB3(12)"]
+		item_8 -> item_9
+		item_10 [label="return retX + retY" fillcolor=lightgreen]
+		item_11 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_10 -> item_11
+		item_9 -> item_10
+	}
+	subgraph cluster_item_12 {
+		graph [label="::item::ExampleB::methodB3(int const val) -> int"]
+		item_13 [label="return val" fillcolor=lightgreen]
+		item_14 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_13 -> item_14
+	}
+	item_11 -> item_13 [style=invis]
+	subgraph cluster_item_15 {
+		graph [label="::item::ExampleB::methodB2(float const param) -> int"]
+		item_16 [label="const float var = param * 6.5999999999999996447286321e+0"]
+		item_17 [label="return var" fillcolor=lightgreen]
+		item_18 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_17 -> item_18
+		item_16 -> item_17
+	}
+	item_14 -> item_16 [style=invis]
+	subgraph cluster_item_19 {
+		graph [label="::item::ExampleA::ExampleA() -> void"]
+	}
+	subgraph cluster_item_20 {
+		graph [label="::item::ExampleA::~ExampleA() -> void"]
+		subgraph cluster_item_21 {
+			graph [label=try]
+			item_22 [label="this->__dt_comp()"]
+		}
+		subgraph cluster_item_23 {
+			graph [label=finally]
+			item_24 [label="::[--no entry--](this, 16)"]
+		}
+		item_22 -> item_24
+	}
+	item_18 -> item_22 [style=invis]
+	subgraph cluster_item_25 {
+		graph [label="::item::ExampleA::methodA1() -> int"]
+		item_26 [label="::item::EmptyExamle emptyObj;"]
+		item_27 [label="const int ret = 5"]
+		item_26 -> item_27
+		item_28 [label="return 5" fillcolor=lightgreen]
+		item_29 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_28 -> item_29
+		item_27 -> item_28
+	}
+	item_24 -> item_26 [style=invis]
+}

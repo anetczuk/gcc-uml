@@ -1,0 +1,26 @@
+digraph {
+	fontname="SansSerif,sans-serif" labeljust=l nojustify=true ranksep=0.35
+	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
+	subgraph cluster_item_0 {
+		graph [label="::main() -> int"]
+		item_1 [label="char const * bad_char = (&0xFF20)"]
+		item_2 [label="uint8_t[] bad_char_array = 0xFF41FF"]
+		item_1 -> item_2
+		item_3 [label="return 0" fillcolor=lightgreen]
+		item_4 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_3 -> item_4
+		item_2 -> item_3
+	}
+	subgraph cluster_item_5 {
+		graph [label="::std::__is_constant_evaluated() -> bool"]
+		item_6 [label="return 0" fillcolor=lightgreen]
+		item_7 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_6 -> item_7
+	}
+	item_4 -> item_6 [style=invis]
+	subgraph cluster_item_8 {
+		graph [label="::std::__terminate() -> void"]
+		item_9 [label="::std::terminate()"]
+	}
+	item_7 -> item_9 [style=invis]
+}

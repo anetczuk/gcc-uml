@@ -118,7 +118,7 @@ def process_ctrlflowgraph(args):
     if content is None:
         raise RuntimeError(f"unable to parse {args.rawfile}")
     include_internals = args.includeinternals
-    generate_control_flow_graph(content, args.outpath, include_internals=include_internals)
+    generate_control_flow_graph(content, args.outpath, include_internals=include_internals, engine=args.engine)
 
 
 # =======================================================================
@@ -283,6 +283,9 @@ def main():
     )
     subparser.add_argument(
         "--reducepaths", action="store", required=False, default=None, help="Prefix to remove from paths inside tree"
+    )
+    subparser.add_argument(
+        "--engine", action="store", required=False, default="dot", help="Diagram engine: dot, plantuml"
     )
     subparser.add_argument(
         "--outpath", action="store", required=True, default=None, help="Output path for DOT representation"

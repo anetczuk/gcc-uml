@@ -12,12 +12,18 @@ from typing import NamedTuple, Any
 
 from typing import List
 
-from showgraph.io import write_file
-
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 _LOGGER = logging.getLogger(__name__)
+
+
+## ===========================================================
+
+
+NODE_COLOR = "#fefece"
+LAST_NODE_COLOR = "lightgreen"
+UNSUPPORTED_COLOR = "orange"
 
 
 ## ===========================================================
@@ -34,23 +40,33 @@ class StatementType(Enum):
     UNSUPPORTED = auto()
     NODE = auto()
     IF = auto()
-    SWITCH = auto()
     GOTO = auto()
     GOTOLABEL = auto()
     STOP = auto()
 
 
 class Statement(ActivityData):
+    def __init__(self, statement_name: str):
+        super().__init__()
+        self.name: str = statement_name
+        self.color: str = None
+
+
+class TypedStatement(Statement):
     """Container for function data to be presented on graph.
 
-    Depending on 'type' it can be
+    Depending on 'type' it can be node, if or other language construct.
     """
 
     def __init__(self, statement_name: str, statement_type: StatementType = StatementType.NODE):
-        super().__init__()
-        self.name: str = statement_name
+        super().__init__(statement_name)
         self.type: StatementType = statement_type
-        self.color: str = None
+        self.items: List[Any] = []
+
+
+class SwitchStatement(Statement):
+    def __init__(self, statement_name: str):
+        super().__init__(statement_name)
         self.items: List[Any] = []
 
 
@@ -74,6 +90,7 @@ class LabeledCard(ActivityData):
         super().__init__()
         self.label = label
         self.subitems: List[ActivityData] = None
+        self.has_return: bool = False
 
     def set_label(self, func_name: str, args_list: List[FunctionArg], returntype: str):
         join_list = []

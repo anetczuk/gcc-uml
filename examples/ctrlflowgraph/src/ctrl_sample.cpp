@@ -6,7 +6,9 @@ class ExampleClass {
 public:
 	int switchExample(const int paramA) {
 		int timestamp = time(nullptr);
-		timestamp += paramA;
+		if ( timestamp % 2 == 0 ) {
+			timestamp += paramA;
+		}
 		switch(timestamp % 3) {
 		case 0:
 			if (timestamp) {
@@ -21,6 +23,11 @@ public:
 		}
 		}
 		timestamp *= 3;
+		if ( timestamp % 2 == 0 ) {
+			timestamp += 1;
+		} else {
+			timestamp += 2;
+		}
 		return timestamp % 2;
 	}
 };
