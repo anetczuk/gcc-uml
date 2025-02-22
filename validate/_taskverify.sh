@@ -16,6 +16,13 @@
 set -eu
 
 
+if [[ $(type -t worker_command) != function ]]; then
+	## 'worker_command' needs to be defined and exported
+	echo "missing required function 'worker_command'"
+	exit 1
+fi
+
+
 ## analyze given file
 verify_source() {
 	local source_path="$1"
@@ -44,43 +51,7 @@ verify_source() {
 
 	local RUN_ERROR="0"
 
-# # 	"$PROJECT_COMMAND" -la \
-# 	"$PROJECT_COMMAND" --loglevel WARNING \
-# 					   --exitloglevel ERROR \
-# 					   memlayout \
-# 				       --rawfile "$LANG_FILE_PATH" \
-# 					   --outpath "$out_dir/test.puml" \
-# 					   -ii \
-# 					   || RUN_ERROR="1"
-# 
-# 	if [ "$RUN_ERROR" -eq "1" ]; then
-# 		echo -e "\nerror while processing file: ${source_path}"
-# 		return 1
-# 	fi
-# 
-# 
-# # 	"$PROJECT_COMMAND" -la \
-# 	"$PROJECT_COMMAND" --loglevel WARNING \
-# 					   --exitloglevel ERROR \
-# 					   inheritgraph \
-# 				       --rawfile "$LANG_FILE_PATH" \
-# 					   --outpath "$out_dir/test.puml" \
-# 					   || RUN_ERROR="1"
-# 
-# 	if [ "$RUN_ERROR" -eq "1" ]; then
-# 		echo -e "\nerror while processing file: ${source_path}"
-# 		return 1
-# 	fi
-
-
-# 	"$PROJECT_COMMAND" -la \
-	"$PROJECT_COMMAND" --loglevel WARNING \
-					   --exitloglevel ERROR \
-					   ctrlflowgraph \
-				       --rawfile "$LANG_FILE_PATH" \
-					   --outpath "$out_dir/test.puml" \
-					   || RUN_ERROR="1"
-
+	(worker_command "$LANG_FILE_PATH" "$out_dir") || RUN_ERROR="1"
 
 	if [ "$RUN_ERROR" -eq "1" ]; then
 		echo -e "\nerror while processing file: ${source_path}"
@@ -110,7 +81,7 @@ process_work_verify() {
 	while true; do
 		local srcfile=$(tail -1 "$work_file")
 		if [[ "$srcfile" == "" ]];  then
-			echo -e "\ncompleted"
+			echo -e "\ncompleted file $work_file"
 			exit 0
 		fi
 

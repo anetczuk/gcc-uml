@@ -84,7 +84,8 @@ class GraphGenerator:
                         dotgraph.edge(last_node_id, next_node_id)
                     else:
                         last_node_id = get_non_none_last_element(ret_list)
-                        self.add_edge_hidden(dotgraph, last_node_id, next_node_id)
+                        if last_node_id:
+                            self.add_edge_hidden(dotgraph, last_node_id, next_node_id)
             ret_list.extend(sub_list)
         return ret_list
 
@@ -354,7 +355,10 @@ class GraphGenerator:
 
 
 def get_non_none_last_element(data_list):
-    last_present_value = next(x for x in reversed(data_list) if x is not None)
+    iter_list = [x for x in reversed(data_list) if x is not None]
+    if not iter_list:
+        return None
+    last_present_value = next(x for x in iter_list)
     return last_present_value
 
 

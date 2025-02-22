@@ -21,6 +21,8 @@ source "$SCRIPT_DIR/_task.sh"
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/_taskscan.sh"
 # shellcheck disable=SC1091
+source "$SCRIPT_DIR/_workcmd.sh"
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/_taskverify.sh"
 
 
@@ -58,6 +60,9 @@ while :; do
       -j=*)			JOBS_NUM="${1#*=}"
       				shift # past argument=value
       				;;
+
+      --*)			shift
+      				;; # skip unknown argument
 
       *)  ARGS+=("$1")
           shift ;;
