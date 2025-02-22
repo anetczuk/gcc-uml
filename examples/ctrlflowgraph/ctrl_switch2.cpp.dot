@@ -9,105 +9,217 @@ digraph {
 		item_3 [label="const int value = timestamp % 3"]
 		item_2 -> item_3
 		subgraph cluster_item_4 {
-			graph [label="switch:\lvalue"]
-			item_6 [label=0 shape=diamond style=filled]
-			item_7 [label=1 shape=diamond style=filled]
-			item_6 -> item_7
-			item_8 [label=2 shape=diamond style=filled]
+			graph [label="switch:"]
+			switch_start_item_5 [label=value ordering=out shape=hexagon style=filled]
+			item_7 [label=0 shape=cds style=filled]
+			item_7 [label=0 shape=cds style=filled]
+			switch_start_item_5 -> item_7 [label=0]
+			item_8 [label=1 shape=cds style=filled]
+			item_8 [label=1 shape=cds style=filled]
+			switch_start_item_5 -> item_8 [label=1]
+			item_9 [label=2 shape=cds style=filled]
+			item_9 [label=2 shape=cds style=filled]
+			switch_start_item_5 -> item_9 [label=2]
+			item_10 [label=3 shape=cds style=filled]
+			item_10 [label=3 shape=cds style=filled]
+			switch_start_item_5 -> item_10 [label=3]
+			item_11 [label=4 shape=cds style=filled]
+			item_11 [label=4 shape=cds style=filled]
+			switch_start_item_5 -> item_11 [label=4]
+			item_12 [label=5 shape=cds style=filled]
+			item_12 [label=5 shape=cds style=filled]
+			switch_start_item_5 -> item_12 [label=5]
+			item_13 [label="default:" fillcolor=lightgreen shape=cds style=filled]
+			switch_start_item_5 -> item_13 [label="default:"]
 			item_7 -> item_8
-			item_9 [label=3 shape=diamond style=filled]
-			item_8 -> item_9
-			item_10 [label=4 shape=diamond style=filled]
-			item_9 -> item_10
-			item_11 [label=5 shape=diamond style=filled]
-			item_10 -> item_11
-			item_12 [label="default:" shape=diamond style=filled]
-			item_11 -> item_12
-			item_13 [label="timestamp = ::time(0)"]
-			item_7 -> item_13 [label=yes]
-			item_13 -> item_8
-			item_8 -> item_5 [label=yes]
-			item_14 [label="return 2" fillcolor=lightgreen]
-			item_15 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-			item_14 -> item_15
-			item_9 -> item_14 [label=yes]
-			item_16 [label="int ret = timestamp + value"]
-			item_17 [label="ret = ret / value"]
-			item_16 -> item_17
-			item_18 [label="ret = ret / 5.2000000000000001776356839e+0"]
-			item_17 -> item_18
-			item_19 [label="return ret" fillcolor=lightgreen]
-			item_20 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-			item_19 -> item_20
+			switch_anchor_item_14 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_7 -> switch_anchor_item_14 [style=invis]
+			item_15 [label="timestamp = ::time(0)"]
+			item_8 -> item_15
+			item_15 -> item_9
+			switch_anchor_item_16 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_15 -> switch_anchor_item_16 [style=invis]
+			switch_anchor_item_17 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_9 -> switch_anchor_item_17 [style=invis]
+			item_18 [label="return 2" fillcolor=lightgreen]
+			item_19 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
 			item_18 -> item_19
-			item_10 -> item_16 [label=yes]
-			item_21 [label="timestamp = ::time(0)"]
-			item_11 -> item_21 [label=yes]
-			item_21 -> item_12
-			item_22 [label="return -1" fillcolor=lightgreen]
-			item_23 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_10 -> item_18
+			switch_anchor_item_20 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_19 -> switch_anchor_item_20 [style=invis]
+			item_21 [label="int ret = timestamp + value"]
+			item_22 [label="ret = ret / value"]
+			item_21 -> item_22
+			item_23 [label="ret = ret / 5.2000000000000001776356839e+0"]
 			item_22 -> item_23
-			item_12 -> item_22
-			item_5 [label="" height=0.2 shape=diamond style=filled width=0.2]
+			item_24 [label="return ret" fillcolor=lightgreen]
+			item_25 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_24 -> item_25
+			item_23 -> item_24
+			item_11 -> item_21
+			switch_anchor_item_26 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_25 -> switch_anchor_item_26 [style=invis]
+			item_27 [label="timestamp = ::time(0)"]
+			item_12 -> item_27
+			item_27 -> item_13
+			switch_anchor_item_28 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_27 -> switch_anchor_item_28 [style=invis]
+			item_29 [label="return -1" fillcolor=lightgreen]
+			item_30 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_29 -> item_30
+			item_13 -> item_29
+			switch_anchor_item_31 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_30 -> switch_anchor_item_31 [style=invis]
+			switch_end_item_6 [label="" height=0.2 ordering=in shape=diamond style=filled width=0.2]
+			item_9 -> switch_end_item_6
+			switch_anchor_item_14 -> switch_end_item_6 [style=invis]
+			switch_anchor_item_16 -> switch_end_item_6 [style=invis]
+			switch_anchor_item_17 -> switch_end_item_6 [style=invis]
+			switch_anchor_item_20 -> switch_end_item_6 [style=invis]
+			switch_anchor_item_26 -> switch_end_item_6 [style=invis]
+			switch_anchor_item_28 -> switch_end_item_6 [style=invis]
+			switch_anchor_item_31 -> switch_end_item_6 [style=invis]
+			{
+				rank=same
+				item_7
+				item_8
+				item_9
+				item_10
+				item_11
+				item_12
+				item_13
+			}
+			{
+				rank=same
+				switch_anchor_item_14
+				switch_anchor_item_16
+				switch_anchor_item_17
+				switch_anchor_item_20
+				switch_anchor_item_26
+				switch_anchor_item_28
+				switch_anchor_item_31
+			}
+			switch_anchor_item_14 -> switch_anchor_item_16 [style=invis]
+			switch_anchor_item_16 -> switch_anchor_item_17 [style=invis]
+			switch_anchor_item_17 -> switch_anchor_item_20 [style=invis]
+			switch_anchor_item_20 -> switch_anchor_item_26 [style=invis]
+			switch_anchor_item_26 -> switch_anchor_item_28 [style=invis]
+			switch_anchor_item_28 -> switch_anchor_item_31 [style=invis]
 		}
-		item_3 -> item_6
-		item_24 [label="return -9" fillcolor=lightgreen]
-		item_25 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-		item_24 -> item_25
-		item_5 -> item_24
+		item_3 -> switch_start_item_5
+		item_32 [label="return -9" fillcolor=lightgreen]
+		item_33 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_32 -> item_33
+		switch_end_item_6 -> item_32
 	}
-	subgraph cluster_item_26 {
+	subgraph cluster_item_34 {
 		graph [label="::calc_val2() -> int"]
-		item_27 [label="int timestamp;"]
-		item_28 [label="timestamp = ::time(0)"]
-		item_27 -> item_28
-		item_29 [label="const int value = timestamp % 3"]
-		item_28 -> item_29
-		subgraph cluster_item_30 {
-			graph [label="switch:\lvalue"]
-			item_32 [label=0 shape=diamond style=filled]
-			item_33 [label=1 shape=diamond style=filled]
-			item_32 -> item_33
-			item_34 [label="default:" shape=diamond style=filled]
-			item_33 -> item_34
-			item_35 [label=2 shape=diamond style=filled]
-			item_34 -> item_35
-			item_36 [label=3 shape=diamond style=filled]
-			item_35 -> item_36
-			item_37 [label=4 shape=diamond style=filled]
-			item_36 -> item_37
-			item_38 [label=5 shape=diamond style=filled]
-			item_37 -> item_38
-			item_39 [label="timestamp = ::time(0)"]
-			item_33 -> item_39 [label=yes]
-			item_39 -> item_34
-			item_40 [label="return -1" fillcolor=lightgreen]
-			item_41 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-			item_40 -> item_41
-			item_34 -> item_40
-			item_35 -> item_31 [label=yes]
-			item_42 [label="return 2" fillcolor=lightgreen]
-			item_43 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-			item_42 -> item_43
-			item_36 -> item_42 [label=yes]
-			item_44 [label="int ret = timestamp + value"]
-			item_45 [label="ret = ret - value"]
-			item_44 -> item_45
-			item_46 [label="return ret" fillcolor=lightgreen]
-			item_47 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-			item_46 -> item_47
-			item_45 -> item_46
-			item_37 -> item_44 [label=yes]
-			item_48 [label="timestamp = ::time(0)"]
-			item_38 -> item_48 [label=yes]
-			item_48 -> item_31
-			item_31 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		item_35 [label="int timestamp;"]
+		item_36 [label="timestamp = ::time(0)"]
+		item_35 -> item_36
+		item_37 [label="const int value = timestamp % 3"]
+		item_36 -> item_37
+		subgraph cluster_item_38 {
+			graph [label="switch:"]
+			switch_start_item_39 [label=value ordering=out shape=hexagon style=filled]
+			item_41 [label=0 shape=cds style=filled]
+			item_41 [label=0 shape=cds style=filled]
+			switch_start_item_39 -> item_41 [label=0]
+			item_42 [label=1 shape=cds style=filled]
+			item_42 [label=1 shape=cds style=filled]
+			switch_start_item_39 -> item_42 [label=1]
+			item_43 [label="default:" fillcolor=lightgreen shape=cds style=filled]
+			switch_start_item_39 -> item_43 [label="default:"]
+			item_44 [label=2 shape=cds style=filled]
+			item_44 [label=2 shape=cds style=filled]
+			switch_start_item_39 -> item_44 [label=2]
+			item_45 [label=3 shape=cds style=filled]
+			item_45 [label=3 shape=cds style=filled]
+			switch_start_item_39 -> item_45 [label=3]
+			item_46 [label=4 shape=cds style=filled]
+			item_46 [label=4 shape=cds style=filled]
+			switch_start_item_39 -> item_46 [label=4]
+			item_47 [label=5 shape=cds style=filled]
+			item_47 [label=5 shape=cds style=filled]
+			switch_start_item_39 -> item_47 [label=5]
+			item_41 -> item_42
+			switch_anchor_item_48 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_41 -> switch_anchor_item_48 [style=invis]
+			item_49 [label="timestamp = ::time(0)"]
+			item_42 -> item_49
+			item_49 -> item_43
+			switch_anchor_item_50 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_49 -> switch_anchor_item_50 [style=invis]
+			item_51 [label="return -1" fillcolor=lightgreen]
+			item_52 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_51 -> item_52
+			item_43 -> item_51
+			switch_anchor_item_53 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_52 -> switch_anchor_item_53 [style=invis]
+			switch_anchor_item_54 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_44 -> switch_anchor_item_54 [style=invis]
+			item_55 [label="return 2" fillcolor=lightgreen]
+			item_56 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_55 -> item_56
+			item_45 -> item_55
+			switch_anchor_item_57 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_56 -> switch_anchor_item_57 [style=invis]
+			item_58 [label="int ret = timestamp + value"]
+			item_59 [label="ret = ret - value"]
+			item_58 -> item_59
+			item_60 [label="return ret" fillcolor=lightgreen]
+			item_61 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_60 -> item_61
+			item_59 -> item_60
+			item_46 -> item_58
+			switch_anchor_item_62 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_61 -> switch_anchor_item_62 [style=invis]
+			item_63 [label="timestamp = ::time(0)"]
+			item_47 -> item_63
+			switch_anchor_item_64 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_63 -> switch_anchor_item_64 [style=invis]
+			switch_end_item_40 [label="" height=0.2 ordering=in shape=diamond style=filled width=0.2]
+			item_44 -> switch_end_item_40
+			item_63 -> switch_end_item_40
+			switch_anchor_item_48 -> switch_end_item_40 [style=invis]
+			switch_anchor_item_50 -> switch_end_item_40 [style=invis]
+			switch_anchor_item_53 -> switch_end_item_40 [style=invis]
+			switch_anchor_item_54 -> switch_end_item_40 [style=invis]
+			switch_anchor_item_57 -> switch_end_item_40 [style=invis]
+			switch_anchor_item_62 -> switch_end_item_40 [style=invis]
+			switch_anchor_item_64 -> switch_end_item_40 [style=invis]
+			{
+				rank=same
+				item_41
+				item_42
+				item_43
+				item_44
+				item_45
+				item_46
+				item_47
+			}
+			{
+				rank=same
+				switch_anchor_item_48
+				switch_anchor_item_50
+				switch_anchor_item_53
+				switch_anchor_item_54
+				switch_anchor_item_57
+				switch_anchor_item_62
+				switch_anchor_item_64
+			}
+			switch_anchor_item_48 -> switch_anchor_item_50 [style=invis]
+			switch_anchor_item_50 -> switch_anchor_item_53 [style=invis]
+			switch_anchor_item_53 -> switch_anchor_item_54 [style=invis]
+			switch_anchor_item_54 -> switch_anchor_item_57 [style=invis]
+			switch_anchor_item_57 -> switch_anchor_item_62 [style=invis]
+			switch_anchor_item_62 -> switch_anchor_item_64 [style=invis]
 		}
-		item_29 -> item_32
-		item_49 [label="return -9" fillcolor=lightgreen]
-		item_50 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-		item_49 -> item_50
-		item_31 -> item_49
+		item_37 -> switch_start_item_39
+		item_65 [label="return -9" fillcolor=lightgreen]
+		item_66 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_65 -> item_66
+		switch_end_item_40 -> item_65
 	}
-	item_25 -> item_27 [style=invis]
+	item_33 -> item_35 [style=invis]
 }

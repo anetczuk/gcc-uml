@@ -37,7 +37,7 @@ digraph {
 		item_15 -> item_16
 		item_17 [label="const int bbb = timestamp + 11"]
 		item_16 -> item_17
-		item_18 [label="bbb & 1 == 0" shape=diamond style=filled]
+		item_18 [label="bbb & 1 == 0" shape=hexagon style=filled]
 		item_19 [label="const int ccc = 0"]
 		item_20 [label="return 0" fillcolor=lightgreen]
 		item_21 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]

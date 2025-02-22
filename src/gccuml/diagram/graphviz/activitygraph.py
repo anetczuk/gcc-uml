@@ -40,7 +40,8 @@ class GraphGenerator:
             return self.generate_list(dotgraph, data)
 
         if isinstance(data, activitydata.SwitchStatement):
-            label = rf"switch:\l{data.name}"
+            label = "switch:"
+            # label = rf"switch:\l{data.name}"
             node_id = self.next_id()
             subgraph_attr = {"label": label}
             subgraph_mgr = dotgraph.subgraph(name=f"cluster_{node_id}")
@@ -174,11 +175,22 @@ class GraphGenerator:
     def generate_switch(self, dotgraph: graphviz.Digraph, data: activitydata.SwitchStatement) -> List[str]:
         ret_list = []
 
+        start_switch_node_id = self.next_id()
+        start_switch_node_id = f"switch_start_{start_switch_node_id}"
+        self.add_node_if(dotgraph, start_switch_node_id, data.name, attrs={"ordering": "out"})
+        ret_list.append(start_switch_node_id)
+
+        if not data.items:
+            ## switch without cases
+            return ret_list
+
+        hide_anchor_items = True
+        # hide_anchor_items = False
+
         end_switch_node_id = self.next_id()
-        end_switch_node_used = False
+        end_switch_node_id = f"switch_end_{end_switch_node_id}"
 
-        prev_case_node_id = None
-
+        default_case_node_id = None
         case_node_id_dict = {}
 
         ## add "No" path
@@ -186,16 +198,23 @@ class GraphGenerator:
             case_value = case_item[0]
             case_node_id = self.next_id()
             case_node_id_dict[case_index] = case_node_id
-            case_label = case_value
-            if case_value is None:
+
+            if case_value is not None:
+                dotgraph.node(case_node_id, style="filled", shape="cds", label=case_value)
+                self.add_node_goto_label(dotgraph, case_node_id, case_value)
+                dotgraph.edge(start_switch_node_id, case_node_id, label=case_value)
+            else:
                 ## default case
+                default_case_node_id = case_node_id
                 case_label = "default:"
-            self.add_node_if(dotgraph, case_node_id, case_label)
+                self.add_node_goto_label(dotgraph, case_node_id, case_label, fillcolor=activitydata.LAST_NODE_COLOR)
+                dotgraph.edge(start_switch_node_id, case_node_id, label=case_label)
+
             ret_list.append(case_node_id)
 
-            if prev_case_node_id:
-                dotgraph.edge(prev_case_node_id, case_node_id)
-            prev_case_node_id = case_node_id
+        # List[(target, label)]
+        to_end_list = []
+        case_anchor_nodes = []
 
         ## add "Yes" path
         for case_index, case_item in enumerate(data.items):
@@ -205,111 +224,83 @@ class GraphGenerator:
             case_statements = case_item[2]
 
             case_node_id = case_node_id_dict[case_index]
+            case_last_node_id = None
 
+            fallthrough_node_id = None
             case_ret_list = self.generate_list(dotgraph, case_statements)
             if case_ret_list:
+                ## case items
                 first_node_id = case_ret_list[0]
-                edge_label = None
-                if case_value is not None:
-                    edge_label = "yes"
-                dotgraph.edge(case_node_id, first_node_id, label=edge_label)
+                dotgraph.edge(case_node_id, first_node_id)
                 last_node_id = case_ret_list[-1]
                 if last_node_id is not None:
                     if not case_fallthrough:
-                        dotgraph.edge(last_node_id, end_switch_node_id)
-                        end_switch_node_used = True
+                        # break
+                        to_end_list.append((last_node_id, None))
                     else:
-                        prev_case_node_id = last_node_id
-                        next_case_node_id = case_node_id_dict.get(case_index + 1)
-                        if next_case_node_id:
-                            dotgraph.edge(last_node_id, next_case_node_id)
-                        else:
-                            # last case - to switch end
-                            dotgraph.edge(last_node_id, end_switch_node_id)
-                            end_switch_node_used = True
-                # else:
-                #     # return inside case
-                #     recent_node_id = get_non_none_last_element(case_ret_list)
-                #     self.add_edge_hidden(dotgraph, recent_node_id, end_switch_node_id)
-                #     end_switch_node_used = True
+                        ## fallthrough -- connect to next case
+                        fallthrough_node_id = last_node_id
+
+                case_last_node_id = get_non_none_last_element(case_ret_list)
             else:
+                ## case without items
+                case_last_node_id = case_node_id
+
                 ## no items -- fallthrough
                 if not case_fallthrough:
                     ## break used
-                    dotgraph.edge(case_node_id, end_switch_node_id, label="yes")
-                    end_switch_node_used = True
-                ## else do nothing
+                    to_end_list.append((case_node_id, None))
+                else:
+                    ## fallthrough -- connect to next case
+                    fallthrough_node_id = case_node_id
 
-            prev_case_node_id = case_node_id
+            if fallthrough_node_id is not None:
+                next_case_node_id = case_node_id_dict.get(case_index + 1)
+                if next_case_node_id:
+                    dotgraph.edge(fallthrough_node_id, next_case_node_id)
+                else:
+                    # last case - connect to switch end
+                    to_end_list.append((fallthrough_node_id, None))
 
-        if end_switch_node_used:
-            self.add_node_join(dotgraph, end_switch_node_id)
+            ## to keep cases order anchor have to be added for every case
+            case_anchor_node_id = self.next_id()
+            case_anchor_node_id = f"switch_anchor_{case_anchor_node_id}"
+            self.add_node_hidden(dotgraph, case_anchor_node_id, hidden=hide_anchor_items)
+            self.add_edge_hidden(dotgraph, case_last_node_id, case_anchor_node_id, hidden=hide_anchor_items)
+            case_anchor_nodes.append(case_anchor_node_id)
+
+        if default_case_node_id is None:
+            ## no default - add jump from start to end
+            to_end_list.append((start_switch_node_id, None))
+
+        if to_end_list:
+            # self.add_node_if(dotgraph, start_switch_node_id, data.name, attrs={"ordering": "out"})
+            self.add_node_join(dotgraph, end_switch_node_id, attrs={"ordering": "in"})
             ret_list.append(end_switch_node_id)
+            for from_node_data in to_end_list:
+                from_node = from_node_data[0]
+                edge_label = from_node_data[1]
+                dotgraph.edge(from_node, end_switch_node_id, label=edge_label)
+
+            ## connect anchor nodes with switch end node
+            for case_item in case_anchor_nodes:
+                self.add_edge_hidden(dotgraph, case_item, end_switch_node_id, hidden=hide_anchor_items)
+
         else:
             ret_list.append(None)
 
-        ############
+        ## put case nodes in line
+        self.add_nodes_rank(dotgraph, case_node_id_dict.values(), "same")
 
-        # end_switch_node_id = self.next_id()
-        # end_switch_node_used = False
-        #
-        # prev_case_node_id = None
-        # prev_is_default = False
-        #
-        # for case_item in data.items:
-        #     ## case_value -- None -- default case
-        #     case_value = case_item[0]
-        #     case_fallthrough = case_item[1]
-        #     case_statements = case_item[2]
-        #
-        #     prev_is_default = False
-        #
-        #     case_node_id = self.next_id()
-        #     case_label = case_value
-        #     if case_value is None:
-        #         ## default case
-        #         prev_is_default = True
-        #         case_label = "default:"
-        #
-        #     self.add_node_if(dotgraph, case_node_id, case_label)
-        #     ret_list.append(case_node_id)
-        #
-        #     if prev_case_node_id:
-        #         dotgraph.edge(prev_case_node_id, case_node_id)
-        #     prev_case_node_id = case_node_id
-        #
-        #     # if not case_statements:
-        #     #     ## empty case --fallthrough
-        #     #     continue
-        #
-        #     case_ret_list = self.generate_list(dotgraph, case_statements)
-        #     if case_ret_list:
-        #         first_node_id = case_ret_list[0]
-        #         edge_label = None
-        #         if case_value is not None:
-        #             edge_label = "yes"
-        #         dotgraph.edge(case_node_id, first_node_id, label=edge_label)
-        #         last_node_id = case_ret_list[-1]
-        #         if last_node_id is not None:
-        #             if case_fallthrough:
-        #                 prev_case_node_id = last_node_id
-        #             else:
-        #                 dotgraph.edge(last_node_id, end_switch_node_id)
-        #                 end_switch_node_used = True
-        #     else:
-        #         ## no items -- fallthrough
-        #         pass
-        #
-        # if prev_is_default is False:
-        #     if prev_case_node_id is not None:
-        #         dotgraph.edge(prev_case_node_id, end_switch_node_id)
-        #         end_switch_node_used = True
-        #
-        # if end_switch_node_used:
-        #     self.add_node_join(dotgraph, end_switch_node_id)
-        #     ret_list.append(end_switch_node_id)
-        # else:
-        #     ret_list.append(None)
+        ## put anchor nodes in line
+        self.add_nodes_rank(dotgraph, case_anchor_nodes, "same")
+
+        ## connect anchors layer
+        prev_node = None
+        for anchor_node in case_anchor_nodes:
+            if prev_node:
+                self.add_edge_hidden(dotgraph, prev_node, anchor_node, hidden=hide_anchor_items)
+            prev_node = anchor_node
 
         return ret_list
 
@@ -325,16 +316,41 @@ class GraphGenerator:
                 ret_list.append(None)
             return ret_list
 
-    def add_node_if(self, dotgraph: graphviz.Digraph, node_id, label=None, fillcolor=None):
-        dotgraph.node(node_id, style="filled", shape="diamond", label=label, fillcolor=fillcolor)
+    def add_node_hidden(self, dotgraph: graphviz.Digraph, node_id, hidden=True):
+        if hidden:
+            dotgraph.node(node_id, label="", shape="none", style="", margin="0", width="0.0", height="0.0")
+        else:
+            dotgraph.node(node_id, label="a", fillcolor="red", margin="0")
 
-    def add_node_join(self, dotgraph: graphviz.Digraph, node_id, fillcolor=None):
+    def add_node_if(self, dotgraph: graphviz.Digraph, node_id, label=None, fillcolor=None, attrs=None):
+        if attrs is None:
+            attrs = {}
+        dotgraph.node(node_id, style="filled", shape="hexagon", label=label, fillcolor=fillcolor, **attrs)
+
+    def add_node_goto_label(self, dotgraph: graphviz.Digraph, node_id, label=None, fillcolor=None):
+        dotgraph.node(node_id, style="filled", shape="cds", label=label, fillcolor=fillcolor)
+
+    def add_node_join(self, dotgraph: graphviz.Digraph, node_id, fillcolor=None, attrs=None):
+        if attrs is None:
+            attrs = {}
         dotgraph.node(
-            node_id, label="", width="0.2", height="0.2", style="filled", shape="diamond", fillcolor=fillcolor
+            node_id, label="", width="0.2", height="0.2", style="filled", shape="diamond", fillcolor=fillcolor, **attrs
         )
 
-    def add_edge_hidden(self, dotgraph: graphviz.Digraph, from_node_id, to_node_id):
-        dotgraph.edge(from_node_id, to_node_id, style="invis")
+    def add_edge_hidden(self, dotgraph: graphviz.Digraph, from_node_id, to_node_id, hidden=True, attrs=None):
+        if attrs is None:
+            attrs = {}
+        if hidden:
+            dotgraph.edge(from_node_id, to_node_id, style="invis", **attrs)
+        else:
+            dotgraph.edge(from_node_id, to_node_id, color="red", **attrs)
+
+    def add_nodes_rank(self, dotgraph: graphviz.Digraph, nodes_list, rank_value):
+        with dotgraph.subgraph() as sub:
+            # sub.attr(rankdir="LR")
+            sub.attr(rank=rank_value)
+            for node_id in nodes_list:
+                sub.node(node_id)
 
 
 def get_non_none_last_element(data_list):
@@ -380,6 +396,7 @@ class ActivityGraphGenerator:
 
     def generate(self, out_path):
         self.dotgraph = graphviz.Digraph()
+        # self.dotgraph = graphviz.Digraph(engine='neato')
 
         if not self.data:
             ## empty data
@@ -388,7 +405,14 @@ class ActivityGraphGenerator:
             return
 
         # generate
-        graph_attr = {"ranksep": "0.35", "fontname": "SansSerif,sans-serif", "nojustify": "true", "labeljust": "l"}
+        graph_attr = {
+            "ranksep": "0.35",
+            "fontname": "SansSerif,sans-serif",
+            "nojustify": "true",
+            "labeljust": "l",
+            # "splines": "ortho",    ## straight lines
+            # "splines": "polyline",    ## straight lines
+        }
         self.dotgraph.attr(None, graph_attr)
 
         node_attr = {

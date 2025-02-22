@@ -17,7 +17,7 @@ public:
 				return 1;
 			}
 		case 1:
-		case 2: return 2;
+		case 2: timestamp += paramA;
 		default: {
 			timestamp = time(nullptr);
 		}

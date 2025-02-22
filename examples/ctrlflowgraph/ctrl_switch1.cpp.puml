@@ -18,6 +18,9 @@ partition "switch:\ntimestamp % 4" {
         #lightgreen:return 0;
         stop
     endif
+    ' case: 1 fallthrough: True
+    if ( 1 ? ) then (yes)
+    endif
 }
     #lightgreen:return -3;
     stop

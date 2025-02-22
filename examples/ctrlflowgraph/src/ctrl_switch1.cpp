@@ -40,6 +40,7 @@ int calc_switch1() {
 	const int timestamp = time(nullptr);
 	switch(timestamp % 4) {
 	case 0: return 0;
+	case 1: {}
 	}
 	return -3;
 }

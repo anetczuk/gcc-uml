@@ -19,7 +19,7 @@ not supported" fillcolor=orange]
 		item_7 [label="label [--unknown--]
 not supported" fillcolor=orange]
 		item_6 -> item_7
-		item_8 [label="iter > 0" shape=diamond style=filled]
+		item_8 [label="iter > 0" shape=hexagon style=filled]
 		item_9 [label="goto [--unknown--]
 not supported" fillcolor=orange]
 		item_10 [label="goto [--unknown--]
@@ -132,14 +132,14 @@ not supported" fillcolor=orange]
 	subgraph cluster_item_52 {
 		graph [label="::compare001() -> void"]
 		item_53 [label="int www1 = 0"]
-		item_54 [label="www1 <= 10" shape=diamond style=filled]
+		item_54 [label="www1 <= 10" shape=hexagon style=filled]
 		item_55 [label="www1++"]
 		item_54 -> item_55 [label=true]
 		item_55 -> item_56
 		item_54 -> item_56 [label=false]
 		item_56 [label="" height=0.2 shape=diamond style=filled width=0.2]
 		item_53 -> item_54
-		item_57 [label="www1 > 9" shape=diamond style=filled]
+		item_57 [label="www1 > 9" shape=hexagon style=filled]
 		item_58 [label="www1++"]
 		item_57 -> item_58 [label=true]
 		item_58 -> item_59
@@ -164,7 +164,7 @@ not supported" fillcolor=orange]
 	subgraph cluster_item_66 {
 		graph [label="::goto001() -> int"]
 		item_67 [label="int ggg1 = 0"]
-		item_68 [label="ggg1 != 0" shape=diamond style=filled]
+		item_68 [label="ggg1 != 0" shape=hexagon style=filled]
 		item_69 [label="goto err_not_found
 not supported" fillcolor=orange]
 		item_68 -> item_69 [label=true]

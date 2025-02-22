@@ -22,7 +22,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 NODE_COLOR = "#fefece"
-LAST_NODE_COLOR = "lightgreen"
+LAST_NODE_COLOR = "lightgreen"  # usually "return" node
 UNSUPPORTED_COLOR = "orange"
 
 

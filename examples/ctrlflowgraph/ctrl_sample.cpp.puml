@@ -31,8 +31,7 @@ partition "switch:\ntimestamp % 3" {
     endif
     ' case: 2 fallthrough: True
     if ( 2 ? ) then (yes)
-        #lightgreen:return 2;
-        stop
+        :timestamp = timestamp + paramA;
     endif
     ' case: None fallthrough: True
     if ( default ) then (yes)
