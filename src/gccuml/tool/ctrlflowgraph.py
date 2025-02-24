@@ -372,6 +372,10 @@ class ScopeAnalysis:
         if other_valid_expr:
             return (True, other_name_exp)
 
+        other_valid_expr, other_name_exp = self._handle_other_02(statement_entry, stat_list)
+        if other_valid_expr:
+            return (True, other_name_exp)
+
         if type_name == "cond_expr":
             self._handle_if(statement_entry, stat_list)
             return (True, None)
@@ -477,14 +481,19 @@ class ScopeAnalysis:
 
         if type_name in ("goto_expr"):
             labl_entry = statement_entry.get("labl")
-            label_name = get_entry_name(labl_entry)
-            statement = TypedStatement(f"goto {label_name}", StatementType.UNSUPPORTED)
+            label_id = labl_entry.get_id()
+            label_name = get_entry_name(labl_entry, default_ret=None)
+            statement = TypedStatement(label_name, StatementType.GOTO)
+            statement.items.append(label_id)
             stat_list.append(statement)
             return (True, None)
 
         if type_name in ("label_expr"):
-            label_name = get_entry_name(statement_entry)
-            statement = TypedStatement(f"label {label_name}", StatementType.UNSUPPORTED)
+            label_name_entry = statement_entry.get("name")
+            label_id = label_name_entry.get_id()
+            label_name = get_entry_name(statement_entry, default_ret=None)
+            statement = TypedStatement(label_name, StatementType.GOTOLABEL)
+            statement.items.append(label_id)
             stat_list.append(statement)
             return (True, None)
 
@@ -498,6 +507,11 @@ class ScopeAnalysis:
             statement = TypedStatement(f"unordered_expr {statement_entry.get_id()}", StatementType.UNSUPPORTED)
             stat_list.append(statement)
             return (True, None)
+
+        return (False, None)
+
+    def _handle_other_02(self, statement_entry: Entry, stat_list: List[Any]) -> Tuple[bool, str]:
+        type_name = statement_entry.get_type()
 
         if type_name in ("try_finally_expr"):
             try_entry = statement_entry.get("op 0")

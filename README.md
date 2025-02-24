@@ -43,7 +43,7 @@ Example presents inheritance graph with diamond and template example:
 
 Example consists of switch and method call.
 
-[![ctrlflowgraph tool example](doc/samples/ctrl_sample.cpp.svg "ctrlflowgraph tool example")](doc/samples/ctrl_sample.cpp.svg)
+[![ctrlflowgraph tool example](doc/samples/ctrl_sample.cpp.puml.svg "ctrlflowgraph tool example")](doc/samples/ctrl_sample.cpp.puml.svg)
 
 ### printhtml
 

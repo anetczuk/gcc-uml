@@ -45,7 +45,7 @@ cp "$TOOL_DIR/build/mem_sample.cpp.svg" "$SAMPLES_DIR"
 ## ctrlflowgraph sample
 TOOL_DIR="$EXAMPLES_DIR/ctrlflowgraph"
 "$TOOL_DIR"/generate.sh --ctrl_sample
-cp "$TOOL_DIR/build/ctrl_sample.cpp.svg" "$SAMPLES_DIR"
+cp "$TOOL_DIR/build/ctrl_sample.cpp.puml.svg" "$SAMPLES_DIR"
 
 
 # "$SCRIPT_DIR"/generate_small.sh

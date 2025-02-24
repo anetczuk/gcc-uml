@@ -7,21 +7,21 @@ card "::shift_func(int iter) -> void" {
 }
 
 card "::while_func(int iter) -> void" {
-    #orange:goto [--unknown--];
+    #orange:goto;
     note right: not supported
-    #orange:label [--unknown--];
+    #orange:label;
     note right: not supported
     :iter = iter + -2;
-    #orange:label [--unknown--];
+    #orange:label;
     note right: not supported
     if (iter > 0 ?) then (true)
-        #orange:goto [--unknown--];
+        #orange:goto;
         note right: not supported
     else (false)
-        #orange:goto [--unknown--];
+        #orange:goto;
         note right: not supported
     endif
-    #orange:label [--unknown--];
+    #orange:label;
     note right: not supported
     -[hidden]->
 }

@@ -659,12 +659,12 @@ def get_entry_name(entry: Entry, default_ret="[--unknown--]") -> str:
 
     entry_value = entry.get("name")
     if entry_value is not None:
-        return get_entry_name(entry_value)
+        return get_entry_name(entry_value, default_ret=default_ret)
 
     entry_type = entry.get_type()
     if entry_type == "identifier_node":
         entry_value = entry.get("strg", "[--no entry--]")
-        return get_entry_name(entry_value)
+        return get_entry_name(entry_value, default_ret=default_ret)
 
     return default_ret
 

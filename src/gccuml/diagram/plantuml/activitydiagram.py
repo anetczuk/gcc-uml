@@ -113,16 +113,32 @@ class Statement(ActivityItem):
             return content_list
 
         if self.type == StatementType.GOTO:
+            node_color = convert_color_attribute(activitydata.UNSUPPORTED_COLOR)
+            label_value = "goto"
+            if self.name:
+                label_value = f"{label_value} {self.name}"
             content_list.append(
                 f"""\
-{indent_str}goto {self.name}"""
+{indent_str}{node_color}:{label_value};"""
+            )
+            content_list.append(
+                f"""\
+{indent_str}note right: not supported"""
             )
             return content_list
 
         if self.type == StatementType.GOTOLABEL:
+            node_color = convert_color_attribute(activitydata.UNSUPPORTED_COLOR)
+            label_value = "label"
+            if self.name:
+                label_value = f"{label_value} {self.name}"
             content_list.append(
                 f"""\
-{indent_str}label {self.name}"""
+{indent_str}{node_color}:{label_value};"""
+            )
+            content_list.append(
+                f"""\
+{indent_str}note right: not supported"""
             )
             return content_list
 

@@ -83,6 +83,8 @@ class GraphGenerator:
                     if last_node_id:
                         dotgraph.edge(last_node_id, next_node_id)
                     else:
+                        # if not isinstance(item, activitydata.TypedStatement):
+                        ## connect functions
                         last_node_id = get_non_none_last_element(ret_list)
                         if last_node_id:
                             self.add_edge_hidden(dotgraph, last_node_id, next_node_id)
@@ -100,6 +102,29 @@ class GraphGenerator:
             node_id = self.next_id()
             dotgraph.node(node_id, label=data.name, fillcolor=data.color)
             return [node_id]
+
+        if data.type == StatementType.IF:
+            return self.generate_if(dotgraph, data)
+
+        if data.type == StatementType.GOTO:
+            node_id = self.next_id()
+            label_value = "goto"
+            if data.name:
+                label_value = f"{label_value} {data.name}"
+            dotgraph.node(node_id, style="filled", shape="larrow", label=label_value)
+            label_id = data.items[0]
+            label_id = f"gotolabel_{label_id}"
+            dotgraph.edge(node_id, label_id)
+            return [node_id, None]
+
+        if data.type == StatementType.GOTOLABEL:
+            label_id = data.items[0]
+            label_id = f"gotolabel_{label_id}"
+            label_value = "label"
+            if data.name:
+                label_value = f"{label_value} {data.name}"
+            self.add_node_goto_label(dotgraph, label_id, label_value)
+            return [label_id]
 
         if data.type == StatementType.STOP:
             node_id = None
@@ -121,9 +146,6 @@ class GraphGenerator:
                 dotgraph.edge(node_id, stop_node_id)
                 return [node_id, stop_node_id, None]
             return [stop_node_id, None]
-
-        if data.type == StatementType.IF:
-            return self.generate_if(dotgraph, data)
 
         raise RuntimeError(f"unhandled statement type: {data.type}")
 
