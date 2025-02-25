@@ -51,7 +51,7 @@ verify_source() {
 
 	local RUN_ERROR="0"
 
-	(worker_command "$LANG_FILE_PATH" "$out_dir") || RUN_ERROR="1"
+	worker_command "$LANG_FILE_PATH" "$out_dir" || RUN_ERROR="1"
 
 	if [ "$RUN_ERROR" -eq "1" ]; then
 		echo -e "\nerror while processing file: ${source_path}"

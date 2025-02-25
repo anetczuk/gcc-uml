@@ -27,21 +27,21 @@ source "$SCRIPT_DIR/_taskverify.sh"
 
 
 GCC_COMMAND="g++"
-source "$SCRIPT_DIR/../config.bash" || true
+
+
+cfg_path="${SCRIPT_DIR}/../config.bash"
+cfg_path="$(realpath "${cfg_path}")"
+# shellcheck disable=SC1090
+source "$cfg_path" || true
 
 
 export PROJECT_COMMAND="${SCRIPT_DIR}/../src/gccuml/main.py"
 export GCC_COMMAND
 
 
-WORK_DIR="$SCRIPT_DIR/tmp/ws-local"
+WORK_DIR="$SCRIPT_DIR/tmp/ws-single"
 mkdir -p "$WORK_DIR"
 cd "$WORK_DIR"
-
-
-JOBS_NUM=6
-SOURCES_ROOT_DIR="${SCRIPT_DIR}/../examples"
-OUTPUT_FILE_PATH="${WORK_DIR}/sources-valid.txt"
 
 
 ARGS=()
@@ -53,10 +53,6 @@ while :; do
     fi
 
     case "$1" in
-      -j=*)			JOBS_NUM="${1#*=}"
-      				shift # past argument=value
-      				;;
-
       --*)			shift
       				;; # skip unknown argument
 
@@ -66,18 +62,11 @@ while :; do
 done
 
 
-if [ ${#ARGS[@]} -gt 0 ]; then
-	## single file mode
-	srcfile="${ARGS[0]}"
-	verify_source "$srcfile" "1 of 1"
-	exit 0
-fi
+LOG_LEVEL="INFO"
 
 
-## remove cache of local files - keep source files list always up to date
-rm "${WORK_DIR}/sources-found.txt" || true
-rm "$OUTPUT_FILE_PATH" || true
+## single file mode
+srcfile="${ARGS[0]}"
+verify_source "$srcfile" "1 of 1"
 
-run_scan "$SOURCES_ROOT_DIR" "$JOBS_NUM" "$OUTPUT_FILE_PATH"
-
-run_verify "$OUTPUT_FILE_PATH" "$JOBS_NUM" "$OUTPUT_FILE_PATH"
+echo "completed"

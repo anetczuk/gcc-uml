@@ -17,8 +17,13 @@ worker_printhtml() {
 	local input_file="$1"
 	local output_dir="$2"
 
+	local cmd_log_level="WARNING"
+	if [[ -v LOG_LEVEL ]]; then
+		cmd_log_level="$LOG_LEVEL"
+	fi
+
 # 	"$PROJECT_COMMAND" -la \
-	"$PROJECT_COMMAND" --loglevel WARNING \
+	"$PROJECT_COMMAND" --loglevel "$cmd_log_level" \
 					   --exitloglevel ERROR \
 					   printhtml \
 				       --rawfile "$input_file" \
@@ -35,8 +40,13 @@ worker_memlayout() {
 	local input_file="$1"
 	local output_dir="$2"
 
+	local cmd_log_level="WARNING"
+	if [[ -v LOG_LEVEL ]]; then
+		cmd_log_level="$LOG_LEVEL"
+	fi
+
 # 	"$PROJECT_COMMAND" -la \
-	"$PROJECT_COMMAND" --loglevel WARNING \
+	"$PROJECT_COMMAND" --loglevel "$cmd_log_level" \
 					   --exitloglevel ERROR \
 					   memlayout \
 				       --rawfile "$input_file" \
@@ -52,8 +62,13 @@ worker_inheritgraph() {
 	local input_file="$1"
 	local output_dir="$2"
 
+	local cmd_log_level="WARNING"
+	if [[ -v LOG_LEVEL ]]; then
+		cmd_log_level="$LOG_LEVEL"
+	fi
+
 # 	"$PROJECT_COMMAND" -la \
-	"$PROJECT_COMMAND" --loglevel WARNING \
+	"$PROJECT_COMMAND" --loglevel "$cmd_log_level" \
 					   --exitloglevel ERROR \
 					   inheritgraph \
 				       --rawfile "$input_file" \
@@ -68,9 +83,14 @@ worker_ctrlflowgraph() {
 	local input_file="$1"
 	local output_dir="$2"
 
+	local cmd_log_level="WARNING"
+	if [[ -v LOG_LEVEL ]]; then
+		cmd_log_level="$LOG_LEVEL"
+	fi
+
 # 	"$PROJECT_COMMAND" -la \
-	"$PROJECT_COMMAND" --loglevel WARNING \
-					   --exitloglevel ERROR \
+	"$PROJECT_COMMAND" --loglevel "$cmd_log_level" \
+					   --exitloglevel WARNING \
 					   ctrlflowgraph \
 				       --rawfile "$input_file" \
 					   --outpath "$output_dir/test.puml"

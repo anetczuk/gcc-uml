@@ -74,6 +74,7 @@ if [ ${#ARGS[@]} -gt 0 ]; then
 	## single file mode
 	srcfile="${ARGS[0]}"
 	verify_source "$srcfile" "1 of 1"
+	echo "completed"
 	exit 0
 fi
 
