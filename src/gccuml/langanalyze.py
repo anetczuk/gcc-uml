@@ -406,7 +406,7 @@ def find_class_vtable_var_decl(content: LangContent, record_entry: Entry):
 _TYPE_TO_CODE_CLASS_DICT: Dict[str, str] = None
 
 
-def get_entry_type_code_class(entry_tye: str) -> str:
+def get_entry_type_code_class(entry_type: str) -> str:
     # pylint: disable=W0603
     global _TYPE_TO_CODE_CLASS_DICT
     if _TYPE_TO_CODE_CLASS_DICT is None:
@@ -416,7 +416,7 @@ def get_entry_type_code_class(entry_tye: str) -> str:
             item_name = item[1]
             code_class = item[2]
             _TYPE_TO_CODE_CLASS_DICT[item_name] = code_class
-    return _TYPE_TO_CODE_CLASS_DICT.get(entry_tye)
+    return _TYPE_TO_CODE_CLASS_DICT.get(entry_type)
 
 
 def is_entry_code_class(entry: Entry, code_class):

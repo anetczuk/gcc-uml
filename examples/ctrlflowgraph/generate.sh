@@ -95,7 +95,7 @@ prepare_sample() {
 
 	COMMAND=""
 	if [ "$USE_PROFILER" = false ]; then	
-		COMMAND="$SRC_DIR/gccuml/main.py ctrlflowgraph"
+		COMMAND="$SRC_DIR/gccuml/main.py --exitloglevel ERROR ctrlflowgraph"
 	else
 		COMMAND="$SRC_DIR/../tools/profiler.sh --cprofile $SRC_DIR/gccuml/main.py ctrlflowgraph"
 	fi
