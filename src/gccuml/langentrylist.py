@@ -25,6 +25,19 @@
 ##     tcc_expression   -- Any other expression.
 ##
 ENTRY_DEF_LIST = [
+    ## gcc/c-family/c-common.def
+    ("C_MAYBE_CONST_EXPR", "c_maybe_const_expr", "tcc_expression", 2),
+    ("EXCESS_PRECISION_EXPR", "excess_precision_expr", "tcc_expression", 1),
+    ("USERDEF_LITERAL", "userdef_literal", "tcc_exceptional", 3),
+    ("SIZEOF_EXPR", "sizeof_expr", "tcc_expression", 1),
+    ("PAREN_SIZEOF_EXPR", "paren_sizeof_expr", "tcc_expression", 1),
+    ("FOR_STMT", "for_stmt", "tcc_statement", 8),
+    ("WHILE_STMT", "while_stmt", "tcc_statement", 5),
+    ("DO_STMT", "do_stmt", "tcc_statement", 3),
+    ("BREAK_STMT", "break_stmt", "tcc_statement", 1),
+    ("CONTINUE_STMT", "continue_stmt", "tcc_statement", 1),
+    ("SWITCH_STMT", "switch_stmt", "tcc_statement", 5),
+    ("CONCEPT_DECL", "concept_decl", "tcc_declaration", 0),
     ## gcc/tree.def
     ("ERROR_MARK", "error_mark", "tcc_exceptional", 0),
     ("IDENTIFIER_NODE", "identifier_node", "tcc_exceptional", 0),

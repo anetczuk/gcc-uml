@@ -114,8 +114,7 @@ digraph {
 	subgraph cluster_item_44 {
 		graph [label="::asm001() -> int"]
 		item_45 [label="int res;"]
-		item_46 [label="asm expression
-not supported" fillcolor=orange]
+		item_46 [label="assembler expression" fillcolor=orange]
 		item_45 -> item_46
 		item_47 [label="return res" fillcolor=lightgreen]
 		item_48 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
@@ -189,34 +188,32 @@ not supported" fillcolor=orange]
 	subgraph cluster_item_76 {
 		graph [label="::compound001() -> void"]
 		item_77 [label="short int aaa1 = 0"]
-		item_78 [label="[--unknown--]"]
+		item_78 [label="aaa1 = ::foo(2)"]
 		item_77 -> item_78
-		item_79 [label="aaa1 = ::foo(2)"]
+		item_79 [label="aaa1 = ::foo(::foo(4))"]
 		item_78 -> item_79
-		item_80 [label="aaa1 = ::foo(::foo(4))"]
+		item_80 [label="::foo(5)"]
 		item_79 -> item_80
-		item_81 [label="::foo(5)"]
+		item_81 [label="aaa1 = ::foo(6)"]
 		item_80 -> item_81
-		item_82 [label="aaa1 = ::foo(6)"]
+		item_82 [label="::foo(7)"]
 		item_81 -> item_82
-		item_83 [label="::foo(7)"]
+		item_83 [label="aaa1 = ::foo(::foo(8))"]
 		item_82 -> item_83
-		item_84 [label="aaa1 = ::foo(::foo(8))"]
-		item_83 -> item_84
 	}
 	item_75 -> item_77 [style=invis]
-	subgraph cluster_item_85 {
+	subgraph cluster_item_84 {
 		graph [label="::foo(short int p2) -> short int"]
-		item_86 [label="return p2 + 1" fillcolor=lightgreen]
-		item_87 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-		item_86 -> item_87
+		item_85 [label="return p2 + 1" fillcolor=lightgreen]
+		item_86 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_85 -> item_86
 	}
-	item_84 -> item_86 [style=invis]
-	subgraph cluster_item_88 {
+	item_83 -> item_85 [style=invis]
+	subgraph cluster_item_87 {
 		graph [label="::over::func_over() -> void (void) *"]
-		item_89 [label="return (&::over::func1)" fillcolor=lightgreen]
-		item_90 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-		item_89 -> item_90
+		item_88 [label="return (&::over::func1)" fillcolor=lightgreen]
+		item_89 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_88 -> item_89
 	}
-	item_87 -> item_89 [style=invis]
+	item_86 -> item_88 [style=invis]
 }

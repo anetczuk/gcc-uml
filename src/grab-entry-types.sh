@@ -48,13 +48,6 @@ append_file() {
 ## ========================================
 
 
-OUT_TREE_DEF_PATH="${GRAB_DIR}/tree.def"
-grab_file "gcc/tree.def" "$OUT_TREE_DEF_PATH"
-
-OUT_CPTREE_DEF_PATH="${GRAB_DIR}/cp-tree.def"
-grab_file "gcc/cp/cp-tree.def" "$OUT_CPTREE_DEF_PATH"
-
-
 ## convert to Python list
 OUT_PATH="${SCRIPT_DIR}/gccuml/langentrylist.py"
 
@@ -88,6 +81,19 @@ cat > "$OUT_PATH" <<EOL
 ENTRY_DEF_LIST = [
 EOL
 
+
+OUT_COMMON_DEF_PATH="${GRAB_DIR}/c-common.def"
+grab_file "gcc/c-family/c-common.def" "$OUT_COMMON_DEF_PATH"
+
+OUT_TREE_DEF_PATH="${GRAB_DIR}/tree.def"
+grab_file "gcc/tree.def" "$OUT_TREE_DEF_PATH"
+
+OUT_CPTREE_DEF_PATH="${GRAB_DIR}/cp-tree.def"
+grab_file "gcc/cp/cp-tree.def" "$OUT_CPTREE_DEF_PATH"
+
+
+echo "    ## gcc/c-family/c-common.def" >> "$OUT_PATH"
+append_file "$OUT_COMMON_DEF_PATH" "$OUT_PATH"
 
 echo "    ## gcc/tree.def" >> "$OUT_PATH"
 append_file "$OUT_TREE_DEF_PATH" "$OUT_PATH"

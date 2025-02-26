@@ -62,7 +62,7 @@ while :; do
 done
 
 
-LOG_LEVEL="INFO"
+export LOG_LEVEL="INFO"
 
 
 ## single file mode
