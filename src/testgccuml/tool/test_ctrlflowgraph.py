@@ -14,7 +14,35 @@ from gccuml.tool.ctrlflowgraph import (
     OP_BINARY_DICT,
     OP_COMPARISON_DICT,
     UNSUPPORTED_EXPRESSION_SET,
+    EntryExpression,
 )
+
+
+class EntryExpressionTest(unittest.TestCase):
+
+    def test_bool(self):
+        expr = EntryExpression(valid=False)
+        self.assertEqual(False, bool(expr))
+
+        expr = EntryExpression(valid=True)
+        self.assertEqual(True, bool(expr))
+
+    def test_valid_false(self):
+        expr = EntryExpression()
+        self.assertEqual(False, expr.valid)
+
+        expr = EntryExpression("xyz", valid=False)
+        self.assertEqual(False, expr.valid)
+
+    def test_valid_true(self):
+        expr = EntryExpression("xyz")
+        self.assertEqual(True, expr.valid)
+
+        expr = EntryExpression(statements=[])
+        self.assertEqual(True, expr.valid)
+
+        expr = EntryExpression(valid=True)
+        self.assertEqual(True, expr.valid)
 
 
 class CheckDictsTest(unittest.TestCase):
