@@ -24,10 +24,10 @@ ranksep = 2
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::templatens::TemplInheritDouble</b>  (384b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">96</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::templatens::AbcTempl&lt;int, int&gt;</td> </tr>
-            <tr> <td align="right" port='in_1'>96</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_1'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_1'>96</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_1'>[padding]</td> </tr>
             <tr> <td align="right" port='in_2'>128</td> <td align="right">192</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::templatens::AbcTempl&lt;double, double&gt;</td> </tr>
             <tr> <td align="right" port='in_3'>320</td> <td align="right">8</td> <td align="left" port='out_3'>dataA: bool</td> </tr>
-            <tr> <td align="right" port='in_4'>328</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_4'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_4'>328</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_4'>[padding]</td> </tr>
         </table>>
     ]
 
@@ -69,7 +69,7 @@ ranksep = 2
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::templatens::AbcTempl&lt;double, double&gt;</b>  (192b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" port='out_0'>field1: double</td> </tr>
             <tr> <td align="right" port='in_1'>64</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
-            <tr> <td align="right" port='in_2'>72</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>72</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_2'>[padding]</td> </tr>
             <tr> <td align="right" port='in_3'>128</td> <td align="right">64</td> <td align="left" port='out_3'>field3: double</td> </tr>
         </table>>
     ]
@@ -81,7 +81,7 @@ ranksep = 2
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::templatens::AbcTempl&lt;int, int&gt;</b>  (96b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: int</td> </tr>
             <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
-            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[padding]</td> </tr>
             <tr> <td align="right" port='in_3'>64</td> <td align="right">32</td> <td align="left" port='out_3'>field3: int</td> </tr>
         </table>>
     ]
@@ -94,7 +94,7 @@ ranksep = 2
             <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: int</td> </tr>
             <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
             <tr> <td align="right" port='in_2'>40</td> <td align="right">8</td> <td align="left" port='out_2'>field3: bool</td> </tr>
-            <tr> <td align="right" port='in_3'>48</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>48</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_3'>[padding]</td> </tr>
         </table>>
     ]
 
@@ -106,7 +106,7 @@ ranksep = 2
             <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field1: float</td> </tr>
             <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>field2: bool</td> </tr>
             <tr> <td align="right" port='in_2'>40</td> <td align="right">8</td> <td align="left" port='out_2'>field3: char</td> </tr>
-            <tr> <td align="right" port='in_3'>48</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>48</td> <td align="right">16</td> <td align="left" bgcolor='lightgray' port='out_3'>[padding]</td> </tr>
         </table>>
     ]
 
@@ -116,15 +116,15 @@ ranksep = 2
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::diamondns::Cbc1</b>  (320b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">72</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::diamondns::Bbc1</td> </tr>
-            <tr> <td align="right" port='in_1'>72</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_1'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_1'>72</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_1'>[padding]</td> </tr>
             <tr> <td align="right" port='in_2'>128</td> <td align="right">72</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::diamondns::Bbc2</td> </tr>
-            <tr> <td align="right" port='in_3'>200</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>200</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_3'>[padding]</td> </tr>
             <tr> <td align="right" port='in_4'>224</td> <td align="right">32</td> <td align="left" port='out_4'>fieldD1: int</td> </tr>
             <tr> <td align="right" port='in_5'>256</td> <td align="right">5</td> <td align="left" port='out_5'>fieldD2</td> </tr>
             <tr> <td align="right" port='in_6'>261</td> <td align="right">2</td> <td align="left" bgcolor='#FEFECE' port='out_6'></td> </tr>
-            <tr> <td align="right" port='in_7'>263</td> <td align="right">1</td> <td align="left" bgcolor='lightgray' port='out_7'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_7'>263</td> <td align="right">1</td> <td align="left" bgcolor='lightgray' port='out_7'>[padding]</td> </tr>
             <tr> <td align="right" port='in_8'>264</td> <td align="right">5</td> <td align="left" port='out_8'>fieldD3</td> </tr>
-            <tr> <td align="right" port='in_9'>269</td> <td align="right">19</td> <td align="left" bgcolor='lightgray' port='out_9'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_9'>269</td> <td align="right">19</td> <td align="left" bgcolor='lightgray' port='out_9'>[padding]</td> </tr>
             <tr> <td align="right" port='in_10'>288</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_10'>::diamondns::Abc1</td> </tr>
         </table>>
     ]
@@ -136,7 +136,7 @@ ranksep = 2
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::diamondns::Bbc2</b>  (128b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.Bbc2</td> </tr>
             <tr> <td align="right" port='in_1'>64</td> <td align="right">8</td> <td align="left" port='out_1'>fieldC: char</td> </tr>
-            <tr> <td align="right" port='in_2'>72</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>72</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[padding]</td> </tr>
             <tr> <td align="right" port='in_3'>96</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_3'>::diamondns::Abc1</td> </tr>
         </table>>
     ]
@@ -148,7 +148,7 @@ ranksep = 2
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::diamondns::Bbc1</b>  (128b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.Bbc1</td> </tr>
             <tr> <td align="right" port='in_1'>64</td> <td align="right">8</td> <td align="left" port='out_1'>fieldB: bool</td> </tr>
-            <tr> <td align="right" port='in_2'>72</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>72</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[padding]</td> </tr>
             <tr> <td align="right" port='in_3'>96</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_3'>::diamondns::Abc1</td> </tr>
         </table>>
     ]

@@ -1,0 +1,95 @@
+digraph memory_layout {
+
+fontname="Helvetica,Arial,sans-serif"
+node [fontname="Helvetica,Arial,sans-serif"]
+edge [fontname="Helvetica,Arial,sans-serif"]
+
+graph [
+    rankdir = "LR"
+];
+node [
+    fontsize = "16"
+    shape = "record"
+];
+
+ranksep = 2
+
+
+# items subgraph
+{
+
+    "-pragmapack-SuboptimalPack2" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::pragmapack::SuboptimalPack2</b>  (144b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">8</td> <td align="left" port='out_0'>fieldA: bool</td> </tr>
+            <tr> <td align="right" port='in_1'>8</td> <td align="right">8</td> <td align="left" bgcolor='lightgray' port='out_1'>[padding]</td> </tr>
+            <tr> <td align="right" port='in_2'>16</td> <td align="right">32</td> <td align="left" port='out_2'>fieldD: ::uint32_t</td> </tr>
+            <tr> <td align="right" port='in_3'>48</td> <td align="right">16</td> <td align="left" port='out_3'>fieldC: ::uint16_t</td> </tr>
+            <tr> <td align="right" port='in_4'>64</td> <td align="right">64</td> <td align="left" port='out_4'>fieldE: ::uint64_t</td> </tr>
+            <tr> <td align="right" port='in_5'>128</td> <td align="right">8</td> <td align="left" port='out_5'>fieldB: ::uint8_t</td> </tr>
+            <tr> <td align="right" port='in_6'>136</td> <td align="right">8</td> <td align="left" bgcolor='lightgray' port='out_6'>[padding]</td> </tr>
+        </table>>
+    ]
+
+    "-pragmapack-SuboptimalPack1" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::pragmapack::SuboptimalPack1</b>  (128b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">8</td> <td align="left" port='out_0'>fieldA: bool</td> </tr>
+            <tr> <td align="right" port='in_1'>8</td> <td align="right">32</td> <td align="left" port='out_1'>fieldD: ::uint32_t</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">16</td> <td align="left" port='out_2'>fieldC: ::uint16_t</td> </tr>
+            <tr> <td align="right" port='in_3'>56</td> <td align="right">64</td> <td align="left" port='out_3'>fieldE: ::uint64_t</td> </tr>
+            <tr> <td align="right" port='in_4'>120</td> <td align="right">8</td> <td align="left" port='out_4'>fieldB: ::uint8_t</td> </tr>
+        </table>>
+    ]
+
+    "-padding-Suboptimal" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::padding::Suboptimal</b>  (256b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">8</td> <td align="left" port='out_0'>fieldA: bool</td> </tr>
+            <tr> <td align="right" port='in_1'>8</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_1'>[padding]</td> </tr>
+            <tr> <td align="right" port='in_2'>32</td> <td align="right">32</td> <td align="left" port='out_2'>fieldD: ::uint32_t</td> </tr>
+            <tr> <td align="right" port='in_3'>64</td> <td align="right">16</td> <td align="left" port='out_3'>fieldC: ::uint16_t</td> </tr>
+            <tr> <td align="right" port='in_4'>80</td> <td align="right">48</td> <td align="left" bgcolor='lightgray' port='out_4'>[padding]</td> </tr>
+            <tr> <td align="right" port='in_5'>128</td> <td align="right">64</td> <td align="left" port='out_5'>fieldE: ::uint64_t</td> </tr>
+            <tr> <td align="right" port='in_6'>192</td> <td align="right">8</td> <td align="left" port='out_6'>fieldB: ::uint8_t</td> </tr>
+            <tr> <td align="right" port='in_7'>200</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_7'>[padding]</td> </tr>
+        </table>>
+    ]
+
+    "-padding-OptimalB" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::padding::OptimalB</b>  (128b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" port='out_0'>fieldE: ::uint64_t</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">32</td> <td align="left" port='out_1'>fieldD: ::uint32_t</td> </tr>
+            <tr> <td align="right" port='in_2'>96</td> <td align="right">16</td> <td align="left" port='out_2'>fieldC: ::uint16_t</td> </tr>
+            <tr> <td align="right" port='in_3'>112</td> <td align="right">8</td> <td align="left" port='out_3'>fieldB: ::uint8_t</td> </tr>
+            <tr> <td align="right" port='in_4'>120</td> <td align="right">8</td> <td align="left" port='out_4'>fieldA: bool</td> </tr>
+        </table>>
+    ]
+
+    "-padding-OptimalA" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::padding::OptimalA</b>  (128b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">8</td> <td align="left" port='out_0'>fieldA: bool</td> </tr>
+            <tr> <td align="right" port='in_1'>8</td> <td align="right">8</td> <td align="left" port='out_1'>fieldB: ::uint8_t</td> </tr>
+            <tr> <td align="right" port='in_2'>16</td> <td align="right">16</td> <td align="left" port='out_2'>fieldC: ::uint16_t</td> </tr>
+            <tr> <td align="right" port='in_3'>32</td> <td align="right">32</td> <td align="left" port='out_3'>fieldD: ::uint32_t</td> </tr>
+            <tr> <td align="right" port='in_4'>64</td> <td align="right">64</td> <td align="left" port='out_4'>fieldE: ::uint64_t</td> </tr>
+        </table>>
+    ]
+
+
+
+}  # end of items subgraph
+
+}  # end of graph

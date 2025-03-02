@@ -184,7 +184,7 @@ class MemoryLayoutData:
 
             empty_space = field_pos - recent_end
             if empty_space > 0:
-                field = StructField("[empty]", None, recent_end, empty_space, None, FieldType.EMPTY)
+                field = StructField("[padding]", None, recent_end, empty_space, None, FieldType.EMPTY)
                 ret_list.append(field)
 
             field_size = 0
@@ -215,7 +215,7 @@ class MemoryLayoutData:
 
         empty_space = record_size - recent_end
         if empty_space > 0:
-            field = StructField("[empty]", None, recent_end, empty_space, None, FieldType.EMPTY)
+            field = StructField("[padding]", None, recent_end, empty_space, None, FieldType.EMPTY)
             ret_list.append(field)
 
         # record_namespace_list = get_record_namespace_list(record_entry)

@@ -37,10 +37,10 @@ ranksep = 2
             <tr> <td align="right" port='in_0'>0</td> <td align="right">192</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::itemsA::Abc1</td> </tr>
             <tr> <td align="right" port='in_1'>192</td> <td align="right">128</td> <td align="left" bgcolor='#FEFECE' port='out_1'>::itemsA::Stu2</td> </tr>
             <tr> <td align="right" port='in_2'>320</td> <td align="right">32</td> <td align="left" port='out_2'>dataA: int</td> </tr>
-            <tr> <td align="right" port='in_3'>352</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_3'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_3'>352</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_3'>[padding]</td> </tr>
             <tr> <td align="right" port='in_4'>384</td> <td align="right">192</td> <td align="left" port='out_4'>dataB: ::itemsA::Abc1</td> </tr>
             <tr> <td align="right" port='in_5'>576</td> <td align="right">32</td> <td align="left" port='out_5'>dataC: int</td> </tr>
-            <tr> <td align="right" port='in_6'>608</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_6'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_6'>608</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_6'>[padding]</td> </tr>
         </table>>
     ]
 
@@ -50,14 +50,14 @@ ranksep = 2
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::itemsA::Abc2</b>  (576b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">8</td> <td align="left" port='out_0'>dataA: bool</td> </tr>
-            <tr> <td align="right" port='in_1'>8</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_1'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_1'>8</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_1'>[padding]</td> </tr>
             <tr> <td align="right" port='in_2'>64</td> <td align="right">192</td> <td align="left" port='out_2'>dataB: ::itemsA::subA::Stu1</td> </tr>
             <tr> <td align="right" port='in_3'>256</td> <td align="right">8</td> <td align="left" port='out_3'>dataC: bool</td> </tr>
-            <tr> <td align="right" port='in_4'>264</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_4'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_4'>264</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_4'>[padding]</td> </tr>
             <tr> <td align="right" port='in_5'>320</td> <td align="right">64</td> <td align="left" port='out_5'>dataD1</td> </tr>
             <tr> <td align="right" port='in_6'>384</td> <td align="right">64</td> <td align="left" port='out_6'>dataD2</td> </tr>
             <tr> <td align="right" port='in_7'>448</td> <td align="right">8</td> <td align="left" port='out_7'>dataE: bool</td> </tr>
-            <tr> <td align="right" port='in_8'>456</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_8'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_8'>456</td> <td align="right">56</td> <td align="left" bgcolor='lightgray' port='out_8'>[padding]</td> </tr>
             <tr> <td align="right" port='in_9'>512</td> <td align="right">64</td> <td align="left" port='out_9'>dataF</td> </tr>
         </table>>
     ]
@@ -69,10 +69,10 @@ ranksep = 2
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::itemsA::Abc1</b>  (192b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>fieldA: int</td> </tr>
             <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>fieldB: bool</td> </tr>
-            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[padding]</td> </tr>
             <tr> <td align="right" port='in_3'>64</td> <td align="right">64</td> <td align="left" port='out_3'>fieldC: double</td> </tr>
             <tr> <td align="right" port='in_4'>128</td> <td align="right">8</td> <td align="left" port='out_4'>fieldD: bool</td> </tr>
-            <tr> <td align="right" port='in_5'>136</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_5'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_5'>136</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_5'>[padding]</td> </tr>
             <tr> <td align="right" port='in_6'>160</td> <td align="right">32</td> <td align="left" port='out_6'>fieldE: float</td> </tr>
         </table>>
     ]
@@ -84,12 +84,12 @@ ranksep = 2
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::itemsA::Stu2</b>  (128b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>fieldA: int</td> </tr>
             <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>fieldB: bool</td> </tr>
-            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[padding]</td> </tr>
             <tr> <td align="right" port='in_3'>64</td> <td align="right">32</td> <td align="left" port='out_3'>fieldC: int</td> </tr>
             <tr> <td align="right" port='in_4'>96</td> <td align="right">8</td> <td align="left" port='out_4'>fieldD: bool</td> </tr>
             <tr> <td align="right" port='in_5'>104</td> <td align="right">8</td> <td align="left" port='out_5'>fieldE: bool</td> </tr>
             <tr> <td align="right" port='in_6'>112</td> <td align="right">8</td> <td align="left" port='out_6'>fieldF: bool</td> </tr>
-            <tr> <td align="right" port='in_7'>120</td> <td align="right">8</td> <td align="left" bgcolor='lightgray' port='out_7'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_7'>120</td> <td align="right">8</td> <td align="left" bgcolor='lightgray' port='out_7'>[padding]</td> </tr>
         </table>>
     ]
 
@@ -100,10 +100,10 @@ ranksep = 2
             <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::itemsA::subA::Stu1</b>  (192b)</td> </tr>
             <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>fieldA: int</td> </tr>
             <tr> <td align="right" port='in_1'>32</td> <td align="right">8</td> <td align="left" port='out_1'>fieldB: bool</td> </tr>
-            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_2'>40</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_2'>[padding]</td> </tr>
             <tr> <td align="right" port='in_3'>64</td> <td align="right">64</td> <td align="left" port='out_3'>fieldC: double</td> </tr>
             <tr> <td align="right" port='in_4'>128</td> <td align="right">8</td> <td align="left" port='out_4'>fieldD: bool</td> </tr>
-            <tr> <td align="right" port='in_5'>136</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_5'>[empty]</td> </tr>
+            <tr> <td align="right" port='in_5'>136</td> <td align="right">24</td> <td align="left" bgcolor='lightgray' port='out_5'>[padding]</td> </tr>
             <tr> <td align="right" port='in_6'>160</td> <td align="right">32</td> <td align="left" port='out_6'>fieldE: float</td> </tr>
         </table>>
     ]
