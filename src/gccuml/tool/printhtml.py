@@ -27,15 +27,53 @@ from gccuml.langcontent import (
     is_entry_language_internal,
     is_entry_prop_internal,
     EntryTree,
+    LangContent,
 )
 from gccuml.io import write_file
 from gccuml.vizjs import DATA_DIR
 from gccuml.tool.tools import EntryDotGraph, get_graph_as_svg
-from gccuml.progressbar import get_processbar_pool, iterate_progressar, end_progressbar
+from gccuml.progressbar import get_processbar_pool, iterate_progressar, end_progressbar, disable_progressar
 from gccuml.langanalyze import get_entry_repr
+from gccuml.langparser import parse_raw
 
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def print_html_config(config: Dict[Any, Any]):
+    if not config["progressbar"]:
+        disable_progressar()
+
+    input_files = config.get("inputfiles")
+    if not input_files:
+        raise RuntimeError("no input files given")
+    if len(input_files) > 1:
+        raise RuntimeError(f"multiple input files not supported: {input_files}")
+    raw_file_path = input_files[0]
+    _LOGGER.info("parsing input file %s", raw_file_path)
+    reduce_paths = config.get("reducepaths", False)
+    content: LangContent = parse_raw(raw_file_path, reduce_paths)
+    if content is None:
+        raise RuntimeError(f"unable to parse {raw_file_path}")
+
+    _LOGGER.info("generating entry tree")
+    include_internals = config.get("includeinternals", False)
+    transform = not config["notransform"]
+    entry_tree: EntryTree = EntryTree(content)
+    entry_tree.generate_tree(include_internals=include_internals, depth_first=False, transform=transform)
+
+    out_path = config.get("outpath")
+    if not out_path:
+        raise RuntimeError("no output path given")
+
+    generate_page_graph = config["genentrygraphs"]
+    use_vizjs = config["usevizjs"]
+    jobs = config["jobs"]
+    if jobs is not None and jobs == "auto":
+        jobs = None
+    if jobs is not None:
+        jobs = int(jobs)
+    print_html(entry_tree, config["outpath"], generate_page_graph, use_vizjs, jobs)
 
 
 def print_html(entry_tree: EntryTree, out_dir, generate_page_graph=True, use_vizjs=True, jobs=None):

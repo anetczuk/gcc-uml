@@ -8,7 +8,8 @@
 
 import io
 import logging
-from typing import Any
+from typing import Any, Dict
+import json
 
 from showgraph.graphviz import Graph, set_node_style
 
@@ -18,11 +19,44 @@ from gccuml.langcontent import (
     EntryTreeDepthFirstTraversal,
     print_entry_tree,
     EntryTree,
+    LangContent,
 )
 from gccuml.io import write_file, read_file
+from gccuml.langparser import parse_raw
 
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def process_tools_config(config: Dict[Any, Any]):
+    input_files = config.get("inputfiles")
+    if not input_files:
+        raise RuntimeError("no input files given")
+    raw_file_path = input_files[-1]
+    _LOGGER.info("parsing input file %s", raw_file_path)
+    reduce_paths = config.get("reducepaths", False)
+    content: LangContent = parse_raw(raw_file_path, reduce_paths)
+    if content is None:
+        raise RuntimeError(f"unable to parse {raw_file_path}")
+
+    out_types_fields = config["outtypefields"]
+    if out_types_fields:
+        _LOGGER.info("dumping types dict")
+        types_fields = content.get_types_fields()
+        types_str = json.dumps(types_fields, indent=4)
+        write_file(out_types_fields, types_str)
+
+    include_internals = config["includeinternals"]
+    entry_tree: EntryTree = EntryTree(content)
+    entry_tree.generate_tree(include_internals=include_internals, depth_first=False)
+
+    if config["outtreetxt"]:
+        _LOGGER.info("dumping nodes text representation to %s", config["outtreetxt"])
+        write_entry_tree(entry_tree, config["outtreetxt"])
+
+    if config["outbiggraph"]:
+        _LOGGER.info("dumping nodes dot representation to %s", config["outbiggraph"])
+        generate_big_graph(entry_tree, config["outbiggraph"])
 
 
 def write_entry_tree(entry_tree: EntryTree, out_path, indent=2):

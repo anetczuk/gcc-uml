@@ -2,7 +2,7 @@
 ```
 usage: python3 -m gccuml.main [-h] [--loglevel LOGLEVEL] [-la]
                               [--exitloglevel EXITLOGLEVEL] [--listtools]
-                              {printhtml,inheritgraph,memlayout,ctrlflowgraph,tools}
+                              {config,printhtml,inheritgraph,memlayout,ctrlflowgraph,tools}
                               ...
 
 generate UML-like diagrams based on gcc/g++ internal tree
@@ -18,13 +18,27 @@ options:
 subcommands:
   use one of tools
 
-  {printhtml,inheritgraph,memlayout,ctrlflowgraph,tools}
+  {config,printhtml,inheritgraph,memlayout,ctrlflowgraph,tools}
                         one of tools
+    config              read configuration file
     printhtml           generate static HTML for internal tree file
     inheritgraph        generate inheritance graph
     memlayout           generate memory layout diagram
     ctrlflowgraph       generate control flow diagram
     tools               various tools
+```
+
+
+
+## <a name="config_help"></a> python3 -m gccuml.main config --help
+```
+usage: python3 -m gccuml.main config [-h] --path PATH
+
+read configuration file
+
+options:
+  -h, --help   show this help message and exit
+  --path PATH  Path to configuration YAML file (default: None)
 ```
 
 

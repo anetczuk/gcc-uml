@@ -18,20 +18,24 @@ except ImportError:
     pass
 
 import sys
+import os
 import argparse
 import logging
-import json
 
 from gccuml import logger
-from gccuml.langparser import parse_raw
-from gccuml.io import write_file
-from gccuml.progressbar import disable_progressar
-from gccuml.langcontent import LangContent, EntryTree
-from gccuml.tool.tools import write_entry_tree, generate_big_graph
-from gccuml.tool.printhtml import print_html
-from gccuml.tool.inheritgraph import generate_inherit_graph
-from gccuml.tool.memlayout import generate_memory_layout_graph
-from gccuml.tool.ctrlflowgraph import generate_control_flow_graph
+from gccuml.configyaml import (
+    read_config,
+    Config,
+    TOP_LEVEL_ITEMS,
+    DIAGRAMS_LEVEL_ITEMS,
+    get_base_directory,
+    find_input_files,
+)
+from gccuml.tool.tools import process_tools_config
+from gccuml.tool.printhtml import print_html_config
+from gccuml.tool.inheritgraph import generate_inherit_graph_config
+from gccuml.tool.memlayout import generate_memory_layout_graph_config
+from gccuml.tool.ctrlflowgraph import generate_control_flow_graph_config, get_engine_file_extension
 
 
 if __name__ == "__main__":
@@ -43,82 +47,170 @@ else:
 # =======================================================================
 
 
-def process_tools(args):
-    _LOGGER.info("parsing input file %s", args.rawfile)
-    content: LangContent = parse_raw(args.rawfile, args.reducepaths)
-    if content is None:
-        raise RuntimeError(f"unable to parse {args.rawfile}")
+def process_config(args):
+    config_path = args.path
+    _LOGGER.info("parsing config file %s", config_path)
+    config: Config = read_config(config_path)
+    if config is None:
+        raise RuntimeError(f"unable to parse {config_path}")
 
-    out_types_fields = args.outtypefields
-    if out_types_fields:
-        _LOGGER.info("dumping types dict")
-        types_fields = content.get_types_fields()
-        types_str = json.dumps(types_fields, indent=4)
-        write_file(out_types_fields, types_str)
+    for top_item in config.params:
+        if top_item not in TOP_LEVEL_ITEMS:
+            _LOGGER.warning("unknown top level config item: %s", top_item)
 
-    include_internals = args.includeinternals
-    entry_tree: EntryTree = EntryTree(content)
-    entry_tree.generate_tree(include_internals=include_internals, depth_first=False)
+    ## handled
+    # output_directory
+    # debug_mode
 
-    if args.outtreetxt:
-        _LOGGER.info("dumping nodes text representation to %s", args.outtreetxt)
-        write_entry_tree(entry_tree, args.outtreetxt)
+    ## not applicable:
+    # add_compile_flags
+    # remove_compile_flags
+    # user_data
+    # query_driver
+    # compilation_database_dir
 
-    if args.outbiggraph:
-        _LOGGER.info("dumping nodes dot representation to %s", args.outbiggraph)
-        generate_big_graph(entry_tree, args.outbiggraph)
+    output_directory = config.get("output_directory")
+    debug_mode = config.get("debug_mode")
+
+    diagrams_dict = config.get("diagrams")
+    if diagrams_dict is None:
+        raise RuntimeError("unable to find 'diagrams' item")
+
+    for diagram_name, diagram_config in diagrams_dict.items():
+        if diagram_config is None:
+            _LOGGER.warning("invalid config diagram entry: %s", diagram_name)
+            continue
+
+        for diag_item in diagram_config:
+            if diag_item not in DIAGRAMS_LEVEL_ITEMS:
+                _LOGGER.warning("unknown diagram level config item: %s", diag_item)
+
+
+        # type : class, sequence, package, include
+        # include_relations_also_as_members
+        # generate_method_arguments
+        # generate_concept_requirements
+        # using_namespace
+        # generate_packages
+        # package_type
+        # include
+        # exclude
+
+        ## handled
+        # relative_to
+        # glob
+
+        ## not applicable:
+        # layout
+        # plantuml
+        # mermaid
+        # graphml
+
+        diagram_type = diagram_config.get("type")
+
+        diagram_relative_to = diagram_config.get("relative_to")
+        diagram_base_directory = get_base_directory(config_path, diagram_relative_to)
+        diagram_output_directory = None
+        if output_directory:
+            diagram_output_directory = get_base_directory(output_directory, diagram_relative_to)
+        else:
+            diagram_output_directory = get_base_directory(config_path, diagram_relative_to)
+
+        diagram_glob_list = diagram_config.get("glob")
+        input_files = find_input_files(diagram_glob_list, diagram_base_directory)
+        if not input_files:
+            _LOGGER.warning("unable to find input files for diagram '%s'", diagram_name)
+            continue
+
+        config_dict = diagram_config.copy()
+        config_dict["debug_mode"] = debug_mode
+        config_dict["inputfiles"] = input_files
+
+        if diagram_type == "printhtml":
+            config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}")
+            print_html_config(config_dict)
+            continue
+
+        if diagram_type == "inheritgraph":
+            config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}.puml")
+            generate_inherit_graph_config(config_dict)
+            continue
+
+        if diagram_type == "memlayout":
+            config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}.dot")
+            generate_memory_layout_graph_config(config_dict)
+            continue
+
+        if diagram_type == "ctrlflowgraph":
+            diagram_engine = config_dict.get("engine", "dot")
+            out_extension = get_engine_file_extension(diagram_engine)
+            config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}.{out_extension}")
+            generate_control_flow_graph_config(config_dict)
+            continue
+
+        if diagram_type == "tools":
+            process_tools_config(config_dict)
+            continue
+
+        raise RuntimeError(f"unknown diagram '{diagram_type}'")
 
 
 def process_printhtml(args):
-    if not args.progressbar:
-        disable_progressar()
-
-    _LOGGER.info("parsing input file %s", args.rawfile)
-    content: LangContent = parse_raw(args.rawfile, args.reducepaths)
-    if content is None:
-        raise RuntimeError(f"unable to parse {args.rawfile}")
-
-    _LOGGER.info("generating entry tree")
-    include_internals = args.includeinternals
-    transform = not args.notransform
-    entry_tree: EntryTree = EntryTree(content)
-    entry_tree.generate_tree(include_internals=include_internals, depth_first=False, transform=transform)
-
-    if args.outpath:
-        generate_page_graph = args.genentrygraphs
-        use_vizjs = args.usevizjs
-        jobs = args.jobs
-        if jobs is not None and jobs == "auto":
-            jobs = None
-        if jobs is not None:
-            jobs = int(jobs)
-        print_html(entry_tree, args.outpath, generate_page_graph, use_vizjs, jobs)
+    config_dict = {
+        "inputfiles": [args.rawfile],
+        "jobs": args.jobs,
+        "progressbar": args.progressbar,
+        "reducepaths": args.reducepaths,
+        "notransform": args.notransform,
+        "genentrygraphs": args.genentrygraphs,
+        "usevizjs": args.usevizjs,
+        "includeinternals": args.includeinternals,
+        "outpath": args.outpath,
+    }
+    print_html_config(config_dict)
 
 
 def process_inheritgraph(args):
-    _LOGGER.info("parsing input file %s", args.rawfile)
-    content: LangContent = parse_raw(args.rawfile, args.reducepaths)
-    if content is None:
-        raise RuntimeError(f"unable to parse {args.rawfile}")
-    generate_inherit_graph(content, args.outpath)
+    config_dict = {
+        "inputfiles": [args.rawfile],
+        "reducepaths": args.reducepaths,
+        "outpath": args.outpath,
+    }
+    generate_inherit_graph_config(config_dict)
 
 
 def process_memlayout(args):
-    _LOGGER.info("parsing input file %s", args.rawfile)
-    content: LangContent = parse_raw(args.rawfile, args.reducepaths)
-    if content is None:
-        raise RuntimeError(f"unable to parse {args.rawfile}")
-    include_internals = args.includeinternals
-    generate_memory_layout_graph(content, args.outpath, include_internals=include_internals, graphnote=args.graphnote)
+    config_dict = {
+        "inputfiles": [args.rawfile],
+        "reducepaths": args.reducepaths,
+        "includeinternals": args.includeinternals,
+        "graphnote": args.graphnote,
+        "outpath": args.outpath,
+    }
+    generate_memory_layout_graph_config(config_dict)
 
 
 def process_ctrlflowgraph(args):
-    _LOGGER.info("parsing input file %s", args.rawfile)
-    content: LangContent = parse_raw(args.rawfile, args.reducepaths)
-    if content is None:
-        raise RuntimeError(f"unable to parse {args.rawfile}")
-    include_internals = args.includeinternals
-    generate_control_flow_graph(content, args.outpath, include_internals=include_internals, engine=args.engine)
+    config_dict = {
+        "inputfiles": [args.rawfile],
+        "reducepaths": args.reducepaths,
+        "includeinternals": args.includeinternals,
+        "engine": args.engine,
+        "outpath": args.outpath,
+    }
+    generate_control_flow_graph_config(config_dict)
+
+
+def process_tools(args):
+    config_dict = {
+        "inputfiles": [args.rawfile],
+        "reducepaths": args.reducepaths,
+        "outtypefields": args.outtypefields,
+        "outtreetxt": args.outtreetxt,
+        "outbiggraph": args.outbiggraph,
+        "includeinternals": args.includeinternals,
+    }
+    process_tools_config(config_dict)
 
 
 # =======================================================================
@@ -137,6 +229,22 @@ def main():
     parser.set_defaults(func=None)
 
     subparsers = parser.add_subparsers(help="one of tools", description="use one of tools", dest="tool", required=False)
+
+    ## =================================================
+
+    description = "read configuration file"
+    subparser = subparsers.add_parser(
+        "config", help=description, formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    subparser.description = description
+    subparser.set_defaults(func=process_config)
+    subparser.add_argument(
+        "--path",
+        action="store",
+        required=True,
+        default=None,
+        help="Path to configuration YAML file",
+    )
 
     ## =================================================
 

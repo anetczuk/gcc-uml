@@ -8,3 +8,5 @@ atpbar
 graphviz
 
 showgraph @ git+https://github.com/anetczuk/showgraph-py#subdirectory=src
+
+PyYAML

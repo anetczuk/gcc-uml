@@ -8,7 +8,7 @@
 
 import os
 import logging
-from typing import List, Dict
+from typing import List, Dict, Any
 
 from gccuml.langcontent import (
     LangContent,
@@ -19,9 +19,30 @@ from gccuml.langcontent import (
 )
 from gccuml.diagram.graphviz.memlayoutdiagram import MemoryLayoutDiagramGenerator, StructData, StructField, FieldType
 from gccuml.langanalyze import StructAnalyzer
+from gccuml.langparser import parse_raw
 
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def generate_memory_layout_graph_config(config: Dict[Any, Any]):
+    input_files = config.get("inputfiles")
+    if not input_files:
+        raise RuntimeError("no input files given")
+    if len(input_files) > 1:
+        raise RuntimeError(f"multiple input files not supported: {input_files}")
+    raw_file_path = input_files[0]
+    _LOGGER.info("parsing input file %s", raw_file_path)
+    reduce_paths = config.get("reducepaths", False)
+    content: LangContent = parse_raw(raw_file_path, reduce_paths)
+    if content is None:
+        raise RuntimeError(f"unable to parse {raw_file_path}")
+    out_path = config.get("outpath")
+    if not out_path:
+        raise RuntimeError("no output path given")
+    include_internals = config.get("includeinternals", False)
+    graph_note = config.get("graphnote")
+    generate_memory_layout_graph(content, out_path, include_internals=include_internals, graphnote=graph_note)
 
 
 def generate_memory_layout_graph(content: LangContent, out_path, include_internals=False, graphnote=None):
