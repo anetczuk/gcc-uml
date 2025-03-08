@@ -20,6 +20,7 @@ from gccuml.langcontent import (
 from gccuml.diagram.graphviz.memlayoutdiagram import MemoryLayoutDiagramGenerator, StructData, StructField, FieldType
 from gccuml.langanalyze import StructAnalyzer
 from gccuml.langparser import parse_raw
+from gccuml.configyaml import Filter
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,11 +43,18 @@ def generate_memory_layout_graph_config(config: Dict[Any, Any]):
         raise RuntimeError("no output path given")
     include_internals = config.get("includeinternals", False)
     graph_note = config.get("graphnote")
-    generate_memory_layout_graph(content, out_path, include_internals=include_internals, graphnote=graph_note)
+    item_filter: Filter = Filter.create(config)
+    generate_memory_layout_graph(
+        content, out_path, include_internals=include_internals, graphnote=graph_note, item_filter=item_filter
+    )
 
 
-def generate_memory_layout_graph(content: LangContent, out_path, include_internals=False, graphnote=None):
+def generate_memory_layout_graph(
+    content: LangContent, out_path, include_internals=False, graphnote=None, item_filter: Filter = None
+):
     _LOGGER.info("generating memory layout graph to %s", out_path)
+    if item_filter is None:
+        item_filter = Filter()
     parent_dir = os.path.abspath(os.path.join(out_path, os.pardir))
     os.makedirs(parent_dir, exist_ok=True)
 

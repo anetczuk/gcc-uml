@@ -85,7 +85,6 @@ def process_config(args):
             if diag_item not in DIAGRAMS_LEVEL_ITEMS:
                 _LOGGER.warning("unknown diagram level config item: %s", diag_item)
 
-
         # type : class, sequence, package, include
         # include_relations_also_as_members
         # generate_method_arguments

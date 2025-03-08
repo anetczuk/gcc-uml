@@ -60,6 +60,61 @@ class Config:
         return self.params.get(item)
 
 
+# include - definition of inclusion patterns:
+#     namespaces - list of namespaces to include
+#     relationships - list of relationships to include
+#     elements - list of elements, i.e. specific classes, enums, templates to include
+#     element_types - list of element types e.g. enum, class, concept
+#     access - list of visibility scopes to include (e.g. private)
+#     subclasses - include only subclasses of specified classes (and themselves)
+#     specializations - include all specializations or instantiations of a given template
+#     dependants - include all classes, which depend on the specified class
+#     dependencies - include all classes, which are dependencies of the specified class
+#     context - include only entities in direct relationship with specified classes
+#
+# exclude - definition of exclusion patterns:
+#     namespaces - list of namespaces to exclude
+#     relationships - list of relationships to exclude
+#     elements - list of elements, i.e. specific classes, enums, templates to exclude
+#     element_types - list of element types e.g. enum, class, concept
+#     access - list of visibility scopes to exclude (e.g. private)
+#     subclasses - exclude subclasses of specified classes (and themselves)
+#     specializations - exclude all specializations or instantiations of a given template
+#     dependants - exclude all classes, which depend on the specified class
+#     dependencies - exclude all classes, which are dependencies of the specified class
+#     context - exclude only entities in direct relationship with specified classes
+
+
+# filter_t:
+#     namespaces: !optional [regex_or_string_t]
+#     modules: !optional [regex_or_string_t]
+#     elements: !optional [element_filter_t]
+#     element_types: !optional [element_types_filter_t]
+#     relationships: !optional [relationship_filter_t]
+#     access: !optional [access_filter_t]
+#     module_access: !optional [module_access_filter_t]
+#     subclasses: !optional [regex_or_string_t]
+#     parents: !optional [regex_or_string_t]
+#     specializations: !optional [regex_or_string_t]
+#     dependants: !optional [regex_or_string_t]
+#     dependencies: !optional [regex_or_string_t]
+#     context: !optional [context_filter_t]
+#     paths: !optional [string]
+#     method_types: !optional [method_type_filter_t]
+#     callee_types: !optional [callee_type_filter_t]
+#     anyof: !optional filter_t
+#     allof: !optional filter_t
+class Filter:
+    def __init__(self, include_dict=None, exclude_dict=None):
+        pass
+
+    @staticmethod
+    def create(diagram_dict):
+        include_data = diagram_dict.get("include")
+        exclude_data = diagram_dict.get("exclude")
+        return Filter(include_data, exclude_data)
+
+
 def get_base_directory(value_path, relative_to_value):
     if relative_to_value:
         return relative_to_value

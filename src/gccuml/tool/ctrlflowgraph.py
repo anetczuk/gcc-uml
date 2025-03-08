@@ -41,6 +41,7 @@ from gccuml.diagram.activitydata import (
 )
 from gccuml.diagram.activitydiagram import generate_diagram
 from gccuml.langparser import parse_raw
+from gccuml.configyaml import Filter
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -65,7 +66,10 @@ def generate_control_flow_graph_config(config: Dict[Any, Any]):
     if not out_path:
         raise RuntimeError("no output path given")
     include_internals = config.get("includeinternals", False)
-    generate_control_flow_graph(content, out_path, include_internals=include_internals, engine=config["engine"])
+    item_filter: Filter = Filter.create(config)
+    generate_control_flow_graph(
+        content, out_path, include_internals=include_internals, engine=config["engine"], item_filter=item_filter
+    )
 
 
 def get_engine_file_extension(diagram_engine):
@@ -76,8 +80,12 @@ def get_engine_file_extension(diagram_engine):
     return "dot"
 
 
-def generate_control_flow_graph(content: LangContent, out_path, include_internals=False, engine="dot"):
+def generate_control_flow_graph(
+    content: LangContent, out_path, include_internals=False, engine="dot", item_filter: Filter = None
+):
     _LOGGER.info("generating control flow graph to %s", out_path)
+    if item_filter is None:
+        item_filter = Filter()
     parent_dir = os.path.abspath(os.path.join(out_path, os.pardir))
     os.makedirs(parent_dir, exist_ok=True)
 

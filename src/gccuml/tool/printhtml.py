@@ -35,6 +35,7 @@ from gccuml.tool.tools import EntryDotGraph, get_graph_as_svg
 from gccuml.progressbar import get_processbar_pool, iterate_progressar, end_progressbar, disable_progressar
 from gccuml.langanalyze import get_entry_repr
 from gccuml.langparser import parse_raw
+from gccuml.configyaml import Filter
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -73,11 +74,16 @@ def print_html_config(config: Dict[Any, Any]):
         jobs = None
     if jobs is not None:
         jobs = int(jobs)
-    print_html(entry_tree, config["outpath"], generate_page_graph, use_vizjs, jobs)
+    item_filter: Filter = Filter.create(config)
+    print_html(entry_tree, config["outpath"], generate_page_graph, use_vizjs, jobs, item_filter=item_filter)
 
 
-def print_html(entry_tree: EntryTree, out_dir, generate_page_graph=True, use_vizjs=True, jobs=None):
+def print_html(
+    entry_tree: EntryTree, out_dir, generate_page_graph=True, use_vizjs=True, jobs=None, item_filter: Filter = None
+):
     _LOGGER.info("writing HTML output to %s", out_dir)
+    if item_filter is None:
+        item_filter = Filter()
     os.makedirs(out_dir, exist_ok=True)
     print_html_pages(entry_tree, out_dir, generate_page_graph, use_vizjs, jobs=jobs)
     _LOGGER.info("writing completed")

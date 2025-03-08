@@ -29,6 +29,7 @@ from gccuml.langanalyze import (
 )
 from gccuml.diagram.plantuml.classdiagram import ClassDiagramGenerator
 from gccuml.langparser import parse_raw
+from gccuml.configyaml import Filter
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -52,11 +53,14 @@ def generate_inherit_graph_config(config: Dict[Any, Any]):
     out_path = config.get("outpath")
     if not out_path:
         raise RuntimeError("no output path given")
-    generate_inherit_graph(content, out_path)
+    item_filter: Filter = Filter.create(config)
+    generate_inherit_graph(content, out_path, item_filter=item_filter)
 
 
-def generate_inherit_graph(content: LangContent, out_path, include_internals=False):
+def generate_inherit_graph(content: LangContent, out_path, include_internals=False, item_filter: Filter = None):
     _LOGGER.info("generating inheritance graph to %s", out_path)
+    if item_filter is None:
+        item_filter = Filter()
     parent_dir = os.path.abspath(os.path.join(out_path, os.pardir))
     os.makedirs(parent_dir, exist_ok=True)
 

@@ -95,6 +95,12 @@ To run application simply execute followoing command:
 python3 -m gccuml.main --help
 ```
 
+Application provides limited support for *clang-uml* configuration files. Before use the config file have to be changed 
+in following ways:
+- supported diagram types: `printhtml`,`inheritgraph`,`memlayout`,`ctrlflowgraph`,
+- input / glob file paths have to contain `.003l.raw` extension instead of `.h`, `.cpp` or similar,
+- relative paths have to be changed from source to build directory (there are stored `.003l.raw` files).
+
 Application accepts following arguments:
 
 <!-- insertstart include="doc/cmdargs.txt" pre="\n" post="\n" -->
@@ -337,6 +343,7 @@ to find unhandled lang tree elements.
 - [GCC Internals Manual](https://gcc.gnu.org/onlinedocs/gccint/)
 - [G++ Developer Options](https://gcc.gnu.org/onlinedocs/gcc-13.1.0/gcc/Developer-Options.html#index-fdump-lang-all)
 - [Viz.js](https://github.com/mdaines/viz-js)
+- [clang-uml config options schema](https://github.com/bkryza/clang-uml/blob/master/src/config/schema.h)
 
 
 ## License
