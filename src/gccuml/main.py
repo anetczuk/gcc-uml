@@ -30,6 +30,7 @@ from gccuml.configyaml import (
     DIAGRAMS_LEVEL_ITEMS,
     get_base_directory,
     find_input_files,
+    join_paths,
 )
 from gccuml.tool.tools import process_tools_config
 from gccuml.tool.printhtml import print_html_config
@@ -94,6 +95,7 @@ def process_config(args):
         # package_type
         # include
         # exclude
+        # generate_links
 
         ## handled
         # relative_to
@@ -111,14 +113,19 @@ def process_config(args):
         diagram_base_directory = get_base_directory(config_path, diagram_relative_to)
         diagram_output_directory = None
         if output_directory:
-            diagram_output_directory = get_base_directory(output_directory, diagram_relative_to)
+            diagram_output_directory = join_paths(diagram_base_directory, output_directory)
         else:
-            diagram_output_directory = get_base_directory(config_path, diagram_relative_to)
+            diagram_output_directory = diagram_base_directory
 
         diagram_glob_list = diagram_config.get("glob")
         input_files = find_input_files(diagram_glob_list, diagram_base_directory)
         if not input_files:
-            _LOGGER.warning("unable to find input files for diagram '%s'", diagram_name)
+            _LOGGER.warning(
+                "unable to find input files for diagram '%s' in directory '%s' by glob '%s'",
+                diagram_name,
+                diagram_base_directory,
+                diagram_glob_list,
+            )
             continue
 
         config_dict = diagram_config.copy()

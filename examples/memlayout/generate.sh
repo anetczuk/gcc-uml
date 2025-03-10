@@ -58,6 +58,17 @@ BUILD_DIR="$SCRIPT_DIR/build"
 mkdir -p "$BUILD_DIR"
 
 
+convert_dot() {
+	local DOT_FILE="$1"
+
+	base_name=$(basename "$DOT_FILE")
+	OUT_IMG_PATH="$BUILD_DIR/${base_name}.svg"
+	dot -Tsvg "$DOT_FILE" -o "$OUT_IMG_PATH"
+
+	echo "diagram output: file://${OUT_IMG_PATH}"
+}
+
+
 prepare_sample() {
 	local SAMPLE_FILE="$1"
 
@@ -111,10 +122,55 @@ prepare_sample() {
 }
 
 
+## proper path
+prepare_config() {
+	local SAMPLE_FILE="$1"
+
+	cd "$BUILD_DIR"
+
+	local config_file="$SAMPLE_FILE"
+	cd "$SCRIPT_DIR/../../src/"
+
+	set -x
+
+	OUT_DIAG_PATH="$BUILD_DIR/../${SAMPLE_FILE}.dot"
+
+	if [ "$USE_PROFILER" = false ]; then
+		FILE_CONTENT=""
+# 		FILE_CONTENT=$(cat "$config_file")
+# 		FILE_CONTENT=$(echo "$FILE_CONTENT" | sed 's/\t/    /g')
+		
+		"$SRC_DIR"/gccuml/main.py config \
+								  --path "$config_file"
+	else
+		"$SRC_DIR"/../tools/profiler.sh --cprofile \
+		"$SRC_DIR"/gccuml/main.py config \
+								  --path "$config_file"
+	fi
+	set +x
+}
+
+
+## hardcoded conversion
+prepare_yaml() {
+	local ITEMS="$@"
+
+	for i in "${ITEMS}"; do
+	    if [ "$i" == "mem_padding.cpp" ] || [ "$#" -eq 0 ]; then
+			prepare_config "$SCRIPT_DIR"/src/mem_padding.cpp.yaml
+			convert_dot "$SCRIPT_DIR/mem_padding_1.dot"
+			convert_dot "$SCRIPT_DIR/mem_padding_2.dot"
+	    fi
+	done
+}
+
+
 if [ ${#SRC_FILES[@]} -ne 0 ]; then
 	for file_name in "${SRC_FILES[@]}"; do
 		prepare_sample "$file_name"
 	done
+
+	prepare_yaml "${SRC_FILES[@]}"
 
 	exit 0
 fi
@@ -126,4 +182,4 @@ for src_file in "$SCRIPT_DIR"/src/*.cpp; do
 	prepare_sample "$file_name"
 done
 
-exit 0
+prepare_yaml

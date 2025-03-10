@@ -1,0 +1,28 @@
+##
+##
+##
+
+# The directory where files will be generated
+output_directory: ..
+
+# The map of diagrams - keys are also diagram file names
+diagrams:
+  mem_padding_1:
+    type: memlayout
+    # Limiting the number of files to include can significantly improve
+    # diagram generation times
+    glob:
+      - ../build/mem_padding.cpp.003l.raw
+    include:
+      # Only include entities from the following namespaces
+      namespaces:
+        - padding
+  mem_padding_2:
+    type: memlayout
+    # Limiting the number of files to include can significantly improve
+    # diagram generation times
+    glob:
+      - ../build/mem_padding.cpp.003l.raw
+    exclude:
+      namespaces:
+        - padding

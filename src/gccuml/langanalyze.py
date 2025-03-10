@@ -27,6 +27,20 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _LOGGER = logging.getLogger(__name__)
 
 
+class RecordInfo:
+
+    def __init__(self):
+        self.namespace_list = []
+        self.template_params = []
+
+    def get_full_name(self) -> str:
+        entry_name: str = "::".join(self.namespace_list)
+        if self.template_params is not None:
+            template_params_str = ", ".join(self.template_params)
+            entry_name = f"{entry_name}<{template_params_str}>"
+        return entry_name
+
+
 class StructAnalyzer:
 
     def __init__(self, content, include_internals=False):
@@ -80,22 +94,27 @@ class StructAnalyzer:
                         purp_type_list.append(purp_type_name)
                     self.template_instances_dict[valu_record_id] = purp_type_list
 
-    def get_record_full_name(self, record_decl: Entry):
+    def get_record_info(self, record_decl: Entry) -> RecordInfo:
         entry_namespace_list = get_record_namespace_list(record_decl)
         if entry_namespace_list is None:
             return None
         if not self.include_internals:
             if is_namespace_internal(entry_namespace_list):
                 return None
-        entry_name: str = "::".join(entry_namespace_list)
+        record_info = RecordInfo()
+        record_info.namespace_list = entry_namespace_list
 
         template_instances_dict = self.get_template_defs()
         record_entry_id = record_decl.get_id()
         template_params = template_instances_dict.get(record_entry_id)
-        if template_params is not None:
-            template_params_str = ", ".join(template_params)
-            entry_name = f"{entry_name}<{template_params_str}>"
-        return entry_name
+        record_info.template_params = template_params
+        return record_info
+
+    def get_record_full_name(self, record_decl: Entry) -> str:
+        record_info = self.get_record_info(record_decl)
+        if record_info is None:
+            return record_info
+        return record_info.get_full_name()
 
 
 def get_function_full_name(function_decl: Entry):

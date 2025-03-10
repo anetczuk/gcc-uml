@@ -64,7 +64,14 @@ class Config:
 #     namespaces - list of namespaces to include
 #     relationships - list of relationships to include
 #     elements - list of elements, i.e. specific classes, enums, templates to include
-#     element_types - list of element types e.g. enum, class, concept
+#     element_types - list of element types e.g. enum, class, concept:
+#        - class
+#        - enum
+#        - concept
+#        - method
+#        - function
+#        - function_template
+#        - lambda
 #     access - list of visibility scopes to include (e.g. private)
 #     subclasses - include only subclasses of specified classes (and themselves)
 #     specializations - include all specializations or instantiations of a given template
@@ -77,6 +84,13 @@ class Config:
 #     relationships - list of relationships to exclude
 #     elements - list of elements, i.e. specific classes, enums, templates to exclude
 #     element_types - list of element types e.g. enum, class, concept
+#        - class
+#        - enum
+#        - concept
+#        - method
+#        - function
+#        - function_template
+#        - lambda
 #     access - list of visibility scopes to exclude (e.g. private)
 #     subclasses - exclude subclasses of specified classes (and themselves)
 #     specializations - exclude all specializations or instantiations of a given template
@@ -106,13 +120,42 @@ class Config:
 #     allof: !optional filter_t
 class Filter:
     def __init__(self, include_dict=None, exclude_dict=None):
-        pass
+        if include_dict is None:
+            include_dict = {}
+        if exclude_dict is None:
+            exclude_dict = {}
+        self.include_dict = include_dict
+        self.exclude_dict = exclude_dict  ## 'exclude' is stronger than 'include'
 
     @staticmethod
     def create(diagram_dict):
         include_data = diagram_dict.get("include")
         exclude_data = diagram_dict.get("exclude")
         return Filter(include_data, exclude_data)
+
+    def check_include_namespace(self, namespace_list) -> bool:
+        ns_string = "::".join(namespace_list)
+
+        exclude_namespaces = self.exclude_dict.get("namespaces")
+        if exclude_namespaces:
+            for ns_item in exclude_namespaces:
+                if ns_item in ns_string:
+                    return False
+
+        include_namespaces = self.include_dict.get("namespaces")
+        if include_namespaces:
+            for ns_item in include_namespaces:
+                if ns_item in ns_string:
+                    return True
+            return False
+
+        return True
+
+
+def join_paths(base_dir, child_dir):
+    if os.path.isabs(child_dir):
+        return child_dir
+    return os.path.join(base_dir, child_dir)
 
 
 def get_base_directory(value_path, relative_to_value):

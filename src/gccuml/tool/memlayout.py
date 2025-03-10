@@ -18,7 +18,7 @@ from gccuml.langcontent import (
     get_record_namespace_list,
 )
 from gccuml.diagram.graphviz.memlayoutdiagram import MemoryLayoutDiagramGenerator, StructData, StructField, FieldType
-from gccuml.langanalyze import StructAnalyzer
+from gccuml.langanalyze import StructAnalyzer, RecordInfo
 from gccuml.langparser import parse_raw
 from gccuml.configyaml import Filter
 
@@ -53,16 +53,16 @@ def generate_memory_layout_graph(
     content: LangContent, out_path, include_internals=False, graphnote=None, item_filter: Filter = None
 ):
     _LOGGER.info("generating memory layout graph to %s", out_path)
-    if item_filter is None:
-        item_filter = Filter()
     parent_dir = os.path.abspath(os.path.join(out_path, os.pardir))
     os.makedirs(parent_dir, exist_ok=True)
 
     content.convert_entries()
 
-    mem_data = MemoryLayoutData(content, include_internals)
+    # extract info
+    mem_data = MemoryLayoutData(content, include_internals, item_filter=item_filter)
     mem_info = mem_data.generate_data()
 
+    # generate diagram
     diagram_gen = MemoryLayoutDiagramGenerator(mem_info)
     diagram_gen.generate(out_path, graphnote=graphnote)
 
@@ -71,16 +71,19 @@ def generate_memory_layout_graph(
 
 class MemoryLayoutData:
 
-    def __init__(self, content, include_internals=False):
-        self.content = content
+    def __init__(self, content: LangContent, include_internals=False, item_filter: Filter = None):
+        if item_filter is None:
+            item_filter = Filter()
+        self.content: LangContent = content
         self.include_internals = include_internals
+        self.item_filter: Filter = item_filter
         self.analyzer = StructAnalyzer(content, include_internals)
 
     def generate_data(self) -> Dict[str, StructData]:
         ret_dict = {}
         dcls_list = self.content.get_entries("dcls")
         for dcls_entry in dcls_list:
-            info_list = self.get_class_info(dcls_entry)
+            info_list: List[StructData] = self.get_class_info(dcls_entry)
             if info_list:
                 for info in info_list:
                     ret_dict[info.name] = info
@@ -117,9 +120,13 @@ class MemoryLayoutData:
             return None
         record_size = int(record_size)
 
-        entry_name: str = self.analyzer.get_record_full_name(record_entry)
-        if entry_name is None:
+        entry_name_info: RecordInfo = self.analyzer.get_record_info(record_entry)
+        if entry_name_info is None:
             return None
+        if self.item_filter.check_include_namespace(entry_name_info.namespace_list) is False:
+            ## filter out
+            return None
+        entry_name = entry_name_info.get_full_name()
 
         class_data = StructData(entry_name, record_size)
 
