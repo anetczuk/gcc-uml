@@ -55,6 +55,11 @@ fi
 # ===================================
 
 
+UTILS_PATH="$SCRIPT_DIR/../genutils.bash"
+# shellcheck disable=SC1090
+source "$UTILS_PATH"
+
+
 SRC_DIR="$SCRIPT_DIR/../../src"
 
 BUILD_DIR="$SCRIPT_DIR/build"
@@ -62,26 +67,12 @@ BUILD_DIR="$SCRIPT_DIR/build"
 mkdir -p "$BUILD_DIR"
 
 
-GCC_COMMAND="g++"
-
-CONFIG_PATH="$SRC_DIR/../config.bash"
-if [ -f "$CONFIG_PATH" ]; then
-	# shellcheck disable=SC1090
-	source "$CONFIG_PATH"
-fi
-
-
 prepare_sample() {
 	local SAMPLE_FILE="$1"
 
 	cd "$BUILD_DIR"
-
 	local source_file="$SCRIPT_DIR/src/$SAMPLE_FILE"
-	echo "compiling file: $source_file"
-	$GCC_COMMAND -fdump-lang-raw -c "$source_file"
-# 	$GCC_COMMAND -fdump-tree-original="${SAMPLE_FILE}.005t.original" -c "$source_file"
-# 	$GCC_COMMAND -fdump-tree-original-raw="${SAMPLE_FILE}.005t.original.raw" -c "$source_file"
-# 	$GCC_COMMAND -fdump-tree-all -c "$source_file"
+	compile_code "$source_file"
 
 	cd "$SCRIPT_DIR/../../src/"
 
@@ -113,27 +104,17 @@ prepare_sample() {
 								  "${ARGS[@]}"
 	fi
 	set +x
-	
-	plantuml -tsvg "$OUT_DIAG_PATH" -o "$BUILD_DIR"
 
-	OUT_DIAG="$BUILD_DIR"/$(basename "${OUT_DIAG_PATH/puml/svg}")
-	echo "diagram output: file://${OUT_DIAG}"
+	convert_puml "$OUT_DIAG_PATH" "$BUILD_DIR"
 }
 
 
 if [ ${#SRC_FILES[@]} -ne 0 ]; then
-	for file_name in "${SRC_FILES[@]}"; do
-		prepare_sample "$file_name"
-	done
-
-	exit 0
+	# files passed
+	handle_files "${SRC_FILES[@]}"
+else
+	# no files given - use all files
+	handle_dir "$SCRIPT_DIR/src"	
 fi
 
-
-# no files given - use all files
-for src_file in "$SCRIPT_DIR"/src/*.cpp; do
-	file_name=$(basename "${src_file}")
-	prepare_sample "$file_name"
-done
-
-exit 0
+echo "completed"

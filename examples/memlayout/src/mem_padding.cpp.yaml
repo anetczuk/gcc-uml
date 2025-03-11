@@ -7,7 +7,7 @@ output_directory: ..
 
 # The map of diagrams - keys are also diagram file names
 diagrams:
-  mem_padding_1:
+  mem_padding.cpp.1:
     type: memlayout
     # Limiting the number of files to include can significantly improve
     # diagram generation times
@@ -17,7 +17,7 @@ diagrams:
       # Only include entities from the following namespaces
       namespaces:
         - padding
-  mem_padding_2:
+  mem_padding.cpp.2:
     type: memlayout
     # Limiting the number of files to include can significantly improve
     # diagram generation times
