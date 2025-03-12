@@ -68,21 +68,23 @@ prepare_config() {
 
 	cd "$SCRIPT_DIR/../../src/"
 
-	set -x
 
 	if [ "$USE_PROFILER" = false ]; then
+		set -x
 # 		FILE_CONTENT=""
 # 		FILE_CONTENT=$(cat "$config_file")
 # 		FILE_CONTENT=$(echo "$FILE_CONTENT" | sed 's/\t/    /g')
 		
 		"$SRC_DIR"/gccuml/main.py config \
 								  --path "$config_file"
+		set +x
 	else
+		set -x
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
 		"$SRC_DIR"/gccuml/main.py config \
 								  --path "$config_file"
+		set +x
 	fi
-	set +x
 }
 
 
@@ -103,6 +105,7 @@ prepare_yaml() {
 handle_files() {
 	local SRC_FILES="$*"
 
+	# shellcheck disable=SC2068
 	for file_name in ${SRC_FILES[@]}; do
 		prepare_sample "$file_name"
 	done

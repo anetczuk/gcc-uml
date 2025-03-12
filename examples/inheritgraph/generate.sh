@@ -76,36 +76,42 @@ prepare_sample() {
 
 	cd "$SCRIPT_DIR/../../src/"
 
-	set -x
 
 	if [ "$USE_PRINTHTML" = true ]; then
+		set -x
 		"$SRC_DIR"/gccuml/main.py printhtml \
 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 								  --reducepaths "$SCRIPT_DIR/" \
 								  -ii \
 								  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
 								  "${ARGS[@]}"
+		set +x
 	fi
 
 	OUT_DIAG_PATH="$BUILD_DIR/../${SAMPLE_FILE}.puml"
 
 	if [ "$USE_PROFILER" = false ]; then
+		set -x
 		"$SRC_DIR"/gccuml/main.py inheritgraph \
 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 								  --reducepaths "$SCRIPT_DIR/" \
 								  --outpath "$OUT_DIAG_PATH" \
 								  "${ARGS[@]}"
+		set +x
 	else
+		set -x
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
 		"$SRC_DIR"/gccuml/main.py inheritgraph \
 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 								  --reducepaths "$SCRIPT_DIR/" \
 								  --outpath "$OUT_DIAG_PATH" \
 								  "${ARGS[@]}"
+		set +x
 	fi
-	set +x
 
 	convert_puml "$OUT_DIAG_PATH" "$BUILD_DIR"
+
+	echo ""
 }
 
 
@@ -124,12 +130,14 @@ prepare_yaml() {
 			prepare_config "${SCRIPT_DIR}/src/${i}.yaml"
 			convert_puml "$SCRIPT_DIR/${i}.inherit.puml" "$BUILD_DIR"
 			convert_dot "$SCRIPT_DIR/${i}.memlay.dot" "$BUILD_DIR"
+			echo ""
 	    fi
 	    if [ "$i" == "inherit_diamond2.cpp" ] || [ "$#" -eq 0 ]; then
 	    	i="inherit_diamond2.cpp"
 			prepare_config "${SCRIPT_DIR}/src/${i}.yaml"
 			convert_puml "$SCRIPT_DIR/${i}.inherit.puml" "$BUILD_DIR"
 			convert_dot "$SCRIPT_DIR/${i}.memlay.dot" "$BUILD_DIR"
+			echo ""
 	    fi
 	done
 }

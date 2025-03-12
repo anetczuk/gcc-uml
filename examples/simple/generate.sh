@@ -80,8 +80,8 @@ prepare_sample() {
 
 	cd "$SCRIPT_DIR/../../src/"
 
-	set -x
 
+	set -x
 	## generate various data
 	"$SRC_DIR"/gccuml/main.py tools \
 							  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
@@ -89,15 +89,19 @@ prepare_sample() {
 							  --outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
 							  --outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt"
 # 							  --outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
+	set +x
 
 	## print html
 	if [ "$USE_PROFILER" = false ]; then
+		set -x
 		"$SRC_DIR"/gccuml/main.py printhtml \
 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 								  --reducepaths "$SCRIPT_DIR/" \
 								  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
 								  "${ARGS[@]}"
+		set +x
 	else
+		set -x
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
 		"$SRC_DIR"/gccuml/main.py printhtml \
 								  --progressbar=False \
@@ -105,8 +109,10 @@ prepare_sample() {
 								  --reducepaths "$SCRIPT_DIR/" \
 								  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
 								  "${ARGS[@]}"
+		set +x
 	fi
-	set +x
+
+	echo ""
 }
 
 

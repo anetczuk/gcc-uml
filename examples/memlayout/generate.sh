@@ -72,15 +72,16 @@ prepare_sample() {
 
 	cd "$SCRIPT_DIR/../../src/"
 
-	set -x
 
 	if [ "$USE_PRINTHTML" = true ]; then
+		set -x
 		"$SRC_DIR"/gccuml/main.py printhtml \
 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 								  --reducepaths "$SCRIPT_DIR/" \
 								  -ii \
 								  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
 								  "${ARGS[@]}"
+	    set +x
 	fi
 
 	OUT_DIAG_PATH="$BUILD_DIR/../${SAMPLE_FILE}.dot"
@@ -90,6 +91,7 @@ prepare_sample() {
 # 		FILE_CONTENT=$(cat "$source_file")
 # 		FILE_CONTENT=$(echo "$FILE_CONTENT" | sed 's/\t/    /g')
 		
+		set -x
 		"$SRC_DIR"/gccuml/main.py memlayout \
 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 								  --reducepaths "$SCRIPT_DIR/" \
@@ -97,17 +99,21 @@ prepare_sample() {
 								  --graphnote "$FILE_CONTENT" \
 								  "${ARGS[@]}"
 # 								  -ii \
+		set +x
 	else
+		set -x
 		"$SRC_DIR"/../tools/profiler.sh --cprofile \
 		"$SRC_DIR"/gccuml/main.py memlayout \
 								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 								  --reducepaths "$SCRIPT_DIR/" \
 								  --outpath "$OUT_DIAG_PATH" \
 								  "${ARGS[@]}"
+		set +x
 	fi
-	set +x
 	
 	convert_dot "$OUT_DIAG_PATH" "$BUILD_DIR"
+	
+	echo ""
 }
 
 
@@ -126,6 +132,7 @@ prepare_yaml() {
 			prepare_config "${SCRIPT_DIR}/src/${i}.yaml"
 			convert_dot "$SCRIPT_DIR/${i}.1.dot" "$BUILD_DIR"
 			convert_dot "$SCRIPT_DIR/${i}.2.dot" "$BUILD_DIR"
+			echo ""
 	    fi
 	done
 }

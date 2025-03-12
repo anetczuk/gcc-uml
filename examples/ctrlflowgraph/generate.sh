@@ -92,6 +92,7 @@ prepare_sample() {
 	fi
 
 	OUT_PUML_PATH="$BUILD_DIR/../${SAMPLE_FILE}.puml"
+	set -x
 	$COMMAND \
 			  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 			  --reducepaths "$SCRIPT_DIR/" \
@@ -99,8 +100,10 @@ prepare_sample() {
 			  --outpath "$OUT_PUML_PATH" \
 			  "${ARGS[@]}"
 # 			  -ii \
+	set +x
 
 	OUT_DOT_PATH="$BUILD_DIR/../${SAMPLE_FILE}.dot"
+	set -x
 	$COMMAND \
 			  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
 			  --reducepaths "$SCRIPT_DIR/" \
@@ -108,7 +111,6 @@ prepare_sample() {
 			  --outpath "$OUT_DOT_PATH" \
 			  "${ARGS[@]}"
 # 			  -ii \
-
 	set +x
 
  	OUT_PUML_DIAG="$BUILD_DIR/${SAMPLE_FILE}.puml.svg"
@@ -117,6 +119,8 @@ prepare_sample() {
  	cp "$TMP_DIAG" "$OUT_PUML_DIAG"
 
 	convert_dot "$OUT_DOT_PATH" "$BUILD_DIR"
+
+	echo ""
 }
 
 

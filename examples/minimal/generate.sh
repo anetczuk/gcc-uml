@@ -53,6 +53,8 @@ prepare_sample() {
 								  --genentrygraphs=False \
 								  --outpath "$OUT_DIR/html-$SAMPLE_FILE"
 	fi
+
+	echo ""
 }
 
 
