@@ -1,24 +1,30 @@
 @startuml
 
-class "::Abc3" as item_0 {
+class "::Duck" as item_0 {
+    {field} + int noquacks
+    {method} + void quack() 
 }
-class "::items::Abc2B" as item_1 {
-    {field} + __vtbl_ptr_type * _vptr.Abc2B
+class "::property::WalkingAnimal" as item_1 {
+    {field} + __vtbl_ptr_type * _vptr.WalkingAnimal
+    {field} + double walkdistance
+    {method} + void walk(double const distance) 
 }
-class "::items::Abc2A" as item_2 {
-    {field} + __vtbl_ptr_type * _vptr.Abc2A
+class "::property::FlyingAnimal" as item_2 {
+    {field} + __vtbl_ptr_type * _vptr.FlyingAnimal
+    {field} + double flydistance
+    {method} + void fly(double const distance) 
 }
-class "::items::Abc1" as item_3 {
-    {field} + int field
+class "::property::Animal" as item_3 {
+    {field} + int size
 }
 
-' ::Abc3 --|> ::items::Abc2A
+' ::Duck --|> ::property::FlyingAnimal
 item_0 --|> item_2: "pub"
-' ::Abc3 --|> ::items::Abc2B
+' ::Duck --|> ::property::WalkingAnimal
 item_0 --|> item_1: "pub"
-' ::items::Abc2B --|> ::items::Abc1
+' ::property::WalkingAnimal --|> ::property::Animal
 item_1 --|> item_3: "virt pub"
-' ::items::Abc2A --|> ::items::Abc1
+' ::property::FlyingAnimal --|> ::property::Animal
 item_2 --|> item_3: "virt pub"
 
 @enduml

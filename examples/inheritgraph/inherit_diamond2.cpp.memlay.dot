@@ -18,55 +18,57 @@ ranksep = 2
 # items subgraph
 {
 
-    "-Abc3" [
+    "-Duck" [
         shape=plain
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::Abc3</b>  (192b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::items::Abc2A</td> </tr>
-            <tr> <td align="right" port='in_1'>64</td> <td align="right">64</td> <td align="left" bgcolor='#FEFECE' port='out_1'>::items::Abc2B</td> </tr>
-            <tr> <td align="right" port='in_2'>128</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::items::Abc1</td> </tr>
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::Duck</b>  (320b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">128</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::property::FlyingAnimal</td> </tr>
+            <tr> <td align="right" port='in_1'>128</td> <td align="right">128</td> <td align="left" bgcolor='#FEFECE' port='out_1'>::property::WalkingAnimal</td> </tr>
+            <tr> <td align="right" port='in_2'>256</td> <td align="right">32</td> <td align="left" port='out_2'>noquacks: int</td> </tr>
+            <tr> <td align="right" port='in_3'>288</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_3'>::property::Animal</td> </tr>
+        </table>>
+    ]
+
+    "-property-WalkingAnimal" [
+        shape=plain
+        label=
+        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::property::WalkingAnimal</b>  (192b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.WalkingAnimal</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">64</td> <td align="left" port='out_1'>walkdistance: double</td> </tr>
+            <tr> <td align="right" port='in_2'>128</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::property::Animal</td> </tr>
             <tr> <td align="right" port='in_3'>160</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_3'>[padding]</td> </tr>
         </table>>
     ]
 
-    "-items-Abc2B" [
+    "-property-FlyingAnimal" [
         shape=plain
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::Abc2B</b>  (128b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.Abc2B</td> </tr>
-            <tr> <td align="right" port='in_1'>64</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_1'>::items::Abc1</td> </tr>
-            <tr> <td align="right" port='in_2'>96</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_2'>[padding]</td> </tr>
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::property::FlyingAnimal</b>  (192b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.FlyingAnimal</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">64</td> <td align="left" port='out_1'>flydistance: double</td> </tr>
+            <tr> <td align="right" port='in_2'>128</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_2'>::property::Animal</td> </tr>
+            <tr> <td align="right" port='in_3'>160</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_3'>[padding]</td> </tr>
         </table>>
     ]
 
-    "-items-Abc2A" [
+    "-property-Animal" [
         shape=plain
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::Abc2A</b>  (128b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" bgcolor='#ffdada' port='out_0'>_vptr.Abc2A</td> </tr>
-            <tr> <td align="right" port='in_1'>64</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_1'>::items::Abc1</td> </tr>
-            <tr> <td align="right" port='in_2'>96</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_2'>[padding]</td> </tr>
-        </table>>
-    ]
-
-    "-items-Abc1" [
-        shape=plain
-        label=
-        <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::items::Abc1</b>  (32b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>field: int</td> </tr>
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::property::Animal</b>  (32b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>size: int</td> </tr>
         </table>>
     ]
 
 
-    "-Abc3":"out_0" -> "-items-Abc2A":"-1"
-    "-Abc3":"out_1" -> "-items-Abc2B":"-1"
-    "-Abc3":"out_2" -> "-items-Abc1":"-1"
-    "-items-Abc2B":"out_1" -> "-items-Abc1":"-1"
-    "-items-Abc2A":"out_1" -> "-items-Abc1":"-1"
+    "-Duck":"out_0" -> "-property-FlyingAnimal":"-1"
+    "-Duck":"out_1" -> "-property-WalkingAnimal":"-1"
+    "-Duck":"out_3" -> "-property-Animal":"-1"
+    "-property-WalkingAnimal":"out_2" -> "-property-Animal":"-1"
+    "-property-FlyingAnimal":"out_2" -> "-property-Animal":"-1"
 
 }  # end of items subgraph
 

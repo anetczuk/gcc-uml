@@ -97,7 +97,7 @@ python3 -m gccuml.main --help
 
 Application provides limited support for *clang-uml* configuration files. Before use the config file have to be changed 
 in following ways:
-- supported diagram types: `printhtml`,`inheritgraph`,`memlayout`,`ctrlflowgraph`,
+- supported diagram types: `inheritgraph`,`memlayout`,`ctrlflowgraph`,
 - input / glob file paths have to contain `.003l.raw` extension instead of `.h`, `.cpp` or similar,
 - relative paths have to be changed from source to build directory (there are stored `.003l.raw` files).
 

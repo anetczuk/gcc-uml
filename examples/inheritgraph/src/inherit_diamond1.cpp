@@ -1,23 +1,35 @@
 ///
 
-namespace items {
-	class Abc1 {
+namespace property {
+	class Animal {
 	public:
-		int field;
+		int size;
 	};
 
 
-	class Abc2A: public Abc1 {
+	class FlyingAnimal: public Animal {
 	public:
+		double flydistance = 0.0;
+		void fly(const double distance) {
+			flydistance += distance;
+		}
 	};
 
 
-	class Abc2B: public Abc1 {
+	class WalkingAnimal: public Animal {
 	public:
+		double walkdistance = 0.0;
+		void walk(const double distance) {
+			walkdistance += distance;
+		}
 	};
 }
 
 
-class Abc3: public items::Abc2A, public items::Abc2B {
+class Duck: public property::FlyingAnimal, public property::WalkingAnimal {
 public:
+	int noquacks = 0;
+	void quack() {
+		++noquacks;
+	}
 };
