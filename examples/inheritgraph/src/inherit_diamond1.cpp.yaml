@@ -1,0 +1,28 @@
+##
+##
+##
+
+# The directory where files will be generated
+output_directory: ..
+
+# The map of diagrams - keys are also diagram file names
+diagrams:
+  inherit_diamond1.cpp.inherit:
+    type: inheritgraph
+    # Limiting the number of files to include can significantly improve
+    # diagram generation times
+    glob:
+      - ../build/inherit_diamond1.cpp.003l.raw
+#     include:
+#       # Only include entities from the following namespaces
+#       namespaces:
+#         - padding
+  inherit_diamond1.cpp.memlay:
+    type: memlayout
+    # Limiting the number of files to include can significantly improve
+    # diagram generation times
+    glob:
+      - ../build/inherit_diamond1.cpp.003l.raw
+#     exclude:
+#       namespaces:
+#         - padding

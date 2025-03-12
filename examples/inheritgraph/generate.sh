@@ -109,6 +109,32 @@ prepare_sample() {
 }
 
 
+## hardcoded conversion
+prepare_yaml() {
+	local ITEMS="$*"
+
+	if [ "$ITEMS" == "" ]; then
+		## if no arguments given then allow one iteration of loop to process all files
+		ITEMS="-"
+	fi
+
+	for i in ${ITEMS}; do
+	    if [ "$i" == "inherit_diamond1.cpp" ] || [ "$#" -eq 0 ]; then
+	    	i="inherit_diamond1.cpp"
+			prepare_config "${SCRIPT_DIR}/src/${i}.yaml"
+			convert_puml "$SCRIPT_DIR/${i}.inherit.puml" "$BUILD_DIR"
+			convert_dot "$SCRIPT_DIR/${i}.memlay.dot" "$BUILD_DIR"
+	    fi
+	    if [ "$i" == "inherit_diamond2.cpp" ] || [ "$#" -eq 0 ]; then
+	    	i="inherit_diamond2.cpp"
+			prepare_config "${SCRIPT_DIR}/src/${i}.yaml"
+			convert_puml "$SCRIPT_DIR/${i}.inherit.puml" "$BUILD_DIR"
+			convert_dot "$SCRIPT_DIR/${i}.memlay.dot" "$BUILD_DIR"
+	    fi
+	done
+}
+
+
 if [ ${#SRC_FILES[@]} -ne 0 ]; then
 	# files passed
 	handle_files "${SRC_FILES[@]}"
