@@ -2,6 +2,7 @@
 ```
 usage: python3 -m gccuml.main [-h] [--loglevel LOGLEVEL] [-la]
                               [--exitloglevel EXITLOGLEVEL] [--listtools]
+                              [--listdiagramtypes]
                               {config,printhtml,inheritgraph,memlayout,ctrlflowgraph,tools}
                               ...
 
@@ -14,6 +15,8 @@ options:
   --exitloglevel EXITLOGLEVEL
                         Set exit log level (default: None)
   --listtools           List tools (default: False)
+  --listdiagramtypes    List diagram types allowed in yaml config (default:
+                        False)
 
 subcommands:
   use one of tools

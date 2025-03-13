@@ -48,6 +48,44 @@ else:
 # =======================================================================
 
 
+def handle_config_printhtml(config_dict, diagram_name, diagram_output_directory):
+    config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}")
+    print_html_config(config_dict)
+
+
+def handle_config_inheritgraph(config_dict, diagram_name, diagram_output_directory):
+    config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}.puml")
+    generate_inherit_graph_config(config_dict)
+
+
+def handle_config_memlayout(config_dict, diagram_name, diagram_output_directory):
+    config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}.dot")
+    generate_memory_layout_graph_config(config_dict)
+
+
+def handle_config_ctrlflowgraph(config_dict, diagram_name, diagram_output_directory):
+    diagram_engine = config_dict.get("engine", "dot")
+    out_extension = get_engine_file_extension(diagram_engine)
+    config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}.{out_extension}")
+    generate_control_flow_graph_config(config_dict)
+
+
+def handle_config_tools(config_dict, _diagram_name, _diagram_output_directory):
+    process_tools_config(config_dict)
+
+
+CONFIG_DIAGRAM_TYPE_HANDLER = {
+    "printhtml": handle_config_printhtml,
+    "inheritgraph": handle_config_inheritgraph,
+    "memlayout": handle_config_memlayout,
+    "ctrlflowgraph": handle_config_ctrlflowgraph,
+    "tools": handle_config_tools,
+}
+
+
+# =======================================================================
+
+
 def process_config(args):
     config_path = args.path
     _LOGGER.info("parsing config file %s", config_path)
@@ -132,33 +170,11 @@ def process_config(args):
         config_dict["debug_mode"] = debug_mode
         config_dict["inputfiles"] = input_files
 
-        if diagram_type == "printhtml":
-            config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}")
-            print_html_config(config_dict)
-            continue
+        diagram_type_handler = CONFIG_DIAGRAM_TYPE_HANDLER.get(diagram_type)
+        if diagram_type_handler is None:
+            raise RuntimeError(f"unknown or unhandled diagram: '{diagram_type}'")
 
-        if diagram_type == "inheritgraph":
-            config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}.puml")
-            generate_inherit_graph_config(config_dict)
-            continue
-
-        if diagram_type == "memlayout":
-            config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}.dot")
-            generate_memory_layout_graph_config(config_dict)
-            continue
-
-        if diagram_type == "ctrlflowgraph":
-            diagram_engine = config_dict.get("engine", "dot")
-            out_extension = get_engine_file_extension(diagram_engine)
-            config_dict["outpath"] = os.path.join(diagram_output_directory, f"{diagram_name}.{out_extension}")
-            generate_control_flow_graph_config(config_dict)
-            continue
-
-        if diagram_type == "tools":
-            process_tools_config(config_dict)
-            continue
-
-        raise RuntimeError(f"unknown diagram '{diagram_type}'")
+        diagram_type_handler(config_dict, diagram_name, diagram_output_directory)
 
 
 def process_printhtml(args):
@@ -232,6 +248,7 @@ def main():
     parser.add_argument("-la", "--logall", action="store_true", help="Log all messages")
     parser.add_argument("--exitloglevel", action="store", default=None, help="Set exit log level")
     parser.add_argument("--listtools", action="store_true", help="List tools")
+    parser.add_argument("--listdiagramtypes", action="store_true", help="List diagram types allowed in yaml config")
     parser.set_defaults(func=None)
 
     subparsers = parser.add_subparsers(help="one of tools", description="use one of tools", dest="tool", required=False)
@@ -447,6 +464,11 @@ def main():
     if args.listtools is True:
         tools_list = list(subparsers.choices.keys())
         print(", ".join(tools_list))
+        return 0
+
+    if args.listdiagramtypes is True:
+        types_list = list(CONFIG_DIAGRAM_TYPE_HANDLER.keys())
+        print(", ".join(types_list))
         return 0
 
     if args.logall is True:
