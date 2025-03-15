@@ -22,11 +22,11 @@ ranksep = 2
         shape=plain
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::Duck</b>  (320b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">128</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::property::FlyingAnimal</td> </tr>
-            <tr> <td align="right" port='in_1'>128</td> <td align="right">128</td> <td align="left" bgcolor='#FEFECE' port='out_1'>::property::WalkingAnimal</td> </tr>
-            <tr> <td align="right" port='in_2'>256</td> <td align="right">32</td> <td align="left" port='out_2'>noquacks: int</td> </tr>
-            <tr> <td align="right" port='in_3'>288</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_3'>[padding]</td> </tr>
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::Duck</b>  (576b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">256</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::property::FlyingAnimal</td> </tr>
+            <tr> <td align="right" port='in_1'>256</td> <td align="right">256</td> <td align="left" bgcolor='#FEFECE' port='out_1'>::property::WalkingAnimal</td> </tr>
+            <tr> <td align="right" port='in_2'>512</td> <td align="right">32</td> <td align="left" port='out_2'>noquacks: int</td> </tr>
+            <tr> <td align="right" port='in_3'>544</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_3'>[padding]</td> </tr>
         </table>>
     ]
 
@@ -34,10 +34,9 @@ ranksep = 2
         shape=plain
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::property::WalkingAnimal</b>  (128b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::property::Animal</td> </tr>
-            <tr> <td align="right" port='in_1'>32</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_1'>[padding]</td> </tr>
-            <tr> <td align="right" port='in_2'>64</td> <td align="right">64</td> <td align="left" port='out_2'>walkdistance: double</td> </tr>
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::property::WalkingAnimal</b>  (256b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">192</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::property::Animal</td> </tr>
+            <tr> <td align="right" port='in_1'>192</td> <td align="right">64</td> <td align="left" port='out_1'>walkdistance: double</td> </tr>
         </table>>
     ]
 
@@ -45,10 +44,9 @@ ranksep = 2
         shape=plain
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::property::FlyingAnimal</b>  (128b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::property::Animal</td> </tr>
-            <tr> <td align="right" port='in_1'>32</td> <td align="right">32</td> <td align="left" bgcolor='lightgray' port='out_1'>[padding]</td> </tr>
-            <tr> <td align="right" port='in_2'>64</td> <td align="right">64</td> <td align="left" port='out_2'>flydistance: double</td> </tr>
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::property::FlyingAnimal</b>  (256b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">192</td> <td align="left" bgcolor='#FEFECE' port='out_0'>::property::Animal</td> </tr>
+            <tr> <td align="right" port='in_1'>192</td> <td align="right">64</td> <td align="left" port='out_1'>flydistance: double</td> </tr>
         </table>>
     ]
 
@@ -56,8 +54,10 @@ ranksep = 2
         shape=plain
         label=
         <<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::property::Animal</b>  (32b)</td> </tr>
-            <tr> <td align="right" port='in_0'>0</td> <td align="right">32</td> <td align="left" port='out_0'>size: int</td> </tr>
+            <tr> <td colspan="3" bgcolor="PaleGreen" port='-1'> <b>::property::Animal</b>  (192b)</td> </tr>
+            <tr> <td align="right" port='in_0'>0</td> <td align="right">64</td> <td align="left" port='out_0'>weight: double</td> </tr>
+            <tr> <td align="right" port='in_1'>64</td> <td align="right">64</td> <td align="left" port='out_1'>width: double</td> </tr>
+            <tr> <td align="right" port='in_2'>128</td> <td align="right">64</td> <td align="left" port='out_2'>height: double</td> </tr>
         </table>>
     ]
 

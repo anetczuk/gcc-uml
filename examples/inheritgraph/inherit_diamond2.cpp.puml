@@ -15,7 +15,9 @@ class "::property::FlyingAnimal" as item_2 {
     {method} + void fly(double const distance) 
 }
 class "::property::Animal" as item_3 {
-    {field} + int size
+    {field} + double weight
+    {field} + double width
+    {field} + double height
 }
 
 ' ::Duck --|> ::property::FlyingAnimal
