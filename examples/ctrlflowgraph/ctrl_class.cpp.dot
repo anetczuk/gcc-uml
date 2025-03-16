@@ -42,30 +42,57 @@ digraph {
 	}
 	item_14 -> item_16 [style=invis]
 	subgraph cluster_item_19 {
-		graph [label="::item::ExampleA::ExampleA() -> void"]
+		graph [label="::item::ExampleA::__ct_base() -> void"]
+		item_20 [label="(*this) = {}"]
+		item_21 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16"]
+		item_20 -> item_21
+		item_22 [label="fieldA = 5"]
+		item_21 -> item_22
 	}
-	subgraph cluster_item_20 {
-		graph [label="::item::ExampleA::~ExampleA() -> void"]
-		subgraph cluster_item_21 {
+	item_18 -> item_20 [style=invis]
+	subgraph cluster_item_23 {
+		graph [label="::item::ExampleA::__ct_comp() -> void"]
+	}
+	subgraph cluster_item_24 {
+		graph [label="::item::ExampleA::__dt_base() -> void"]
+		item_25 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16"]
+		subgraph cluster_item_26 {
 			graph [label=try]
-			item_22 [label="this->__dt_comp()"]
+			item_27
 		}
-		subgraph cluster_item_23 {
+		subgraph cluster_item_28 {
 			graph [label=finally]
-			item_24 [label="::[--no entry--](this, 16)"]
+			item_29 [label="(*this) = {}"]
 		}
-		item_22 -> item_24
+		item_27 -> item_29
+		item_25 -> item_27
 	}
-	item_18 -> item_22 [style=invis]
-	subgraph cluster_item_25 {
+	item_22 -> item_25 [style=invis]
+	subgraph cluster_item_30 {
+		graph [label="::item::ExampleA::__dt_comp() -> void"]
+	}
+	subgraph cluster_item_31 {
+		graph [label="::item::ExampleA::__dt_del() -> void"]
+		subgraph cluster_item_32 {
+			graph [label=try]
+			item_33 [label="this->__dt_comp()"]
+		}
+		subgraph cluster_item_34 {
+			graph [label=finally]
+			item_35 [label="::[--no entry--](this, 16)"]
+		}
+		item_33 -> item_35
+	}
+	item_29 -> item_33 [style=invis]
+	subgraph cluster_item_36 {
 		graph [label="::item::ExampleA::methodA1() -> int"]
-		item_26 [label="::item::EmptyExamle emptyObj;"]
-		item_27 [label="const int ret = 5"]
-		item_26 -> item_27
-		item_28 [label="return 5" fillcolor=lightgreen]
-		item_29 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-		item_28 -> item_29
-		item_27 -> item_28
+		item_37 [label="::item::EmptyExamle emptyObj;"]
+		item_38 [label="const int ret = 5"]
+		item_37 -> item_38
+		item_39 [label="return 5" fillcolor=lightgreen]
+		item_40 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_39 -> item_40
+		item_38 -> item_39
 	}
-	item_24 -> item_26 [style=invis]
+	item_35 -> item_37 [style=invis]
 }

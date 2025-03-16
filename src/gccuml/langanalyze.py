@@ -141,12 +141,13 @@ def get_function_full_name(function_decl: Entry):
         # proper field must have name
         return None
 
-    method_note_list = function_decl.get_list("note")
-    if "constructor" in method_note_list:
-        method_name = get_entry_name(scope)
-    elif "destructor" in method_note_list:
-        class_name = get_entry_name(scope)
-        method_name = f"~{class_name}"
+    ## we want to display all constructors, but following code (commented) prevents it
+    # method_note_list = function_decl.get_list("note")
+    # if "constructor" in method_note_list:
+    #     method_name = get_entry_name(scope)
+    # elif "destructor" in method_note_list:
+    #     class_name = get_entry_name(scope)
+    #     method_name = f"~{class_name}"
 
     name_prefix = get_decl_namespace_list(function_decl)
     name_prefix[-1] = method_name

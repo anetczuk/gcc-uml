@@ -28,11 +28,35 @@ card "::item::ExampleB::methodB2(float const param) -> int" {
     -[hidden]->
 }
 
-card "::item::ExampleA::ExampleA() -> void" {
+card "::item::ExampleA::__ct_base() -> void" {
+    :(*this) = {};
+    :_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16;
+    :fieldA = 5;
     -[hidden]->
 }
 
-card "::item::ExampleA::~ExampleA() -> void" {
+card "::item::ExampleA::__ct_comp() -> void" {
+    -[hidden]->
+}
+
+card "::item::ExampleA::__dt_base() -> void" {
+    :_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16;
+    group try
+        :None;
+    end group
+
+    group finally
+        :(*this) = {};
+    end group
+
+    -[hidden]->
+}
+
+card "::item::ExampleA::__dt_comp() -> void" {
+    -[hidden]->
+}
+
+card "::item::ExampleA::__dt_del() -> void" {
     group try
         :this->__dt_comp();
     end group

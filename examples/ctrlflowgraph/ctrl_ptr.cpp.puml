@@ -24,11 +24,33 @@ card "::item::ExampleB::methodB2() -> void" {
     -[hidden]->
 }
 
-card "::item::ExampleB::ExampleB() -> void" {
+card "::item::ExampleB::__ct() -> void" {
+    :(&(*this))->__ct_base();
+    :_vptr.ExampleA = (&_ZTVN4item8ExampleBE) + 16;
     -[hidden]->
 }
 
-card "::item::ExampleA::ExampleA() -> void" {
+card "::item::ExampleA::__ct() -> void" {
+    :_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16;
+    -[hidden]->
+}
+
+card "::item::ExampleB::__ct_base() -> void" {
+    :(&(*this))->__ct_base();
+    :_vptr.ExampleA = (&_ZTVN4item8ExampleBE) + 16;
+    -[hidden]->
+}
+
+card "::item::ExampleA::__ct_base() -> void" {
+    :_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16;
+    -[hidden]->
+}
+
+card "::item::ExampleB::__ct_comp() -> void" {
+    -[hidden]->
+}
+
+card "::item::ExampleA::__ct_comp() -> void" {
     -[hidden]->
 }
 

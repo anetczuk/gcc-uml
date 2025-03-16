@@ -24,9 +24,33 @@ digraph {
 		graph [label="::item::ExampleB::methodB2() -> void"]
 	}
 	subgraph cluster_item_9 {
-		graph [label="::item::ExampleB::ExampleB() -> void"]
+		graph [label="::item::ExampleB::__ct() -> void"]
+		item_10 [label="(&(*this))->__ct_base()"]
+		item_11 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleBE) + 16"]
+		item_10 -> item_11
 	}
-	subgraph cluster_item_10 {
-		graph [label="::item::ExampleA::ExampleA() -> void"]
+	item_4 -> item_10 [style=invis]
+	subgraph cluster_item_12 {
+		graph [label="::item::ExampleA::__ct() -> void"]
+		item_13 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16"]
+	}
+	item_11 -> item_13 [style=invis]
+	subgraph cluster_item_14 {
+		graph [label="::item::ExampleB::__ct_base() -> void"]
+		item_15 [label="(&(*this))->__ct_base()"]
+		item_16 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleBE) + 16"]
+		item_15 -> item_16
+	}
+	item_13 -> item_15 [style=invis]
+	subgraph cluster_item_17 {
+		graph [label="::item::ExampleA::__ct_base() -> void"]
+		item_18 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16"]
+	}
+	item_16 -> item_18 [style=invis]
+	subgraph cluster_item_19 {
+		graph [label="::item::ExampleB::__ct_comp() -> void"]
+	}
+	subgraph cluster_item_20 {
+		graph [label="::item::ExampleA::__ct_comp() -> void"]
 	}
 }
