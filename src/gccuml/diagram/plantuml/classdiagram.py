@@ -47,6 +47,12 @@ class ClassDiagramGenerator:
             self.methods: List[ClassDiagramGenerator.ClassMethod] = []
             self.generics: List[str] = []
 
+        def has_field(self, field_name):
+            for field_def in self.fields:
+                if field_def.name == field_name:
+                    return True
+            return False
+
     FunctionArg = NamedTuple("FunctionArg", [("name", str), ("type", str)])
     ClassBase = NamedTuple("ClassBase", [("name", str), ("access", str)])
 
@@ -56,9 +62,10 @@ class ClassDiagramGenerator:
 
         name: str
         type: str
-        access: str
+        access: str  ## private, protected, package private, public
         static: bool
-        bitfield_size: int
+        bitfield_size: int = None  ## None if regular variable (no bitfield)
+        value: str = None  ## None if no explicit (default) value
 
     ClassMethod = NamedTuple(
         "ClassMethod",
@@ -181,6 +188,7 @@ class ClassDiagramGenerator:
             field_access = field_item.access
             field_static = field_item.static
             bitfield_size = field_item.bitfield_size
+            field_value = field_item.value
             access_mark = self.FIELD_ACCESS_DICT.get(field_access)
             if access_mark is None:
                 _LOGGER.error("unable to get access mark for access value: '%s'", field_access)
@@ -194,8 +202,14 @@ class ClassDiagramGenerator:
             bitfield_string = ""
             if bitfield_size:
                 bitfield_string = f" :{bitfield_size}"
+
+            value_string = ""
+            if field_value is not None:
+                value_string = f" = {field_value}"
+
             content_list.append(
-                f"""    {{field}} {static_marker}{access_mark} {field_type} {field_name}{bitfield_string}"""
+                f"""    {{field}} {static_marker}{access_mark} {field_type}"""
+                f""" {field_name}{bitfield_string}{value_string}"""
             )
 
     def _generate_methods(self, class_data, content_list):

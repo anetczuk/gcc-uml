@@ -1,13 +1,13 @@
 @startuml
 
 class "::items::Abc1" as item_0 {
-    {field} {static} + __vtbl_ptr_type[] _ZTVN5items4Abc1E
+    {field} {static} + __vtbl_ptr_type[] _ZTVN5items4Abc1E = {[0] = 0, [1] = (&_ZTIN5items4Abc1E), [2] = 0, [3] = 0, [4] = (&::items::Abc1::call_virt), [5] = None}
     {field} + __vtbl_ptr_type * _vptr.Abc1
     {field} {static} + bool static1
-    {field} {static} + const int static2
+    {field} {static} + int const static2
     {field} # int field1
     {field} # double field2
-    {field} - const double field3
+    {field} - double const field3
     {method} +virt  ~Abc1() 
     {method} + void call_param(int paramA, double const paramB, bool /*anonym*/) 
     {method} +virt void call_virt(int paramA) 

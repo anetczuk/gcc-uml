@@ -1,21 +1,37 @@
 @startuml
 
 class "::Duck" as item_0 {
-    {field} + int noquacks
+    {field} + int noquacks = 0
+    {method} +  ~Duck() =default
+    {method} +  Duck(::Duck & /*anonym*/) =default
+    {method} +  Duck(::Duck const & /*anonym*/) =default
+    {method} +  Duck() 
     {method} + void quack() 
 }
 class "::property::WalkingAnimal" as item_1 {
-    {field} + double walkdistance
+    {field} + double walkdistance = 0.0
+    {method} +  ~WalkingAnimal() =default
+    {method} +  WalkingAnimal(::property::WalkingAnimal & /*anonym*/) =default
+    {method} +  WalkingAnimal(::property::WalkingAnimal const & /*anonym*/) =default
+    {method} +  WalkingAnimal() 
     {method} + void walk(double const distance) 
 }
 class "::property::FlyingAnimal" as item_2 {
-    {field} + double flydistance
+    {field} + double flydistance = 0.0
+    {method} +  ~FlyingAnimal() =default
+    {method} +  FlyingAnimal(::property::FlyingAnimal & /*anonym*/) =default
+    {method} +  FlyingAnimal(::property::FlyingAnimal const & /*anonym*/) =default
+    {method} +  FlyingAnimal() 
     {method} + void fly(double const distance) 
 }
 class "::property::Animal" as item_3 {
     {field} + double weight
     {field} + double width
     {field} + double height
+    {method} +  ~Animal() =default
+    {method} +  Animal(::property::Animal & /*anonym*/) =default
+    {method} +  Animal(::property::Animal const & /*anonym*/) =default
+    {method} +  Animal() =default
 }
 
 ' ::Duck --|> ::property::FlyingAnimal

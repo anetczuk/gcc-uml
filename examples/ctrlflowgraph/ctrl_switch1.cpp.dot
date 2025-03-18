@@ -3,7 +3,7 @@ digraph {
 	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
 	subgraph cluster_item_0 {
 		graph [label="::calc_switch0() -> int"]
-		item_1 [label="const int timestamp;"]
+		item_1 [label="int const timestamp;"]
 		item_2 [label="timestamp = ::time(0)"]
 		item_1 -> item_2
 		subgraph cluster_item_3 {
@@ -18,7 +18,7 @@ digraph {
 	}
 	subgraph cluster_item_7 {
 		graph [label="::calc_switch1() -> int"]
-		item_8 [label="const int timestamp;"]
+		item_8 [label="int const timestamp;"]
 		item_9 [label="timestamp = ::time(0)"]
 		item_8 -> item_9
 		subgraph cluster_item_10 {
@@ -64,7 +64,7 @@ digraph {
 	item_6 -> item_8 [style=invis]
 	subgraph cluster_item_21 {
 		graph [label="::calc_switch2() -> int"]
-		item_22 [label="const int timestamp;"]
+		item_22 [label="int const timestamp;"]
 		item_23 [label="timestamp = ::time(0)"]
 		item_22 -> item_23
 		subgraph cluster_item_24 {

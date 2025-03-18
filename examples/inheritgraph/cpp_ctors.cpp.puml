@@ -1,7 +1,7 @@
 @startuml
 
 class "::items::Abc3D" as item_0 {
-    {field} {static} + __vtbl_ptr_type[] _ZTVN5items5Abc3DE
+    {field} {static} + __vtbl_ptr_type[] _ZTVN5items5Abc3DE = {[0] = 0, [1] = (&_ZTIN5items5Abc3DE), [2] = (&::items::Abc3D::__dt_comp), [3] = (&::items::Abc3D::__dt_del)}
     {field} + __vtbl_ptr_type * _vptr.Abc3D
     {method} +virt  ~Abc3D() 
 }

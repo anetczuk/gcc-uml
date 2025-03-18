@@ -1,9 +1,9 @@
 @startuml
 
 card "::item::ExampleB::methodB1(int const param) -> int" {
-    :const float var1 = param * 3.2999999999999998223643161e+0;
-    :const float var2 = param * 3.2999999999999998223643161e+0;
-    :const int valA;;
+    :float const var1 = param * 3.2999999999999998223643161e+0;
+    :float const var2 = param * 3.2999999999999998223643161e+0;
+    :int const valA;;
     :valA = (&objA)->methodA1();
     :int retX;;
     :retX = this->methodB2(var1) * valA;
@@ -22,7 +22,7 @@ card "::item::ExampleB::methodB3(int const val) -> int" {
 }
 
 card "::item::ExampleB::methodB2(float const param) -> int" {
-    :const float var = param * 6.5999999999999996447286321e+0;
+    :float const var = param * 6.5999999999999996447286321e+0;
     #lightgreen:return var;
     stop
     -[hidden]->
@@ -70,7 +70,7 @@ card "::item::ExampleA::__dt_del() -> void" {
 
 card "::item::ExampleA::methodA1() -> int" {
     :::item::EmptyExamle emptyObj;;
-    :const int ret = 5;
+    :int const ret = 5;
     #lightgreen:return 5;
     stop
     -[hidden]->

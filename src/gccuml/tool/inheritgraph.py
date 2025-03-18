@@ -23,13 +23,13 @@ from gccuml.langanalyze import (
     StructAnalyzer,
     get_function_args,
     get_function_ret,
-    find_class_vtable_var_decl,
     get_template_parameters,
     get_type_entry_name,
 )
 from gccuml.diagram.plantuml.classdiagram import ClassDiagramGenerator
 from gccuml.langparser import parse_raw
 from gccuml.configyaml import Filter
+from gccuml.expressionanalyze import ScopeAnalysis, EntryExpression
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -86,10 +86,40 @@ class InheritanceData:
         ret_dict = {}
         dcls_list = self.content.get_entries("dcls")
         for dcls_entry in dcls_list:
-            info_list = self.get_class_info(dcls_entry)
+            info_list: List[ClassDiagramGenerator.ClassData] = self.get_class_info(dcls_entry)
             if info_list:
                 for info in info_list:
                     ret_dict[info.name] = info
+
+        var_decl_list = self.content.get_entries_by_type("var_decl")
+        for var_decl_entry in var_decl_list:
+            var_scope = var_decl_entry.get("scpe")
+            if var_scope is None:
+                continue
+            scope_type = var_scope.get_type()
+            if scope_type != "record_type":
+                continue
+            scope_name: str = self.analyzer.get_record_full_name(var_scope)
+            if scope_name is None:
+                continue
+            class_data: ClassDiagramGenerator.ClassData = ret_dict.get(scope_name)
+            if class_data is None:
+                _LOGGER.warning("unable to get class data for name '%s'", scope_name)
+                continue
+            field_data = self.get_field_data(var_decl_entry, include_internals=True)
+            if field_data is None:
+                continue
+            field_name, field_type, field_access, is_static, bitfield_size, init_value = field_data
+            if class_data.has_field(field_name):
+                continue
+
+            field_access = FIELD_ACCESS_CONVERT_DICT[field_access]
+            field = ClassDiagramGenerator.ClassField(
+                field_name, field_type, field_access, is_static, bitfield_size, init_value
+            )
+            class_data.fields.insert(0, field)
+            _LOGGER.info("added static field '%s' of type '%s' to class '%s'", field_name, field_type, scope_name)
+
         return ret_dict
 
     def get_class_info(self, dcls_entry: Entry) -> List[ClassDiagramGenerator.ClassData]:
@@ -241,81 +271,90 @@ class InheritanceData:
 
     def _get_fields_list(self, record_entry: Entry, include_internals=False) -> List[ClassDiagramGenerator.ClassField]:
         field_list = []
-        entry_fields = get_fields(record_entry, include_internals=include_internals)
+        entry_fields = self.get_fields(record_entry, include_internals=include_internals)
 
-        vtable_var_decl = find_class_vtable_var_decl(self.content, record_entry)
-        if vtable_var_decl is not None:
-            field_data = get_field_data(vtable_var_decl, include_internals)
-            if field_data is not None:
-                entry_fields.insert(0, field_data)
+        ## added later
+        # vtable_var_decl = find_class_vtable_var_decl(self.content, record_entry)
+        # if vtable_var_decl is not None:
+        #     field_data = get_field_data(vtable_var_decl, include_internals)
+        #     if field_data is not None:
+        #         entry_fields.insert(0, field_data)
 
         for item in entry_fields:
-            field_name, field_type, field_access, field_static, bitfield_size = item
+            field_name, field_type, field_access, field_static, bitfield_size, init_val = item
             access = FIELD_ACCESS_CONVERT_DICT[field_access]
-            field = ClassDiagramGenerator.ClassField(field_name, field_type, access, field_static, bitfield_size)
+            field = ClassDiagramGenerator.ClassField(
+                field_name, field_type, access, field_static, bitfield_size, init_val
+            )
             field_list.append(field)
 
         return field_list
+
+    def get_fields(self, record_entry: Entry, include_internals=False):
+        ret_list = []
+
+        flds_entries = record_entry.get_sub_entries("flds")
+        for _prop, item in flds_entries:
+            field_data = self.get_field_data(item, include_internals)
+            if field_data is None:
+                continue
+            ret_list.append(field_data)
+
+        return ret_list
+
+    def get_field_data(self, flds_item: Entry, include_internals=False):
+        item_type = flds_item.get_type()
+        if item_type not in ("field_decl", "var_decl"):
+            # field is defined as field_decl
+            return None
+        field_name = flds_item.get("name")
+        field_name = get_entry_name(field_name)
+        if field_name is None:
+            # proper field must have name
+            return None
+        # if field_name.startswith("_vptr."):
+        #     # ignore vtable
+        #     return None
+        field_access = flds_item.get("accs")
+        if field_access is None:
+            return None
+
+        bitfield_size = None
+        field_bitfield = flds_item.get("bitfield")
+        if field_bitfield and field_bitfield != "0":
+            field_size_entry = flds_item.get("size")
+            if field_size_entry:
+                bitfield_size = get_number_entry_value(field_size_entry)
+
+        field_type = flds_item.get("type")
+        field_type = get_type_entry_name(field_type)
+        # field_type = get_entry_name(field_type)
+        if field_type is None:
+            if bitfield_size:
+                field_type = "???"
+            else:
+                return None
+        if not include_internals and is_entry_language_internal(field_type):
+            return None
+
+        bpos_entry = flds_item.get("bpos")
+        is_static = bpos_entry is None
+
+        analysis = ScopeAnalysis(self.content)
+        var_expr: EntryExpression = analysis.handle_var(flds_item)
+        init_value = None
+        if "=" in var_expr.expression:
+            first_pos = var_expr.expression.index("=")
+            init_value = var_expr.expression[first_pos + 1 :]
+            init_value = init_value.strip()
+
+        return (field_name, field_type, field_access, is_static, bitfield_size, init_value)
 
 
 def get_name_record_type(entry: Entry):
     type_entry = entry.get("name")
     identifier_entry = type_entry.get("name")
     return identifier_entry.get("strg")
-
-
-def get_fields(record_entry: Entry, include_internals=False):
-    ret_list = []
-
-    flds_entries = record_entry.get_sub_entries("flds")
-    for _prop, item in flds_entries:
-        field_data = get_field_data(item, include_internals)
-        if field_data is None:
-            continue
-        ret_list.append(field_data)
-
-    return ret_list
-
-
-def get_field_data(item: Entry, include_internals=False):
-    item_type = item.get_type()
-    if item_type not in ("field_decl", "var_decl"):
-        # field is defined as field_decl
-        return None
-    field_name = item.get("name")
-    field_name = get_entry_name(field_name)
-    if field_name is None:
-        # proper field must have name
-        return None
-    # if field_name.startswith("_vptr."):
-    #     # ignore vtable
-    #     return None
-    field_access = item.get("accs")
-    if field_access is None:
-        return None
-
-    bitfield_size = None
-    field_bitfield = item.get("bitfield")
-    if field_bitfield and field_bitfield != "0":
-        field_size_entry = item.get("size")
-        if field_size_entry:
-            bitfield_size = get_number_entry_value(field_size_entry)
-
-    field_type = item.get("type")
-    field_type = get_type_entry_name(field_type)
-    # field_type = get_entry_name(field_type)
-    if field_type is None:
-        if bitfield_size:
-            field_type = "???"
-        else:
-            return None
-    if not include_internals and is_entry_language_internal(field_type):
-        return None
-
-    bpos_entry = item.get("bpos")
-    is_static = bpos_entry is None
-
-    return (field_name, field_type, field_access, is_static, bitfield_size)
 
 
 def get_methods_list(class_name, record_entry: Entry):

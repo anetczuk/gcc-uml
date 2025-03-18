@@ -212,12 +212,12 @@ def get_entry_repr(entry: Entry) -> str:
 
 
 def get_type_entry_name(type_entry: Entry):
-    name, mod = get_type_name_mod(type_entry)
+    name, const_mod = get_type_name_mod(type_entry)
     if name is None:
         return None
-    if mod is None:
+    if const_mod is None:
         return name
-    return f"{mod} {name}"
+    return f"{name} {const_mod}"
 
 
 def get_type_name_mod(type_entry: Entry):
@@ -230,25 +230,28 @@ def get_type_name_mod(type_entry: Entry):
 
     if entry_type == "pointer_type":
         ptd = type_entry.get("ptd")
-        ptd_name = get_full_name(ptd)
-        ptd_qual = ptd.get("qual")
-        if ptd_qual == "c":
-            ptd_name += " const"
-        ptd_name += " *"
-        return (ptd_name, parm_mod)
+        pointer_entry_name = get_entry_name(type_entry, default_ret=None)
+        pointer_name = pointer_entry_name
+        if pointer_name is None:
+            pointer_name = get_full_name(ptd)
+        if pointer_name is None:
+            return (None, parm_mod)
+        if pointer_entry_name is None:
+            if pointer_name.endswith("*"):
+                pointer_name += "*"
+            else:
+                pointer_name += " *"
+        return (pointer_name, parm_mod)
 
     if entry_type == "reference_type":
         refd = type_entry.get("refd")
         refd_name = get_full_name(refd)
-        refd_qual = refd.get("qual")
-        if refd_qual == "c":
-            refd_name += " const"
         refd_name += " &"
         return (refd_name, parm_mod)
 
     if entry_type == "array_type":
         elms = type_entry.get("elts")
-        elms_name = get_full_name(elms)
+        elms_name = get_type_entry_name(elms)
         return (f"{elms_name}[]", parm_mod)
 
     name_list = get_decl_namespace_list(type_entry)
@@ -262,15 +265,12 @@ def get_type_name_mod(type_entry: Entry):
 
 def get_full_name(entry: Entry) -> str:
     entry_type = entry.get_type()
-    if entry_type == "record_type":
-        ns_list = get_record_namespace_list(entry)
-        return "::".join(ns_list)
     if entry_type == "function_type":
         ret_type = get_function_ret(entry)
         params_list = get_func_type_parameters(entry)
         params_str = ", ".join(params_list)
         return f"{ret_type} ({params_str})"
-    return get_entry_name(entry)
+    return get_type_entry_name(entry)
 
 
 def get_function_args(function_decl: Entry):
@@ -289,10 +289,7 @@ def get_function_args(function_decl: Entry):
             # skip this parameter
             continue
         arg_type_entry = arg_entry.get("type")
-        arg_type, arg_mod = get_type_name_mod(arg_type_entry)
-        arg_type_full = arg_type
-        if arg_mod:
-            arg_type_full = f"{arg_type_full} {arg_mod}"
+        arg_type_full = get_type_entry_name(arg_type_entry)
         args_list.append([arg_name, arg_type_full])
     return args_list
 
@@ -301,10 +298,7 @@ def get_function_ret(function_type: Entry):
     function_retn = function_type.get("retn")
     if function_retn is None:
         return None
-    ret_type, ret_mod = get_type_name_mod(function_retn)
-    function_return = ret_type
-    if ret_mod:
-        function_return = f"{function_return} {ret_mod}"
+    function_return = get_type_entry_name(function_retn)
 
     # func_mod = function_retn.get("qual")
     # if func_mod is not None:
@@ -395,8 +389,8 @@ def is_method_of_instance(func_decl: Entry) -> bool:
     return first_name == "this"
 
 
-## find virtual methods table
-def find_class_vtable_var_decl(content: LangContent, record_entry: Entry):
+## find virtual methods table Entry
+def find_class_vtable_var_decl(content: LangContent, record_entry: Entry) -> Entry:
     ## example name of vtable: _ZTVN4item8ExampleBE
 
     class_full_name = get_entry_repr(record_entry)
@@ -418,6 +412,28 @@ def find_class_vtable_var_decl(content: LangContent, record_entry: Entry):
             continue
         return entry
     return None
+
+
+## find virtual methods table Dict
+def get_vtable_entries(vtable_var_decl: Entry) -> Dict[int, Entry]:
+    tab_dict = {}
+    var_init = vtable_var_decl.get("init")
+    items_num = int(var_init.get("lngt"))
+    data_list = var_init.get_ordered_tuples(["idx", "val"])
+    if len(data_list) != items_num:
+        raise RuntimeError("invalid number of values in entry: {statement_entry}")
+    for index, data_item in enumerate(data_list):
+        data_idx = data_item[0]
+        data_val = data_item[1]
+        idx_expr = index
+        if data_idx:
+            idx_expr = get_number_entry_value(data_idx)
+            idx_expr = int(idx_expr)
+        subval_entry = data_val.get("op 0")
+        if subval_entry.get_type() == "addr_expr":
+            subval_entry = subval_entry.get("op 0")
+        tab_dict[idx_expr] = subval_entry
+    return tab_dict
 
 
 ## ==================================================

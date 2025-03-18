@@ -3,7 +3,7 @@ digraph {
 	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
 	subgraph cluster_item_0 {
 		graph [label="::main() -> int"]
-		item_1 [label="const int aaa;"]
+		item_1 [label="int const aaa;"]
 		item_2 [label="aaa = ::calc_valA(4)"]
 		item_1 -> item_2
 		item_3 [label="int bbb;"]
@@ -18,7 +18,7 @@ digraph {
 	subgraph cluster_item_7 {
 		graph [label="::calc_valA(int const valueA) -> int"]
 		item_8 [label="int xxxA = (valueA * 2.100000000000000088817842e+0) + 3.0e+0"]
-		item_9 [label="const int xxxB = xxxA * 3"]
+		item_9 [label="int const xxxB = xxxA * 3"]
 		item_8 -> item_9
 		item_10 [label="return xxxB" fillcolor=lightgreen]
 		item_11 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
@@ -35,15 +35,15 @@ digraph {
 		item_14 -> item_15
 		item_16 [label="timestamp = (timestamp + 2) + timestamp"]
 		item_15 -> item_16
-		item_17 [label="const int bbb = timestamp + 11"]
+		item_17 [label="int const bbb = timestamp + 11"]
 		item_16 -> item_17
 		item_18 [label="bbb & 1 == 0" shape=hexagon style=filled]
-		item_19 [label="const int ccc = 0"]
+		item_19 [label="int const ccc = 0"]
 		item_20 [label="return 0" fillcolor=lightgreen]
 		item_21 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
 		item_20 -> item_21
 		item_19 -> item_20
-		item_22 [label="const int ddd = valueB * 4"]
+		item_22 [label="int const ddd = valueB * 4"]
 		item_23 [label="return ddd" fillcolor=lightgreen]
 		item_24 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
 		item_23 -> item_24
@@ -62,7 +62,7 @@ digraph {
 		item_28 -> item_29
 		item_30 [label="arrX[1] = valueC / 2.100000000000000088817842e+0"]
 		item_29 -> item_30
-		item_31 [label="const int xxxB = (arrX[1] * 3) + arrX[0]"]
+		item_31 [label="int const xxxB = (arrX[1] * 3) + arrX[0]"]
 		item_30 -> item_31
 		item_32 [label="return xxxB" fillcolor=lightgreen]
 		item_33 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]

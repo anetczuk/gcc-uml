@@ -14,7 +14,7 @@ class "::items::Abc2" as item_1 {
     {method} +virt void callfunc2() 
 }
 class "::items::Abc1" as item_2 {
-    {field} {static} + __vtbl_ptr_type[] _ZTVN5items4Abc1E
+    {field} {static} + __vtbl_ptr_type[] _ZTVN5items4Abc1E = {[0] = 0, [1] = (&_ZTIN5items4Abc1E), [2] = (&::items::Abc1::callfunc1), [3] = None}
     {field} + __vtbl_ptr_type * _vptr.Abc1
     {method} +  Abc1() 
     {method} +virt void callfunc1() 

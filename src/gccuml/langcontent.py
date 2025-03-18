@@ -325,6 +325,17 @@ class LangContent:
                 ret_list.append(item[1])
         return ret_list
 
+    def get_entries_by_type(self, entry_type) -> List[Entry]:
+        ret_list = []
+        # entry: Entry
+        for entry in self.content_objs.values():
+            curr_type = entry.get_type()
+            if curr_type is None:
+                continue
+            if curr_type == entry_type:
+                ret_list.append(entry)
+        return ret_list
+
     # returns dict: {entry_id: [(parent_entry, prop_in_parent)]}
     def get_parents_dict(self) -> Dict[str, List[Tuple[Entry, str]]]:
         if self.parents_dict is not None:
@@ -666,6 +677,8 @@ def get_entry_name(entry: Entry, default_ret="[--unknown--]") -> str:
         entry_value = entry.get("strg", "[--no entry--]")
         return get_entry_name(entry_value, default_ret=default_ret)
 
+    if default_ret == "[--unknown--]":
+        _LOGGER.warning("unable to get entry name from entry: %s", entry)
     return default_ret
 
 

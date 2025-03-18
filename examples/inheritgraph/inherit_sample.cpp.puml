@@ -1,7 +1,7 @@
 @startuml
 
 class "::membersns::SubClass" as item_0 {
-    {field} {static} # const int staticField
+    {field} {static} # int const staticField
     {method} +virt int * virtFn() 
     {method} #virt void virtPureFn() 
     {method} +virt  ~SubClass() =default

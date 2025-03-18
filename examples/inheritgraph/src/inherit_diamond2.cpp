@@ -35,3 +35,10 @@ public:
         ++noquacks;
     }
 };
+
+
+int main() {
+    /// instantiate objects to generate virtual method table
+    Duck obj;
+    return 0;
+}
