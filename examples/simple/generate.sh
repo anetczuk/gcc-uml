@@ -33,11 +33,11 @@ while :; do
                   shift ;;
 
       --emptymain)  SRC_EMPTYMAIN=true 
-                  	shift ;;
+                      shift ;;
       --emptyfunct)  SRC_EMPTYFUNCT=true 
-                  	 shift ;;
+                       shift ;;
       --empty2functs)  SRC_EMPTY2FUNCTS=true 
-                  	   shift ;;
+                         shift ;;
       --emptyns)  SRC_EMPTYNS=true 
                   shift ;;
       --source1)  SRC_SOURCE1=true 
@@ -52,10 +52,10 @@ done
 
 
 if [ "$VENV" = true ]; then
-	## run under venv
-	VENV_DIR="$SCRIPT_DIR/../../venv"
-	"$VENV_DIR"/activatevenv.sh "$0; exit"
-	exit 0
+    ## run under venv
+    VENV_DIR="$SCRIPT_DIR/../../venv"
+    "$VENV_DIR"/activatevenv.sh "$0; exit"
+    exit 0
 fi
 
 
@@ -70,75 +70,76 @@ mkdir -p "$BUILD_DIR"
 
 
 prepare_sample() {
-	local SAMPLE_FILE="$1"
+    local SAMPLE_FILE="$1"
 
-	cd "$BUILD_DIR"
+    cd "$BUILD_DIR"
 
-	local source_file="$SCRIPT_DIR/src/$SAMPLE_FILE"
-	echo "compiling file: $source_file"
-	g++ -fdump-lang-raw -c "$source_file"
+    local source_file="$SCRIPT_DIR/src/$SAMPLE_FILE"
+    echo "compiling file: $source_file"
+    g++ -fdump-lang-raw -c "$source_file"
 
-	cd "$SCRIPT_DIR/../../src/"
+    cd "$SCRIPT_DIR/../../src/"
 
 
-	set -x
-	## generate various data
-	"$SRC_DIR"/gccuml/main.py tools \
-							  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-							  --reducepaths "$SCRIPT_DIR/" \
-							  --outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
-							  --outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt"
+    set -x
+    ## generate various data
+    "$SRC_DIR"/gccuml/main.py tools \
+                              --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+                              --reducepaths "$SCRIPT_DIR/" \
+                              --outtypefields "$SCRIPT_DIR/fields-$SAMPLE_FILE.json" \
+                              --outtreetxt "$SCRIPT_DIR/graph-$SAMPLE_FILE.txt"
 # 							  --outbiggraph "$BUILD_DIR/graph-$SAMPLE_FILE.png" \
-	set +x
+    set +x
 
-	## print html
-	if [ "$USE_PROFILER" = false ]; then
-		set -x
-		"$SRC_DIR"/gccuml/main.py printhtml \
-								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-								  --reducepaths "$SCRIPT_DIR/" \
-								  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
-								  "${ARGS[@]}"
-		set +x
-	else
-		set -x
-		"$SRC_DIR"/../tools/profiler.sh --cprofile \
-		"$SRC_DIR"/gccuml/main.py printhtml \
-								  --progressbar=False \
-								  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
-								  --reducepaths "$SCRIPT_DIR/" \
-								  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
-								  "${ARGS[@]}"
-		set +x
-	fi
+    ## print html
+    if [ "$USE_PROFILER" = false ]; then
+        set -x
+        "$SRC_DIR"/gccuml/main.py printhtml \
+                                  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+                                  --reducepaths "$SCRIPT_DIR/" \
+                                  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
+                                  -ii \
+                                  "${ARGS[@]}"
+        set +x
+    else
+        set -x
+        "$SRC_DIR"/../tools/profiler.sh --cprofile \
+        "$SRC_DIR"/gccuml/main.py printhtml \
+                                  --progressbar=False \
+                                  --rawfile "$BUILD_DIR/$SAMPLE_FILE.003l.raw" \
+                                  --reducepaths "$SCRIPT_DIR/" \
+                                  --outpath "$BUILD_DIR/html-$SAMPLE_FILE" \
+                                  "${ARGS[@]}"
+        set +x
+    fi
 
-	echo ""
+    echo ""
 }
 
 
 if [ "$SRC_EMPTYMAIN" = true ]; then
-	prepare_sample "emptymain.cpp"
-	exit 0
+    prepare_sample "emptymain.cpp"
+    exit 0
 fi
 if [ "$SRC_EMPTYFUNCT" = true ]; then
-	prepare_sample "emptyfunct.cpp"
-	exit 0
+    prepare_sample "emptyfunct.cpp"
+    exit 0
 fi
 if [ "$SRC_EMPTY2FUNCTS" = true ]; then
-	prepare_sample "empty2functs.cpp"
-	exit 0
+    prepare_sample "empty2functs.cpp"
+    exit 0
 fi
 if [ "$SRC_EMPTYNS" = true ]; then
-	prepare_sample "emptyns.cpp"
-	exit 0
+    prepare_sample "emptyns.cpp"
+    exit 0
 fi
 if [ "$SRC_SOURCE1" = true ]; then
-	prepare_sample "source1.cpp"
-	exit 0
+    prepare_sample "source1.cpp"
+    exit 0
 fi
 if [ "$SRC_SOURCE2" = true ]; then
-	prepare_sample "source2.c"
-	exit 0
+    prepare_sample "source2.c"
+    exit 0
 fi
 
 

@@ -16,13 +16,14 @@ from gccuml.langcontent import (
     get_entry_name,
     get_number_entry_value,
     get_decl_namespace_list,
+    get_type_entry_name,
+    is_method_of_instance,
 )
 from gccuml.langanalyze import (
-    is_method_of_instance,
     find_class_vtable_var_decl,
     get_entry_repr,
     is_entry_code_class,
-    get_vtable_entries, get_type_entry_name,
+    get_vtable_entries,
 )
 from gccuml.diagram.activitydata import (
     StatementType,
@@ -251,7 +252,10 @@ class ScopeAnalysis:
             return EntryExpression(decl_expr)
         init_entry_expr = self._analyze_func(init_entry)
         init_expr = init_entry_expr.expression
-        decl_expr = f"{type_label} {var_name} = {init_expr}"
+        if init_expr is None:
+            decl_expr = f"{type_label} {var_name}"
+        else:
+            decl_expr = f"{type_label} {var_name} = {init_expr}"
         init_entry_expr.expression = decl_expr
         return init_entry_expr
 
@@ -371,7 +375,7 @@ class ScopeAnalysis:
             return EntryExpression(name)
 
         if type_name in ("var_decl"):
-            name = get_entry_name(statement_entry)
+            name = get_entry_name(statement_entry, None)
             # if var_name not in self.scope_vars:
             #     self.scope_vars.add(var_name)
             #     var_expr = self.handle_var(statement_entry, stat_list)
@@ -447,6 +451,8 @@ class ScopeAnalysis:
             labl_entry = statement_entry.get("labl")
             label_id = labl_entry.get_id()
             label_name = get_entry_name(labl_entry, default_ret=None)
+            if label_name is None:
+                label_name = label_id
             statement = TypedStatement(label_name, StatementType.GOTO)
             statement.items.append(label_id)
             return EntryExpression(statements=[statement])
@@ -455,12 +461,14 @@ class ScopeAnalysis:
             label_name_entry = statement_entry.get("name")
             label_id = label_name_entry.get_id()
             label_name = get_entry_name(statement_entry, default_ret=None)
+            if label_name is None:
+                label_name = label_id
             statement = TypedStatement(label_name, StatementType.GOTOLABEL)
             statement.items.append(label_id)
             return EntryExpression(statements=[statement])
 
         if type_name in ("asm_expr"):
-            label_name = get_entry_name(statement_entry)
+            # label_name = get_entry_name(statement_entry)
             statement = TypedStatement("assembler expression", StatementType.NODE)
             statement.color = COLOR_NODE_NOTICE
             return EntryExpression(statements=[statement])
@@ -494,10 +502,20 @@ class ScopeAnalysis:
         entries_list = get_index_entries(hand_entry)
         for hand_item in entries_list:
             catch_name = "..."
-            hand_type_entry = hand_item.get("type")
-            if hand_type_entry is not None:
-                catch_name = get_entry_repr(hand_type_entry)
+            # hand_type_entry = hand_item.get("type")
+            # if hand_type_entry is not None:
+            #     catch_name = get_entry_repr(hand_type_entry)
             hand_body_entry = hand_item.get("body")
+            hand_vars_entry = hand_body_entry.get("vars")
+            if hand_vars_entry is not None:
+                hand_vars_type_entry = hand_vars_entry.get("type")
+                catch_type = get_entry_repr(hand_vars_type_entry)
+                catch_name = get_entry_name(hand_vars_entry, None)
+                if catch_name is None:
+                    catch_name = catch_type
+                else:
+                    catch_name = f"{catch_type} {catch_name}"
+            hand_body_entry = hand_body_entry.get("body")
             body_entry_expr = self._analyze_func(hand_body_entry)
             hand_stat_list = body_entry_expr.statements
             catch_group = LabeledGroup(f"catch: {catch_name}", hand_stat_list)

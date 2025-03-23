@@ -15,11 +15,11 @@ from showgraph.graphviz import Graph, set_node_style
 
 from gccuml.langcontent import (
     Entry,
-    get_entry_name,
     EntryTreeDepthFirstTraversal,
     print_entry_tree,
     EntryTree,
     LangContent,
+    get_full_name,
 )
 from gccuml.io import write_file, read_file
 from gccuml.langparser import parse_raw
@@ -180,7 +180,7 @@ class EntryDotGraph:
 
     def _get_entry_label(self, entry: Entry) -> str:
         node_label = f"{entry.get_id()} {entry.get_type()}"
-        entry_label = get_entry_name(entry)
+        entry_label = get_full_name(entry)
         if entry_label:
             node_label += f"\n{entry_label}"
         return node_label

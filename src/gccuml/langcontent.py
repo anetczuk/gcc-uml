@@ -534,7 +534,7 @@ def is_entry_prop_internal(prop: str):
 def is_entry_language_internal(entry: Entry):
     if not isinstance(entry, Entry):
         return False
-    entry_name = get_entry_name(entry)
+    entry_name, _entry_mod = get_type_name_mod(entry)
     if entry_name and entry_name.startswith("._anon_"):
         # internal - do not go deeper
         return True
@@ -553,40 +553,40 @@ def is_entry_language_internal(entry: Entry):
             return True
         return False
     if entry.get_type() == "namespace_decl":
-        if entry_name == "std" or entry_name.startswith("__"):
+        if entry_name and entry_name == "std" or entry_name.startswith("__"):
             # internal - do not go deeper
             return True
         return False
     if entry.get_type() == "type_decl":
-        if entry_name.startswith("__"):
+        if entry_name and entry_name.startswith("__"):
             # internal - do not go deeper
             return True
         return False
     if entry.get_type() == "record_type":
-        if entry_name.startswith("__"):
+        if entry_name and entry_name.startswith("__"):
             # internal - do not go deeper
             return True
-        if entry_name.startswith("._anon_"):
+        if entry_name and entry_name.startswith("._anon_"):
             # internal - do not go deeper
             return True
         return False
     if entry.get_type() == "function_decl":
-        if entry_name.startswith("__"):
+        if entry_name and entry_name.startswith("__"):
             # internal - do not go deeper
             return True
         return False
     if entry.get_type() == "identifier_node":
-        if entry_name.startswith("__"):
+        if entry_name and entry_name.startswith("__"):
             # internal - do not go deeper
             return True
         return False
     if entry.get_type() == "var_decl":
-        if entry_name.startswith("_ZT"):
+        if entry_name and entry_name.startswith("_ZT"):
             # internal - do not go deeper
             return True
         return False
     if entry.get_type() == "const_decl":
-        if entry_name.startswith("__IS"):
+        if entry_name and entry_name.startswith("__IS"):
             # internal - do not go deeper
             return True
         return False
@@ -618,6 +618,197 @@ def print_entry_graph(entry: Entry):
 
 
 ## ======================================================================
+
+
+def is_method(func_decl: Entry) -> bool:
+    if func_decl is None:
+        raise RuntimeError("case never occurred")
+    if func_decl.get_type() != "function_decl":
+        raise RuntimeError("case never occurred")
+    scope = func_decl.get("scpe")
+    if scope is None:
+        raise RuntimeError("case never occurred")
+    if scope.get_type() != "record_type":
+        return False
+    return True
+
+
+# returns True if function is regular method, otherwise is a static method
+def is_method_of_instance(func_decl: Entry) -> bool:
+    if func_decl is None:
+        return False
+    args_list = func_decl.get_sub_entries("args")
+    if not args_list:
+        return False
+    _first_prop, first_arg = args_list[0]
+    first_name = get_entry_name(first_arg)
+    return first_name == "this"
+
+
+def get_vector_items(vector: Entry):
+    items_num = vector.get("lngt")
+    if items_num is None:
+        return []
+    ret_list = []
+    items_num = int(items_num)
+    for index in range(0, items_num):
+        param_item = vector.get(f"{index}")
+        if param_item is None:
+            _LOGGER.error("invalid data")
+            return []
+        ret_list.append(param_item)
+    return ret_list
+
+
+## ======================================================================
+
+
+def get_function_full_name(function_decl: Entry):
+    if function_decl is None:
+        return None
+    if function_decl.get_type() != "function_decl":
+        raise RuntimeError("case never occurred")
+
+    scope = function_decl.get("scpe")
+    if scope is None:
+        ## compiler generated function
+        name_prefix = get_decl_namespace_list(function_decl)
+        return "::".join(name_prefix)
+
+    if scope.get_type() != "record_type":
+        ## regular function
+        name_prefix = get_decl_namespace_list(function_decl)
+        return "::".join(name_prefix)
+
+    ## class method
+    name_entry = function_decl.get("name")
+    method_name = get_entry_name(name_entry)
+    if method_name is None:
+        # proper field must have name
+        return None
+
+    ## we want to display all constructors, but following code (commented) prevents it
+    # method_note_list = function_decl.get_list("note")
+    # if "constructor" in method_note_list:
+    #     method_name = get_entry_name(scope)
+    # elif "destructor" in method_note_list:
+    #     class_name = get_entry_name(scope)
+    #     method_name = f"~{class_name}"
+
+    name_prefix = get_decl_namespace_list(function_decl)
+    name_prefix[-1] = method_name
+    return "::".join(name_prefix)
+
+
+def get_function_name(function_decl: Entry):
+    if function_decl is None:
+        return None
+    if function_decl.get_type() != "function_decl":
+        raise RuntimeError("case never occurred")
+
+    scope = function_decl.get("scpe")
+    if scope is None:
+        raise RuntimeError("case never occurred")
+
+    if scope.get_type() != "record_type":
+        ## regular function
+        name_prefix = get_decl_namespace_list(function_decl)
+        return "::".join(name_prefix)
+
+    ## class method
+    name_entry = function_decl.get("name")
+    method_name = get_entry_name(name_entry)
+    if method_name is None:
+        # proper field must have name
+        return None
+
+    method_note_list = function_decl.get_list("note")
+    if "constructor" in method_note_list:
+        method_name = get_entry_name(scope)
+    elif "destructor" in method_note_list:
+        class_name = get_entry_name(scope)
+        method_name = f"~{class_name}"
+
+    name_prefix = get_decl_namespace_list(function_decl)
+    name_prefix[-1] = method_name
+    return "::".join(name_prefix)
+
+
+def get_function_args(function_decl: Entry):
+    func_args = function_decl.get_sub_entries("args")
+    if not func_args:
+        return []
+
+    is_meth = is_method(function_decl)
+
+    args_list = []
+    for arg_index, arg_data in enumerate(func_args):
+        _arg_prop, arg_entry = arg_data
+        arg_name = arg_entry.get("name")
+        arg_name = get_entry_name(arg_name)
+        if arg_index == 0 and is_meth and arg_name == "this":
+            # skip this parameter
+            continue
+        arg_type_entry = arg_entry.get("type")
+        arg_type_full = get_type_entry_name(arg_type_entry)
+        args_list.append([arg_name, arg_type_full])
+    return args_list
+
+
+def get_function_ret(function_type: Entry):
+    function_retn = function_type.get("retn")
+    if function_retn is None:
+        return None
+    function_return = get_type_entry_name(function_retn)
+
+    # func_mod = function_retn.get("qual")
+    # if func_mod is not None:
+    #     func_mod = get_entry_name(func_mod)
+    #     if func_mod == "c":
+    #         function_return = f"{function_return} const"
+
+    return function_return
+
+
+def get_func_type_parameters(function_type: Entry):
+    return get_template_parameters(function_type)
+
+
+def get_template_parameters(template_decl: Entry):
+    params: Entry = template_decl.get("prms")
+    if params is None:
+        return []
+    items_num = params.get("lngt")
+    if items_num is None:
+        return []
+    items_num = str(items_num)
+
+    ret_list = []
+    params_list = get_vector_items(params)
+    for param_item in params_list:
+        valu: Entry = param_item.get("valu")
+        if valu is None:
+            return []
+
+        sub_list = get_vector_items(valu)
+        if not sub_list:
+            # example case: 'void func1(void);'
+            valu_name = get_type_entry_name(valu)
+            if valu_name is not None:
+                ret_list.append(valu_name)
+            continue
+
+        for sub_item in sub_list:
+            if not isinstance(sub_item, Entry):
+                continue
+            sub_valu = sub_item.get("valu")
+            if sub_valu is None:
+                continue
+            param_name = get_entry_name(sub_valu)
+            if param_name is None:
+                continue
+            ret_list.append(param_name)
+    return ret_list
 
 
 def get_record_namespace_list(record_type: Entry) -> List[str]:
@@ -653,7 +844,7 @@ def get_decl_namespace_list(decl_entry: Entry) -> List[str]:
             break
 
         item_name_entry = item.get("name")
-        item_name = get_entry_name(item_name_entry)
+        item_name = get_full_name(item_name_entry)
         if item_name is None:
             # not a type?
             return None
@@ -664,22 +855,196 @@ def get_decl_namespace_list(decl_entry: Entry) -> List[str]:
     return ret_list
 
 
-def get_entry_name(entry: Entry, default_ret="[--unknown--]") -> str:
+def get_full_name(entry: Entry) -> str:
+    if entry is not None:
+        entry_type = entry.get_type()
+        if entry_type in ("function_type", "method_type"):
+            ret_type = get_function_ret(entry)
+            params_list = get_func_type_parameters(entry)
+            params_str = ", ".join(params_list)
+            return f"{ret_type} ({params_str})"
+    return get_entry_repr(entry)
+
+
+def get_entry_repr(entry: Entry) -> str:
     if not isinstance(entry, Entry):
         return entry
 
-    entry_value = entry.get("name")
-    if entry_value is not None:
-        return get_entry_name(entry_value, default_ret=default_ret)
+    type_name = get_type_entry_name(entry)
+    if type_name is not None:
+        return type_name
+
+    num_value = get_number_entry_value(entry, fail_exception=False)
+    if num_value is not None:
+        return num_value
+
+    ## in case of base classes field_decls does not have any name
+    field_name = get_entry_name(entry, None)
+    if field_name:
+        return field_name
+    field_type = entry.get("type")
+    if field_type is not None:
+        return get_entry_repr(field_type)
 
     entry_type = entry.get_type()
-    if entry_type == "identifier_node":
-        entry_value = entry.get("strg", "[--no entry--]")
-        return get_entry_name(entry_value, default_ret=default_ret)
+    if entry_type == "handler":
+        return ""
 
-    if default_ret == "[--unknown--]":
-        _LOGGER.warning("unable to get entry name from entry: %s", entry)
-    return default_ret
+    return get_entry_name(entry)
+
+
+def get_type_entry_name(type_entry: Entry):
+    name, const_mod = get_type_name_mod(type_entry)
+    if name is None:
+        return None
+    if const_mod is None:
+        return name
+    return f"{name} {const_mod}"
+
+
+# pylint: disable=R0912
+def get_type_name_mod(type_entry: Entry):
+    parm_mod = None
+    arg_qual = type_entry.get("qual")
+    if arg_qual == "c":
+        parm_mod = "const"
+
+    entry_type = type_entry.get_type()
+
+    if entry_type == "integer_type":
+        type_name = type_entry.get("name")
+        int_name = get_entry_name(type_name, None)
+        if int_name:
+            return (int_name, parm_mod)
+        arg_sign = type_entry.get("sign")
+        arg_sign_prefix = arg_sign
+        if len(arg_sign_prefix) > 0:
+            arg_sign_prefix = f"{arg_sign_prefix} "
+        type_algn = type_entry.get("algn")
+        if type_algn:
+            if type_algn == "8":
+                if arg_sign == "unsigned":
+                    return ("uint8_t", parm_mod)
+                return ("int8_t", parm_mod)
+            if type_algn == "16":
+                return (f"{arg_sign_prefix}short", parm_mod)
+            if type_algn == "32":
+                return (f"{arg_sign_prefix}int", parm_mod)
+            if type_algn == "64":
+                return (f"{arg_sign_prefix}long int", parm_mod)
+        ## unknown integer
+        _LOGGER.warning("unable to deduce integer type from entry: %s", type_entry)
+        return ("int???", parm_mod)
+
+    if entry_type == "real_type":
+        type_name = type_entry.get("name")
+        int_name = get_entry_name(type_name, None)
+        if int_name:
+            return (int_name, parm_mod)
+        type_algn = type_entry.get("algn")
+        if type_algn:
+            if type_algn == "32":
+                return ("float", parm_mod)
+            if type_algn == "64":
+                return ("double", parm_mod)
+            if type_algn == "128":
+                return ("long double", parm_mod)
+        ## unknown float
+        _LOGGER.warning("unable to deduce float type from entry: %s", type_entry)
+        return ("real???", parm_mod)
+
+    if entry_type == "pointer_type":
+        pointer_entry_name = get_entry_name(type_entry, default_ret=None)
+        pointer_name = pointer_entry_name
+        if pointer_name is None:
+            ptd = type_entry.get("ptd")
+            pointer_name = get_full_name(ptd)
+        if pointer_name is None:
+            return (None, parm_mod)
+        if pointer_entry_name is None:
+            if pointer_name.endswith("*"):
+                pointer_name += "*"
+            else:
+                pointer_name += " *"
+        return (pointer_name, parm_mod)
+
+    if entry_type == "reference_type":
+        refd = type_entry.get("refd")
+        refd_name = get_full_name(refd)
+        refd_name += " &"
+        return (refd_name, parm_mod)
+
+    if entry_type == "array_type":
+        elms = type_entry.get("elts")
+        elms_name = get_type_entry_name(elms)
+        return (f"{elms_name}[]", parm_mod)
+
+    if entry_type == "vector_type":
+        # TODO: there is no info about type in dump file
+        return ("vector-type ??? []", parm_mod)
+
+    if entry_type == "complex_type":
+        # TODO: there is no info about type in dump file
+        return ("complex-type ???", parm_mod)
+
+    name_list = get_decl_namespace_list(type_entry)
+    if name_list:
+        param_name = "::".join(name_list)
+        return (param_name, parm_mod)
+
+    param_name = get_entry_name(type_entry, default_ret=None)
+    return (param_name, parm_mod)
+
+
+def get_entry_name(entry: Entry, default_ret="[--unknown--]") -> str:
+    resolver = EntryNameResolver(default_ret)
+    return resolver.get_entry_name(entry)
+
+
+## we need to have a context class to detect recursive calls
+class EntryNameResolver:
+
+    def __init__(self, default_ret="[--unknown--]"):
+        self._default = default_ret
+        self._visit_list = []
+
+    def get_entry_name(self, entry: Entry) -> str:
+        if not isinstance(entry, Entry):
+            return entry
+
+        entry_id = entry.get_id()
+        if entry_id in self._visit_list:
+            ## loop detected
+            return "{?!!?}"
+        self._visit_list.append(entry_id)
+
+        try:
+            entry_value = entry.get("name")
+            if entry_value is not None:
+                return self.get_entry_name(entry_value)
+
+            entry_type = entry.get_type()
+            if entry_type == "identifier_node":
+                entry_value = entry.get("strg", "[--no entry--]")
+                return self.get_entry_name(entry_value)
+
+            if entry_type == "type_decl":
+                entry_value = entry.get("type")
+                return self.get_entry_name(entry_value)
+
+            if entry_type in ("bind_expr", "constructor", "statement_list", "tree_list", "tree_vec"):
+                return ""
+
+            if entry_type in ("template_parm_index"):
+                ##TODO: no data in dump file
+                return ""
+
+            if self._default == "[--unknown--]":
+                _LOGGER.warning("unable to get entry name from entry: %s", entry)
+            return self._default
+        except RecursionError:
+            ## max recursion happen
+            return "{!??!}"
 
 
 def get_number_entry_value(value: Entry, fail_exception=True):

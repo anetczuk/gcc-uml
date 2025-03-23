@@ -8,6 +8,10 @@ class "::items::Abc1" as item_0 {
     {field} # int field1
     {field} # double field2
     {field} - double const field3
+    {field} - long double field4
+    {field} - long int field5
+    {field} - long int field6
+    {field} - long long int field7
     {method} +virt  ~Abc1() 
     {method} + void call_param(int paramA, double const paramB, bool /*anonym*/) 
     {method} +virt void call_virt(int paramA) 

@@ -14,12 +14,12 @@ from gccuml.langcontent import (
     LangContent,
     Entry,
     is_entry_language_internal,
+    get_function_full_name,
+    get_function_args,
+    get_function_ret,
 )
 from gccuml.langanalyze import (
     StructAnalyzer,
-    get_function_args,
-    get_function_ret,
-    get_function_full_name,
 )
 from gccuml.diagram.activitydata import (
     LabeledCard,

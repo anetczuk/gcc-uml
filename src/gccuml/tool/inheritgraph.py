@@ -18,13 +18,13 @@ from gccuml.langcontent import (
     is_namespace_internal,
     get_record_namespace_list,
     get_number_entry_value,
+    get_template_parameters,
+    get_type_entry_name,
+    get_function_ret,
+    get_function_args,
 )
 from gccuml.langanalyze import (
     StructAnalyzer,
-    get_function_args,
-    get_function_ret,
-    get_template_parameters,
-    get_type_entry_name,
 )
 from gccuml.diagram.plantuml.classdiagram import ClassDiagramGenerator
 from gccuml.langparser import parse_raw
@@ -336,6 +336,14 @@ class InheritanceData:
                 return None
         if not include_internals and is_entry_language_internal(field_type):
             return None
+
+        ## check mutable
+        field_spec = flds_item.get_list("spec")
+        if field_spec:
+            if "mutable" in field_spec:
+                field_type = f"mutable {field_type}"
+            else:
+                _LOGGER.warning("entry %s unknown 'spec' value: %s", flds_item.get_id(), field_spec)
 
         bpos_entry = flds_item.get("bpos")
         is_static = bpos_entry is None

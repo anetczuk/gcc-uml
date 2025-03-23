@@ -7,21 +7,21 @@ card "::shift_func(int iter) -> void" {
 }
 
 card "::while_func(int iter) -> void" {
-    #orange:goto;
+    #orange:goto @55;
     note right: not supported
-    #orange:label;
+    #orange:label @56;
     note right: not supported
     :iter = iter + -2;
-    #orange:label;
+    #orange:label @55;
     note right: not supported
     if (iter > 0 ?) then (true)
-        #orange:goto;
+        #orange:goto @56;
         note right: not supported
     else (false)
-        #orange:goto;
+        #orange:goto @61;
         note right: not supported
     endif
-    #orange:label;
+    #orange:label @61;
     note right: not supported
     -[hidden]->
 }
@@ -32,10 +32,9 @@ card "::try_func() -> void" {
         :asd = 1;
     end group
 
-    group catch: char const *
+    group catch: char const * exc
         group try
-            :char const * exc = [--unknown--];
-            :[--unknown--] = ::__cxa_begin_catch(::__builtin_eh_pointer(0));
+            :::__cxa_begin_catch(::__builtin_eh_pointer(0));
             :asd = 2;
         end group
 
@@ -47,8 +46,7 @@ card "::try_func() -> void" {
 
     group catch: int
         group try
-            :int [--unknown--] = (*[--unknown--]);
-            :[--unknown--] = ::__cxa_begin_catch(::__builtin_eh_pointer(0));
+            :::__cxa_begin_catch(::__builtin_eh_pointer(0));
             :asd = 3;
         end group
 
@@ -59,15 +57,6 @@ card "::try_func() -> void" {
     end group
 
     group catch: ...
-        group try
-            :::__cxa_begin_catch(::__builtin_eh_pointer(0));
-            :asd = 4;
-        end group
-
-        group finally
-            :::__cxa_end_catch();
-        end group
-
     end group
 
     -[hidden]->

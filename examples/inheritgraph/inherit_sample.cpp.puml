@@ -22,7 +22,7 @@ class "::templatens::TemplInheritDouble" as item_2 {
     {field} + bool dataA
 }
 class "::templatens::TemplInherit" as item_3 {
-    {field} + ??? fieldA :3
+    {field} + int8_t fieldA :3
 }
 class "::templatens::AbcTempl" as item_4 <TTypeA, TTypeB> <<T,#FF7700>> {
     {field} + TTypeA field1
@@ -46,8 +46,8 @@ class "::templatens::AbcTempl<int, bool>" as item_7 {
 }
 class "::diamondns::Cbc1" as item_8 {
     {field} + int fieldD1
-    {field} + ??? fieldD2 :5
-    {field} + ??? fieldD3 :5
+    {field} + int8_t fieldD2 :5
+    {field} + mutable uint8_t fieldD3 :5
 }
 class "::diamondns::Bbc2" as item_9 {
     {field} + __vtbl_ptr_type * _vptr.Bbc2

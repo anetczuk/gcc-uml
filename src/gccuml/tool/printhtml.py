@@ -28,12 +28,12 @@ from gccuml.langcontent import (
     is_entry_prop_internal,
     EntryTree,
     LangContent,
+    get_full_name,
 )
 from gccuml.io import write_file
 from gccuml.vizjs import DATA_DIR
 from gccuml.tool.tools import EntryDotGraph, get_graph_as_svg
 from gccuml.progressbar import get_processbar_pool, iterate_progressar, end_progressbar, disable_progressar
-from gccuml.langanalyze import get_entry_repr
 from gccuml.langparser import parse_raw
 from gccuml.configyaml import Filter
 
@@ -537,7 +537,7 @@ def print_head(entry, prefix_content="", postfix_content="", print_label=False):
         return f"""<div class="entryhead">{prefix_content}{entry_value}{postfix_content}</div>\n"""
     label_content = ""
     if print_label:
-        label_content = " " + get_entry_repr(entry)
+        label_content = " " + get_full_name(entry)
     return (
         f"""<div class="entryhead">{prefix_content}{get_entry_id_href(entry)} {entry.get_type()}"""
         f"""{label_content}{postfix_content}</div>\n"""
