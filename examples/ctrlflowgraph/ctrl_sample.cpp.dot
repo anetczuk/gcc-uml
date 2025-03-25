@@ -3,7 +3,7 @@ digraph {
 	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
 	subgraph cluster_item_0 {
 		graph [label="::main() -> int"]
-		item_1 [label="::ExampleClass obj1;"]
+		item_1 [label="::ExampleClass obj1"]
 		item_2 [label="return (&obj1)->switchExample(3)" fillcolor=lightgreen]
 		item_3 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
 		item_2 -> item_3
@@ -11,7 +11,7 @@ digraph {
 	}
 	subgraph cluster_item_4 {
 		graph [label="::ExampleClass::switchExample(int const paramA) -> int"]
-		item_5 [label="int timestamp;"]
+		item_5 [label="int timestamp"]
 		item_6 [label="timestamp = ::time(0)"]
 		item_5 -> item_6
 		item_7 [label="timestamp & 1 == 0" shape=hexagon style=filled]
@@ -24,81 +24,81 @@ digraph {
 		subgraph cluster_item_10 {
 			graph [label="switch:"]
 			switch_start_item_11 [label="timestamp % 3" ordering=out shape=hexagon style=filled]
-			item_13 [label=0 shape=cds style=filled]
-			item_13 [label=0 shape=cds style=filled]
-			switch_start_item_11 -> item_13 [label=0]
-			item_14 [label=1 shape=cds style=filled]
-			item_14 [label=1 shape=cds style=filled]
-			switch_start_item_11 -> item_14 [label=1]
-			item_15 [label=2 shape=cds style=filled]
-			item_15 [label=2 shape=cds style=filled]
-			switch_start_item_11 -> item_15 [label=2]
-			item_16 [label="default:" fillcolor=lightgreen shape=cds style=filled]
-			switch_start_item_11 -> item_16 [label="default:"]
-			item_17 [label="timestamp != 0" shape=hexagon style=filled]
-			item_18 [label="return 0" fillcolor=lightgreen]
-			item_19 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-			item_18 -> item_19
-			item_20 [label="return 1" fillcolor=lightgreen]
-			item_21 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-			item_20 -> item_21
-			item_17 -> item_18 [label=true]
-			item_17 -> item_20 [label=false]
-			item_13 -> item_17
-			switch_anchor_item_23 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
-			item_17 -> switch_anchor_item_23 [style=invis]
+			"gotolabel_@355" [label=0 shape=cds style=filled]
+			"gotolabel_@355" [label=0 shape=cds style=filled]
+			switch_start_item_11 -> "gotolabel_@355" [label=0]
+			"gotolabel_@357" [label=1 shape=cds style=filled]
+			"gotolabel_@357" [label=1 shape=cds style=filled]
+			switch_start_item_11 -> "gotolabel_@357" [label=1]
+			"gotolabel_@358" [label=2 shape=cds style=filled]
+			"gotolabel_@358" [label=2 shape=cds style=filled]
+			switch_start_item_11 -> "gotolabel_@358" [label=2]
+			"gotolabel_@360" [label="default:" fillcolor=lightgreen shape=cds style=filled]
+			switch_start_item_11 -> "gotolabel_@360" [label="default:"]
+			item_13 [label="timestamp != 0" shape=hexagon style=filled]
+			item_14 [label="return 0" fillcolor=lightgreen]
+			item_15 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
 			item_14 -> item_15
+			item_16 [label="return 1" fillcolor=lightgreen]
+			item_17 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+			item_16 -> item_17
+			item_13 -> item_14 [label=true]
+			item_13 -> item_16 [label=false]
+			"gotolabel_@355" -> item_13
+			switch_anchor_item_19 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_13 -> switch_anchor_item_19 [style=invis]
+			"gotolabel_@357" -> "gotolabel_@358"
+			switch_anchor_item_20 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			"gotolabel_@357" -> switch_anchor_item_20 [style=invis]
+			item_21 [label="timestamp = timestamp + paramA"]
+			"gotolabel_@358" -> item_21
+			item_21 -> "gotolabel_@360"
+			switch_anchor_item_22 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_21 -> switch_anchor_item_22 [style=invis]
+			item_23 [label="timestamp = ::time(0)"]
+			"gotolabel_@360" -> item_23
 			switch_anchor_item_24 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
-			item_14 -> switch_anchor_item_24 [style=invis]
-			item_25 [label="timestamp = timestamp + paramA"]
-			item_15 -> item_25
-			item_25 -> item_16
-			switch_anchor_item_26 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
-			item_25 -> switch_anchor_item_26 [style=invis]
-			item_27 [label="timestamp = ::time(0)"]
-			item_16 -> item_27
-			switch_anchor_item_28 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
-			item_27 -> switch_anchor_item_28 [style=invis]
-			switch_end_item_12 [label="" height=0.2 ordering=in shape=diamond style=filled width=0.2]
-			item_27 -> switch_end_item_12
-			switch_anchor_item_23 -> switch_end_item_12 [style=invis]
-			switch_anchor_item_24 -> switch_end_item_12 [style=invis]
-			switch_anchor_item_26 -> switch_end_item_12 [style=invis]
-			switch_anchor_item_28 -> switch_end_item_12 [style=invis]
+			item_23 -> switch_anchor_item_24 [style=invis]
+			gotolabel_12 [label="" height=0.2 ordering=in shape=diamond style=filled width=0.2]
+			item_23 -> gotolabel_12
+			switch_anchor_item_19 -> gotolabel_12 [style=invis]
+			switch_anchor_item_20 -> gotolabel_12 [style=invis]
+			switch_anchor_item_22 -> gotolabel_12 [style=invis]
+			switch_anchor_item_24 -> gotolabel_12 [style=invis]
 			{
 				rank=same
-				item_13
-				item_14
-				item_15
-				item_16
+				"gotolabel_@355"
+				"gotolabel_@357"
+				"gotolabel_@358"
+				"gotolabel_@360"
 			}
 			{
 				rank=same
-				switch_anchor_item_23
+				switch_anchor_item_19
+				switch_anchor_item_20
+				switch_anchor_item_22
 				switch_anchor_item_24
-				switch_anchor_item_26
-				switch_anchor_item_28
 			}
-			switch_anchor_item_23 -> switch_anchor_item_24 [style=invis]
-			switch_anchor_item_24 -> switch_anchor_item_26 [style=invis]
-			switch_anchor_item_26 -> switch_anchor_item_28 [style=invis]
+			switch_anchor_item_19 -> switch_anchor_item_20 [style=invis]
+			switch_anchor_item_20 -> switch_anchor_item_22 [style=invis]
+			switch_anchor_item_22 -> switch_anchor_item_24 [style=invis]
 		}
 		item_9 -> switch_start_item_11
-		item_29 [label="timestamp = timestamp * 3"]
-		switch_end_item_12 -> item_29
-		item_30 [label="timestamp & 1 == 0" shape=hexagon style=filled]
-		item_31 [label="timestamp = timestamp + 1"]
-		item_32 [label="timestamp = timestamp + 2"]
-		item_30 -> item_31 [label=true]
-		item_31 -> item_33
-		item_30 -> item_32 [label=false]
-		item_32 -> item_33
-		item_33 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		item_25 [label="timestamp = timestamp * 3"]
+		gotolabel_12 -> item_25
+		item_26 [label="timestamp & 1 == 0" shape=hexagon style=filled]
+		item_27 [label="timestamp = timestamp + 1"]
+		item_28 [label="timestamp = timestamp + 2"]
+		item_26 -> item_27 [label=true]
+		item_27 -> item_29
+		item_26 -> item_28 [label=false]
+		item_28 -> item_29
+		item_29 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		item_25 -> item_26
+		item_30 [label="return timestamp % 2" fillcolor=lightgreen]
+		item_31 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_30 -> item_31
 		item_29 -> item_30
-		item_34 [label="return timestamp % 2" fillcolor=lightgreen]
-		item_35 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-		item_34 -> item_35
-		item_33 -> item_34
 	}
 	item_3 -> item_5 [style=invis]
 }

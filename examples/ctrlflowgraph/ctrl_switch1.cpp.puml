@@ -1,7 +1,7 @@
 @startuml
 
 card "::calc_switch0() -> int" {
-    :int const timestamp;;
+    :int const timestamp;
     :timestamp = ::time(0);
     #lightgreen:return -3;
     stop
@@ -9,7 +9,7 @@ card "::calc_switch0() -> int" {
 }
 
 card "::calc_switch1() -> int" {
-    :int const timestamp;;
+    :int const timestamp;
     :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 4" {
@@ -28,7 +28,7 @@ partition "switch:\ntimestamp % 4" {
 }
 
 card "::calc_switch2() -> int" {
-    :int const timestamp;;
+    :int const timestamp;
     :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 5" {
@@ -46,7 +46,7 @@ partition "switch:\ntimestamp % 5" {
 }
 
 card "::calc_switch3() -> int" {
-    :int timestamp;;
+    :int timestamp;
     :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 6" {
@@ -63,7 +63,7 @@ partition "switch:\ntimestamp % 6" {
 }
 
 card "::calc_switch4() -> int" {
-    :int timestamp;;
+    :int timestamp;
     :timestamp = ::time(0);
 
 partition "switch:\ntimestamp % 7" {

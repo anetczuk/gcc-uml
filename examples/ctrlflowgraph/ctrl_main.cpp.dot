@@ -3,10 +3,10 @@ digraph {
 	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
 	subgraph cluster_item_0 {
 		graph [label="::main() -> int"]
-		item_1 [label="int const aaa;"]
+		item_1 [label="int const aaa"]
 		item_2 [label="aaa = ::calc_valA(4)"]
 		item_1 -> item_2
-		item_3 [label="int bbb;"]
+		item_3 [label="int bbb"]
 		item_2 -> item_3
 		item_4 [label="bbb = ::calc_valB(aaa)"]
 		item_3 -> item_4
@@ -28,7 +28,7 @@ digraph {
 	item_6 -> item_8 [style=invis]
 	subgraph cluster_item_12 {
 		graph [label="::calc_valB(int const valueB) -> long int const"]
-		item_13 [label="int timestamp;"]
+		item_13 [label="int timestamp"]
 		item_14 [label="timestamp = ::time(0)"]
 		item_13 -> item_14
 		item_15 [label="timestamp = timestamp + 1"]
@@ -55,7 +55,7 @@ digraph {
 	item_11 -> item_13 [style=invis]
 	subgraph cluster_item_26 {
 		graph [label="::calc_valC(int const valueC) -> int"]
-		item_27 [label="int[] arrY;"]
+		item_27 [label="int[] arrY"]
 		item_28 [label="int[] arrX = {[0] = 10, [1] = 20}"]
 		item_27 -> item_28
 		item_29 [label="arrX[0] = arrX[0] + valueC"]

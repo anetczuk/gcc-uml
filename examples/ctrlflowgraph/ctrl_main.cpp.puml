@@ -1,9 +1,9 @@
 @startuml
 
 card "::main() -> int" {
-    :int const aaa;;
+    :int const aaa;
     :aaa = ::calc_valA(4);
-    :int bbb;;
+    :int bbb;
     :bbb = ::calc_valB(aaa);
     #lightgreen:return ::calc_valC(bbb);
     stop
@@ -19,7 +19,7 @@ card "::calc_valA(int const valueA) -> int" {
 }
 
 card "::calc_valB(int const valueB) -> long int const" {
-    :int timestamp;;
+    :int timestamp;
     :timestamp = ::time(0);
     :timestamp = timestamp + 1;
     :timestamp = (timestamp + 2) + timestamp;
@@ -37,7 +37,7 @@ card "::calc_valB(int const valueB) -> long int const" {
 }
 
 card "::calc_valC(int const valueC) -> int" {
-    :int[] arrY;;
+    :int[] arrY;
     :int[] arrX = {[0] = 10, [1] = 20};
     :arrX[0] = arrX[0] + valueC;
     :arrX[1] = valueC / 2.100000000000000088817842e+0;

@@ -1,0 +1,44 @@
+@startuml
+
+card "::main() -> int" {
+    #lightgreen:return ::calc_val(0);
+    stop
+    -[hidden]->
+}
+
+card "::calc_val(int const param) -> int" {
+    :int value = 0;
+    :int val2 = 0;
+
+partition "switch:\nparam" {
+    ' case: 0 fallthrough: True
+    if ( 0 ? ) then (yes)
+        :value = value + 10;
+    endif
+    ' case: 1 fallthrough: True
+    if ( 1 ? ) then (yes)
+        if (value & 1 == 0 ?) then (true)
+            #orange:label 2;
+            note right: not supported
+            :value = value + 100;
+        else (false)
+            :value = value + 1000;
+            #orange:goto @96;
+            note right: not supported
+        endif
+        :val2 = val2 + 1;
+    endif
+    ' case: None fallthrough: True
+    if ( default ) then (yes)
+        :val2 = val2 + 10;
+    else
+        -[hidden]->
+    endif
+}
+    #lightgreen:return value;
+    stop
+    -[hidden]->
+}
+
+
+@enduml

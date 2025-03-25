@@ -69,7 +69,7 @@ card "::staticcast(int aaa) -> void" {
 }
 
 card "::over::func3() -> void" {
-    :void (void) * fptr;;
+    :void (void) * fptr;
     :fptr = ::over::func_over();
     :fptr();
     -[hidden]->
@@ -82,7 +82,7 @@ card "::staticcast() -> void" {
 }
 
 card "::asm001() -> int" {
-    :int res;;
+    :int res;
     #orange:assembler expression;
     #lightgreen:return res;
     stop

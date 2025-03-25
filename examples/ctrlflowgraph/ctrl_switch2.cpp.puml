@@ -1,7 +1,7 @@
 @startuml
 
 card "::calc_val1() -> int" {
-    :int timestamp;;
+    :int timestamp;
     :timestamp = ::time(0);
     :int const value = timestamp % 3;
 
@@ -48,7 +48,7 @@ partition "switch:\nvalue" {
 }
 
 card "::calc_val2() -> int" {
-    :int timestamp;;
+    :int timestamp;
     :timestamp = ::time(0);
     :int const value = timestamp % 3;
 

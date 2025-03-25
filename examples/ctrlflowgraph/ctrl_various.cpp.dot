@@ -81,7 +81,7 @@ digraph {
 	item_25 -> item_28 [style=invis]
 	subgraph cluster_item_30 {
 		graph [label="::over::func3() -> void"]
-		item_31 [label="void (void) * fptr;"]
+		item_31 [label="void (void) * fptr"]
 		item_32 [label="fptr = ::over::func_over()"]
 		item_31 -> item_32
 		item_33 [label="fptr()"]
@@ -97,7 +97,7 @@ digraph {
 	item_33 -> item_35 [style=invis]
 	subgraph cluster_item_37 {
 		graph [label="::asm001() -> int"]
-		item_38 [label="int res;"]
+		item_38 [label="int res"]
 		item_39 [label="assembler expression" fillcolor=orange]
 		item_38 -> item_39
 		item_40 [label="return res" fillcolor=lightgreen]

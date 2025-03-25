@@ -6,17 +6,17 @@ digraph {
 		item_1 [label="float const var1 = param * 3.2999999999999998223643161e+0"]
 		item_2 [label="float const var2 = param * 3.2999999999999998223643161e+0"]
 		item_1 -> item_2
-		item_3 [label="int const valA;"]
+		item_3 [label="int const valA"]
 		item_2 -> item_3
 		item_4 [label="valA = (&objA)->methodA1()"]
 		item_3 -> item_4
-		item_5 [label="int retX;"]
+		item_5 [label="int retX"]
 		item_4 -> item_5
 		item_6 [label="retX = this->methodB2(var1) * valA"]
 		item_5 -> item_6
 		item_7 [label="retX = retX + 7"]
 		item_6 -> item_7
-		item_8 [label="int retY;"]
+		item_8 [label="int retY"]
 		item_7 -> item_8
 		item_9 [label="retY = ::item::ExampleB::methodB3(12)"]
 		item_8 -> item_9
@@ -86,7 +86,7 @@ digraph {
 	item_29 -> item_33 [style=invis]
 	subgraph cluster_item_36 {
 		graph [label="::item::ExampleA::methodA1() -> int"]
-		item_37 [label="::item::EmptyExamle emptyObj;"]
+		item_37 [label="::item::EmptyExamle emptyObj"]
 		item_38 [label="int const ret = 5"]
 		item_37 -> item_38
 		item_39 [label="return 5" fillcolor=lightgreen]

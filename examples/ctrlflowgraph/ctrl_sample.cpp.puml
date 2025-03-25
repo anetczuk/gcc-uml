@@ -1,14 +1,14 @@
 @startuml
 
 card "::main() -> int" {
-    :::ExampleClass obj1;;
+    :::ExampleClass obj1;
     #lightgreen:return (&obj1)->switchExample(3);
     stop
     -[hidden]->
 }
 
 card "::ExampleClass::switchExample(int const paramA) -> int" {
-    :int timestamp;;
+    :int timestamp;
     :timestamp = ::time(0);
     if (timestamp & 1 == 0 ?) then (true)
         :timestamp = timestamp + paramA;

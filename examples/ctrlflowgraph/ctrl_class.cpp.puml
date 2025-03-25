@@ -3,12 +3,12 @@
 card "::item::ExampleB::methodB1(int const param) -> int" {
     :float const var1 = param * 3.2999999999999998223643161e+0;
     :float const var2 = param * 3.2999999999999998223643161e+0;
-    :int const valA;;
+    :int const valA;
     :valA = (&objA)->methodA1();
-    :int retX;;
+    :int retX;
     :retX = this->methodB2(var1) * valA;
     :retX = retX + 7;
-    :int retY;;
+    :int retY;
     :retY = ::item::ExampleB::methodB3(12);
     #lightgreen:return retX + retY;
     stop
@@ -69,7 +69,7 @@ card "::item::ExampleA::__dt_del() -> void" {
 }
 
 card "::item::ExampleA::methodA1() -> int" {
-    :::item::EmptyExamle emptyObj;;
+    :::item::EmptyExamle emptyObj;
     :int const ret = 5;
     #lightgreen:return 5;
     stop

@@ -21,14 +21,23 @@ _LOGGER = logging.getLogger(__name__)
 ## ===========================================================
 
 
+GOTOLABEL_PREFIX = "gotolabel"
+SWITCHCASELABEL_PREFIX = GOTOLABEL_PREFIX
+SWITCHENDLABEL_PREFIX = GOTOLABEL_PREFIX
+
+
 class GraphGenerator:
 
     def __init__(self):
         self.item_id = -1
 
-    def next_id(self) -> str:
+    def next_id(self, prefix=None) -> str:
+        if prefix is None:
+            prefix = "item"
         self.item_id += 1
-        return f"item_{self.item_id}"
+        if prefix is "":
+            return f"{self.item_id}"
+        return f"{prefix}_{self.item_id}"
 
     def generate_data(self, dotgraph: graphviz.Digraph, data: Any) -> List[str]:
         if isinstance(data, str):
@@ -38,6 +47,20 @@ class GraphGenerator:
 
         if isinstance(data, list):
             return self.generate_list(dotgraph, data)
+
+        if isinstance(data, activitydata.GotoStatement):
+            label_id = f"{GOTOLABEL_PREFIX}_{data.label_id}"
+            if data.visible is False:
+                ## invisible goto
+                return [label_id, None]
+            ## regular goto
+            node_id = self.next_id()
+            label_value = "goto"
+            if data.name:
+                label_value = f"{label_value} {data.name}"
+            dotgraph.node(node_id, style="filled", shape="larrow", label=label_value)
+            dotgraph.edge(node_id, label_id)
+            return [node_id, None]
 
         if isinstance(data, activitydata.SwitchStatement):
             label = "switch:"
@@ -106,23 +129,17 @@ class GraphGenerator:
         if data.type == StatementType.IF:
             return self.generate_if(dotgraph, data)
 
-        if data.type == StatementType.GOTO:
-            node_id = self.next_id()
-            label_value = "goto"
-            if data.name:
-                label_value = f"{label_value} {data.name}"
-            dotgraph.node(node_id, style="filled", shape="larrow", label=label_value)
-            label_id = data.items[0]
-            label_id = f"gotolabel_{label_id}"
-            dotgraph.edge(node_id, label_id)
-            return [node_id, None]
-
         if data.type == StatementType.GOTOLABEL:
             label_id = data.items[0]
-            label_id = f"gotolabel_{label_id}"
-            label_value = "label"
+            value_prefix = True
+            if len(data.items) >= 2:
+                value_prefix = data.items[1]
+            label_id = f"{GOTOLABEL_PREFIX}_{label_id}"
+            label_value = ""
+            if value_prefix:
+                label_value = "label "
             if data.name:
-                label_value = f"{label_value} {data.name}"
+                label_value = f"{label_value}{data.name}"
             self.add_node_goto_label(dotgraph, label_id, label_value)
             return [label_id]
 
@@ -195,6 +212,7 @@ class GraphGenerator:
 
         return [if_node_id, None]
 
+    # pylint: disable=R0914
     def generate_switch(self, dotgraph: graphviz.Digraph, data: activitydata.SwitchStatement) -> List[str]:
         ret_list = []
 
@@ -210,16 +228,21 @@ class GraphGenerator:
         hide_anchor_items = True
         # hide_anchor_items = False
 
-        end_switch_node_id = self.next_id()
-        end_switch_node_id = f"switch_end_{end_switch_node_id}"
+        ##end_switch_node_id = self.next_id()
+        end_switch_node_id = data.break_label_id
+        if end_switch_node_id is None:
+            ## no explicit break in switch
+            end_switch_node_id = self.next_id("")
+        end_switch_node_id = f"{SWITCHENDLABEL_PREFIX}_{end_switch_node_id}"
 
         default_case_node_id = None
         case_node_id_dict = {}
 
         ## add "No" path
         for case_index, case_item in enumerate(data.items):
-            case_value = case_item[0]
-            case_node_id = self.next_id()
+            case_value = case_item[1]
+            case_node_id = case_item[0]
+            case_node_id = f"{SWITCHCASELABEL_PREFIX}_{case_node_id}"
             case_node_id_dict[case_index] = case_node_id
 
             if case_value is not None:
@@ -242,9 +265,9 @@ class GraphGenerator:
         ## add "Yes" path
         for case_index, case_item in enumerate(data.items):
             ## case_value -- None -- default case
-            case_value = case_item[0]
-            case_fallthrough = case_item[1]
-            case_statements = case_item[2]
+            case_value = case_item[1]
+            case_fallthrough = case_item[2]
+            case_statements = case_item[3]
 
             case_node_id = case_node_id_dict[case_index]
             case_last_node_id = None
@@ -291,6 +314,11 @@ class GraphGenerator:
             self.add_node_hidden(dotgraph, case_anchor_node_id, hidden=hide_anchor_items)
             self.add_edge_hidden(dotgraph, case_last_node_id, case_anchor_node_id, hidden=hide_anchor_items)
             case_anchor_nodes.append(case_anchor_node_id)
+
+        for addon_data in data.addon_labels:
+            addon_id, addon_value = addon_data
+            case_node_id = f"{GOTOLABEL_PREFIX}_{addon_id}"
+            dotgraph.edge(start_switch_node_id, case_node_id, label=addon_value)
 
         if default_case_node_id is None:
             ## no default - add jump from start to end

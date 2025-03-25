@@ -32,6 +32,7 @@ from gccuml.diagram.activitydata import (
     SwitchStatement,
     TypedStatement,
     ActivityData,
+    GotoStatement,
 )
 
 
@@ -213,6 +214,79 @@ class EntryExpression:
         return self.valid
 
 
+class SwitchContext:
+
+    def __init__(self):
+        self.switch_node: SwitchStatement = SwitchStatement("")
+        self.break_id = None
+        self.recent_case_value = None  # list consists of one element
+        self.recent_case_fallthrough = True  # can happen - two case_label_expr in row
+        self.recent_case_stats: List[ActivityData] = None
+
+    def set_condition(self, cond_expr):
+        self.switch_node.name = cond_expr
+
+    def set_break_label(self, label_id):
+        self.switch_node.break_label_id = label_id
+
+    def is_break_label(self, label_id):
+        return self.switch_node.break_label_id == label_id
+
+    def handle_case_label_expr(self, case_label_expr_entry):
+        self.add_recent_case()
+        case_value_entry = case_label_expr_entry.get("low")
+        label_id = case_label_expr_entry.get_id()
+        if case_value_entry is not None:
+            ## normal case
+            case_value = get_number_entry_value(case_value_entry)
+            self.recent_case_value = (label_id, case_value)
+        else:
+            ## default case
+            self.recent_case_value = (label_id, None)
+
+    def add_inner_case(self, label_id, case_value):
+        self.switch_node.addon_labels.append((label_id, case_value))
+
+    def add_recent_case(self):
+        if self.recent_case_value is None:
+            return
+        ## fallthrough case
+        case_data = self._get_switch_case()
+        if case_data:
+            self.switch_node.items.append(case_data)
+            self.recent_case_value = None
+            self.recent_case_fallthrough = True  ## can happen - two case_label_expr in row
+            self.recent_case_stats = None
+
+    def set_fallthrough(self, value):
+        self.recent_case_fallthrough = value
+
+    def add_statements(self, statements):
+        if self.recent_case_value is None:
+            # if not self.switch_node.items and self.recent_case_value is None:
+            ## ignore statements without any case
+            return
+
+        self.recent_case_fallthrough = True
+        if self.recent_case_stats:
+            ## 'case' statement inside code
+            self.recent_case_stats.extend(statements)
+        else:
+            self.recent_case_stats = statements
+
+    def end_switch(self):
+        self.add_recent_case()
+
+    ## returns (case label value, is fallthrough, list of statements inside case)
+    def _get_switch_case(self):
+        label_id = self.recent_case_value[0]
+        case_value = self.recent_case_value[1]
+
+        if self.recent_case_stats is None:
+            self.recent_case_stats = []
+        return (label_id, case_value, self.recent_case_fallthrough, self.recent_case_stats)
+
+
 class ScopeAnalysis:
 
     def __init__(self, content: LangContent):
@@ -220,6 +294,11 @@ class ScopeAnalysis:
         self.vars: List[Tuple[str, str]] = []
         self.var_defs: Dict[str, Any] = {}
         self.scope_vars: Set[str] = set()
+
+        ## 'case' expression of 'switch' can be nested inside code like 'goto' statement
+        ## so we need to have access to it
+        self.switch_stack: List[SwitchContext] = []
+
         self.decl_expr_counter = -1
 
     def analyze(self, statement_entry: Entry) -> List[ActivityData]:
@@ -248,7 +327,7 @@ class ScopeAnalysis:
 
         init_entry = var_decl.get("init")
         if not init_entry:
-            decl_expr = f"{type_label} {var_name};"
+            decl_expr = f"{type_label} {var_name}"
             return EntryExpression(decl_expr)
         init_entry_expr = self._analyze_func(init_entry)
         init_expr = init_entry_expr.expression
@@ -354,7 +433,7 @@ class ScopeAnalysis:
             return EntryExpression(statements=stat_list)
 
         ## tcc_declaration
-        if type_name in ("label_decl"):
+        if type_name == "label_decl":
             statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
             return EntryExpression(statements=[statement])
 
@@ -411,8 +490,60 @@ class ScopeAnalysis:
 
         ## case_label_expr - case from switch inside code block
         ## "for_stmt" does not exists?
-        if type_name in ("if_stmt", "case_label_expr", "for_stmt", "while_stmt", "try_catch_expr", "do_stmt"):
+        if type_name in ("if_stmt", "for_stmt", "while_stmt", "try_catch_expr", "do_stmt"):
             statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            return EntryExpression(statements=[statement])
+
+        if type_name == "goto_expr":
+            labl_entry = statement_entry.get("labl")
+            label_id = labl_entry.get_id()
+
+            visible = True
+            switch_context: SwitchContext = None
+            if self.switch_stack:
+                switch_context = self.switch_stack[-1]
+                if switch_context.is_break_label(label_id):
+                    visible = False
+
+            label_name = get_entry_name(labl_entry, default_ret=None)
+            if label_name is None:
+                label_name = label_id
+            goto_statement = GotoStatement(label_name)
+            goto_statement.label_id = label_id
+            goto_statement.visible = visible
+            return EntryExpression(statements=[goto_statement])
+
+        if type_name == "label_expr":
+            label_name_entry = statement_entry.get("name")
+            label_id = label_name_entry.get_id()
+            label_name = get_entry_name(statement_entry, default_ret=None)
+            if label_name is None:
+                label_name = label_id
+            statement = TypedStatement(label_name, StatementType.GOTOLABEL)
+            statement.items.append(label_id)
+            return EntryExpression(statements=[statement])
+
+        if type_name == "case_label_expr":
+            if not self.switch_stack:
+                _LOGGER.warning("unexpected case_label_expr - outside of 'switch' scope ")
+                statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+                return EntryExpression(statements=[statement])
+
+            # switch_context: SwitchContext
+            switch_context = self.switch_stack[-1]
+
+            case_value_entry = statement_entry.get("low")
+            case_value = None
+            if case_value_entry is not None:
+                ## normal case
+                case_value = get_number_entry_value(case_value_entry)
+            label_id = statement_entry.get_id()
+            if case_value is None:
+                case_value = label_id
+            switch_context.add_inner_case(label_id, case_value)
+            statement = TypedStatement(case_value, StatementType.GOTOLABEL)
+            statement.items.append(label_id)
+            statement.items.append(False)
             return EntryExpression(statements=[statement])
 
         if type_name == "switch_expr":
@@ -446,26 +577,6 @@ class ScopeAnalysis:
             try_fin_grp.append(finally_group)
 
             return EntryExpression(statements=[try_fin_grp])
-
-        if type_name in ("goto_expr"):
-            labl_entry = statement_entry.get("labl")
-            label_id = labl_entry.get_id()
-            label_name = get_entry_name(labl_entry, default_ret=None)
-            if label_name is None:
-                label_name = label_id
-            statement = TypedStatement(label_name, StatementType.GOTO)
-            statement.items.append(label_id)
-            return EntryExpression(statements=[statement])
-
-        if type_name in ("label_expr"):
-            label_name_entry = statement_entry.get("name")
-            label_id = label_name_entry.get_id()
-            label_name = get_entry_name(statement_entry, default_ret=None)
-            if label_name is None:
-                label_name = label_id
-            statement = TypedStatement(label_name, StatementType.GOTOLABEL)
-            statement.items.append(label_id)
-            return EntryExpression(statements=[statement])
 
         if type_name in ("asm_expr"):
             # label_name = get_entry_name(statement_entry)
@@ -783,7 +894,7 @@ class ScopeAnalysis:
             expr = entry_expr.expression
             if expr is not None:
                 stat_list.append(TypedStatement(expr, StatementType.NODE))
-            ## None happens when "[[fallthrough]];" is used explicit
+            ## None happens when "[[fallthrough]]" is used explicit
             return EntryExpression(statements=stat_list)
 
         if type_name == "cleanup_point_expr":
@@ -944,7 +1055,7 @@ class ScopeAnalysis:
     def _get_function_decl(self, call_expr_entry: Entry) -> Entry:
         expr_entry = call_expr_entry.get("fn")
         if expr_entry is None:
-            ## happens when "[[fallthrough]];" is used explicit
+            ## happens when "[[fallthrough]]" is used explicit
             return None
         expr_type = expr_entry.get_type()
         if expr_type == "addr_expr":
@@ -1047,78 +1158,66 @@ class ScopeAnalysis:
         stat_list.append(if_node)
 
     def _handle_switch(self, statement_entry: Entry) -> EntryExpression:
-        body_entry = statement_entry.get("body")
+        body_entry = statement_entry
+        while True:
+            next_body_entry = body_entry.get("body")
+            if next_body_entry is None:
+                break
+            body_entry = next_body_entry
+
         subbody_entry = body_entry.get("0")
         if subbody_entry is None:
             # switch without any case and default
             return EntryExpression(valid=True)
 
-        switch_node = SwitchStatement("")
+        switch_context = SwitchContext()
+        self.switch_stack.append(switch_context)
 
         cond_entry = statement_entry.get("cond")
         cond_entry_expr = self._analyze_func(cond_entry)
         cond_expr = cond_entry_expr.expression
-        switch_node.name = cond_expr
+        switch_context.set_condition(cond_expr)
 
         if subbody_entry.get_type() == "bind_expr":
             body_entry = subbody_entry.get("body")
 
         index_entries = get_index_entries(body_entry)
-        # entries_num = len(index_entries)
-        # if entries_num % 2 != 0:
-        #     raise RuntimeError(f"invalid number of operations in switch entry {statement_entry.get_id()}")
-        #
-        # for index in range(0, entries_num, 2):
 
-        recent_case_value = None  # list of one element
-        recent_case_fallthrough: bool = True
-        recent_case_stats: List[ActivityData] = None
+        for case_entry in index_entries:
+            case_entry_type = case_entry.get_type()
+            if case_entry_type == "label_expr":
+                # break target label
+                label_name_entry = case_entry.get("name")
+                break_id = label_name_entry.get_id()
+                switch_context.set_break_label(break_id)
+                break
 
         for case_entry in index_entries:
             case_entry_type = case_entry.get_type()
             if case_entry_type == "case_label_expr":
-                if recent_case_value is not None:
-                    ## fallthrough case
-                    case_value = recent_case_value[0]
-                    case_data = self._get_switch_case(case_value, recent_case_fallthrough, recent_case_stats)
-                    if case_data:
-                        switch_node.items.append(case_data)
-                        recent_case_value = None
-                        recent_case_fallthrough = True  ## can happen - two case_label_expr in row
-                        recent_case_stats = None
-
-                case_value_entry = case_entry.get("low")
-                if case_value_entry is not None:
-                    ## normal case
-                    recent_case_value = [get_number_entry_value(case_value_entry)]
-                else:
-                    ## default case
-                    recent_case_value = [None]
+                switch_context.handle_case_label_expr(case_entry)
                 continue
 
             if case_entry_type == "goto_expr":
                 # break instruction
-                recent_case_fallthrough = False
+                switch_context.set_fallthrough(False)
                 continue
 
             if case_entry_type == "label_expr":
-                recent_case_fallthrough = True
+                # break target label
+                switch_context.set_fallthrough(True)
                 continue
 
             ## add regular branch
             # TODO: is should be fixed, because "while" from ctrl_switch1.cpp" is missing
-            recent_case_fallthrough = True
             entry_expr = self._analyze_func(case_entry)
-            recent_case_stats = entry_expr.statements
+            case_stats = entry_expr.statements
+            switch_context.add_statements(case_stats)
 
-        if recent_case_value is not None:
-            case_value = recent_case_value[0]
-            case_data = self._get_switch_case(case_value, recent_case_fallthrough, recent_case_stats)
-            if case_data:
-                switch_node.items.append(case_data)
-                recent_case_value = None
-                recent_case_fallthrough = None
-                recent_case_stats = None
+        switch_context.end_switch()
+
+        switch_node = switch_context.switch_node
+        self.switch_stack.pop()  ## remove current switch from stack
 
         return EntryExpression(statements=[switch_node])
 
@@ -1126,7 +1225,6 @@ class ScopeAnalysis:
         if case_statements is None:
             case_statements = []
         return (case_value, is_fallthrough, case_statements)
-        # return (case_value, is_fallthrough, case_statements)
 
     def _find_return_item(self, statements_list):
         for index, item in enumerate(statements_list):

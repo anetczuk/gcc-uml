@@ -8,7 +8,7 @@
 import os
 import logging
 from enum import Enum, auto
-from typing import NamedTuple, Any
+from typing import NamedTuple, Any, Tuple
 
 from typing import List
 
@@ -40,7 +40,6 @@ class StatementType(Enum):
     UNSUPPORTED = auto()
     NODE = auto()
     IF = auto()
-    GOTO = auto()
     GOTOLABEL = auto()
     STOP = auto()
 
@@ -64,10 +63,19 @@ class TypedStatement(Statement):
         self.items: List[Any] = []
 
 
+class GotoStatement(Statement):
+    def __init__(self, statement_name: str):
+        super().__init__(statement_name)
+        self.label_id: str = None
+        self.visible: bool = True
+
+
 class SwitchStatement(Statement):
     def __init__(self, statement_name: str):
         super().__init__(statement_name)
-        self.items: List[Any] = []
+        self.items: List[Any] = []  # List[ (label_id, label_value, is_fallthrough, case_statements) ]
+        self.break_label_id = None
+        self.addon_labels: List[Tuple[str, str]] = []  # List[ (label_id, label_value) ]
 
 
 class StatementList(ActivityData):

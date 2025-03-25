@@ -112,21 +112,6 @@ class Statement(ActivityItem):
             )
             return content_list
 
-        if self.type == StatementType.GOTO:
-            node_color = convert_color_attribute(activitydata.UNSUPPORTED_COLOR)
-            label_value = "goto"
-            if self.name:
-                label_value = f"{label_value} {self.name}"
-            content_list.append(
-                f"""\
-{indent_str}{node_color}:{label_value};"""
-            )
-            content_list.append(
-                f"""\
-{indent_str}note right: not supported"""
-            )
-            return content_list
-
         if self.type == StatementType.GOTOLABEL:
             node_color = convert_color_attribute(activitydata.UNSUPPORTED_COLOR)
             label_value = "label"
@@ -169,6 +154,43 @@ class Statement(ActivityItem):
         raise RuntimeError(f"unhandled statement type: {self.type}")
 
 
+class GotoStatement(ActivityItem):
+
+    def __init__(self, statement_name: str = ""):
+        super().__init__()
+        self.name: str = statement_name
+        self.label_id: str = None
+        self.visible: bool = True
+
+    @staticmethod
+    def convert(data: activitydata.GotoStatement):
+        item = GotoStatement()
+        item.name = data.name
+        item.label_id = data.label_id
+        item.visible = data.visible
+        return item
+
+    def generate(self, indent) -> str:
+        indent_str = "    " * indent
+        content_list: List[str] = []
+
+        node_color = convert_color_attribute(activitydata.UNSUPPORTED_COLOR)
+        label_value = "goto"
+        if self.name:
+            label_value = f"{label_value} {self.name}"
+        content_list.append(
+            f"""\
+{indent_str}{node_color}:{label_value};"""
+        )
+        content_list.append(
+            f"""\
+{indent_str}note right: not supported"""
+        )
+
+        content = "\n".join(content_list)
+        return content
+
+
 class SwitchStatement(ActivityItem):
 
     def __init__(self, statement_name: str = ""):
@@ -205,9 +227,9 @@ partition "switch:\\n{self.name}" {{"""
         found_default = None
 
         for case_item in self.items:
-            case_value = case_item[0]
-            case_fallthrough = case_item[1]
-            case_statements = case_item[2]
+            case_value = case_item[1]
+            case_fallthrough = case_item[2]
+            case_statements = case_item[3]
 
             switch_indent_level = indent + nest_level
             switch_indent_str = "    " * switch_indent_level
@@ -494,6 +516,7 @@ def convert_color_attribute(node_color):
 
 CONVERT_DICT = {
     activitydata.SwitchStatement: SwitchStatement,
+    activitydata.GotoStatement: GotoStatement,
     activitydata.TypedStatement: Statement,
     activitydata.Statement: Statement,
     activitydata.StatementList: StatementList,
