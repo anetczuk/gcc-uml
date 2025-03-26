@@ -1,12 +1,15 @@
 @startuml
 
-class "::membersns::SubClass" as item_0 {
+class "::[anonymous]::AnonNSItem" as item_0 {
+    {field} + int data
+}
+class "::membersns::SubClass" as item_1 {
     {field} {static} # int const staticField
     {method} +virt int * virtFn() 
     {method} #virt void virtPureFn() 
     {method} +virt  ~SubClass() =default
 }
-class "::membersns::BaseClass" as item_1 {
+class "::membersns::BaseClass" as item_2 {
     {field} + __vtbl_ptr_type * _vptr.BaseClass
     {field} + bool publicFieldA
     {field} + bool protectedFieldB
@@ -18,70 +21,70 @@ class "::membersns::BaseClass" as item_1 {
     {method} {static} + void staticFn(double const paramA) 
     {method} {abstract} #virt void virtPureFn() =0
 }
-class "::templatens::TemplInheritDouble" as item_2 {
+class "::templatens::TemplInheritDouble" as item_3 {
     {field} + bool dataA
 }
-class "::templatens::TemplInherit" as item_3 {
+class "::templatens::TemplInherit" as item_4 {
     {field} + int8_t fieldA :3
 }
-class "::templatens::AbcTempl" as item_4 <TTypeA, TTypeB> <<T,#FF7700>> {
+class "::templatens::AbcTempl" as item_5 <TTypeA, TTypeB> <<T,#FF7700>> {
     {field} + TTypeA field1
     {field} + bool field2
     {field} + TTypeB field3
 }
-class "::templatens::AbcTempl<double, double>" as item_5 {
+class "::templatens::AbcTempl<double, double>" as item_6 {
     {field} + double field1
     {field} + bool field2
     {field} + double field3
 }
-class "::templatens::AbcTempl<int, int>" as item_6 {
+class "::templatens::AbcTempl<int, int>" as item_7 {
     {field} + int field1
     {field} + bool field2
     {field} + int field3
 }
-class "::templatens::AbcTempl<int, bool>" as item_7 {
+class "::templatens::AbcTempl<int, bool>" as item_8 {
     {field} + int field1
     {field} + bool field2
     {field} + bool field3
 }
-class "::diamondns::Cbc1" as item_8 {
+class "::diamondns::Cbc1" as item_9 {
     {field} + int fieldD1
     {field} + int8_t fieldD2 :5
     {field} + mutable uint8_t fieldD3 :5
 }
-class "::diamondns::Bbc2" as item_9 {
+class "::diamondns::Bbc2" as item_10 {
     {field} + __vtbl_ptr_type * _vptr.Bbc2
     {field} + char fieldC
 }
-class "::diamondns::Bbc1" as item_10 {
+class "::diamondns::Bbc1" as item_11 {
     {field} + __vtbl_ptr_type * _vptr.Bbc1
     {field} + bool fieldB
 }
-class "::diamondns::Abc1" as item_11 {
+class "::diamondns::Abc1" as item_12 {
     {field} + int fieldA
 }
 
 ' ::membersns::SubClass --|> ::membersns::BaseClass
-item_0 --|> item_1: "pub"
+item_1 --|> item_2: "pub"
 ' ::templatens::TemplInheritDouble --|> ::templatens::AbcTempl<int, int>
-item_2 --|> item_6: "pub"
-' ::templatens::TemplInheritDouble --|> ::templatens::AbcTempl<double, double>
-item_2 --|> item_5: "pub"
-' ::templatens::TemplInherit --|> ::templatens::AbcTempl<int, bool>
 item_3 --|> item_7: "pub"
+' ::templatens::TemplInheritDouble --|> ::templatens::AbcTempl<double, double>
+item_3 --|> item_6: "pub"
+' ::templatens::TemplInherit --|> ::templatens::AbcTempl<int, bool>
+item_4 --|> item_8: "pub"
 ' ::templatens::AbcTempl<double, double> ..> ::templatens::AbcTempl
-item_5 ..> item_4
+item_6 ..> item_5
 ' ::templatens::AbcTempl<int, int> ..> ::templatens::AbcTempl
-item_6 ..> item_4
+item_7 ..> item_5
 ' ::templatens::AbcTempl<int, bool> ..> ::templatens::AbcTempl
-item_7 ..> item_4
+item_8 ..> item_5
 ' ::diamondns::Cbc1 --|> ::diamondns::Bbc1
-item_8 --|> item_10: "pub"
+item_9 --|> item_11: "pub"
 ' ::diamondns::Cbc1 --|> ::diamondns::Bbc2
-item_8 --|> item_9: "pub"
+item_9 --|> item_10: "pub"
 ' ::diamondns::Bbc2 --|> ::diamondns::Abc1
-item_9 --|> item_11: "virt pub"
+item_10 --|> item_12: "virt pub"
 ' ::diamondns::Bbc1 --|> ::diamondns::Abc1
-item_10 --|> item_11: "virt pub"
+item_11 --|> item_12: "virt pub"
 
 @enduml

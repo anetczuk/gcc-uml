@@ -804,7 +804,7 @@ def get_template_parameters(template_decl: Entry):
             sub_valu = sub_item.get("valu")
             if sub_valu is None:
                 continue
-            param_name = get_entry_name(sub_valu)
+            param_name = get_type_entry_name(sub_valu)
             if param_name is None:
                 continue
             ret_list.append(param_name)
@@ -844,6 +844,14 @@ def get_decl_namespace_list(decl_entry: Entry) -> List[str]:
             break
 
         item_name_entry = item.get("name")
+        if item_name_entry is None:
+            if item_type == "namespace_decl":
+                # happens in case of anonymous namespace
+                ret_list.append("[anonymous]")
+                item = item.get("scpe")
+                continue
+            # not a type?
+            return None            
         item_name = get_full_name(item_name_entry)
         if item_name is None:
             # not a type?
@@ -974,6 +982,22 @@ def get_type_name_mod(type_entry: Entry):
         refd_name += " &"
         return (refd_name, parm_mod)
 
+    if entry_type == "offset_type":
+        cls_entry = type_entry.get("cls")
+        cls_name = get_full_name(cls_entry)
+        ptd_entry = type_entry.get("ptd")
+        ptd_name = get_full_name(ptd_entry)
+        return (f"{cls_name}::{ptd_name}", parm_mod)
+
+    if entry_type == "record_type":
+        cls_entry = type_entry.get("cls")
+        ptd_entry = type_entry.get("ptd")
+        if cls_entry and ptd_entry:
+            ## record_type has at least two sets of properties, second one (less popular) is as used here
+            cls_name = get_full_name(cls_entry)
+            ptd_name = get_full_name(ptd_entry)
+            return (f"{cls_name}::{ptd_name}", parm_mod)
+
     if entry_type == "array_type":
         elms = type_entry.get("elts")
         elms_name = get_type_entry_name(elms)
@@ -1035,12 +1059,18 @@ class EntryNameResolver:
             if entry_type in ("bind_expr", "constructor", "statement_list", "tree_list", "tree_vec"):
                 return ""
 
-            if entry_type in ("template_parm_index"):
+            if entry_type in ("template_parm_index", "type_argument_pack", "scope_ref", "dependent_operator_type", 
+                              "template_id_expr", "nontype_argument_pack", "trait_expr", "type_pack_expansion"):
                 ##TODO: no data in dump file
                 return ""
 
             if self._default == "[--unknown--]":
-                _LOGGER.warning("unable to get entry name from entry: %s", entry)
+                if entry_type in ("decltype_type", "call_expr"):
+                    ##TODO: no data in dump file
+                    ## sometimes type does not have 'name' property
+                    return ""
+                _LOGGER.error("unable to get entry name from entry: %s", entry)
+                # _LOGGER.warning("unable to get entry name from entry: %s", entry)
             return self._default
         except RecursionError:
             ## max recursion happen

@@ -416,7 +416,7 @@ class ScopeAnalysis:
             return op0_entry_expr
 
         ## tcc_exceptional
-        if type_name in ("tree_vec", "static_assert"):
+        if type_name in ("tree_vec", "static_assert", "template_parm_index"):
             statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
             return EntryExpression(statements=[statement])
 

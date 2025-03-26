@@ -103,6 +103,14 @@ namespace membersns {
 }
 
 
+namespace {
+    class AnonNSItem {
+    public:
+        int data;
+    };
+};
+
+
 //namespace types {
 //    class TypeExaple {
 //    public:

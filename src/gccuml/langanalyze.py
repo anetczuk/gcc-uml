@@ -17,7 +17,7 @@ from gccuml.langcontent import (
     get_record_namespace_list,
     LangContent,
     get_number_entry_value,
-    get_entry_repr,
+    get_entry_repr, get_full_name,
 )
 from gccuml.langentrylist import ENTRY_DEF_LIST
 
@@ -90,7 +90,7 @@ class StructAnalyzer:
                     for purp_index in range(0, purp_size):
                         purp_index_str = str(purp_index)
                         purp_type_entry = purp_entry.get(purp_index_str)
-                        purp_type_name = get_entry_name(purp_type_entry)
+                        purp_type_name = get_full_name(purp_type_entry)
                         purp_type_list.append(purp_type_name)
                     self.template_instances_dict[valu_record_id] = purp_type_list
 

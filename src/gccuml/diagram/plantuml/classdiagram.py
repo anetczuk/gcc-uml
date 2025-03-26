@@ -45,7 +45,7 @@ class ClassDiagramGenerator:
             self.bases: List[ClassDiagramGenerator.ClassBase] = []
             self.fields: List[ClassDiagramGenerator.ClassField] = []
             self.methods: List[ClassDiagramGenerator.ClassMethod] = []
-            self.generics: List[str] = []
+            self.generics: List[str] = []           # template parameters
 
         def has_field(self, field_name):
             for field_def in self.fields:
@@ -122,7 +122,7 @@ class ClassDiagramGenerator:
         )
 
         counter = 0
-        name_dict = {}
+        name_dict: Dict[str, str] = {}      ## Dict[ actor_label, actor_id ]
 
         ##
         ## add nodes
@@ -155,20 +155,24 @@ class ClassDiagramGenerator:
         ##
         ## add connections
         ##
+        ## class_data: ClassDiagramGenerator.ClassData
         for class_data in self.classes.values():
             from_class = class_data.name
             from_id = name_dict[from_class]
             for base in class_data.bases:
                 to_id = name_dict.get(base.name)
                 if to_id is None:
-                    _LOGGER.error("unable to get id from class %s", base.name)
-                    continue
+                    if base.name not in class_data.generics:
+                        trait_case = any(base.name.startswith(f"{gen_name}::") for gen_name in class_data.generics)
+                        if not trait_case:
+                            _LOGGER.error("unable to get id of base class '%s' of class '%s', template params: %s", base.name, from_class, class_data.generics)
+                    to_id = base.name
                 if base.access:
                     content_list.append(f"""' {from_class} --|> {base.name}""")
-                    content_list.append(f"""{from_id} --|> {to_id}: "{base.access}\"""")
+                    content_list.append(f"""{from_id} --|> "{to_id}": "{base.access}\"""")
                 else:
                     content_list.append(f"""' {from_class} ..> {base.name}""")
-                    content_list.append(f"""{from_id} ..> {to_id}""")
+                    content_list.append(f"""{from_id} ..> "{to_id}\"""")
 
         ##
         ## close diagram
