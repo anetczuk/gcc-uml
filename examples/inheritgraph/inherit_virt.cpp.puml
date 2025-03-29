@@ -1,6 +1,6 @@
 @startuml
 
-class "::items3::Cbc3" as item_0 {
+class "::items3::Cbc3" as @214 {
     {field} {static} + __vtbl_ptr_type[] _ZTVN6items34Cbc3E = {[0] = 0, [1] = (&_ZTIN6items34Cbc3E), [2] = (&::items3::Cbc3::funcA), [3] = (&::items3::Cbc3::funcB)}
     {field} + int fieldC3
     {method} +  ~Cbc3() =default
@@ -10,27 +10,7 @@ class "::items3::Cbc3" as item_0 {
     {method} +virt int funcA() 
     {method} +virt int funcB() 
 }
-class "::items3::Cbc2" as item_1 {
-    {field} {static} + __vtbl_ptr_type[] _ZTVN6items34Cbc2E = {[0] = 0, [1] = (&_ZTIN6items34Cbc2E), [2] = (&::items3::Cbc2::funcA), [3] = None}
-    {field} + int fieldB3
-    {method} +  ~Cbc2() =default
-    {method} +  Cbc2(::items3::Cbc2 & /*anonym*/) =default
-    {method} +  Cbc2(::items3::Cbc2 const & /*anonym*/) =default
-    {method} +  Cbc2() 
-    {method} +virt int funcA() 
-    {method} {abstract} +virt int funcB() =0
-}
-class "::items3::Cbc1" as item_2 {
-    {field} {static} + __vtbl_ptr_type[] _ZTVN6items34Cbc1E = {[0] = 0, [1] = (&_ZTIN6items34Cbc1E), [2] = None}
-    {field} + __vtbl_ptr_type * _vptr.Cbc1
-    {field} + int fieldA3
-    {method} +  ~Cbc1() =default
-    {method} +  Cbc1(::items3::Cbc1 & /*anonym*/) =default
-    {method} +  Cbc1(::items3::Cbc1 const & /*anonym*/) =default
-    {method} +  Cbc1() 
-    {method} {abstract} +virt int funcA() =0
-}
-class "::items1::Abc3" as item_3 {
+class "::items1::Abc3" as @163 {
     {field} {static} + void const *[] _ZTTN6items14Abc3E = {[0] = (&_ZTVN6items14Abc3E) + 24}
     {field} {static} + __vtbl_ptr_type[] _ZTVN6items14Abc3E = {[0] = 12, [1] = 0, [2] = (&_ZTIN6items14Abc3E)}
     {field} + __vtbl_ptr_type * _vptr.Abc3
@@ -40,21 +20,31 @@ class "::items1::Abc3" as item_3 {
     {method} +  Abc3(void const ** __vtt_parm, ::items1::Abc3 const & /*anonym*/) =default
     {method} +  Abc3(void const ** __vtt_parm) 
 }
-class "::items1::Abc2" as item_4 {
+class "::items3::Cbc2" as @267 {
+    {field} {static} + __vtbl_ptr_type[] _ZTVN6items34Cbc2E = {[0] = 0, [1] = (&_ZTIN6items34Cbc2E), [2] = (&::items3::Cbc2::funcA), [3] = None}
+    {field} + int fieldB3
+    {method} +  ~Cbc2() =default
+    {method} +  Cbc2(::items3::Cbc2 & /*anonym*/) =default
+    {method} +  Cbc2(::items3::Cbc2 const & /*anonym*/) =default
+    {method} +  Cbc2() 
+    {method} +virt int funcA() 
+    {method} {abstract} +virt int funcB() =0
+}
+class "::items1::Abc2" as @192 {
     {field} + bool fieldB1
     {method} +  ~Abc2() =default
     {method} +  Abc2(::items1::Abc2 & /*anonym*/) =default
     {method} +  Abc2(::items1::Abc2 const & /*anonym*/) =default
     {method} +  Abc2() =default
 }
-class "::items1::VAbc1" as item_5 {
+class "::items1::VAbc1" as @191 {
     {field} + int fieldA1
     {method} +  ~VAbc1() =default
     {method} +  VAbc1(::items1::VAbc1 & /*anonym*/) =default
     {method} +  VAbc1(::items1::VAbc1 const & /*anonym*/) =default
     {method} +  VAbc1() =default
 }
-class "::items2::Bbc3" as item_6 {
+class "::items2::Bbc3" as @196 {
     {field} {static} + void const *[] _ZTTN6items24Bbc3E = {[0] = (&_ZTVN6items24Bbc3E) + 24, [1] = (&_ZTVN6items24Bbc3E) + 56}
     {field} {static} + __vtbl_ptr_type[] _ZTVN6items24Bbc3E = {[0] = 16, [1] = 0, [2] = (&_ZTIN6items24Bbc3E), [3] = (&::items2::Bbc1::funcB1), [4] = 0, [5] = -16, [6] = (&_ZTIN6items24Bbc3E), [7] = (&::items2::VBbc2::funcB2)}
     {field} + char fieldC2
@@ -63,7 +53,17 @@ class "::items2::Bbc3" as item_6 {
     {method} +  Bbc3(void const ** __vtt_parm, ::items2::Bbc3 const & /*anonym*/) =default
     {method} +  Bbc3(void const ** __vtt_parm) 
 }
-class "::items2::VBbc2" as item_7 {
+class "::items3::Cbc1" as @334 {
+    {field} {static} + __vtbl_ptr_type[] _ZTVN6items34Cbc1E = {[0] = 0, [1] = (&_ZTIN6items34Cbc1E), [2] = None}
+    {field} + __vtbl_ptr_type * _vptr.Cbc1
+    {field} + int fieldA3
+    {method} +  ~Cbc1() =default
+    {method} +  Cbc1(::items3::Cbc1 & /*anonym*/) =default
+    {method} +  Cbc1(::items3::Cbc1 const & /*anonym*/) =default
+    {method} +  Cbc1() 
+    {method} {abstract} +virt int funcA() =0
+}
+class "::items2::VBbc2" as @241 {
     {field} {static} + __vtbl_ptr_type[] _ZTVN6items25VBbc2E = {[0] = 0, [1] = (&_ZTIN6items25VBbc2E), [2] = (&::items2::VBbc2::funcB2)}
     {field} + __vtbl_ptr_type * _vptr.VBbc2
     {field} + bool fieldB2
@@ -73,7 +73,7 @@ class "::items2::VBbc2" as item_7 {
     {method} +  VBbc2() 
     {method} +virt void funcB2() 
 }
-class "::items2::Bbc1" as item_8 {
+class "::items2::Bbc1" as @240 {
     {field} {static} + __vtbl_ptr_type[] _ZTVN6items24Bbc1E = {[0] = 0, [1] = (&_ZTIN6items24Bbc1E), [2] = (&::items2::Bbc1::funcB1)}
     {field} + __vtbl_ptr_type * _vptr.Bbc1
     {field} + int fieldA2
@@ -85,16 +85,16 @@ class "::items2::Bbc1" as item_8 {
 }
 
 ' ::items3::Cbc3 --|> ::items3::Cbc2
-item_0 --|> item_1: "pub"
-' ::items3::Cbc2 --|> ::items3::Cbc1
-item_1 --|> item_2: "pub"
+"@214" --|> "@267": "pub"
 ' ::items1::Abc3 --|> ::items1::VAbc1
-item_3 --|> item_5: "virt pub"
+"@163" --|> "@191": "virt pub"
 ' ::items1::Abc3 --|> ::items1::Abc2
-item_3 --|> item_4: "prot"
+"@163" --|> "@192": "prot"
+' ::items3::Cbc2 --|> ::items3::Cbc1
+"@267" --|> "@334": "pub"
 ' ::items2::Bbc3 --|> ::items2::Bbc1
-item_6 --|> item_8: "prot"
+"@196" --|> "@240": "prot"
 ' ::items2::Bbc3 --|> ::items2::VBbc2
-item_6 --|> item_7: "virt pub"
+"@196" --|> "@241": "virt pub"
 
 @enduml

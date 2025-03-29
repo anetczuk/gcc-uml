@@ -17,7 +17,8 @@ from gccuml.langcontent import (
     get_record_namespace_list,
     LangContent,
     get_number_entry_value,
-    get_entry_repr, get_full_name,
+    get_entry_repr,
+    get_full_name,
 )
 from gccuml.langentrylist import ENTRY_DEF_LIST
 

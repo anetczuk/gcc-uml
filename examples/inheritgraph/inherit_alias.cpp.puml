@@ -1,0 +1,35 @@
+@startuml
+
+class "::items::Data2Base" as @15 {
+    {field} + int field2
+}
+class "::items::TypedefData" as @26 {
+}
+class "::items::UsingData" as @42 {
+}
+class "::items::DataBase" as @38 {
+    {field} + int field1
+}
+class "::items::Data2Base::Using3Data" as @66 {
+}
+class "::items::Data2Base::Typedef3Data" as @73 {
+}
+class "::items::DataBase" as @38
+class "::items::DataBase" as @38
+class "::items::DataBase" as @38
+class "::items::DataBase" as @38
+
+' ::items::Data2Base *--> ::items::Data2Base::Using3Data
+"@15" *--> "@66"
+' ::items::Data2Base *--> ::items::Data2Base::Typedef3Data
+"@15" *--> "@73"
+' ::items::TypedefData ..> ::items::DataBase
+"@26" ..> "@38": alias
+' ::items::UsingData ..> ::items::DataBase
+"@42" ..> "@38": alias
+' ::items::Data2Base::Using3Data ..> ::items::DataBase
+"@66" ..> "@38": alias
+' ::items::Data2Base::Typedef3Data ..> ::items::DataBase
+"@73" ..> "@38": alias
+
+@enduml

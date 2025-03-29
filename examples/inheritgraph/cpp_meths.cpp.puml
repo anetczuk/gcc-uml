@@ -1,6 +1,6 @@
 @startuml
 
-class "::items::Abc3" as item_0 {
+class "::items::Abc3" as @71 {
     {field} + int field
     {method} + void callfunc3() 
     {method} + bool callfunc4() 
@@ -10,10 +10,10 @@ class "::items::Abc3" as item_0 {
     {method} + int & callfunc6_ref() 
     {method} + int const & callfunc6_ref2() 
 }
-class "::items::Abc2" as item_1 {
+class "::items::Abc2" as @81 {
     {method} +virt void callfunc2() 
 }
-class "::items::Abc1" as item_2 {
+class "::items::Abc1" as @95 {
     {field} {static} + __vtbl_ptr_type[] _ZTVN5items4Abc1E = {[0] = 0, [1] = (&_ZTIN5items4Abc1E), [2] = (&::items::Abc1::callfunc1), [3] = None}
     {field} + __vtbl_ptr_type * _vptr.Abc1
     {method} +  Abc1() 
@@ -22,8 +22,8 @@ class "::items::Abc1" as item_2 {
 }
 
 ' ::items::Abc3 --|> ::items::Abc2
-item_0 --|> item_1: "pub"
+"@71" --|> "@81": "pub"
 ' ::items::Abc2 --|> ::items::Abc1
-item_1 --|> item_2: "pub"
+"@81" --|> "@95": "pub"
 
 @enduml

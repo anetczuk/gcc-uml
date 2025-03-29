@@ -1,0 +1,79 @@
+@startuml
+
+class "::[anonymous]::QQQ<_Tp>" as @15 <<T,#FF7700>> {
+}
+class "::[anonymous]::PPP<_Up>" as @28 <<T,#FF7700>> {
+}
+class "::[anonymous]::OOO<_Tp>" as @47 <<T,#FF7700>> {
+}
+class "::[anonymous]::QQQ::qqqtype" as @97 {
+}
+class "::[anonymous]::NNN" as @43 {
+}
+class "::[anonymous]::NNN<_Cond, _If, _Else>" as @75 <<T,#FF7700>> {
+}
+class "::[anonymous]::PPP<_Tp>" as @53 {
+}
+class "::[anonymous]::OOO<_Up>" as @69 {
+}
+class "::[anonymous]::MMM" as @125 {
+}
+class "::[anonymous]::LLL<int>" as @103 <<T,#FF7700>> {
+}
+class "::[anonymous]::KKK<V2>" as @154 <<T,#FF7700>> {
+}
+class "::[anonymous]::LLL<1>" as @128 {
+}
+class "::[anonymous]::LLL<int>" as @148 {
+}
+class "::[anonymous]::JJJ<1>" as @150 {
+    {field} {static} + int const jjjvalue = 1
+}
+class "::[anonymous]::JJJ<V>" as @188 <<T,#FF7700>> {
+    {field} + int const jjjvalue
+}
+class "::[anonymous]::JJJ<int>" as @186 {
+}
+class "::[anonymous]::OOO::oootype" as @146
+class "::[anonymous]::PPP::oootype" as @118
+class "::[anonymous]::OOO<_Up>" as @69
+class "::[anonymous]::LLL::llltype" as @101
+class "::[anonymous]::JJJ<1>" as @150
+class "::[anonymous]::LLL::llltype" as @178
+class "::[anonymous]::JJJ<int>" as @186
+class "::[anonymous]::LLL::llltype" as @194
+
+' ::[anonymous]::QQQ<_Tp> *--> ::[anonymous]::QQQ::qqqtype
+"@15" *--> "@97"
+' ::[anonymous]::PPP<_Up> --|> ::[anonymous]::NNN
+"@28" --|> "@43": "pub"
+' ::[anonymous]::OOO<_Tp> *--> ::[anonymous]::OOO::oootype
+"@47" *--> "@146"
+' ::[anonymous]::QQQ::qqqtype ..> ::[anonymous]::PPP::oootype
+"@97" ..> "@118": alias
+' ::[anonymous]::NNN ..> ::[anonymous]::OOO<_Up>
+"@43" ..> "@69": alias
+' ::[anonymous]::NNN<_Cond, _If, _Else> ..> ::[anonymous]::LLL::llltype
+"@75" ..> "@101": alias
+' ::[anonymous]::PPP<_Tp> ..> ::[anonymous]::PPP: spec.
+"@53" ..> "@28": spec.
+' ::[anonymous]::OOO<_Up> ..> ::[anonymous]::OOO: spec.
+"@69" ..> "@47": spec.
+' ::[anonymous]::MMM ..> ::[anonymous]::JJJ<1>
+"@125" ..> "@150": alias
+' ::[anonymous]::LLL<int> *--> ::[anonymous]::LLL::llltype
+"@103" *--> "@178"
+' ::[anonymous]::KKK<V2> ..> ::[anonymous]::JJJ<int>
+"@154" ..> "@186": alias
+' ::[anonymous]::LLL<1> ..> ::[anonymous]::LLL: spec.
+"@128" ..> "@103": spec.
+' ::[anonymous]::LLL<1> *--> ::[anonymous]::LLL::llltype
+"@128" *--> "@194"
+' ::[anonymous]::LLL<int> ..> ::[anonymous]::LLL: spec.
+"@148" ..> "@103": spec.
+' ::[anonymous]::JJJ<1> ..> ::[anonymous]::JJJ: spec.
+"@150" ..> "@188": spec.
+' ::[anonymous]::JJJ<int> ..> ::[anonymous]::JJJ: spec.
+"@186" ..> "@188": spec.
+
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+
+class "::items::BaseStruct" as @25 {
+}
+class "::items::Data" as @37 {
+    {method} +  ~Data() =default
+    {method} +  Data(::items::Data & /*anonym*/) =default
+    {method} +  Data(::items::Data const & /*anonym*/) =default
+    {method} +  Data() =default
+}
+class "::items::BaseStruct::DataType" as @72 {
+}
+class "::items::Trait<TType>" as @56 <<T,#FF7700>> {
+}
+class "::items::Trait<::items::BaseStruct>" as @40 {
+    {method} +  ~Trait() =default
+    {method} +  Trait(::items::Trait & /*anonym*/) =default
+    {method} +  Trait(::items::Trait const & /*anonym*/) =default
+    {method} +  Trait() =default
+}
+class "::items::Data::DataType" as @300
+class "::items::Data" as @37
+class "TType::DataType" as @77
+
+' ::items::BaseStruct *--> ::items::BaseStruct::DataType
+"@25" *--> "@72"
+' ::items::Data *--> ::items::Data::DataType
+"@37" *--> "@300"
+' ::items::BaseStruct::DataType ..> ::items::Data
+"@72" ..> "@37": alias
+' ::items::Trait<TType> --|> TType::DataType
+"@56" --|> "@77": "pub"
+' ::items::Trait<::items::BaseStruct> --|> ::items::Data
+"@40" --|> "@37": "pub"
+' ::items::Trait<::items::BaseStruct> ..> ::items::Trait: spec.
+"@40" ..> "@56": spec.
+
+@enduml

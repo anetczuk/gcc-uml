@@ -1,6 +1,6 @@
 @startuml
 
-class "::Duck" as item_0 {
+class "::Duck" as @101 {
     {field} {static} + __vtbl_ptr_type[] _ZTC4Duck16_N8property13WalkingAnimalE = {[0] = 24, [1] = 0, [2] = (&_ZTIN8property13WalkingAnimalE)}
     {field} {static} + __vtbl_ptr_type[] _ZTC4Duck0_N8property12FlyingAnimalE = {[0] = 40, [1] = 0, [2] = (&_ZTIN8property12FlyingAnimalE)}
     {field} {static} + __vtbl_ptr_type[] _ZTV4Duck = {[0] = 40, [1] = 0, [2] = (&_ZTI4Duck), [3] = 24, [4] = -16, [5] = (&_ZTI4Duck)}
@@ -12,18 +12,7 @@ class "::Duck" as item_0 {
     {method} +  Duck(void const ** __vtt_parm) 
     {method} + void quack() 
 }
-class "::property::WalkingAnimal" as item_1 {
-    {field} {static} + void const *[] _ZTTN8property13WalkingAnimalE = {[0] = (&_ZTVN8property13WalkingAnimalE) + 24}
-    {field} {static} + __vtbl_ptr_type[] _ZTVN8property13WalkingAnimalE = {[0] = 16, [1] = 0, [2] = (&_ZTIN8property13WalkingAnimalE)}
-    {field} + __vtbl_ptr_type * _vptr.WalkingAnimal
-    {field} + double walkdistance = 0.0
-    {method} +  ~WalkingAnimal() =default
-    {method} +  WalkingAnimal(void const ** __vtt_parm, ::property::WalkingAnimal & /*anonym*/) =default
-    {method} +  WalkingAnimal(void const ** __vtt_parm, ::property::WalkingAnimal const & /*anonym*/) =default
-    {method} +  WalkingAnimal(void const ** __vtt_parm) 
-    {method} + void walk(double const distance) 
-}
-class "::property::FlyingAnimal" as item_2 {
+class "::property::FlyingAnimal" as @122 {
     {field} {static} + void const *[] _ZTTN8property12FlyingAnimalE = {[0] = (&_ZTVN8property12FlyingAnimalE) + 24}
     {field} {static} + __vtbl_ptr_type[] _ZTVN8property12FlyingAnimalE = {[0] = 16, [1] = 0, [2] = (&_ZTIN8property12FlyingAnimalE)}
     {field} + __vtbl_ptr_type * _vptr.FlyingAnimal
@@ -34,7 +23,18 @@ class "::property::FlyingAnimal" as item_2 {
     {method} +  FlyingAnimal(void const ** __vtt_parm) 
     {method} + void fly(double const distance) 
 }
-class "::property::Animal" as item_3 {
+class "::property::WalkingAnimal" as @123 {
+    {field} {static} + void const *[] _ZTTN8property13WalkingAnimalE = {[0] = (&_ZTVN8property13WalkingAnimalE) + 24}
+    {field} {static} + __vtbl_ptr_type[] _ZTVN8property13WalkingAnimalE = {[0] = 16, [1] = 0, [2] = (&_ZTIN8property13WalkingAnimalE)}
+    {field} + __vtbl_ptr_type * _vptr.WalkingAnimal
+    {field} + double walkdistance = 0.0
+    {method} +  ~WalkingAnimal() =default
+    {method} +  WalkingAnimal(void const ** __vtt_parm, ::property::WalkingAnimal & /*anonym*/) =default
+    {method} +  WalkingAnimal(void const ** __vtt_parm, ::property::WalkingAnimal const & /*anonym*/) =default
+    {method} +  WalkingAnimal(void const ** __vtt_parm) 
+    {method} + void walk(double const distance) 
+}
+class "::property::Animal" as @153 {
     {field} + double weight
     {field} + double width
     {field} + double height
@@ -45,12 +45,12 @@ class "::property::Animal" as item_3 {
 }
 
 ' ::Duck --|> ::property::FlyingAnimal
-item_0 --|> item_2: "pub"
+"@101" --|> "@122": "pub"
 ' ::Duck --|> ::property::WalkingAnimal
-item_0 --|> item_1: "pub"
-' ::property::WalkingAnimal --|> ::property::Animal
-item_1 --|> item_3: "virt pub"
+"@101" --|> "@123": "pub"
 ' ::property::FlyingAnimal --|> ::property::Animal
-item_2 --|> item_3: "virt pub"
+"@122" --|> "@153": "virt pub"
+' ::property::WalkingAnimal --|> ::property::Animal
+"@123" --|> "@153": "virt pub"
 
 @enduml

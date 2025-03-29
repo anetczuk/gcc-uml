@@ -35,7 +35,7 @@ class GraphGenerator:
         if prefix is None:
             prefix = "item"
         self.item_id += 1
-        if prefix is "":
+        if prefix == "":
             return f"{self.item_id}"
         return f"{prefix}_{self.item_id}"
 

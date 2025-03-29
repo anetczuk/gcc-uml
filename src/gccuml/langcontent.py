@@ -325,7 +325,17 @@ class LangContent:
                 ret_list.append(item[1])
         return ret_list
 
-    def get_entries_by_type(self, entry_type) -> List[Entry]:
+    def get_entries_with_prop(self, entry_property) -> List[Entry]:
+        ret_list = []
+        # entry: Entry
+        for entry in self.content_objs.values():
+            sub_entries = entry.get_sub_entries(entry_property)
+            if not sub_entries:
+                continue
+            ret_list.append(entry)
+        return ret_list
+
+    def get_entries_by_type(self, entry_type: str) -> List[Entry]:
         ret_list = []
         # entry: Entry
         for entry in self.content_objs.values():
@@ -524,7 +534,7 @@ def props_list_to_dict(props_list: List[Tuple[str, str]]) -> Dict[str, Any]:
 
 
 def is_entry_prop_chain(prop: str):
-    return prop in ("args", "dcls", "flds", "vars")
+    return prop in ("args", "dcls", "flds", "vars", "rslt")
 
 
 def is_entry_prop_internal(prop: str):
@@ -793,7 +803,7 @@ def get_template_parameters(template_decl: Entry):
         sub_list = get_vector_items(valu)
         if not sub_list:
             # example case: 'void func1(void);'
-            valu_name = get_type_entry_name(valu)
+            valu_name = get_entry_repr(valu)
             if valu_name is not None:
                 ret_list.append(valu_name)
             continue
@@ -804,7 +814,7 @@ def get_template_parameters(template_decl: Entry):
             sub_valu = sub_item.get("valu")
             if sub_valu is None:
                 continue
-            param_name = get_type_entry_name(sub_valu)
+            param_name = get_entry_repr(sub_valu)
             if param_name is None:
                 continue
             ret_list.append(param_name)
@@ -815,7 +825,11 @@ def get_record_namespace_list(record_type: Entry) -> List[str]:
     if record_type is None:
         return []
     field_type = record_type.get("name")
-    ret_list = get_decl_namespace_list(field_type)
+    if field_type is not None:
+        if field_type.get_type() != "identifier_node":
+            ret_list = get_decl_namespace_list(field_type)
+            return ret_list
+    ret_list = get_decl_namespace_list(record_type)
     return ret_list
 
 
@@ -851,7 +865,7 @@ def get_decl_namespace_list(decl_entry: Entry) -> List[str]:
                 item = item.get("scpe")
                 continue
             # not a type?
-            return None            
+            return None
         item_name = get_full_name(item_name_entry)
         if item_name is None:
             # not a type?
@@ -1059,8 +1073,16 @@ class EntryNameResolver:
             if entry_type in ("bind_expr", "constructor", "statement_list", "tree_list", "tree_vec"):
                 return ""
 
-            if entry_type in ("template_parm_index", "type_argument_pack", "scope_ref", "dependent_operator_type", 
-                              "template_id_expr", "nontype_argument_pack", "trait_expr", "type_pack_expansion"):
+            if entry_type in (
+                "template_parm_index",
+                "type_argument_pack",
+                "scope_ref",
+                "dependent_operator_type",
+                "template_id_expr",
+                "nontype_argument_pack",
+                "trait_expr",
+                "type_pack_expansion",
+            ):
                 ##TODO: no data in dump file
                 return ""
 

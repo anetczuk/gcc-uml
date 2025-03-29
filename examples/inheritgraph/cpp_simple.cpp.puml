@@ -1,6 +1,6 @@
 @startuml
 
-class "::items::Abc1" as item_0 {
+class "::items::Abc1" as @49 {
     {field} {static} + __vtbl_ptr_type[] _ZTVN5items4Abc1E = {[0] = 0, [1] = (&_ZTIN5items4Abc1E), [2] = 0, [3] = 0, [4] = (&::items::Abc1::call_virt), [5] = None}
     {field} + __vtbl_ptr_type * _vptr.Abc1
     {field} {static} + bool static1

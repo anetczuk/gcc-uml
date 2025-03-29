@@ -1,6 +1,6 @@
 @startuml
 
-class "::items::Abc1" as item_0 {
+class "::items::Abc1" as @15 {
     {method} + void call1_param(int paramA, double const paramB, bool /*anonym*/) 
     {method} + void call2_ptr(int * paramA, int const * paramB, int const * paramC, int * const paramD) 
     {method} + void call2_ptr(int ** paramA, int const ** paramB, int const ** paramC, int ** const paramD) 

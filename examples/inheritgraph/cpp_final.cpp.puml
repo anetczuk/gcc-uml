@@ -1,15 +1,15 @@
 @startuml
 
-class "::Abc1" as item_0 {
+class "::Abc1" as @15 {
     {field} + int field1
     {method} +virt int method1() 
 }
-class "::Base1" as item_1 {
+class "::Base1" as @24 {
     {field} + __vtbl_ptr_type * _vptr.Base1
     {method} {abstract} +virt int method1() =0
 }
 
 ' ::Abc1 --|> ::Base1
-item_0 --|> item_1: "pub"
+"@15" --|> "@24": "pub"
 
 @enduml

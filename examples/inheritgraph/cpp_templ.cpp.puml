@@ -1,49 +1,52 @@
 @startuml
 
-class "::items::Abc3" as item_0 {
+class "::items::Abc3" as @26 {
 }
-class "::items::Abc2C" as item_1 {
+class "::items::Abc2C" as @42 {
 }
-class "::items::Abc2B" as item_2 {
+class "::items::Abc2B" as @69 {
 }
-class "::items::Abc2A" as item_3 {
+class "::items::Abc2A" as @101 {
 }
-class "::items::Abc1" as item_4 <TTypeA, TTypeB> <<T,#FF7700>> {
-    {field} + TTypeA fieldA
-    {field} + TTypeB fieldB
-}
-class "::items::Abc1<double, double>" as item_5 {
-    {field} + double fieldA
-    {field} {static} + double fieldB
-}
-class "::items::Abc1<int, int>" as item_6 {
+class "::items::Abc1<int, int>" as @64 {
     {field} + int fieldA
     {field} {static} + int fieldB
 }
-class "::items::Abc1<float, char>" as item_7 {
+class "::items::Abc1<double, double>" as @65 {
+    {field} + double fieldA
+    {field} {static} + double fieldB
+}
+class "::items::Abc1<float, char>" as @97 {
     {field} + float fieldA
     {field} {static} + char fieldB
 }
-class "::items::Abc1<int, bool>" as item_8 {
+class "::items::Abc1<TTypeA, TTypeB>" as @127 <<T,#FF7700>> {
+    {field} + TTypeA fieldA
+    {field} + TTypeB fieldB
+}
+class "::items::Abc1<int, bool>" as @124 {
     {field} + int fieldA
     {field} {static} + bool fieldB
 }
+class "::items::Abc3::calc_templ" as @60
 
+' ::items::Abc3 *--> ::items::Abc3::calc_templ
+"@26" *--> "@60"
 ' ::items::Abc2C --|> ::items::Abc1<int, int>
-item_1 --|> item_6: "pub"
+"@42" --|> "@64": "pub"
 ' ::items::Abc2C --|> ::items::Abc1<double, double>
-item_1 --|> item_5: "pub"
+"@42" --|> "@65": "pub"
 ' ::items::Abc2B --|> ::items::Abc1<float, char>
-item_2 --|> item_7: "pub"
+"@69" --|> "@97": "pub"
 ' ::items::Abc2A --|> ::items::Abc1<int, bool>
-item_3 --|> item_8: "pub"
-' ::items::Abc1<double, double> ..> ::items::Abc1
-item_5 ..> item_4
-' ::items::Abc1<int, int> ..> ::items::Abc1
-item_6 ..> item_4
-' ::items::Abc1<float, char> ..> ::items::Abc1
-item_7 ..> item_4
-' ::items::Abc1<int, bool> ..> ::items::Abc1
-item_8 ..> item_4
+"@101" --|> "@124": "pub"
+' ::items::Abc1<int, int> ..> ::items::Abc1: spec.
+"@64" ..> "@127": spec.
+' ::items::Abc1<double, double> ..> ::items::Abc1: spec.
+"@65" ..> "@127": spec.
+' ::items::Abc1<float, char> ..> ::items::Abc1: spec.
+"@97" ..> "@127": spec.
+' ::items::Abc1<int, bool> ..> ::items::Abc1: spec.
+"@124" ..> "@127": spec.
 
 @enduml

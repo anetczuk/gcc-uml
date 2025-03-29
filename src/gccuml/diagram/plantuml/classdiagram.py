@@ -37,15 +37,39 @@ class ClassDiagramGenerator:
     class ClassData:
         """Container for class data to be presented on graph."""
 
-        def __init__(self, name=None):
+        # def __init__(self, data_type: ClassType, name=None):
+        #     self.type: ClassDiagramGenerator.ClassType = data_type  # predefined spot if not explicit
+        def __init__(self, itemid, name=None):
             self.type: ClassDiagramGenerator.ClassType = None  # predefined spot if not explicit
             self.spot: Tuple[str, str] | str = None  # string and color (color name or #RGB)
 
-            self.name: str = name
+            self._item_id = itemid
+            self._name: str = name
             self.bases: List[ClassDiagramGenerator.ClassBase] = []
             self.fields: List[ClassDiagramGenerator.ClassField] = []
             self.methods: List[ClassDiagramGenerator.ClassMethod] = []
-            self.generics: List[str] = []           # template parameters
+            self.generics: List[str] = []  # template parameters
+
+            self.aliasof: ClassDiagramGenerator.TypeAlias = None
+            self.inner_types: List[ClassDiagramGenerator.TypeAlias] = []
+
+        @property
+        def item_id(self):
+            return self._item_id
+
+        @property
+        def name(self):
+            return self.get_name()
+
+        @name.setter
+        def name(self, var):
+            self._name = var
+
+        def get_name(self):
+            if self.generics:
+                gen_str = ", ".join(self.generics)
+                return f"""{self._name}<{gen_str}>"""
+            return self._name
 
         def has_field(self, field_name):
             for field_def in self.fields:
@@ -53,8 +77,15 @@ class ClassDiagramGenerator:
                     return True
             return False
 
+        def has_inner(self, item_id: str):
+            for inner_def in self.inner_types:
+                if inner_def.item_id == item_id:
+                    return True
+            return False
+
     FunctionArg = NamedTuple("FunctionArg", [("name", str), ("type", str)])
-    ClassBase = NamedTuple("ClassBase", [("name", str), ("access", str)])
+    ClassBase = NamedTuple("ClassBase", [("item_id", str), ("name", str), ("access", str)])
+    TypeAlias = NamedTuple("TypeAlias", [("item_id", str), ("name", str)])
 
     @dataclass
     class ClassField:
@@ -83,27 +114,27 @@ class ClassDiagramGenerator:
     FIELD_ACCESS_DICT = {"private": "-", "protected": "#", "package private": "~", "public": "+"}
 
     def __init__(self, class_data_dict=None):
-        self.classes: Dict[str, ClassDiagramGenerator.ClassData] = class_data_dict
-        if self.classes is None:
-            self.classes = {}
+        self.class_items: Dict[str, ClassDiagramGenerator.ClassData] = class_data_dict
+        if self.class_items is None:
+            self.class_items = {}
 
     def add_class(self, name: str):
-        self.classes[name] = self.ClassData(name)
+        self.class_items[name] = self.ClassData(name)
 
     def add_base(self, class_name, base: ClassBase):
-        class_data: ClassDiagramGenerator.ClassData = self.classes[class_name]
+        class_data: ClassDiagramGenerator.ClassData = self.class_items[class_name]
         class_data.bases.append(base)
 
     def add_class_field(self, class_name, field_data: ClassField):
-        class_data: ClassDiagramGenerator.ClassData = self.classes[class_name]
+        class_data: ClassDiagramGenerator.ClassData = self.class_items[class_name]
         class_data.fields.append(field_data)
 
     def add_class_method(self, class_name, method_data: ClassMethod):
-        class_data: ClassDiagramGenerator.ClassData = self.classes[class_name]
+        class_data: ClassDiagramGenerator.ClassData = self.class_items[class_name]
         class_data.methods.append(method_data)
 
     def generate(self, out_path):
-        if not self.classes:
+        if not self.class_items:
             ## empty data
             content = """\
 @startuml
@@ -121,26 +152,25 @@ class ClassDiagramGenerator:
 """
         )
 
-        counter = 0
-        name_dict: Dict[str, str] = {}      ## Dict[ actor_label, actor_id ]
+        handled_nodes = set()
 
         ##
-        ## add nodes
+        ## add classes
         ##
-        for class_data in self.classes.values():
+        for class_data in self.class_items.values():
             actor = class_data.name
-            actor_id = f"item_{counter}"
-            counter += 1
-            name_dict[actor] = actor_id
+            # actor = class_data.item_id + " " + class_data.name
+            actor_id = class_data.item_id
+            handled_nodes.add(actor_id)
 
             struct_spot = self._get_spot_value(class_data)
             if struct_spot:
                 struct_spot = f"{struct_spot} "
 
             gen_string = ""
-            if class_data.generics:
-                gen_string = ", ".join(class_data.generics)
-                gen_string = f"<{gen_string}> "
+            # if class_data.generics:
+            #     gen_string = ", ".join(class_data.generics)
+            #     gen_string = f"<{gen_string}> "
 
             content_list.append(f"""class "{actor}" as {actor_id} {gen_string}{struct_spot}{{""")
 
@@ -150,29 +180,64 @@ class ClassDiagramGenerator:
 
             content_list.append("}")
 
+        ## add bases and aliases
+        for class_data in self.class_items.values():
+            for base in class_data.bases:
+                actor_id = base.item_id
+                if actor_id in handled_nodes:
+                    continue
+                handled_nodes.add(actor_id)
+                # actor = base.item_id + " " + base.name
+                actor = base.name
+                content_list.append(f"""class "{actor}" as {actor_id}""")
+
+            for inner_type in class_data.inner_types:
+                actor_id = inner_type.item_id
+                if actor_id in handled_nodes:
+                    continue
+                handled_nodes.add(actor_id)
+                # actor = inner_type.item_id + " " + inner_type.name
+                actor = inner_type.name
+                content_list.append(f"""class "{actor}" as {actor_id}""")
+
+            alias_type = class_data.aliasof
+            if alias_type:
+                actor_id = alias_type.item_id
+                handled_nodes.add(actor_id)
+                # actor = alias_type.item_id + " " + alias_type.name
+                actor = alias_type.name
+                content_list.append(f"""class "{actor}" as {actor_id}""")
+
         content_list.append("")
 
         ##
         ## add connections
         ##
         ## class_data: ClassDiagramGenerator.ClassData
-        for class_data in self.classes.values():
+        for class_data in self.class_items.values():
+            # from_class = class_data.item_id + " " + class_data.name
             from_class = class_data.name
-            from_id = name_dict[from_class]
+            from_id = class_data.item_id
             for base in class_data.bases:
-                to_id = name_dict.get(base.name)
-                if to_id is None:
-                    if base.name not in class_data.generics:
-                        trait_case = any(base.name.startswith(f"{gen_name}::") for gen_name in class_data.generics)
-                        if not trait_case:
-                            _LOGGER.error("unable to get id of base class '%s' of class '%s', template params: %s", base.name, from_class, class_data.generics)
-                    to_id = base.name
+                to_id = base.item_id
                 if base.access:
                     content_list.append(f"""' {from_class} --|> {base.name}""")
-                    content_list.append(f"""{from_id} --|> "{to_id}": "{base.access}\"""")
+                    content_list.append(f""""{from_id}" --|> "{to_id}": "{base.access}\"""")
                 else:
-                    content_list.append(f"""' {from_class} ..> {base.name}""")
-                    content_list.append(f"""{from_id} ..> "{to_id}\"""")
+                    content_list.append(f"""' {from_class} ..> {base.name}: spec.""")
+                    content_list.append(f""""{from_id}" ..> "{to_id}": spec.""")
+
+            for inner_type in class_data.inner_types:
+                to_id = inner_type.item_id
+                content_list.append(f"""' {from_class} *--> {inner_type.name}""")
+                content_list.append(f""""{from_id}" *--> "{to_id}\"""")
+
+            ## connect alias
+            aliased_type: ClassDiagramGenerator.TypeAlias = class_data.aliasof
+            if aliased_type:
+                to_id = aliased_type.item_id
+                content_list.append(f"""' {from_class} ..> {aliased_type.name}""")
+                content_list.append(f""""{from_id}" ..> "{to_id}\": alias""")
 
         ##
         ## close diagram

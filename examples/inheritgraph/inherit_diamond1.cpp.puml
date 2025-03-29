@@ -1,6 +1,6 @@
 @startuml
 
-class "::Duck" as item_0 {
+class "::Duck" as @14 {
     {field} + int noquacks = 0
     {method} +  ~Duck() =default
     {method} +  Duck(::Duck & /*anonym*/) =default
@@ -8,7 +8,7 @@ class "::Duck" as item_0 {
     {method} +  Duck() 
     {method} + void quack() 
 }
-class "::property::WalkingAnimal" as item_1 {
+class "::property::WalkingAnimal" as @26 {
     {field} + double walkdistance = 0.0
     {method} +  ~WalkingAnimal() =default
     {method} +  WalkingAnimal(::property::WalkingAnimal & /*anonym*/) =default
@@ -16,7 +16,7 @@ class "::property::WalkingAnimal" as item_1 {
     {method} +  WalkingAnimal() 
     {method} + void walk(double const distance) 
 }
-class "::property::FlyingAnimal" as item_2 {
+class "::property::FlyingAnimal" as @25 {
     {field} + double flydistance = 0.0
     {method} +  ~FlyingAnimal() =default
     {method} +  FlyingAnimal(::property::FlyingAnimal & /*anonym*/) =default
@@ -24,7 +24,7 @@ class "::property::FlyingAnimal" as item_2 {
     {method} +  FlyingAnimal() 
     {method} + void fly(double const distance) 
 }
-class "::property::Animal" as item_3 {
+class "::property::Animal" as @43 {
     {field} + double weight
     {field} + double width
     {field} + double height
@@ -35,12 +35,12 @@ class "::property::Animal" as item_3 {
 }
 
 ' ::Duck --|> ::property::FlyingAnimal
-item_0 --|> item_2: "pub"
+"@14" --|> "@25": "pub"
 ' ::Duck --|> ::property::WalkingAnimal
-item_0 --|> item_1: "pub"
+"@14" --|> "@26": "pub"
 ' ::property::WalkingAnimal --|> ::property::Animal
-item_1 --|> item_3: "pub"
+"@26" --|> "@43": "pub"
 ' ::property::FlyingAnimal --|> ::property::Animal
-item_2 --|> item_3: "pub"
+"@25" --|> "@43": "pub"
 
 @enduml

@@ -1,0 +1,28 @@
+@startuml
+
+class "::items::BaseStruct" as @25 {
+    {method} +  ~BaseStruct() =default
+    {method} +  BaseStruct(::items::BaseStruct & /*anonym*/) =default
+    {method} +  BaseStruct(::items::BaseStruct const & /*anonym*/) =default
+    {method} +  BaseStruct() =default
+}
+class "::items::Wrapper<TBase>" as @37 <<T,#FF7700>> {
+    {field} + TBase data
+}
+class "::items::Wrapper<::items::BaseStruct>" as @42 {
+    {field} + ::items::BaseStruct data
+    {method} +  ~Wrapper() =default
+    {method} +  Wrapper(::items::Wrapper & /*anonym*/) =default
+    {method} +  Wrapper(::items::Wrapper const & /*anonym*/) =default
+    {method} +  Wrapper() =default
+}
+class "TBase" as @58
+
+' ::items::Wrapper<TBase> --|> TBase
+"@37" --|> "@58": "pub"
+' ::items::Wrapper<::items::BaseStruct> --|> ::items::BaseStruct
+"@42" --|> "@25": "pub"
+' ::items::Wrapper<::items::BaseStruct> ..> ::items::Wrapper: spec.
+"@42" ..> "@37": spec.
+
+@enduml

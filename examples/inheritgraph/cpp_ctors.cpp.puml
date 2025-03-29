@@ -1,30 +1,30 @@
 @startuml
 
-class "::items::Abc3D" as item_0 {
+class "::items::Abc3D" as @60 {
     {field} {static} + __vtbl_ptr_type[] _ZTVN5items5Abc3DE = {[0] = 0, [1] = (&_ZTIN5items5Abc3DE), [2] = (&::items::Abc3D::__dt_comp), [3] = (&::items::Abc3D::__dt_del)}
     {field} + __vtbl_ptr_type * _vptr.Abc3D
     {method} +virt  ~Abc3D() 
 }
-class "::items::Abc3C" as item_1 {
+class "::items::Abc3C" as @74 {
     {method} +  ~Abc3C() 
 }
-class "::items::Abc3B" as item_2 {
+class "::items::Abc3B" as @92 {
     {field} + __vtbl_ptr_type * _vptr.Abc3B
     {method} +virt  ~Abc3B() =default
 }
-class "::items::Abc3A" as item_3 {
+class "::items::Abc3A" as @112 {
     {method} +  ~Abc3A() =default
 }
-class "::items::Abc2" as item_4 {
+class "::items::Abc2" as @149 {
     {method} +  Abc2(::items::Abc2 const & /*anonym*/) 
 }
-class "::items::Abc1C" as item_5 {
+class "::items::Abc1C" as @178 {
     {method} +  Abc1C() 
 }
-class "::items::Abc1B" as item_6 {
+class "::items::Abc1B" as @211 {
     {method} +  Abc1B() =default
 }
-class "::items::Abc1A" as item_7 {
+class "::items::Abc1A" as @248 {
 }
 
 
