@@ -651,7 +651,9 @@ def is_method_of_instance(func_decl: Entry) -> bool:
     if not args_list:
         return False
     _first_prop, first_arg = args_list[0]
-    first_name = get_entry_name(first_arg)
+    first_name = get_entry_name(first_arg, default_ret=None)
+    if first_name is None:
+        return False
     return first_name == "this"
 
 
@@ -852,9 +854,14 @@ def get_decl_namespace_list(decl_entry: Entry) -> List[str]:
             break
         if item_type == "record_type":
             # happens in case of method declaration
-            record_list = get_record_namespace_list(item)
-            record_list.reverse()
-            ret_list.extend(record_list)
+            item_name_entry = item.get("name")
+            if item_name_entry:
+                record_list = get_record_namespace_list(item)
+                record_list.reverse()
+                ret_list.extend(record_list)
+            else:
+                item_name = get_full_name(item)
+                ret_list.append(item_name)
             break
 
         item_name_entry = item.get("name")
@@ -1070,7 +1077,7 @@ class EntryNameResolver:
                 entry_value = entry.get("type")
                 return self.get_entry_name(entry_value)
 
-            if entry_type in ("bind_expr", "constructor", "statement_list", "tree_list", "tree_vec"):
+            if entry_type in ("array_ref", "bind_expr", "constructor", "statement_list", "tree_list", "tree_vec"):
                 return ""
 
             if entry_type in (
@@ -1082,12 +1089,14 @@ class EntryNameResolver:
                 "nontype_argument_pack",
                 "trait_expr",
                 "type_pack_expansion",
+                "baselink",
+                "ctor_initializer",
             ):
                 ##TODO: no data in dump file
                 return ""
 
             if self._default == "[--unknown--]":
-                if entry_type in ("decltype_type", "call_expr"):
+                if entry_type in ("decltype_type", "call_expr", "component_ref", "cond_expr"):
                     ##TODO: no data in dump file
                     ## sometimes type does not have 'name' property
                     return ""

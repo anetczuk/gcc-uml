@@ -34,7 +34,8 @@ card "::try_func() -> void" {
 
     group catch: char const * exc
         group try
-            :::__cxa_begin_catch(::__builtin_eh_pointer(0));
+            :char const * __tmp_230;
+            :char const * __tmp_230 = ::__cxa_begin_catch(::__builtin_eh_pointer(0));
             :asd = 2;
         end group
 
@@ -46,7 +47,8 @@ card "::try_func() -> void" {
 
     group catch: int
         group try
-            :::__cxa_begin_catch(::__builtin_eh_pointer(0));
+            :int * __tmp_298;
+            :int * __tmp_298 = ::__cxa_begin_catch(::__builtin_eh_pointer(0));
             :asd = 3;
         end group
 
@@ -136,6 +138,7 @@ card "::truth_if001() -> void" {
 
 card "::compound001() -> void" {
     :short int aaa1 = 0;
+    :void;
     :aaa1 = ::foo(2);
     :aaa1 = ::foo(::foo(4));
     :::foo(5);

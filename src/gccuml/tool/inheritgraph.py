@@ -20,6 +20,7 @@ from gccuml.langcontent import (
     get_type_entry_name,
     get_function_ret,
     get_function_args,
+    get_decl_namespace_list,
 )
 from gccuml.langanalyze import (
     StructAnalyzer,
@@ -324,12 +325,14 @@ class InheritanceData:
         return ret_types
 
     def _is_inner_type(self, class_entry, fld_entry):
-        class_name = get_entry_name(class_entry)
-        field_name = get_entry_name(fld_entry)
-        if field_name is None:
+        class_name_list = get_decl_namespace_list(class_entry)
+        field_name_list = get_decl_namespace_list(fld_entry)
+        # class_name = get_type_entry_name(class_entry)
+        # field_name = get_type_entry_name(fld_entry)
+        if not field_name_list or not class_name_list:
             # proper field must have name
             return False
-        if field_name == class_name:
+        if field_name_list[-1] == class_name_list[-1]:
             ## there cannot be any member of name the same as class name (it is used for internal representation only)
             return False
         return True

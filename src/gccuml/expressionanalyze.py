@@ -213,6 +213,12 @@ class EntryExpression:
     def __bool__(self):
         return self.valid
 
+    def get_all_statements(self):
+        stat_list = self.statements.copy()
+        stat = TypedStatement(self.expression)
+        stat_list.append(stat)
+        return stat_list
+
 
 class SwitchContext:
 
@@ -321,7 +327,11 @@ class ScopeAnalysis:
             self.vars.append((var_name, decl_expr))
 
     def handle_var(self, var_decl: Entry) -> EntryExpression:
-        var_name = get_entry_name(var_decl)
+        var_name = get_entry_name(var_decl, None)
+        if var_name is None:
+            entry_id = var_decl.get_id()
+            entry_id = entry_id.replace("@", "")
+            var_name = f"__tmp_{entry_id}"
         var_type = var_decl.get("type")
         type_label = get_type_entry_name(var_type)
 
@@ -433,37 +443,15 @@ class ScopeAnalysis:
             return EntryExpression(statements=stat_list)
 
         ## tcc_declaration
-        if type_name == "label_decl":
-            statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
-            return EntryExpression(statements=[statement])
-
-        if type_name == "function_decl":
-            return self._handle_function(statement_entry)
-
-        if type_name == "result_decl":
-            ### do nothing
-            ##result_value = get_entry_name(statement_entry)
-            return EntryExpression(valid=True)
-
-        if type_name in ("field_decl"):
-            name = get_entry_repr(statement_entry)
-            return EntryExpression(name)
-
-        if type_name in ("parm_decl"):
-            name = get_entry_name(statement_entry)
-            return EntryExpression(name)
-
-        if type_name in ("var_decl"):
-            name = get_entry_name(statement_entry, None)
-            # if var_name not in self.scope_vars:
-            #     self.scope_vars.add(var_name)
-            #     var_expr = self.handle_var(statement_entry, stat_list)
-            #     var_node = TypedStatement(var_expr, StatementType.NODE)
-            #     stat_list.append(var_node)
-            return EntryExpression(name)
+        entry_expr = self._handle_declaration(statement_entry)
+        if entry_expr:
+            return entry_expr
 
         ## tcc_vl_exp
         if type_name == "call_expr":
+            return self._handle_call(statement_entry)
+
+        if type_name == "aggr_init_expr":
             return self._handle_call(statement_entry)
 
         ## =========================
@@ -647,7 +635,7 @@ class ScopeAnalysis:
 
         if type_name == "void_cst":
             ## do nothing
-            return EntryExpression(valid=True)
+            return EntryExpression("void")
 
         entry_repr = get_entry_repr(statement_entry)
         return EntryExpression(entry_repr)
@@ -840,6 +828,26 @@ class ScopeAnalysis:
             return EntryExpression(valid=True)
 
         if type_name == "cond_expr":
+            ## if expression and ternary operator
+
+            op1_entry = statement_entry.get("op 1")
+            op2_entry = statement_entry.get("op 2")
+            op1_type = op1_entry.get_type()
+            op2_type = op2_entry.get_type()
+            op_set = set([op1_type, op2_type])
+            type_set = set(["cleanup_point_expr", "bind_expr", "return_expr", "statement_list"])
+            if op_set.intersection(type_set):
+                ## regular "if" expression
+                if_entry_expr = EntryExpression(valid=True)
+                self._handle_if(statement_entry, if_entry_expr.statements)
+                return if_entry_expr
+
+            ## ternary operator
+            ternary_expr = self._handle_ternary(statement_entry)
+            if ternary_expr is not None:
+                return ternary_expr
+
+            ## regular "if" expression
             if_entry_expr = EntryExpression(valid=True)
             self._handle_if(statement_entry, if_entry_expr.statements)
             return if_entry_expr
@@ -849,24 +857,28 @@ class ScopeAnalysis:
 
         if type_name == "compound_expr":
             stat_list = []
-            op0_entry = statement_entry.get("op 0")
+            op0_entry = statement_entry.get("op 0")  # the first value is ignored
             op0_entry_expr = self._analyze_func(op0_entry)
             stat_list.extend(op0_entry_expr.statements)
             op0_expr = op0_entry_expr.expression
             if op0_expr:
                 stat_list.append(TypedStatement(op0_expr))
-            op1_entry = statement_entry.get("op 1")
+            op1_entry = statement_entry.get("op 1")  # the second value is used
             op1_entry_expr = self._analyze_func(op1_entry)
             stat_list.extend(op1_entry_expr.statements)
             op1_expr = op1_entry_expr.expression
             return EntryExpression(f"{op1_expr}", stat_list)
 
-        # if type_name == "target_expr":
-        #     decl_entry = statement_entry.get("decl")
-        #     _valid, decl_expr = self._analyze_func(decl_entry, stat_list)
-        #     init_entry = statement_entry.get("init")
-        #     _valid, init_expr = self._analyze_func(init_entry, stat_list)
-        #     return (True, f"{decl_expr}{init_expr}")
+        if type_name == "target_expr":
+            decl_entry = statement_entry.get("decl")
+            decl_expr: EntryExpression = self._analyze_func(decl_entry)
+            init_entry = statement_entry.get("init")
+            init_expr: EntryExpression = self._analyze_func(init_entry)
+            if not decl_expr or not decl_expr.expression:
+                expr = init_expr.expression
+                return EntryExpression(expr)
+            expr = decl_expr.expression + " = " + init_expr.expression
+            return EntryExpression(expr)
 
         if type_name == "addr_expr":
             op_entry = statement_entry.get("op 0")
@@ -878,8 +890,9 @@ class ScopeAnalysis:
 
         if type_name == "bind_expr":
             # new scope
-            scope_analysis = ScopeAnalysis(self.content)
-            bind_list = scope_analysis.analyze(statement_entry)
+            # scope_analysis = ScopeAnalysis(self.content)
+            # bind_list = scope_analysis.analyze(statement_entry)
+            bind_list = self.analyze(statement_entry)
             return EntryExpression(statements=bind_list)
 
         if type_name == "must_not_throw_expr":
@@ -898,6 +911,7 @@ class ScopeAnalysis:
             return EntryExpression(statements=stat_list)
 
         if type_name == "cleanup_point_expr":
+            ## new scope
             op0_entry = statement_entry.get("op 0")
             return self._analyze_func(op0_entry)
 
@@ -955,6 +969,71 @@ class ScopeAnalysis:
         if op_before and op_after:
             return EntryExpression(f"{op_before}{op0_expr}{op_sign}{op1_expr}{op_after}", stat_list)
         return EntryExpression(f"{op0_expr} {op_sign} {op1_expr}", stat_list)
+
+    def _handle_declaration(self, statement_entry: Entry) -> EntryExpression:
+        type_name = statement_entry.get_type()
+
+        if type_name == "label_decl":
+            statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            return EntryExpression(statements=[statement])
+
+        if type_name == "function_decl":
+            return self._handle_function(statement_entry)
+
+        if type_name == "result_decl":
+            ### do nothing
+            ##result_value = get_entry_name(statement_entry)
+            return EntryExpression(valid=True)
+
+        if type_name == "field_decl":
+            name = get_entry_repr(statement_entry)
+            return EntryExpression(name)
+
+        if type_name == "parm_decl":
+            name = get_entry_name(statement_entry)
+            return EntryExpression(name)
+
+        if type_name == "var_decl":
+            var_name = get_entry_name(statement_entry, None)
+            if var_name is None:
+                ## case of GCC temporary variable
+                # stat_init = statement_entry.get("init")
+                # if stat_init is None:
+                #     return EntryExpression("")
+                entry_id = statement_entry.get_id()
+                entry_id = entry_id.replace("@", "")
+                var_name = f"__tmp_{entry_id}"
+
+            if any(pair[0] == var_name for pair in self.vars):
+                return EntryExpression(var_name)
+
+            if var_name in self.scope_vars:
+                return EntryExpression(var_name)
+
+            ## first use - with initialization
+            self.scope_vars.add(var_name)
+            # return EntryExpression(var_name)
+
+            # stat_type_entry = statement_entry.get("type")
+            # var_type = get_entry_repr(stat_type_entry)
+            # expr = f"{var_type} {var_name}"
+            # return EntryExpression(expr)
+
+            var_expr: EntryExpression = self.handle_var(statement_entry)
+            stat_list = var_expr.get_all_statements()
+            # return EntryExpression(var_expr.expression, stat_list)
+
+            stat_init = statement_entry.get("init")
+            if stat_init is not None:
+                return EntryExpression(var_name, stat_list)
+
+            stat_type_entry = statement_entry.get("type")
+            var_type = get_entry_repr(stat_type_entry)
+            expr = f"{var_type} {var_name}"
+            return EntryExpression(expr, stat_list)
+            # return EntryExpression(var_name, stat_list)
+
+        return EntryExpression()
 
     def _handle_init(self, statement_entry: Entry) -> EntryExpression:
         stat_list: List[ActivityData] = []
@@ -1119,19 +1198,19 @@ class ScopeAnalysis:
         data_list = statement_entry.get_ordered_tuples(["idx", "val"])
         if len(data_list) != items_num:
             raise RuntimeError("invalid number of values in entry: {statement_entry}")
-        stat_list: List[ActivityData] = []
+        # stat_list: List[ActivityData] = []
         for index, data_item in enumerate(data_list):
             data_idx = data_item[0]
             data_val = data_item[1]
             idx_expr = str(index)
             if data_idx:
                 idx_entry_expr = self._analyze_func(data_idx)
-                stat_list.extend(idx_entry_expr.statements)
+                # stat_list.extend(idx_entry_expr.statements)
                 idx_expr = idx_entry_expr.expression
                 if not idx_entry_expr:
                     idx_expr = str(index)
             val_entry_expr = self._analyze_func(data_val)
-            stat_list.extend(val_entry_expr.statements)
+            # stat_list.extend(val_entry_expr.statements)
             val_expr = val_entry_expr.expression
             item_expr = f"[{idx_expr}] = {val_expr}"
             init_list.append(item_expr)
@@ -1156,6 +1235,28 @@ class ScopeAnalysis:
         if_node.items.append(false_stats)
 
         stat_list.append(if_node)
+
+    def _handle_ternary(self, statement_entry: Entry):
+        op0_entry = statement_entry.get("op 0")
+        op0_entry_expr = self._analyze_func(op0_entry)
+        op0_expr = op0_entry_expr.expression
+
+        op1_entry = statement_entry.get("op 1")  ## true branch
+        op1_entry_expr = self._analyze_func(op1_entry)
+        true_stats = op1_entry_expr.expression
+        if true_stats is None:
+            ## will fallthrough to IF handler
+            return None
+
+        op2_entry = statement_entry.get("op 2")  ## false branch
+        op2_entry_expr = self._analyze_func(op2_entry)
+        false_stats = op2_entry_expr.expression
+        if false_stats is None:
+            ## will fallthrough to IF handler
+            return None
+
+        ternary_expr = f"{op0_expr} ? {true_stats} : {false_stats}"
+        return EntryExpression(ternary_expr)
 
     def _handle_switch(self, statement_entry: Entry) -> EntryExpression:
         body_entry = statement_entry

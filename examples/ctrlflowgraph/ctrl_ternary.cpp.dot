@@ -1,0 +1,48 @@
+digraph {
+	fontname="SansSerif,sans-serif" labeljust=l nojustify=true ranksep=0.35
+	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
+	subgraph cluster_item_0 {
+		graph [label="::calcB(int const valueI) -> int"]
+		item_1 [label="int valueB = 9"]
+		item_2 [label="valueI == -22 ? ::calcA(1) : ::calcA(2)"]
+		item_1 -> item_2
+		item_3 [label="valueB = valueI == -11 ? 5 : 6 + valueB"]
+		item_2 -> item_3
+		item_4 [label="valueI == 1" shape=hexagon style=filled]
+		item_5 [label="valueB = valueB * 11"]
+		item_4 -> item_5 [label=true]
+		item_5 -> item_6
+		item_4 -> item_6 [label=false]
+		item_6 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		item_3 -> item_4
+		item_7 [label="valueI == 2" shape=hexagon style=filled]
+		item_8 [label="valueB = valueB + 21"]
+		item_9 [label="valueB = valueB + 22"]
+		item_7 -> item_8 [label=true]
+		item_8 -> item_10
+		item_7 -> item_9 [label=false]
+		item_9 -> item_10
+		item_10 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		item_6 -> item_7
+		item_11 [label="valueI == 3" shape=hexagon style=filled]
+		item_12 [label="valueB = valueB + 31"]
+		item_13 [label="valueB = valueB * 32"]
+		item_11 -> item_12 [label=true]
+		item_12 -> item_14
+		item_11 -> item_13 [label=false]
+		item_13 -> item_14
+		item_14 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		item_10 -> item_11
+		item_15 [label="return valueB" fillcolor=lightgreen]
+		item_16 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_15 -> item_16
+		item_14 -> item_15
+	}
+	subgraph cluster_item_17 {
+		graph [label="::calcA(int const paramA) -> int"]
+		item_18 [label="return paramA" fillcolor=lightgreen]
+		item_19 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_18 -> item_19
+	}
+	item_16 -> item_18 [style=invis]
+}

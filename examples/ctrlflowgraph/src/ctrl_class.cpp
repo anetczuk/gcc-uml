@@ -4,52 +4,59 @@
 
 
 namespace item {
-	class EmptyExamle {
-	};
+    class EmptyExamle {
+    };
 
-	class ExampleA {
-	public:
+    class ExampleA;
 
-		int fieldA;
+    int funcA(ExampleA* object) {
+        return 1;
+    }
 
-		ExampleA(): fieldA(5) {
-		}
+    class ExampleA {
+    public:
 
-		virtual ~ExampleA() {
-		}
+        int fieldA;
 
-		virtual int methodA1() {
-			EmptyExamle emptyObj;
-			const int ret = 5;
-			return ret;
-		}
-	};
+        ExampleA(): fieldA(5) {
+        }
 
-	class ExampleB {
-	public:
-		ExampleA objA;
+        virtual ~ExampleA() {
+        }
 
-		int methodB1(const int param) {
-			const float var1 = 3.3 * param;
-			const float var2 = param * 3.3;
-			const int valA = objA.methodA1();
-			int retX = methodB2(var1) * valA;
-			retX += 7;
-			int retY = methodB3(12);
-			return retX + retY;
-		}
+        virtual int methodA1() {
+            int ret = 5;
+            EmptyExamle emptyObj;
+            ret += funcA(this);
+            return ret;
+        }
+    };
 
-		static int methodB3(const int val) {
-			return val;
-		}
+    class ExampleB {
+    public:
+        ExampleA objA;
+
+        int methodB1(const int param) {
+            const float var1 = 3.3 * param;
+            const float var2 = param * 3.3;
+            const int valA = objA.methodA1();
+            int retX = methodB2(var1) * valA;
+            retX += 7;
+            int retY = methodB3(12);
+            return retX + retY;
+        }
+
+        static int methodB3(const int val) {
+            return val;
+        }
 
 
-	private:
+    private:
 
-		int methodB2(const float param) {
-			const float var = 6.6 * param;
-			return static_cast<int>(var);
-		}
-	};
+        int methodB2(const float param) {
+            const float var = 6.6 * param;
+            return static_cast<int>(var);
+        }
+    };
 
 }

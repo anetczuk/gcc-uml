@@ -76,8 +76,11 @@ def generate_control_flow_graph(
     content.convert_entries()
 
     graph_data = ControlFlowData(content, include_internals)
+
+    _LOGGER.info("generating data")
     graph_info = graph_data.generate_data()
 
+    _LOGGER.info("generating diagram")
     generate_diagram(engine, graph_info, out_path)
 
     _LOGGER.info("generating completed")

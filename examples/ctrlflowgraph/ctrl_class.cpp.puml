@@ -1,5 +1,11 @@
 @startuml
 
+card "::item::funcA(::item::ExampleA * object) -> int" {
+    #lightgreen:return 1;
+    stop
+    -[hidden]->
+}
+
 card "::item::ExampleB::methodB1(int const param) -> int" {
     :float const var1 = param * 3.2999999999999998223643161e+0;
     :float const var2 = param * 3.2999999999999998223643161e+0;
@@ -30,6 +36,7 @@ card "::item::ExampleB::methodB2(float const param) -> int" {
 
 card "::item::ExampleA::__ct_base() -> void" {
     :(*this) = {};
+    :__vtbl_ptr_type[] _ZTVN4item8ExampleAE = {[0] = 0, [1] = (&_ZTIN4item8ExampleAE), [2] = (&::item::ExampleA::__dt_comp), [3] = (&::item::ExampleA::__dt_del), [4] = (&::item::ExampleA::methodA1)};
     :_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16;
     :fieldA = 5;
     -[hidden]->
@@ -40,6 +47,7 @@ card "::item::ExampleA::__ct_comp() -> void" {
 }
 
 card "::item::ExampleA::__dt_base() -> void" {
+    :__vtbl_ptr_type[] _ZTVN4item8ExampleAE = {[0] = 0, [1] = (&_ZTIN4item8ExampleAE), [2] = (&::item::ExampleA::__dt_comp), [3] = (&::item::ExampleA::__dt_del), [4] = (&::item::ExampleA::methodA1)};
     :_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16;
     group try
         :None;
@@ -69,9 +77,11 @@ card "::item::ExampleA::__dt_del() -> void" {
 }
 
 card "::item::ExampleA::methodA1() -> int" {
+    :int ret = 5;
     :::item::EmptyExamle emptyObj;
-    :int const ret = 5;
-    #lightgreen:return 5;
+    :int __tmp_906 = ::item::funcA(this);
+    :ret = ret + __tmp_906;
+    #lightgreen:return ret;
     stop
     -[hidden]->
 }

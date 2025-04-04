@@ -1,0 +1,33 @@
+@startuml
+
+card "::calcB(int const valueI) -> int" {
+    :int valueB = 9;
+    :valueI == -22 ? ::calcA(1) : ::calcA(2);
+    :valueB = valueI == -11 ? 5 : 6 + valueB;
+    if (valueI == 1 ?) then (true)
+        :valueB = valueB * 11;
+    else (false)
+    endif
+    if (valueI == 2 ?) then (true)
+        :valueB = valueB + 21;
+    else (false)
+        :valueB = valueB + 22;
+    endif
+    if (valueI == 3 ?) then (true)
+        :valueB = valueB + 31;
+    else (false)
+        :valueB = valueB * 32;
+    endif
+    #lightgreen:return valueB;
+    stop
+    -[hidden]->
+}
+
+card "::calcA(int const paramA) -> int" {
+    #lightgreen:return paramA;
+    stop
+    -[hidden]->
+}
+
+
+@enduml

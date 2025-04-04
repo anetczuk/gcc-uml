@@ -40,164 +40,170 @@ digraph {
 			graph [label="catch: char const * exc"]
 			subgraph cluster_item_15 {
 				graph [label=try]
-				item_16 [label="::__cxa_begin_catch(::__builtin_eh_pointer(0))"]
-				item_17 [label="asd = 2"]
+				item_16 [label="char const * __tmp_230"]
+				item_17 [label="char const * __tmp_230 = ::__cxa_begin_catch(::__builtin_eh_pointer(0))"]
 				item_16 -> item_17
+				item_18 [label="asd = 2"]
+				item_17 -> item_18
 			}
-			subgraph cluster_item_18 {
+			subgraph cluster_item_19 {
 				graph [label=finally]
-				item_19 [label="::__cxa_end_catch()"]
+				item_20 [label="::__cxa_end_catch()"]
 			}
-			item_17 -> item_19
+			item_18 -> item_20
 		}
 		item_13 -> item_16
-		subgraph cluster_item_20 {
+		subgraph cluster_item_21 {
 			graph [label="catch: int"]
-			subgraph cluster_item_21 {
+			subgraph cluster_item_22 {
 				graph [label=try]
-				item_22 [label="::__cxa_begin_catch(::__builtin_eh_pointer(0))"]
-				item_23 [label="asd = 3"]
-				item_22 -> item_23
+				item_23 [label="int * __tmp_298"]
+				item_24 [label="int * __tmp_298 = ::__cxa_begin_catch(::__builtin_eh_pointer(0))"]
+				item_23 -> item_24
+				item_25 [label="asd = 3"]
+				item_24 -> item_25
 			}
-			subgraph cluster_item_24 {
+			subgraph cluster_item_26 {
 				graph [label=finally]
-				item_25 [label="::__cxa_end_catch()"]
+				item_27 [label="::__cxa_end_catch()"]
 			}
-			item_23 -> item_25
+			item_25 -> item_27
 		}
-		item_19 -> item_22
-		subgraph cluster_item_26 {
+		item_20 -> item_23
+		subgraph cluster_item_28 {
 			graph [label="catch: ..."]
 		}
 		item_11 -> item_13
 	}
 	"gotolabel_@61" -> item_11 [style=invis]
-	subgraph cluster_item_27 {
+	subgraph cluster_item_29 {
 		graph [label="::staticcast(int aaa) -> void"]
-		item_28 [label="int res = 0"]
-		item_29 [label="bool val = res != 0"]
-		item_28 -> item_29
+		item_30 [label="int res = 0"]
+		item_31 [label="bool val = res != 0"]
+		item_30 -> item_31
 	}
-	item_25 -> item_28 [style=invis]
-	subgraph cluster_item_30 {
+	item_27 -> item_30 [style=invis]
+	subgraph cluster_item_32 {
 		graph [label="::over::func3() -> void"]
-		item_31 [label="void (void) * fptr"]
-		item_32 [label="fptr = ::over::func_over()"]
-		item_31 -> item_32
-		item_33 [label="fptr()"]
-		item_32 -> item_33
+		item_33 [label="void (void) * fptr"]
+		item_34 [label="fptr = ::over::func_over()"]
+		item_33 -> item_34
+		item_35 [label="fptr()"]
+		item_34 -> item_35
 	}
-	item_29 -> item_31 [style=invis]
-	subgraph cluster_item_34 {
+	item_31 -> item_33 [style=invis]
+	subgraph cluster_item_36 {
 		graph [label="::staticcast() -> void"]
-		item_35 [label="int res = 0"]
-		item_36 [label="bool val = res != 0"]
-		item_35 -> item_36
+		item_37 [label="int res = 0"]
+		item_38 [label="bool val = res != 0"]
+		item_37 -> item_38
 	}
-	item_33 -> item_35 [style=invis]
-	subgraph cluster_item_37 {
+	item_35 -> item_37 [style=invis]
+	subgraph cluster_item_39 {
 		graph [label="::asm001() -> int"]
-		item_38 [label="int res"]
-		item_39 [label="assembler expression" fillcolor=orange]
-		item_38 -> item_39
-		item_40 [label="return res" fillcolor=lightgreen]
-		item_41 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_40 [label="int res"]
+		item_41 [label="assembler expression" fillcolor=orange]
 		item_40 -> item_41
-		item_39 -> item_40
+		item_42 [label="return res" fillcolor=lightgreen]
+		item_43 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_42 -> item_43
+		item_41 -> item_42
 	}
-	item_36 -> item_38 [style=invis]
-	subgraph cluster_item_42 {
+	item_38 -> item_40 [style=invis]
+	subgraph cluster_item_44 {
 		graph [label="::compare001() -> void"]
-		item_43 [label="int www1 = 0"]
-		item_44 [label="www1 <= 10" shape=hexagon style=filled]
-		item_45 [label="www1++"]
-		item_44 -> item_45 [label=true]
+		item_45 [label="int www1 = 0"]
+		item_46 [label="www1 <= 10" shape=hexagon style=filled]
+		item_47 [label="www1++"]
+		item_46 -> item_47 [label=true]
+		item_47 -> item_48
+		item_46 -> item_48 [label=false]
+		item_48 [label="" height=0.2 shape=diamond style=filled width=0.2]
 		item_45 -> item_46
-		item_44 -> item_46 [label=false]
-		item_46 [label="" height=0.2 shape=diamond style=filled width=0.2]
-		item_43 -> item_44
-		item_47 [label="www1 > 9" shape=hexagon style=filled]
-		item_48 [label="www1++"]
-		item_47 -> item_48 [label=true]
+		item_49 [label="www1 > 9" shape=hexagon style=filled]
+		item_50 [label="www1++"]
+		item_49 -> item_50 [label=true]
+		item_50 -> item_51
+		item_49 -> item_51 [label=false]
+		item_51 [label="" height=0.2 shape=diamond style=filled width=0.2]
 		item_48 -> item_49
-		item_47 -> item_49 [label=false]
-		item_49 [label="" height=0.2 shape=diamond style=filled width=0.2]
-		item_46 -> item_47
 	}
-	item_41 -> item_43 [style=invis]
-	subgraph cluster_item_50 {
+	item_43 -> item_45 [style=invis]
+	subgraph cluster_item_52 {
 		graph [label="::increment001() -> void"]
-		item_51 [label="int www1 = 0"]
-		item_52 [label="++www1"]
-		item_51 -> item_52
-		item_53 [label="--www1"]
-		item_52 -> item_53
-		item_54 [label="www1++"]
+		item_53 [label="int www1 = 0"]
+		item_54 [label="++www1"]
 		item_53 -> item_54
-		item_55 [label="www1--"]
+		item_55 [label="--www1"]
 		item_54 -> item_55
+		item_56 [label="www1++"]
+		item_55 -> item_56
+		item_57 [label="www1--"]
+		item_56 -> item_57
 	}
-	item_49 -> item_51 [style=invis]
-	subgraph cluster_item_56 {
+	item_51 -> item_53 [style=invis]
+	subgraph cluster_item_58 {
 		graph [label="::goto001() -> int"]
-		item_57 [label="int ggg1 = 0"]
-		item_58 [label="ggg1 != 0" shape=hexagon style=filled]
-		item_59 [label="goto err_not_found" shape=larrow style=filled]
-		item_59 -> "gotolabel_@321"
-		item_58 -> item_59 [label=true]
-		item_58 -> item_60 [label=false]
-		item_60 [label="" height=0.2 shape=diamond style=filled width=0.2]
-		item_57 -> item_58
-		item_61 [label="return 1" fillcolor=lightgreen]
-		item_62 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
-		item_61 -> item_62
-		item_60 -> item_61
-		"gotolabel_@321" [label="label err_not_found" shape=cds style=filled]
-		item_62 -> "gotolabel_@321" [style=invis]
-		item_63 [label="return 2" fillcolor=lightgreen]
+		item_59 [label="int ggg1 = 0"]
+		item_60 [label="ggg1 != 0" shape=hexagon style=filled]
+		item_61 [label="goto err_not_found" shape=larrow style=filled]
+		item_61 -> "gotolabel_@321"
+		item_60 -> item_61 [label=true]
+		item_60 -> item_62 [label=false]
+		item_62 [label="" height=0.2 shape=diamond style=filled width=0.2]
+		item_59 -> item_60
+		item_63 [label="return 1" fillcolor=lightgreen]
 		item_64 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
 		item_63 -> item_64
-		"gotolabel_@321" -> item_63
+		item_62 -> item_63
+		"gotolabel_@321" [label="label err_not_found" shape=cds style=filled]
+		item_64 -> "gotolabel_@321" [style=invis]
+		item_65 [label="return 2" fillcolor=lightgreen]
+		item_66 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_65 -> item_66
+		"gotolabel_@321" -> item_65
 	}
-	item_55 -> item_57 [style=invis]
-	subgraph cluster_item_65 {
+	item_57 -> item_59 [style=invis]
+	subgraph cluster_item_67 {
 		graph [label="::truth_if001() -> void"]
-		item_66 [label="int a = 0"]
-		item_67 [label="int b = 0"]
-		item_66 -> item_67
-		item_68 [label="int c = a != 0 && b != 0"]
-		item_67 -> item_68
+		item_68 [label="int a = 0"]
+		item_69 [label="int b = 0"]
+		item_68 -> item_69
+		item_70 [label="int c = a != 0 && b != 0"]
+		item_69 -> item_70
 	}
-	item_64 -> item_66 [style=invis]
-	subgraph cluster_item_69 {
+	item_66 -> item_68 [style=invis]
+	subgraph cluster_item_71 {
 		graph [label="::compound001() -> void"]
-		item_70 [label="short int aaa1 = 0"]
-		item_71 [label="aaa1 = ::foo(2)"]
-		item_70 -> item_71
-		item_72 [label="aaa1 = ::foo(::foo(4))"]
-		item_71 -> item_72
-		item_73 [label="::foo(5)"]
+		item_72 [label="short int aaa1 = 0"]
+		item_73 [label=void]
 		item_72 -> item_73
-		item_74 [label="aaa1 = ::foo(6)"]
+		item_74 [label="aaa1 = ::foo(2)"]
 		item_73 -> item_74
-		item_75 [label="::foo(7)"]
+		item_75 [label="aaa1 = ::foo(::foo(4))"]
 		item_74 -> item_75
-		item_76 [label="aaa1 = ::foo(::foo(8))"]
+		item_76 [label="::foo(5)"]
 		item_75 -> item_76
-	}
-	item_68 -> item_70 [style=invis]
-	subgraph cluster_item_77 {
-		graph [label="::foo(short int p2) -> short int"]
-		item_78 [label="return p2 + 1" fillcolor=lightgreen]
-		item_79 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_77 [label="aaa1 = ::foo(6)"]
+		item_76 -> item_77
+		item_78 [label="::foo(7)"]
+		item_77 -> item_78
+		item_79 [label="aaa1 = ::foo(::foo(8))"]
 		item_78 -> item_79
 	}
-	item_76 -> item_78 [style=invis]
+	item_70 -> item_72 [style=invis]
 	subgraph cluster_item_80 {
-		graph [label="::over::func_over() -> void (void) *"]
-		item_81 [label="return (&::over::func1)" fillcolor=lightgreen]
+		graph [label="::foo(short int p2) -> short int"]
+		item_81 [label="return p2 + 1" fillcolor=lightgreen]
 		item_82 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
 		item_81 -> item_82
 	}
 	item_79 -> item_81 [style=invis]
+	subgraph cluster_item_83 {
+		graph [label="::over::func_over() -> void (void) *"]
+		item_84 [label="return (&::over::func1)" fillcolor=lightgreen]
+		item_85 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_84 -> item_85
+	}
+	item_82 -> item_84 [style=invis]
 }

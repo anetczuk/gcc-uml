@@ -26,31 +26,39 @@ digraph {
 	subgraph cluster_item_9 {
 		graph [label="::item::ExampleB::__ct() -> void"]
 		item_10 [label="(&(*this))->__ct_base()"]
-		item_11 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleBE) + 16"]
+		item_11 [label="__vtbl_ptr_type[] _ZTVN4item8ExampleBE = {[0] = 0, [1] = (&_ZTIN4item8ExampleBE), [2] = (&::item::ExampleB::methodB1), [3] = (&::item::ExampleB::methodB2)}"]
 		item_10 -> item_11
+		item_12 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleBE) + 16"]
+		item_11 -> item_12
 	}
 	item_4 -> item_10 [style=invis]
-	subgraph cluster_item_12 {
+	subgraph cluster_item_13 {
 		graph [label="::item::ExampleA::__ct() -> void"]
-		item_13 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16"]
+		item_14 [label="__vtbl_ptr_type[] _ZTVN4item8ExampleAE = {[0] = 0, [1] = (&_ZTIN4item8ExampleAE), [2] = (&::item::ExampleA::methodB1), [3] = (&::item::ExampleA::methodB2)}"]
+		item_15 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16"]
+		item_14 -> item_15
 	}
-	item_11 -> item_13 [style=invis]
-	subgraph cluster_item_14 {
+	item_12 -> item_14 [style=invis]
+	subgraph cluster_item_16 {
 		graph [label="::item::ExampleB::__ct_base() -> void"]
-		item_15 [label="(&(*this))->__ct_base()"]
-		item_16 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleBE) + 16"]
-		item_15 -> item_16
+		item_17 [label="(&(*this))->__ct_base()"]
+		item_18 [label="__vtbl_ptr_type[] _ZTVN4item8ExampleBE = {[0] = 0, [1] = (&_ZTIN4item8ExampleBE), [2] = (&::item::ExampleB::methodB1), [3] = (&::item::ExampleB::methodB2)}"]
+		item_17 -> item_18
+		item_19 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleBE) + 16"]
+		item_18 -> item_19
 	}
-	item_13 -> item_15 [style=invis]
-	subgraph cluster_item_17 {
+	item_15 -> item_17 [style=invis]
+	subgraph cluster_item_20 {
 		graph [label="::item::ExampleA::__ct_base() -> void"]
-		item_18 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16"]
+		item_21 [label="__vtbl_ptr_type[] _ZTVN4item8ExampleAE = {[0] = 0, [1] = (&_ZTIN4item8ExampleAE), [2] = (&::item::ExampleA::methodB1), [3] = (&::item::ExampleA::methodB2)}"]
+		item_22 [label="_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16"]
+		item_21 -> item_22
 	}
-	item_16 -> item_18 [style=invis]
-	subgraph cluster_item_19 {
+	item_19 -> item_21 [style=invis]
+	subgraph cluster_item_23 {
 		graph [label="::item::ExampleB::__ct_comp() -> void"]
 	}
-	subgraph cluster_item_20 {
+	subgraph cluster_item_24 {
 		graph [label="::item::ExampleA::__ct_comp() -> void"]
 	}
 }

@@ -26,22 +26,26 @@ card "::item::ExampleB::methodB2() -> void" {
 
 card "::item::ExampleB::__ct() -> void" {
     :(&(*this))->__ct_base();
+    :__vtbl_ptr_type[] _ZTVN4item8ExampleBE = {[0] = 0, [1] = (&_ZTIN4item8ExampleBE), [2] = (&::item::ExampleB::methodB1), [3] = (&::item::ExampleB::methodB2)};
     :_vptr.ExampleA = (&_ZTVN4item8ExampleBE) + 16;
     -[hidden]->
 }
 
 card "::item::ExampleA::__ct() -> void" {
+    :__vtbl_ptr_type[] _ZTVN4item8ExampleAE = {[0] = 0, [1] = (&_ZTIN4item8ExampleAE), [2] = (&::item::ExampleA::methodB1), [3] = (&::item::ExampleA::methodB2)};
     :_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16;
     -[hidden]->
 }
 
 card "::item::ExampleB::__ct_base() -> void" {
     :(&(*this))->__ct_base();
+    :__vtbl_ptr_type[] _ZTVN4item8ExampleBE = {[0] = 0, [1] = (&_ZTIN4item8ExampleBE), [2] = (&::item::ExampleB::methodB1), [3] = (&::item::ExampleB::methodB2)};
     :_vptr.ExampleA = (&_ZTVN4item8ExampleBE) + 16;
     -[hidden]->
 }
 
 card "::item::ExampleA::__ct_base() -> void" {
+    :__vtbl_ptr_type[] _ZTVN4item8ExampleAE = {[0] = 0, [1] = (&_ZTIN4item8ExampleAE), [2] = (&::item::ExampleA::methodB1), [3] = (&::item::ExampleA::methodB2)};
     :_vptr.ExampleA = (&_ZTVN4item8ExampleAE) + 16;
     -[hidden]->
 }
