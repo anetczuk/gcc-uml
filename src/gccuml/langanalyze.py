@@ -128,7 +128,9 @@ def find_class_vtable_var_decl(content: LangContent, record_entry: Entry) -> Ent
     for entry in content.content_objs.values():
         if entry.get_type() != "var_decl":
             continue
-        entry_name = get_entry_name(entry)
+        entry_name = get_entry_name(entry, default_ret=None)
+        if not entry_name:
+            continue
         if not entry_name.startswith("_ZTV"):
             continue
         if class_name not in entry_name:
@@ -148,9 +150,7 @@ def get_vtable_entries(vtable_var_decl: Entry) -> Dict[int, Entry]:
     tab_dict = {}
     var_init = vtable_var_decl.get("init")
     items_num = int(var_init.get("lngt"))
-    data_list = var_init.get_ordered_tuples(["idx", "val"])
-    if len(data_list) != items_num:
-        raise RuntimeError("invalid number of values in entry: {statement_entry}")
+    data_list = var_init.get_indexed_tuples(["idx", "val"], items_num)
     for index, data_item in enumerate(data_list):
         data_idx = data_item[0]
         data_val = data_item[1]
@@ -159,8 +159,11 @@ def get_vtable_entries(vtable_var_decl: Entry) -> Dict[int, Entry]:
             idx_expr = get_number_entry_value(data_idx)
             idx_expr = int(idx_expr)
         subval_entry = data_val.get("op 0")
-        if subval_entry.get_type() == "addr_expr":
-            subval_entry = subval_entry.get("op 0")
+        if subval_entry:
+            if subval_entry.get_type() == "addr_expr":
+                subval_entry = subval_entry.get("op 0")
+        else:
+            subval_entry = data_val
         tab_dict[idx_expr] = subval_entry
     return tab_dict
 

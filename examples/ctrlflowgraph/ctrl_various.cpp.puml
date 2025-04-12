@@ -1,5 +1,13 @@
 @startuml
 
+card "::throw_example() -> void" {
+    :void * __tmp_111 = ::__cxa_allocate_exception(8);
+    :(*__tmp_111) = (&"xxx");
+    :::__pointer_type_info_pseudo_6 const _ZTIPKc;
+    :::__cxa_throw(__tmp_111, (&::__pointer_type_info_pseudo_6 const _ZTIPKc), 0);
+    -[hidden]->
+}
+
 card "::shift_func(int iter) -> void" {
     :int b = iter << 1;
     :int c = iter >> 2;
@@ -7,21 +15,21 @@ card "::shift_func(int iter) -> void" {
 }
 
 card "::while_func(int iter) -> void" {
-    #orange:goto @55;
+    #orange:goto @86;
     note right: not supported
-    #orange:label @56;
+    #orange:label @87;
     note right: not supported
     :iter = iter + -2;
-    #orange:label @55;
+    #orange:label @86;
     note right: not supported
     if (iter > 0 ?) then (true)
-        #orange:goto @56;
+        #orange:goto @87;
         note right: not supported
     else (false)
-        #orange:goto @61;
+        #orange:goto @92;
         note right: not supported
     endif
-    #orange:label @61;
+    #orange:label @92;
     note right: not supported
     -[hidden]->
 }
@@ -34,8 +42,8 @@ card "::try_func() -> void" {
 
     group catch: char const * exc
         group try
-            :char const * __tmp_230;
-            :char const * __tmp_230 = ::__cxa_begin_catch(::__builtin_eh_pointer(0));
+            :char const * __tmp_288;
+            :char const * __tmp_288 = ::__cxa_begin_catch(::__builtin_eh_pointer(0));
             :asd = 2;
         end group
 
@@ -47,8 +55,8 @@ card "::try_func() -> void" {
 
     group catch: int
         group try
-            :int * __tmp_298;
-            :int * __tmp_298 = ::__cxa_begin_catch(::__builtin_eh_pointer(0));
+            :int * __tmp_356;
+            :int * __tmp_356 = ::__cxa_begin_catch(::__builtin_eh_pointer(0));
             :asd = 3;
         end group
 

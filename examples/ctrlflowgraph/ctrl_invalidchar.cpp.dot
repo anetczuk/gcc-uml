@@ -3,7 +3,7 @@ digraph {
 	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
 	subgraph cluster_item_0 {
 		graph [label="::main() -> int"]
-		item_1 [label="char const * bad_char = (&0xFF20)"]
+		item_1 [label="char const * bad_char = (&\"0xFF20\")"]
 		item_2 [label="uint8_t[] bad_char_array = 0xFF41FF"]
 		item_1 -> item_2
 		item_3 [label="return 0" fillcolor=lightgreen]

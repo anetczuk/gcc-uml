@@ -119,6 +119,17 @@ class Entry(Munch):
             ret_list.append(ret_tuple)
         return ret_list
 
+    def get_indexed_tuples(self, props_list: List[str], elems_num: int) -> List[List[Any]]:
+        ret_list = []
+        for idx in range(0, elems_num):
+            ret_tuple = []
+            for prop_item in props_list:
+                key = f"{prop_item}_{idx}"
+                val = self.get(key)
+                ret_tuple.append(val)
+            ret_list.append(ret_tuple)
+        return ret_list
+
     def get_sub_entries(self, prop=None) -> List[Tuple[str, "Entry"]]:
         ret_list = []
         if prop is not None:
@@ -885,13 +896,6 @@ def get_decl_namespace_list(decl_entry: Entry) -> List[str]:
 
 
 def get_full_name(entry: Entry) -> str:
-    if entry is not None:
-        entry_type = entry.get_type()
-        if entry_type in ("function_type", "method_type"):
-            ret_type = get_function_ret(entry)
-            params_list = get_func_type_parameters(entry)
-            params_str = ", ".join(params_list)
-            return f"{ret_type} ({params_str})"
     return get_entry_repr(entry)
 
 
@@ -899,13 +903,24 @@ def get_entry_repr(entry: Entry) -> str:
     if not isinstance(entry, Entry):
         return entry
 
+    num_value = get_number_entry_value(entry, fail_exception=False)
+    if num_value is not None:
+        return num_value
+
     type_name = get_type_entry_name(entry)
     if type_name is not None:
         return type_name
 
-    num_value = get_number_entry_value(entry, fail_exception=False)
-    if num_value is not None:
-        return num_value
+    entry_type = entry.get_type()
+    if entry_type in ("non_lvalue_expr", "view_convert_expr", "bit_not_expr"):
+        op_expr = entry.get("op 0")
+        return get_entry_repr(op_expr)
+
+    if entry_type in ("function_type", "method_type"):
+        ret_type = get_function_ret(entry)
+        params_list = get_func_type_parameters(entry)
+        params_str = ", ".join(params_list)
+        return f"{ret_type} ({params_str})"
 
     ## in case of base classes field_decls does not have any name
     field_name = get_entry_name(entry, None)
@@ -915,7 +930,6 @@ def get_entry_repr(entry: Entry) -> str:
     if field_type is not None:
         return get_entry_repr(field_type)
 
-    entry_type = entry.get_type()
     if entry_type == "handler":
         return ""
 
@@ -1032,6 +1046,10 @@ def get_type_name_mod(type_entry: Entry):
         # TODO: there is no info about type in dump file
         return ("complex-type ???", parm_mod)
 
+    if entry_type == "var_decl":
+        param_name = get_entry_name(type_entry, default_ret=None)
+        return (param_name, parm_mod)
+
     name_list = get_decl_namespace_list(type_entry)
     if name_list:
         param_name = "::".join(name_list)
@@ -1068,6 +1086,10 @@ class EntryNameResolver:
             if entry_value is not None:
                 return self.get_entry_name(entry_value)
 
+            entry_value = entry.get("mngl")
+            if entry_value is not None:
+                return self.get_entry_name(entry_value)
+
             entry_type = entry.get_type()
             if entry_type == "identifier_node":
                 entry_value = entry.get("strg", "[--no entry--]")
@@ -1091,12 +1113,24 @@ class EntryNameResolver:
                 "type_pack_expansion",
                 "baselink",
                 "ctor_initializer",
+                "expr_pack_expansion",
+                "addressof_expr",
+                "static_assert",
+                "lambda_expr",
             ):
                 ##TODO: no data in dump file
                 return ""
 
             if self._default == "[--unknown--]":
-                if entry_type in ("decltype_type", "call_expr", "component_ref", "cond_expr"):
+                if entry_type in (
+                    "decltype_type",
+                    "call_expr",
+                    "component_ref",
+                    "cond_expr",
+                    "modop_expr",
+                    "arrow_expr",
+                    "trait_type",
+                ):
                     ##TODO: no data in dump file
                     ## sometimes type does not have 'name' property
                     return ""
@@ -1128,7 +1162,7 @@ def get_number_entry_value(value: Entry, fail_exception=True):
         return "{????}"
 
     if fail_exception:
-        raise RuntimeError("unhandled number entry: {value_type}, {value.get_id()}")
+        raise RuntimeError(f"unhandled number entry: {value_type}, {value.get_id()}")
     return None
 
 

@@ -244,7 +244,7 @@ class SwitchContext:
         label_id = case_label_expr_entry.get_id()
         if case_value_entry is not None:
             ## normal case
-            case_value = get_number_entry_value(case_value_entry)
+            case_value = get_entry_repr(case_value_entry)
             self.recent_case_value = (label_id, case_value)
         else:
             ## default case
@@ -321,7 +321,7 @@ class ScopeAnalysis:
     def _read_var_defs(self, bind_expr: Entry):
         bind_vars = bind_expr.get_sub_entries("vars")
         for _var_prop, var_item in bind_vars:
-            var_name = get_entry_name(var_item)
+            var_name = get_entry_name(var_item, default_ret="/*anon*/")
             decl_entry_expr = self.handle_var(var_item)
             decl_expr = decl_entry_expr.expression
             self.vars.append((var_name, decl_expr))
@@ -389,12 +389,20 @@ class ScopeAnalysis:
             "bit_field_ref",
             "realpart_expr",
             "imagpart_expr",
-            "scope_ref",
             "mem_ref",
-            "view_convert_expr",
         ):
             statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
             return EntryExpression(statements=[statement])
+
+        if type_name == "scope_ref":
+            ##TODO: no data in dump file
+            statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            return EntryExpression(statements=[statement])
+
+        if type_name == "view_convert_expr":
+            op0_entry = statement_entry.get("op 0")
+            op0_name = get_entry_repr(op0_entry)
+            return EntryExpression(op0_name)
 
         if type_name == "array_ref":
             stat_list = []
@@ -442,6 +450,11 @@ class ScopeAnalysis:
                 stat_list.extend(item_entry_expr.statements)
             return EntryExpression(statements=stat_list)
 
+        if type_name == "lambda_expr":
+            ##TODO: no data in dump file
+            statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            return EntryExpression(statements=[statement])
+
         ## tcc_declaration
         entry_expr = self._handle_declaration(statement_entry)
         if entry_expr:
@@ -452,14 +465,17 @@ class ScopeAnalysis:
             return self._handle_call(statement_entry)
 
         if type_name == "aggr_init_expr":
-            return self._handle_call(statement_entry)
+            # return self._handle_call(statement_entry)
+            ##TODO: implement
+            statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            return EntryExpression(statements=[statement])
 
         ## =========================
 
-        _LOGGER.error("unhandled statement type %s %s", statement_entry.get_id(), type_name)
+        _LOGGER.error("unhandled entry type %s %s", statement_entry.get_id(), type_name)
 
         node = TypedStatement(
-            f"+++ unhandled statement {statement_entry.get_id()} {statement_entry.get_type()} +++", StatementType.NODE
+            f"+++ unhandled entry {statement_entry.get_id()} {statement_entry.get_type()} +++", StatementType.NODE
         )
         node.color = "#orange"
         return EntryExpression(statements=[node])
@@ -478,7 +494,7 @@ class ScopeAnalysis:
 
         ## case_label_expr - case from switch inside code block
         ## "for_stmt" does not exists?
-        if type_name in ("if_stmt", "for_stmt", "while_stmt", "try_catch_expr", "do_stmt"):
+        if type_name in ("if_stmt", "for_stmt", "while_stmt", "try_catch_expr", "do_stmt", "range_for_stmt"):
             statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
             return EntryExpression(statements=[statement])
 
@@ -537,6 +553,10 @@ class ScopeAnalysis:
         if type_name == "switch_expr":
             return self._handle_switch(statement_entry)
 
+        if type_name == "switch_stmt":
+            ## rare item
+            return self._handle_switch(statement_entry)
+
         if type_name == "return_expr":
             return self._handle_return(statement_entry)
 
@@ -584,7 +604,17 @@ class ScopeAnalysis:
             self.scope_vars.add(var_name)
             return entry_stat
 
-        return EntryExpression()
+        if type_name == "using_stmt":
+            namespace_entry = statement_entry.get("nmsp")
+            return self._analyze_func(namespace_entry)
+
+        _LOGGER.error("unhandled statement type %s %s", statement_entry.get_id(), type_name)
+
+        node = TypedStatement(
+            f"+++ unhandled statement {statement_entry.get_id()} {statement_entry.get_type()} +++", StatementType.NODE
+        )
+        node.color = "#orange"
+        return EntryExpression(statements=[node])
 
     def _handle_try_block(self, statement_entry: Entry, stat_list: List[Any]):
         body_entry = statement_entry.get("body")
@@ -646,6 +676,10 @@ class ScopeAnalysis:
             return EntryExpression()
 
         type_name = statement_entry.get_type()
+
+        if type_name in ("noexcept_expr"):
+            statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            return EntryExpression(statements=[statement])
 
         cast_op_data = OP_UNARY_CAST_DICT.get(type_name)
         if cast_op_data:
@@ -808,6 +842,7 @@ class ScopeAnalysis:
             return EntryExpression(f"{op_before}{op0_expr}{op_sign}{op1_expr}{op_after}")
         return EntryExpression(f"{op0_expr} {op_sign} {op1_expr}", stat_list)
 
+    # pylint: disable=R0912
     def _handle_expression(self, statement_entry: Entry) -> EntryExpression:
         is_code_class = is_entry_code_class(statement_entry, "tcc_expression")
         if not is_code_class:
@@ -870,6 +905,7 @@ class ScopeAnalysis:
             return EntryExpression(f"{op1_expr}", stat_list)
 
         if type_name == "target_expr":
+            ## initialization of variable (mostly)
             decl_entry = statement_entry.get("decl")
             decl_expr: EntryExpression = self._analyze_func(decl_entry)
             init_entry = statement_entry.get("init")
@@ -877,7 +913,11 @@ class ScopeAnalysis:
             if not decl_expr or not decl_expr.expression:
                 expr = init_expr.expression
                 return EntryExpression(expr)
-            expr = decl_expr.expression + " = " + init_expr.expression
+            expr = ""
+            if init_expr.expression:
+                expr = decl_expr.expression + " = " + init_expr.expression
+            else:
+                expr = decl_expr.expression + " = ?????"
             return EntryExpression(expr)
 
         if type_name == "addr_expr":
@@ -885,6 +925,8 @@ class ScopeAnalysis:
             item_entry_expr = self._analyze_func(op_entry)
             item_expr = item_entry_expr.expression
             if item_expr is not None:
+                if op_entry.get_type() == "string_cst":
+                    item_expr = f'"{item_expr}"'
                 item_entry_expr.expression = "(&" + item_expr + ")"
             return item_entry_expr
 
@@ -894,6 +936,10 @@ class ScopeAnalysis:
             # bind_list = scope_analysis.analyze(statement_entry)
             bind_list = self.analyze(statement_entry)
             return EntryExpression(statements=bind_list)
+
+        if type_name == "throw_expr":
+            op0_entry = statement_entry.get("op 0")
+            return self._analyze_func(op0_entry)
 
         if type_name == "must_not_throw_expr":
             body_entry = statement_entry.get("body")
@@ -918,6 +964,13 @@ class ScopeAnalysis:
         if type_name == "save_expr":
             op0_entry = statement_entry.get("op 0")
             return self._analyze_func(op0_entry)
+
+        if type_name == "typeid_expr":
+            ##TODO: no data in dump file
+            # type_expr = statement_entry.get("type")
+            # type_name, _type_constness = get_type_name_mod(type_expr)
+            expr = "typeid( ??? )"
+            return EntryExpression(expr)
 
         if type_name in UNSUPPORTED_EXPRESSION_SET:
             statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
@@ -971,9 +1024,13 @@ class ScopeAnalysis:
         return EntryExpression(f"{op0_expr} {op_sign} {op1_expr}", stat_list)
 
     def _handle_declaration(self, statement_entry: Entry) -> EntryExpression:
+        is_code_class = is_entry_code_class(statement_entry, "tcc_declaration")
+        if not is_code_class:
+            return EntryExpression()
+
         type_name = statement_entry.get_type()
 
-        if type_name == "label_decl":
+        if type_name in ("label_decl", "using_decl"):
             statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
             return EntryExpression(statements=[statement])
 
@@ -990,7 +1047,8 @@ class ScopeAnalysis:
             return EntryExpression(name)
 
         if type_name == "parm_decl":
-            name = get_entry_name(statement_entry)
+            ## what does it mean if "anon" happens?
+            name = get_entry_name(statement_entry, default_ret="/*anon*/")
             return EntryExpression(name)
 
         if type_name == "var_decl":
@@ -1033,7 +1091,23 @@ class ScopeAnalysis:
             return EntryExpression(expr, stat_list)
             # return EntryExpression(var_name, stat_list)
 
-        return EntryExpression()
+        if type_name == "namespace_decl":
+            ##TODO: no data in dump file
+            statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            return EntryExpression(statements=[statement])
+
+        if type_name == "const_decl":
+            ##TODO: no data in dump file
+            statement = TypedStatement(f"{type_name} {statement_entry.get_id()}", StatementType.UNSUPPORTED)
+            return EntryExpression(statements=[statement])
+
+        _LOGGER.error("unhandled declaration type %s %s", statement_entry.get_id(), type_name)
+
+        node = TypedStatement(
+            f"+++ unhandled declaration {statement_entry.get_id()} {statement_entry.get_type()} +++", StatementType.NODE
+        )
+        node.color = "#orange"
+        return EntryExpression(statements=[node])
 
     def _handle_init(self, statement_entry: Entry) -> EntryExpression:
         stat_list: List[ActivityData] = []
@@ -1111,6 +1185,7 @@ class ScopeAnalysis:
         params_str = ", ".join(params_list)
         return EntryExpression(f"{obj_name}{func_name}({params_str})", stat_list)
 
+    ## returns pair: (name, is_method)
     def _get_call_expr_name(self, call_expr_entry: Entry):
         func_decl = self._get_function_decl(call_expr_entry)
         if func_decl is None:
@@ -1119,14 +1194,19 @@ class ScopeAnalysis:
         if fn_type == "function_decl":
             return self._get_function_info(func_decl)
 
-        if fn_type == "var_decl":
-            var_name = get_entry_name(func_decl)
-            return (var_name, False)
+        if fn_type in ("var_decl", "using_decl", "identifier_node", "integer_cst"):
+            ##TODO: it shouldn't be listed types - generalization required
+            using_name = get_entry_repr(func_decl)
+            return (using_name, False)
 
-        if fn_type == "va_arg_expr":
+        if fn_type == "va_arg":
             # happens when function pointer is taken by va_arg macro
             # and then when it's called
             return ("va_arg", False)
+
+        if fn_type == "lambda_expr":
+            ##TODO: no data in dump file
+            return ("lambda", False)
 
         _LOGGER.error("unhandled call type: %s %s in %s", fn_type, func_decl.get_id(), call_expr_entry.get_id())
         return (None, False)
@@ -1136,13 +1216,16 @@ class ScopeAnalysis:
         if expr_entry is None:
             ## happens when "[[fallthrough]]" is used explicit
             return None
+
         expr_type = expr_entry.get_type()
+
         if expr_type == "addr_expr":
             func_decl = expr_entry.get("op 0")
             if func_decl is None:
                 # obj_type_ref - before the path there is only "type" field
                 return None
             return func_decl
+
         if expr_type == "obj_type_ref":
             # try to get virtual method
             tok_entry = expr_entry.get("tok")
@@ -1167,7 +1250,8 @@ class ScopeAnalysis:
             vtable_entries: Dict[int, Entry] = get_vtable_entries(vtable_var)
             vfunc_decl: Entry = vtable_entries[vtable_index]
             return vfunc_decl
-        if expr_type == "var_decl":
+
+        if expr_type in ("var_decl", "using_decl", "identifier_node", "lambda_expr"):
             return expr_entry
 
         if expr_type in EXPR_UNSUPPORTED_SET:
@@ -1175,7 +1259,9 @@ class ScopeAnalysis:
             # _LOGGER.warning(f"unhandled call expression: {expr_type}")
             return None
 
-        _LOGGER.error("unhandled expr type: %s %s in %s", expr_type, expr_entry.get_id(), call_expr_entry.get_id())
+        _LOGGER.error(
+            "unhandled function declaration: %s %s in %s", expr_type, expr_entry.get_id(), call_expr_entry.get_id()
+        )
         return None
 
     def _get_function_info(self, func_decl: Entry):
@@ -1307,6 +1393,11 @@ class ScopeAnalysis:
             if case_entry_type == "label_expr":
                 # break target label
                 switch_context.set_fallthrough(True)
+                continue
+
+            if case_entry_type == "break_stmt":
+                # break statement
+                switch_context.set_fallthrough(False)
                 continue
 
             ## add regular branch

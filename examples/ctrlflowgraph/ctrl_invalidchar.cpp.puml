@@ -1,7 +1,7 @@
 @startuml
 
 card "::main() -> int" {
-    :char const * bad_char = (&0xFF20);
+    :char const * bad_char = (&"0xFF20");
     :uint8_t[] bad_char_array = 0xFF41FF;
     #lightgreen:return 0;
     stop

@@ -341,6 +341,7 @@ to find unhandled lang tree elements.
 
 - [GCC tree codes documentation (mirror)](https://github.com/gcc-mirror/gcc/blob/master/gcc/tree.def)
 - [GCC C++ tree codes documentation (mirror)](https://github.com/gcc-mirror/gcc/blob/master/gcc/cp/cp-tree.def)
+- [GCC C common tree codes documentation (mirror)](https://github.com/gcc-mirror/gcc/blob/master/gcc/c-family/c-common.def)
 - [GCC source repository](https://gcc.gnu.org/git/?p=gcc.git)
 - [Itanium C++ ABI](https://itanium-cxx-abi.github.io/cxx-abi/abi.html)
 - [GCC Internals Manual](https://gcc.gnu.org/onlinedocs/gccint/)

@@ -118,6 +118,17 @@ elif [[ "$*" == *"--ctrlflowgraph"* ]]; then
     worker_command() {
         worker_ctrlflowgraph "$@"
     }
+elif [[ "$*" == *"--all"* ]]; then
+    echo "using all tools"
+    worker_command() {
+        worker_printhtml "$@"
+
+        worker_memlayout "$@"
+
+        worker_inheritgraph "$@"
+
+        worker_ctrlflowgraph "$@"
+    }
 else
     echo "no tool given, expected one of: --printhtml --inheritgraph --memlayout --ctrlflowgraph"
     exit 1
