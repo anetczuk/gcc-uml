@@ -1,0 +1,55 @@
+@startuml
+
+card "::main() -> int" {
+    :::check_switch(0);
+    :::check_switch(1);
+    :::check_switch(2);
+    :::check_switch(3);
+    #lightgreen:return 0;
+    stop
+    -[hidden]->
+}
+
+card "::check_switch(int const value) -> int" {
+    :::printf((&"value: %i\\n"), value);
+
+partition "switch:\nvalue" {
+    ' case: 0 fallthrough: False
+    if ( 0 ? ) then (yes)
+        :::printf((&"    case 0\\n"));
+        if (value & 1 == 0 ?) then (true)
+            #orange:label 1;
+            note right: not supported
+            :::printf((&"    value is even\\n"));
+        else (false)
+            #orange:label 2;
+            note right: not supported
+            :::printf((&"    value is odd\\n"));
+        endif
+    else
+        ' case: None fallthrough: True
+        if ( default ) then (yes)
+            :::printf((&"    case default\\n"));
+        else
+            -[hidden]->
+        endif
+    endif
+}
+    #lightgreen:return value;
+    stop
+    -[hidden]->
+}
+
+card "::std::__is_constant_evaluated() -> bool" {
+    #lightgreen:return 0;
+    stop
+    -[hidden]->
+}
+
+card "::std::__terminate() -> void" {
+    :::std::terminate();
+    -[hidden]->
+}
+
+
+@enduml

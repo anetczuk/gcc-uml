@@ -1,0 +1,97 @@
+digraph {
+	fontname="SansSerif,sans-serif" labeljust=l nojustify=true ranksep=0.35
+	node [fillcolor="#fefece" fontname="SansSerif,sans-serif" fontsize=10 height=0.35 shape=box style="filled, rounded"]
+	subgraph cluster_item_0 {
+		graph [label="::main() -> int"]
+		item_1 [label="::check_switch(0)"]
+		item_2 [label="::check_switch(1)"]
+		item_1 -> item_2
+		item_3 [label="::check_switch(2)"]
+		item_2 -> item_3
+		item_4 [label="::check_switch(3)"]
+		item_3 -> item_4
+		item_5 [label="return 0" fillcolor=lightgreen]
+		item_6 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_5 -> item_6
+		item_4 -> item_5
+	}
+	subgraph cluster_item_7 {
+		graph [label="::check_switch(int const value) -> int"]
+		item_8 [label="::printf((&\"value: %i\\n\"), value)"]
+		subgraph cluster_item_9 {
+			graph [label="switch:"]
+			switch_start_item_10 [label=value ordering=out shape=hexagon style=filled]
+			"gotolabel_@80" [label=0 shape=cds style=filled]
+			"gotolabel_@80" [label=0 shape=cds style=filled]
+			switch_start_item_10 -> "gotolabel_@80" [label=0]
+			"gotolabel_@82" [label=1 shape=cds style=filled]
+			"gotolabel_@82" [label=1 shape=cds style=filled]
+			switch_start_item_10 -> "gotolabel_@82" [label=1]
+			"gotolabel_@85" [label=2 shape=cds style=filled]
+			"gotolabel_@85" [label=2 shape=cds style=filled]
+			switch_start_item_10 -> "gotolabel_@85" [label=2]
+			"gotolabel_@88" [label="default:" fillcolor=lightgreen shape=cds style=filled]
+			switch_start_item_10 -> "gotolabel_@88" [label="default:"]
+			item_11 [label="::printf((&\"    case 0 (with fallthrough)\\n\"))"]
+			"gotolabel_@80" -> item_11
+			item_11 -> "gotolabel_@82"
+			switch_anchor_item_12 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_11 -> switch_anchor_item_12 [style=invis]
+			item_13 [label="::printf((&\"    case 1\\n\"))"]
+			"gotolabel_@82" -> item_13
+			switch_anchor_item_14 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_13 -> switch_anchor_item_14 [style=invis]
+			item_15 [label="::printf((&\"    case 2\\n\"))"]
+			"gotolabel_@85" -> item_15
+			switch_anchor_item_16 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_15 -> switch_anchor_item_16 [style=invis]
+			item_17 [label="::printf((&\"    case default\\n\"))"]
+			"gotolabel_@88" -> item_17
+			switch_anchor_item_18 [label="" height=0.0 margin=0 shape=none style="" width=0.0]
+			item_17 -> switch_anchor_item_18 [style=invis]
+			"gotolabel_@116" [label="" height=0.2 ordering=in shape=diamond style=filled width=0.2]
+			item_13 -> "gotolabel_@116"
+			item_15 -> "gotolabel_@116"
+			item_17 -> "gotolabel_@116"
+			switch_anchor_item_12 -> "gotolabel_@116" [style=invis]
+			switch_anchor_item_14 -> "gotolabel_@116" [style=invis]
+			switch_anchor_item_16 -> "gotolabel_@116" [style=invis]
+			switch_anchor_item_18 -> "gotolabel_@116" [style=invis]
+			{
+				rank=same
+				"gotolabel_@80"
+				"gotolabel_@82"
+				"gotolabel_@85"
+				"gotolabel_@88"
+			}
+			{
+				rank=same
+				switch_anchor_item_12
+				switch_anchor_item_14
+				switch_anchor_item_16
+				switch_anchor_item_18
+			}
+			switch_anchor_item_12 -> switch_anchor_item_14 [style=invis]
+			switch_anchor_item_14 -> switch_anchor_item_16 [style=invis]
+			switch_anchor_item_16 -> switch_anchor_item_18 [style=invis]
+		}
+		item_8 -> switch_start_item_10
+		item_19 [label="return value" fillcolor=lightgreen]
+		item_20 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_19 -> item_20
+		"gotolabel_@116" -> item_19
+	}
+	item_6 -> item_8 [style=invis]
+	subgraph cluster_item_21 {
+		graph [label="::std::__is_constant_evaluated() -> bool"]
+		item_22 [label="return 0" fillcolor=lightgreen]
+		item_23 [label="" fillcolor=black fixedsize=true height=0.12 shape=doublecircle size=0.1 width=0.12]
+		item_22 -> item_23
+	}
+	item_20 -> item_22 [style=invis]
+	subgraph cluster_item_24 {
+		graph [label="::std::__terminate() -> void"]
+		item_25 [label="::std::terminate()"]
+	}
+	item_23 -> item_25 [style=invis]
+}
