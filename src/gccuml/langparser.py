@@ -45,7 +45,8 @@ def convert_bytes_to_dict(content_bytes, reducepaths=None) -> Dict[str, Any]:
     converter = ProprertiesConverter()
     for line in content_bytes:
         # there can be item with no parameters
-        found = re.search(rb"^(\S+)\s+(\S+)(\s+.*)?$", line)
+        ## regex: <ID><whitespaces><type><properties>
+        found = re.search(rb"^(\S+)\s+(\S+)(\s+.*)?$", line, re.MULTILINE | re.DOTALL)
         if not found:
             raise RuntimeError(f"unable to parse line: '{line}'")
         # print(f"{line} -> >{found.group(1)}< >{found.group(2)}< >{found.group(3)}<")
@@ -140,7 +141,7 @@ class ProprertiesConverter:
         length_value = int(last_val)
 
         ## reading string field
-        strg_key = self.consume_key()
+        strg_key = self.consume_key(strip_props=False)
         strg_key = strg_key.decode("utf-8")
         strg_value = self.raw_properties
         try:
@@ -148,6 +149,13 @@ class ProprertiesConverter:
             strg_len = len(strg_value)
             expected_len = min(strg_len, length_value - 1)
             strg_value = strg_value[0:expected_len]
+
+            ## escape twice to prevent unescaping in plantuml/dot to svg conversion
+            strg_value = strg_value.encode("unicode-escape")  ## escapes newlines (prevents \n)
+            strg_value = strg_value.decode("utf-8")
+            strg_value = strg_value.encode("unicode-escape")  ## escapes newlines (prevents \n)
+            strg_value = strg_value.decode("utf-8")
+
         except UnicodeDecodeError:
             ## there is rare situation where "strg" field contains UTF-8 invalid characters
             ## it happens, e.g. during C-array initialization
@@ -162,11 +170,16 @@ class ProprertiesConverter:
         raw_list.append((last_key, last_val))
         return raw_list
 
-    def consume_key(self):
+    def consume_key(self, strip_props=True):
         next_colon_pos = self.raw_properties.index(b": ")
         key = self.raw_properties[:next_colon_pos]
         self.raw_properties = self.raw_properties[next_colon_pos + 1 :]  # remove colon
-        self.raw_properties = self.raw_properties.lstrip()
+        if strip_props:
+            self.raw_properties = self.raw_properties.lstrip()
+        else:
+            ## remove first leading space
+            if len(self.raw_properties) > 0:
+                self.raw_properties = self.raw_properties[1:]
         return key.strip()
 
     def consume_value(self):
@@ -244,7 +257,9 @@ def read_raw_file(input_path):
                     content_list.append(curr_line)
                     curr_line = line.rstrip()
                     continue
-                curr_line += b" " + line.rstrip()
+                ## join lines
+                curr_line += b"\n " + line.rstrip()
+
             content_list.append(curr_line)
             if content_list:
                 content_list = content_list[1:]
