@@ -171,7 +171,10 @@ class ProprertiesConverter:
         return raw_list
 
     def consume_key(self, strip_props=True):
-        next_colon_pos = self.raw_properties.index(b": ")
+        element = b": "
+        if element not in self.raw_properties:
+            element = b":\n"
+        next_colon_pos = self.raw_properties.index(element)
         key = self.raw_properties[:next_colon_pos]
         self.raw_properties = self.raw_properties[next_colon_pos + 1 :]  # remove colon
         if strip_props:
